@@ -43,6 +43,7 @@ export const listings = pgTable("listings", {
   image: text("image").notNull(),
   featured: boolean("featured").notNull().default(false),
   countries: text("countries").array().notNull(),
+  whyBookWith: text("why_book_with"),
   socials: jsonb("socials").$type<{
     facebook?: string;
     instagram?: string;

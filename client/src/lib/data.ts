@@ -22,6 +22,7 @@ export interface Listing {
   image: string;
   featured: boolean;
   countries: string[];
+  whyBookWith?: string;
   socials: {
     facebook?: string;
     instagram?: string;

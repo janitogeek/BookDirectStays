@@ -158,7 +158,7 @@ export default function Home() {
                     <Button 
                       variant="outline" 
                       className="border-blue-600 text-blue-600"
-                      onClick={() => setSelectedCountry("all")}
+                      onClick={() => setSelectedCountries([])}
                     >
                       View all countries
                     </Button>

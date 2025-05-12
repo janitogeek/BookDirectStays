@@ -18,9 +18,9 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center group">
               <span className="text-2xl font-bold text-primary">BookDirectStays</span>
-              <span className="text-2xl font-bold text-secondary">.com</span>
+              <span className="text-2xl font-bold text-gray-700 bg-gray-100 px-1 rounded transition-all group-hover:text-primary">.com</span>
             </Link>
           </div>
           
