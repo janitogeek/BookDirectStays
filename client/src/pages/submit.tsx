@@ -225,10 +225,13 @@ export default function Submit() {
                   name="website"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Booking Website URL</FormLabel>
+                      <FormLabel>Direct Booking Website URL</FormLabel>
                       <FormControl>
                         <Input placeholder="https://www.yourwebsite.com" {...field} />
                       </FormControl>
+                      <FormDescription>
+                        Provide your direct booking website, not links to OTAs like Airbnb or Booking.com
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

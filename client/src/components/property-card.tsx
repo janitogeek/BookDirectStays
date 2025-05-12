@@ -24,12 +24,12 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ listing }: PropertyCardProps) {
   return (
-    <Card className="rounded-xl shadow-md overflow-hidden transition-all hover:shadow-lg">
-      <div className="relative">
+    <Card className="rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:translate-y-[-5px] group">
+      <div className="relative overflow-hidden">
         <img 
           src={listing.image} 
           alt={`${listing.name} properties`} 
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105"
         />
         {listing.featured && (
           <div className="absolute top-2 right-2 bg-secondary text-white px-3 py-1 rounded-full text-xs font-medium">
@@ -97,14 +97,14 @@ export default function PropertyCard({ listing }: PropertyCardProps) {
           </div>
           <Button
             asChild
-            className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
           >
             <a 
               href={listing.website} 
               target="_blank" 
               rel="noopener noreferrer"
             >
-              Visit Booking Site
+              Visit Direct Booking Site
             </a>
           </Button>
         </div>

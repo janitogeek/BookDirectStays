@@ -1,21 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import PropertyCard from "@/components/property-card";
 import CountryTags from "@/components/country-tags";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiRequest } from "@/lib/queryClient";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [, setLocation] = useLocation();
   
   // Fetch listings
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({
-    queryKey: ["/api/listings", visibleCount],
+    queryKey: ["/api/listings", visibleCount, selectedCountry],
     queryFn: async () => {
-      const res = await apiRequest("GET", `/api/listings?limit=${visibleCount}`, undefined);
+      const countryParam = selectedCountry ? `&country=${selectedCountry}` : '';
+      const res = await apiRequest("GET", `/api/listings?limit=${visibleCount}${countryParam}`, undefined);
       return res.json();
     }
   });
@@ -84,7 +94,33 @@ export default function Home() {
       {/* Main Directory Section */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold mb-8">Featured Direct Booking Sites</h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+            <h2 className="text-2xl font-bold">Featured Direct Booking Sites</h2>
+            
+            {/* Country Filter Dropdown */}
+            <div className="w-full md:w-64">
+              <Select 
+                value={selectedCountry} 
+                onValueChange={(value) => {
+                  setSelectedCountry(value);
+                  // Reset visible count when changing filters
+                  setVisibleCount(6);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Countries</SelectItem>
+                  {countries?.map((country: any) => (
+                    <SelectItem key={country.id} value={country.slug}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
           {/* Property Manager Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
