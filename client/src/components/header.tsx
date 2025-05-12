@@ -26,25 +26,29 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/">
-              <a className={`font-medium ${location === '/' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Home
-              </a>
+            <Link 
+              href="/" 
+              className={`font-medium ${location === '/' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              Home
             </Link>
-            <Link href="/submit">
-              <a className={`font-medium ${location === '/submit' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Add Your Property
-              </a>
+            <Link 
+              href="/submit" 
+              className={`font-medium ${location === '/submit' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              Add Your Property
             </Link>
-            <Link href="/faq">
-              <a className={`font-medium ${location === '/faq' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                FAQ
-              </a>
+            <Link 
+              href="/faq" 
+              className={`font-medium ${location === '/faq' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              FAQ
             </Link>
-            <Link href="/testimonials">
-              <a className={`font-medium ${location === '/testimonials' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Testimonials
-              </a>
+            <Link 
+              href="/testimonials" 
+              className={`font-medium ${location === '/testimonials' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              Testimonials
             </Link>
           </nav>
           
@@ -65,37 +69,33 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <Link href="/">
-                <a 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
-                  onClick={closeMenu}
-                >
-                  Home
-                </a>
+              <Link 
+                href="/"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                Home
               </Link>
-              <Link href="/submit">
-                <a 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/submit' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
-                  onClick={closeMenu}
-                >
-                  Add Your Property
-                </a>
+              <Link 
+                href="/submit"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/submit' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                Add Your Property
               </Link>
-              <Link href="/faq">
-                <a 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/faq' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
-                  onClick={closeMenu}
-                >
-                  FAQ
-                </a>
+              <Link 
+                href="/faq"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/faq' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                FAQ
               </Link>
-              <Link href="/testimonials">
-                <a 
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/testimonials' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
-                  onClick={closeMenu}
-                >
-                  Testimonials
-                </a>
+              <Link 
+                href="/testimonials"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/testimonials' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                Testimonials
               </Link>
             </div>
           </div>

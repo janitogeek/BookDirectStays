@@ -24,15 +24,15 @@ interface PropertyCardProps {
 
 export default function PropertyCard({ listing }: PropertyCardProps) {
   return (
-    <Card className="rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:translate-y-[-5px] group">
+    <Card className="rounded-xl shadow-md overflow-hidden card-hover group">
       <div className="relative overflow-hidden">
         <img 
           src={listing.image} 
           alt={`${listing.name} properties`} 
-          className="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-105"
+          className="listing-image transform transition-transform duration-300 group-hover:scale-105"
         />
         {listing.featured && (
-          <div className="absolute top-2 right-2 bg-secondary text-white px-3 py-1 rounded-full text-xs font-medium">
+          <div className="absolute top-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">
             Featured
           </div>
         )}
@@ -97,14 +97,19 @@ export default function PropertyCard({ listing }: PropertyCardProps) {
           </div>
           <Button
             asChild
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
+            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-5 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
           >
             <a 
               href={listing.website} 
               target="_blank" 
               rel="noopener noreferrer"
+              className="flex items-center gap-2"
             >
-              Visit Direct Booking Site
+              <span className="hidden sm:inline-block">Visit</span>
+              <span className="font-bold">Direct Booking Site</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </a>
           </Button>
         </div>
