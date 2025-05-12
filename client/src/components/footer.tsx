@@ -61,23 +61,23 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/">
-                  <a className="text-gray-300 hover:text-white">Home</a>
+                <Link href="/" className="text-gray-300 hover:text-white">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link href="/submit">
-                  <a className="text-gray-300 hover:text-white">Add Your Property</a>
+                <Link href="/submit" className="text-gray-300 hover:text-white">
+                  Add Your Property
                 </Link>
               </li>
               <li>
-                <Link href="/faq">
-                  <a className="text-gray-300 hover:text-white">FAQ</a>
+                <Link href="/faq" className="text-gray-300 hover:text-white">
+                  FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/testimonials">
-                  <a className="text-gray-300 hover:text-white">Testimonials</a>
+                <Link href="/testimonials" className="text-gray-300 hover:text-white">
+                  Testimonials
                 </Link>
               </li>
             </ul>
@@ -87,28 +87,28 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Top Destinations</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/country/spain">
-                  <a className="text-gray-300 hover:text-white">Spain</a>
+                <Link href="/country/spain" className="text-gray-300 hover:text-white">
+                  Spain
                 </Link>
               </li>
               <li>
-                <Link href="/country/italy">
-                  <a className="text-gray-300 hover:text-white">Italy</a>
+                <Link href="/country/italy" className="text-gray-300 hover:text-white">
+                  Italy
                 </Link>
               </li>
               <li>
-                <Link href="/country/france">
-                  <a className="text-gray-300 hover:text-white">France</a>
+                <Link href="/country/france" className="text-gray-300 hover:text-white">
+                  France
                 </Link>
               </li>
               <li>
-                <Link href="/country/united-states">
-                  <a className="text-gray-300 hover:text-white">United States</a>
+                <Link href="/country/united-states" className="text-gray-300 hover:text-white">
+                  United States
                 </Link>
               </li>
               <li>
-                <Link href="/country/thailand">
-                  <a className="text-gray-300 hover:text-white">Thailand</a>
+                <Link href="/country/thailand" className="text-gray-300 hover:text-white">
+                  Thailand
                 </Link>
               </li>
             </ul>
