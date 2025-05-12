@@ -10,12 +10,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Listings routes
   app.get("/api/listings", async (req, res) => {
     try {
+      const countries = req.query.countries 
+        ? Array.isArray(req.query.countries) 
+          ? req.query.countries as string[] 
+          : [req.query.countries as string]
+        : undefined;
+      
+      // For backward compatibility
       const country = req.query.country as string | undefined;
+      if (country && (!countries || countries.length === 0)) {
+        countries?.push(country);
+      }
+      
       const limit = parseInt(req.query.limit as string || "6", 10);
       const offset = parseInt(req.query.offset as string || "0", 10);
       
-      const listings = await storage.getListings(country, limit, offset);
-      const total = await storage.getListingsCount(country);
+      const listings = await storage.getListings(countries, limit, offset);
+      const total = await storage.getListingsCount(countries);
       
       res.json({ 
         listings,

@@ -19,16 +19,16 @@ export default function CountryTags({ countries, isLoading, activeCountry }: Cou
             ))
           ) : (
             countries.map((country) => (
-              <Link key={country.id} href={`/country/${country.slug}`}>
-                <a 
-                  className={`inline-block px-4 py-2 rounded-full whitespace-nowrap transition ${
-                    activeCountry === country.slug
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 hover:bg-primary hover:text-white'
-                  }`}
-                >
-                  {country.name}
-                </a>
+              <Link 
+                key={country.id} 
+                href={`/country/${country.slug}`}
+                className={`inline-block px-4 py-2 rounded-full whitespace-nowrap transition ${
+                  activeCountry === country.slug
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 hover:bg-primary hover:text-white'
+                }`}
+              >
+                {country.name}
               </Link>
             ))
           )}

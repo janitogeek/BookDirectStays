@@ -1,0 +1,76 @@
+Hi there!
+
+I’m working on my directory site BookDirectStays.com and would like to make the following updates to enhance the user experience and better highlight the listings:
+
+1. Country/Region Filter:
+Allow users to select multiple countries/regions using checkboxes, without needing to hold down Ctrl/Cmd. This will make the selection process more user-friendly and intuitive.
+
+Add a full list of countries with a search bar so users can quickly search and find specific countries/regions.
+
+2. Domain Visibility:
+The .com for BookDirectStays should be more visible on the homepage. Right now, it's blending in with the background (light grey). Please change it to a darker or contrasting color so it stands out clearly, improving visibility and branding.
+
+3. Why Book With [Company Name] Section:
+Add a new field in the submission form for "Why Book with [Company Name]".
+
+The content of the "Why Book With [Company]" section should be editable by me only through the backend (via Airtable or the system you’re using). Property managers won’t be able to edit it directly. If they need updates or changes to their section, they will need to reach out to me, and a support fee will apply for any modifications.
+
+Example Text for “Why Book with Coastal Keys” (editable only by me):
+
+Whether you're dreaming of a romantic weekend by the sea, a family escape to the countryside, or a remote work getaway with a view, Coastal Keys has the perfect place for you. Our handpicked collection of holiday homes across the coast blends comfort, character, and convenience—so you can relax, explore, and enjoy every moment of your stay.
+
+From pet-friendly cottages and luxury apartments to hidden gems and unique stays, every property is carefully maintained and fully equipped for a stress-free, self-catering break. Enjoy crisp linens, fast Wi-Fi, thoughtful touches, and exceptional customer support available 24/7.
+
+Plus, with our commitment to sustainability and local partnerships, booking with Coastal Keys means supporting greener travel and vibrant communities.
+
+Your next unforgettable stay starts here—discover the Coastal Keys difference.
+
+4. Page Linking:
+Once users click on a company name, they should be directed to the company’s detailed page, where the full "Why Book With" section will appear, along with any additional content or promotions the company might have.
+
+5. Pricing and Listing Plans:
+Free Listing
+
+Basic listing in our directory
+
+Standard placement in search results
+
+Basic property information
+
+Link to your direct booking website
+
+Timeline: Added in 1-2 months
+
+Price: $0 (Free)
+[Select Free]
+
+Featured Listing (Recommended)
+
+Premium placement and enhanced features
+
+Priority placement in search results
+
+Featured badge for increased visibility
+
+Enhanced property listing with all details
+
+Analytics dashboard with visitor insights
+
+Timeline: Added in less than 24h
+
+Price: $49
+[Select Featured]
+
+6. No Free Support
+Property managers can request changes, but they’ll have to go through a paid support option if they want to edit anything on their page. This will be part of the paid plan.
+
+7. Add Your Site Section:
+The "Add Your Site" section should be clearly visible, highlighted with a box, and easy for property managers to navigate and submit their direct booking site.
+
+8. General Notes:
+Make sure that each listing clearly includes the company name, description, and CTA (Call to Action) for booking directly on the company’s site.
+
+The Why Book With [Company] section should be easily editable by me only, via Airtable or backend, and not accessible to property managers. If they want changes, they will need to reach out, and the support fee will apply as part of the paid plan.
+
+Thank you for helping me make these updates! These changes will significantly improve the user experience and ensure a better, more streamlined process for both property managers and travelers.
+
