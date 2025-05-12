@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertListingSchema, insertCountrySchema, insertSubscriptionSchema, insertSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
+import { isAirtableInitialized, submitPropertyToAirtable, submitSubscriptionToAirtable } from "./airtable";
+import { log } from "./vite";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Listings routes
@@ -52,10 +54,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const parsedData = insertSubscriptionSchema.parse(req.body);
       const createdAt = new Date().toISOString();
-      const result = await storage.createSubscription({
+      const subscriptionData = {
         ...parsedData,
         createdAt,
-      });
+      };
+      
+      // Store in local memory storage
+      const result = await storage.createSubscription(subscriptionData);
+      
+      // If Airtable is initialized, also store there
+      if (isAirtableInitialized()) {
+        try {
+          await submitSubscriptionToAirtable(subscriptionData);
+          log("Subscription also stored in Airtable");
+        } catch (airtableError) {
+          log(`Airtable storage failed but local storage succeeded: ${airtableError}`);
+        }
+      }
+      
       res.status(201).json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -70,11 +86,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const parsedData = insertSubmissionSchema.parse(req.body);
       const createdAt = new Date().toISOString();
-      const result = await storage.createSubmission({
+      const submissionData = {
         ...parsedData,
         status: "pending",
         createdAt,
-      });
+      };
+      
+      // Store in local memory storage
+      const result = await storage.createSubmission(submissionData);
+      
+      // If Airtable is initialized, also store there
+      if (isAirtableInitialized()) {
+        try {
+          await submitPropertyToAirtable(submissionData);
+          log("Property submission also stored in Airtable");
+        } catch (airtableError) {
+          log(`Airtable storage failed but local storage succeeded: ${airtableError}`);
+        }
+      }
+      
       res.status(201).json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {

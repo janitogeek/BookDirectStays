@@ -57,33 +57,35 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative">
         <div 
-          className="w-full h-[500px] bg-cover bg-center" 
+          className="w-full h-[500px] md:h-[550px] lg:h-[600px] bg-cover bg-center" 
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1000&q=80')" }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-          <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              Discover and book direct.<br />
-              <span className="text-primary">No fees</span>, just better stays.
-            </h1>
-            <p className="text-xl text-white mb-8 max-w-xl">
-              Explore trusted rentals worldwide — skip the middleman.
-            </p>
-            <form onSubmit={handleSearch} className="relative max-w-2xl">
-              <Input 
-                type="text" 
-                placeholder={`Search among ${totalListings} direct booking sites...`} 
-                className="w-full py-6 px-6 rounded-full text-gray-700 bg-white shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Button 
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-primary text-white p-3 rounded-full hover:bg-primary/90 transition"
-              >
-                <i className="fas fa-search"></i>
-              </Button>
-            </form>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50"></div>
+          <div className="relative container-custom h-full flex flex-col justify-center">
+            <div className="max-w-3xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight leading-tight">
+                Discover and book direct.<br />
+                <span className="text-gradient bg-gradient-to-r from-blue-400 to-blue-600">No fees</span>, just better stays.
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-xl">
+                Explore trusted rentals worldwide — skip the middleman.
+              </p>
+              <form onSubmit={handleSearch} className="relative max-w-2xl">
+                <Input 
+                  type="text" 
+                  placeholder={`Search among ${totalListings} direct booking sites...`} 
+                  className="w-full py-6 px-6 rounded-full text-gray-700 bg-white/95 shadow-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button 
+                  type="submit"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-all shadow-lg"
+                >
+                  <i className="fas fa-search"></i>
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
       </section>

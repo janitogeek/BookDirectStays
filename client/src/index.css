@@ -56,3 +56,35 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+/* Custom utilities */
+@layer utilities {
+  /* Remove scrollbar for clean UI */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Gradient text effect */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+  }
+  
+  /* Hover effects for cards */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+  
+  /* Consistent image styling */
+  .listing-image {
+    @apply w-full h-48 object-cover object-center;
+  }
+  
+  /* Better responsive sizing */
+  .container-custom {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+}

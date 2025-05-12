@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
+import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import CountryTags from "@/components/country-tags";
 import { Button } from "@/components/ui/button";
