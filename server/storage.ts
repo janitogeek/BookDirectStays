@@ -262,6 +262,7 @@ export class MemStorage implements IStorage {
         image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=300&q=80",
         featured: true,
         countries: ["Spain", "Portugal"],
+        whyBookWith: "Whether you're dreaming of a romantic weekend by the sea, a family escape to the countryside, or a remote work getaway with a view, Villa Escapes has the perfect place for you. Our handpicked collection of holiday homes across Spain and Portugal blends comfort, character, and convenience—so you can relax, explore, and enjoy every moment of your stay.\n\nFrom pet-friendly cottages and luxury apartments to hidden gems and unique stays, every property is carefully maintained and fully equipped for a stress-free, self-catering break. Enjoy crisp linens, fast Wi-Fi, thoughtful touches, and exceptional customer support available 24/7.\n\nPlus, with our commitment to sustainability and local partnerships, booking with Villa Escapes means supporting greener travel and vibrant communities.\n\nYour next unforgettable stay starts here—discover the Villa Escapes difference.",
         socials: {
           facebook: "https://facebook.com/villaescapes",
           instagram: "https://instagram.com/villaescapes",
@@ -276,6 +277,7 @@ export class MemStorage implements IStorage {
         image: "https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=300&q=80",
         featured: false,
         countries: ["Greece"],
+        whyBookWith: "Experience the authentic beauty of Greece with Mediterranean Homes. Our stunning beachfront properties combine traditional Greek architecture with modern amenities to create the perfect vacation experience.\n\nAll our properties offer panoramic sea views, private pools, and are just steps from pristine beaches and charming villages. Our local staff provides personalized service, from arranging boat trips to recommending hidden tavernas only the locals know about.\n\nWith Mediterranean Homes, you'll enjoy more space, better value, and greater privacy than a hotel could ever offer. Our properties are perfect for families, groups of friends, or couples seeking a romantic getaway.\n\nBook directly with us and save on fees while enjoying tailored service that puts your needs first.",
         socials: {
           facebook: "https://facebook.com/medihomes",
           instagram: "https://instagram.com/medihomes"
