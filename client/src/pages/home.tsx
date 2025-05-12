@@ -3,29 +3,31 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import PropertyCard from "@/components/property-card";
 import CountryTags from "@/components/country-tags";
+import CountryFilter from "@/components/country-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiRequest } from "@/lib/queryClient";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
-  const [selectedCountry, setSelectedCountry] = useState<string>("all");
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [, setLocation] = useLocation();
   
   // Fetch listings
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({
-    queryKey: ["/api/listings", visibleCount, selectedCountry],
+    queryKey: ["/api/listings", visibleCount, selectedCountries],
     queryFn: async () => {
-      const countryParam = selectedCountry && selectedCountry !== 'all' ? `&country=${selectedCountry}` : '';
-      const res = await apiRequest("GET", `/api/listings?limit=${visibleCount}${countryParam}`, undefined);
+      let url = `/api/listings?limit=${visibleCount}`;
+      
+      // Add country filter params if countries are selected
+      if (selectedCountries.length > 0) {
+        selectedCountries.forEach(country => {
+          url += `&countries=${country}`;
+        });
+      }
+      
+      const res = await apiRequest("GET", url, undefined);
       return res.json();
     }
   });
@@ -47,6 +49,12 @@ export default function Home() {
     e.preventDefault();
     console.log("Searching for:", searchTerm);
     // Implement search functionality
+  };
+  
+  const handleCountryChange = (countrySlugs: string[]) => {
+    setSelectedCountries(countrySlugs);
+    // Reset visible count when changing filters
+    setVisibleCount(6);
   };
 
   const totalListings = listingsData?.total || 0;
@@ -100,27 +108,13 @@ export default function Home() {
             <h2 className="text-2xl font-bold">Featured Direct Booking Sites</h2>
             
             {/* Country Filter Dropdown */}
-            <div className="w-full md:w-64">
-              <Select 
-                value={selectedCountry} 
-                onValueChange={(value) => {
-                  setSelectedCountry(value);
-                  // Reset visible count when changing filters
-                  setVisibleCount(6);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Filter by country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Countries</SelectItem>
-                  {countries?.map((country: any) => (
-                    <SelectItem key={country.id} value={country.slug}>
-                      {country.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="w-full md:w-72">
+              <CountryFilter
+                countries={countries || []}
+                selectedCountries={selectedCountries}
+                onChange={handleCountryChange}
+                isLoading={isCountriesLoading}
+              />
             </div>
           </div>
           

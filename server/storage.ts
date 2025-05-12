@@ -28,8 +28,8 @@ export interface IStorage {
   createCountry(country: InsertCountry): Promise<Country>;
   
   // Listing methods
-  getListings(countrySlug?: string, limit?: number, offset?: number): Promise<Listing[]>;
-  getListingsCount(countrySlug?: string): Promise<number>;
+  getListings(countrySlugs?: string[] | string, limit?: number, offset?: number): Promise<Listing[]>;
+  getListingsCount(countrySlugs?: string[] | string): Promise<number>;
   createListing(listing: InsertListing): Promise<Listing>;
   
   // Subscription methods
@@ -122,16 +122,26 @@ export class MemStorage implements IStorage {
   }
   
   // Listing methods
-  async getListings(countrySlug?: string, limit: number = 6, offset: number = 0): Promise<Listing[]> {
+  async getListings(countrySlugs?: string[] | string, limit: number = 6, offset: number = 0): Promise<Listing[]> {
     let listings = Array.from(this.listings.values());
     
-    // Filter by country if provided
-    if (countrySlug) {
-      const country = await this.getCountryBySlug(countrySlug);
-      if (country) {
-        listings = listings.filter(listing => 
-          listing.countries.includes(country.name)
-        );
+    // Filter by countries if provided
+    if (countrySlugs) {
+      // Convert single string to array for consistent handling
+      const slugsArray = Array.isArray(countrySlugs) ? countrySlugs : [countrySlugs];
+      
+      if (slugsArray.length > 0) {
+        // Get country names from slugs
+        const countryPromises = slugsArray.map(slug => this.getCountryBySlug(slug));
+        const countries = await Promise.all(countryPromises);
+        const countryNames = countries.filter(c => c !== undefined).map(c => c!.name);
+        
+        if (countryNames.length > 0) {
+          // Filter listings that have at least one matching country
+          listings = listings.filter(listing => 
+            listing.countries.some(country => countryNames.includes(country))
+          );
+        }
       }
     }
     
@@ -146,16 +156,26 @@ export class MemStorage implements IStorage {
     return listings.slice(offset, offset + limit);
   }
   
-  async getListingsCount(countrySlug?: string): Promise<number> {
+  async getListingsCount(countrySlugs?: string[] | string): Promise<number> {
     let listings = Array.from(this.listings.values());
     
-    // Filter by country if provided
-    if (countrySlug) {
-      const country = await this.getCountryBySlug(countrySlug);
-      if (country) {
-        listings = listings.filter(listing => 
-          listing.countries.includes(country.name)
-        );
+    // Filter by countries if provided
+    if (countrySlugs) {
+      // Convert single string to array for consistent handling
+      const slugsArray = Array.isArray(countrySlugs) ? countrySlugs : [countrySlugs];
+      
+      if (slugsArray.length > 0) {
+        // Get country names from slugs
+        const countryPromises = slugsArray.map(slug => this.getCountryBySlug(slug));
+        const countries = await Promise.all(countryPromises);
+        const countryNames = countries.filter(c => c !== undefined).map(c => c!.name);
+        
+        if (countryNames.length > 0) {
+          // Filter listings that have at least one matching country
+          listings = listings.filter(listing => 
+            listing.countries.some(country => countryNames.includes(country))
+          );
+        }
       }
     }
     
