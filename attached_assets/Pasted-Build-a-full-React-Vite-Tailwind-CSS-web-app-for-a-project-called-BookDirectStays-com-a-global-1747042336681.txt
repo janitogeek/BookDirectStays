@@ -1,0 +1,66 @@
+Build a full React + Vite + Tailwind CSS web app for a project called BookDirectStays.com — a global directory for short-term rental property managers that lets travelers book directly with hosts and skip OTA fees.
+
+Homepage Requirements (/):
+
+Add a hero section with this title: “Discover and book direct. No fees, just better stays.”
+
+Subtitle: “Explore trusted rentals worldwide — skip the middleman.”
+
+Below that, display a horizontal list of clickable country tags. Clicking one goes to /country-name.
+
+Add a search bar with placeholder text: “Search among X direct booking sites…” (X = total listings)
+
+The main directory section should display property manager cards in a grid (3 per row on desktop), each showing:
+
+Logo or image
+
+Name
+
+Short description (e.g., “25 villas in Spain & Portugal”)
+
+Countries listed
+
+Button: “Visit Booking Site” (opens in a new tab)
+
+Social media icons (Facebook, LinkedIn, Instagram) if available
+
+Show featured listings first (marked with featured: true)
+
+Only show 6 cards by default, then add a “Show More” button to load 6 more each time it's clicked
+
+Add a section titled: “Browse direct booking sites by country” with all countries listed again (grid or tag format)
+
+Country Pages (/country):
+
+Dynamically route using React Router to /country-name
+
+Filter the listing cards to show only listings for that country
+
+Same layout and “Show More” behavior as the homepage
+
+Submission Page (/submit):
+
+Title: “Add Your Direct Booking Site”
+
+Two options: Free and Featured (Paid) listing
+
+A form that collects: name, website, number of listings, country/region, description, logo, and optional social media links
+
+Keep in Touch Section (on homepage footer):
+
+Title: “Be the first to know when we launch”
+
+Simple email input + submit button
+
+Other Pages:
+
+/faq — a simple FAQ page with questions and answers for travelers and hosts
+
+/testimonials — page that displays reviews from guests and hosts
+
+Use Tailwind CSS for all layout and styling.
+Use React Query to fetch listings from a mock API or static JSON file (later to be replaced by Airtable).
+Sort cards by featured: true first.
+Include vite.config.js with base '/' and a vercel.json rewrite to support routing.
+
+Use placeholder images and data if necessary.
