@@ -91,9 +91,25 @@ export default function Country() {
                 </div>
               ))
             ) : listingsData?.listings.length === 0 ? (
-              <div className="col-span-3 text-center py-12">
-                <h3 className="text-xl font-medium text-gray-700">No listings found for {country?.name}</h3>
-                <p className="text-gray-500 mt-2">Check back soon or browse other countries</p>
+              <div className="col-span-3 text-center py-16">
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found for {country?.name}</h3>
+                  <p className="text-gray-500 mb-6">We couldn't find any direct booking sites for this country.</p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button 
+                      asChild
+                      variant="outline" 
+                      className="border-blue-600 text-blue-600"
+                    >
+                      <Link href="/">
+                        View all countries
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             ) : (
               listingsData?.listings.map((listing: any) => (

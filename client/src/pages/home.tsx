@@ -17,14 +17,14 @@ import {
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
-  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [selectedCountry, setSelectedCountry] = useState<string>("all");
   const [, setLocation] = useLocation();
   
   // Fetch listings
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({
     queryKey: ["/api/listings", visibleCount, selectedCountry],
     queryFn: async () => {
-      const countryParam = selectedCountry ? `&country=${selectedCountry}` : '';
+      const countryParam = selectedCountry && selectedCountry !== 'all' ? `&country=${selectedCountry}` : '';
       const res = await apiRequest("GET", `/api/listings?limit=${visibleCount}${countryParam}`, undefined);
       return res.json();
     }
@@ -111,7 +111,7 @@ export default function Home() {
                   <SelectValue placeholder="Filter by country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Countries</SelectItem>
+                  <SelectItem value="all">All Countries</SelectItem>
                   {countries?.map((country: any) => (
                     <SelectItem key={country.id} value={country.slug}>
                       {country.name}
@@ -149,7 +149,31 @@ export default function Home() {
                   </div>
                 </div>
               ))
+            ) : listingsData?.listings.length === 0 ? (
+              // No results found message
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center">
+                <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found</h3>
+                  <p className="text-gray-500 mb-6">We couldn't find any direct booking sites matching your filter.</p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button 
+                      variant="outline" 
+                      className="border-blue-600 text-blue-600"
+                      onClick={() => setSelectedCountry("all")}
+                    >
+                      View all countries
+                    </Button>
+                    <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+                      Try a different search
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ) : (
+              // Listing cards
               listingsData?.listings.map((listing: any) => (
                 <PropertyCard key={listing.id} listing={listing} />
               ))

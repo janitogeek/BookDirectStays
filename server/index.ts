@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { initAirtable } from "./airtable";
 
 const app = express();
 app.use(express.json());
@@ -37,6 +38,21 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Check for Airtable environment variables and initialize if available
+  const airtableApiKey = process.env.AIRTABLE_API_KEY;
+  const airtableBaseId = process.env.AIRTABLE_BASE_ID;
+  
+  if (airtableApiKey && airtableBaseId) {
+    const initialized = initAirtable(airtableApiKey, airtableBaseId);
+    if (initialized) {
+      log("Airtable integration enabled successfully");
+    } else {
+      log("Failed to initialize Airtable, will use in-memory storage instead");
+    }
+  } else {
+    log("Airtable API key or Base ID not found. Using in-memory storage only.");
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
