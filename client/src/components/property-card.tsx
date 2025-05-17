@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { Info } from "lucide-react";
 
 interface PropertyCardProps {
   listing: {
@@ -14,6 +15,7 @@ interface PropertyCardProps {
     image: string;
     featured: boolean;
     countries: string[];
+    whyBookWith?: string;
     socials: {
       facebook?: string;
       instagram?: string;
