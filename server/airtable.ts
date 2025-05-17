@@ -80,3 +80,16 @@ export async function submitSubscriptionToAirtable(subscription: InsertSubscript
     throw error;
   }
 }
+
+/**
+ * Fetch all property listings from Airtable
+ */
+export async function fetchListingsFromAirtable() {
+  if (!airtableBase) throw new Error('Airtable is not initialized');
+  const tableName = process.env.AIRTABLE_TABLE_NAME || 'Property Submissions';
+  const records = await airtableBase(tableName).select().all();
+  return records.map(record => ({
+    id: record.id,
+    ...record.fields,
+  }));
+}

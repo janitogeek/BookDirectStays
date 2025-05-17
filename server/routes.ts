@@ -3,35 +3,23 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertListingSchema, insertCountrySchema, insertSubscriptionSchema, insertSubmissionSchema } from "@shared/schema";
 import { z } from "zod";
-import { isAirtableInitialized, submitPropertyToAirtable, submitSubscriptionToAirtable } from "./airtable";
+import { isAirtableInitialized, submitPropertyToAirtable, submitSubscriptionToAirtable, fetchListingsFromAirtable } from "./airtable";
 import { log } from "./vite";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Listings routes
   app.get("/api/listings", async (req, res) => {
     try {
-      const countries = req.query.countries 
-        ? Array.isArray(req.query.countries) 
-          ? req.query.countries as string[] 
-          : [req.query.countries as string]
-        : undefined;
-      
-      // For backward compatibility
-      const country = req.query.country as string | undefined;
-      if (country && (!countries || countries.length === 0)) {
-        countries?.push(country);
+      let listings;
+      if (isAirtableInitialized()) {
+        listings = await fetchListingsFromAirtable();
+      } else {
+        listings = await storage.getListings();
       }
-      
-      const limit = parseInt(req.query.limit as string || "6", 10);
-      const offset = parseInt(req.query.offset as string || "0", 10);
-      
-      const listings = await storage.getListings(countries, limit, offset);
-      const total = await storage.getListingsCount(countries);
-      
       res.json({ 
         listings,
-        total,
-        hasMore: offset + listings.length < total 
+        total: listings.length,
+        hasMore: false 
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch listings" });
