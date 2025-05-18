@@ -18,6 +18,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const fields = req.body;
+    // Filter to only allow valid fields (from frontend schema)
+    const validFields = [
+      "Brand Name",
+      "Direct Booking Website",
+      "Number of Listings",
+      "Countries",
+      "Cities / Regions",
+      "Logo Upload",
+      "Highlight Image",
+      "One-line Description",
+      "Why Book With You?",
+      "Types of Stays",
+      "Ideal For",
+      "Perks / Amenities",
+      "Vibe / Aesthetic",
+      "Instagram",
+      "Facebook",
+      "LinkedIn",
+      "TikTok",
+      "YouTube / Video Tour",
+      "Choose Your Listing Type",
+      "Submitted By (Email)"
+    ];
+    Object.keys(fields).forEach(key => {
+      if (!validFields.includes(key)) {
+        delete fields[key];
+      }
+    });
     // Map 'Cities / Regions' to array of names if needed
     if (Array.isArray(fields["Cities / Regions"])) {
       fields["Cities / Regions"] = fields["Cities / Regions"].map((c: any) => c.name || c);
