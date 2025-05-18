@@ -21,6 +21,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from ".
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
+import { apiRequest } from "@/lib/queryClient";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -112,15 +113,22 @@ export default function Submit() {
     mode: "onChange",
   });
 
-  const onSubmit = (values: FormValues) => {
-    toast({
-      title: "Submission successful!",
-      description: "Your property has been submitted for review.",
-      variant: "default",
-    });
-    // Send to your API here
-    // await apiRequest("POST", "/api/submissions", values);
-    form.reset();
+  const onSubmit = async (values: FormValues) => {
+    try {
+      await apiRequest("POST", "/api/submissions", values);
+      toast({
+        title: "Submission successful!",
+        description: "Your property has been submitted for review.",
+        variant: "default",
+      });
+      form.reset();
+    } catch (error: any) {
+      toast({
+        title: "Submission failed",
+        description: error?.message || "There was an error submitting your property. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
