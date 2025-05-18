@@ -15,7 +15,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { CountryMultiSelect } from "../components/country-multi-select";
 import { FileDrop } from "../components/file-drop";
-import { CityRegionMultiSelect } from "../components/city-region-multi-select";
+import { CityRegionAsyncMultiSelect } from "../components/city-region-async-multi-select";
 import { SimpleMultiSelect } from "../components/simple-multi-select";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../components/ui/select";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -26,9 +26,9 @@ const formSchema = z.object({
   "Direct Booking Website": z.string().url(),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
-  "Cities / Regions": z.array(z.string()).optional(),
+  "Cities / Regions": z.array(z.object({ name: z.string(), geonameId: z.number() })).optional(),
   "Logo Upload": z.string().url(),
-  "Highlight Image": z.string().url().optional(),
+  "Highlight Image": z.string().url(),
   "One-line Description": z.string().min(5),
   "Why Book With You?": z.string().min(10),
   "Types of Stays": z.array(z.string()).optional(),
@@ -207,10 +207,10 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Cities / Regions</FormLabel>
                   <FormControl>
-                    <CityRegionMultiSelect
-                      options={CITIES}
+                    <CityRegionAsyncMultiSelect
                       selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Paris, New York"
                     />
                   </FormControl>
                   <FormMessage />
@@ -232,8 +232,10 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Highlight Image" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Highlight Image</FormLabel>
-                  <span className="text-xs text-muted-foreground block mt-1 mb-2">This image will be used to showcase your company card in the directory.</span>
+                  <FormLabel>
+                    Highlight Image (This will be the main image shown on your company card in the directory)
+                    <RequiredAsterisk />
+                  </FormLabel>
                   <FormControl>
                     <FileDrop
                       onFileDrop={(file: File) => {
