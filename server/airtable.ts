@@ -35,7 +35,8 @@ export async function submitPropertyToAirtable(submission: InsertSubmission & { 
   }
 
   try {
-    const result = await airtableBase('Property Submissions').create({
+    const tableName = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
+    const result = await airtableBase(tableName).create({
       Name: submission.name,
       Website: submission.website,
       'Number of Listings': submission.listingCount,
@@ -88,7 +89,7 @@ export async function fetchListingsFromAirtable() {
   if (!airtableBase) throw new Error('Airtable is not initialized');
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'Property Submissions';
   const records = await airtableBase(tableName).select().all();
-  return records.map(record => ({
+  return records.map((record: any) => ({
     id: record.id,
     ...record.fields,
   }));
