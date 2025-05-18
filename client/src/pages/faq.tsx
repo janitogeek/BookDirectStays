@@ -98,7 +98,7 @@ export default function FAQ() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/submit">
               <a className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg transition">
-                Add Your Property
+                Add Your Direct Booking Site
               </a>
             </Link>
             <a 

@@ -266,7 +266,7 @@ export const faqs: FAQ[] = [
   {
     id: 5,
     question: "How do I list my property on BookDirectStays.com?",
-    answer: "If you're a property manager, you can add your direct booking site by clicking on 'Add Your Property' and filling out our submission form. We offer both free and featured (paid) listings.",
+    answer: "If you're a property manager, you can add your direct booking site by clicking on 'Add Your Direct Booking Site' and filling out our submission form. We offer both free and featured (paid) listings.",
     category: "host",
     order: 5
   },

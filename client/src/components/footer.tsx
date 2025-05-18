@@ -67,7 +67,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/submit" className="text-gray-300 hover:text-white">
-                  Add Your Property
+                  Add Your Direct Booking Site
                 </Link>
               </li>
               <li>
