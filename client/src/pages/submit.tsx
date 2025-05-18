@@ -28,7 +28,7 @@ const formSchema = z.object({
   "Direct Booking Website": z.string().url(),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
-  "Cities / Regions": z.array(z.object({ name: z.string(), geonameId: z.number() })).optional(),
+  "Cities / Regions": z.array(z.object({ name: z.string(), geonameId: z.number() })).min(1),
   "Logo Upload": z.string().url(),
   "Highlight Image": z.string().url(),
   "One-line Description": z.string().min(5),
@@ -176,7 +176,7 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Cities / Regions" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cities / Regions</FormLabel>
+                  <FormLabel>Cities / Regions<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <CityRegionAsyncMultiSelect
                       selected={field.value || []}
@@ -398,7 +398,7 @@ export default function Submit() {
                     Featured Listing — Total: 49.99 EUR
                   </div>
                 ) : (
-                  <div className="font-semibold text-lg text-blue-700 bg-blue-50 px-4 py-2 rounded-lg">
+                  <div className="font-medium text-base text-gray-800 bg-gray-100 px-4 py-2 rounded-full">
                     Free Listing — Total: 0 EUR
                   </div>
                 )}
