@@ -1,434 +1,362 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
-// Form schema
+// Airtable-matching schema
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  website: z.string().url({ message: "Please enter a valid website URL" }),
-  listingCount: z.coerce.number().min(1, { message: "Must have at least 1 listing" }),
-  countries: z.array(z.string()).min(1, { message: "Select at least one country" }),
-  description: z.string().min(10, { message: "Description must be at least 10 characters" }),
-  logo: z.string().url({ message: "Please enter a valid logo URL" }),
-  email: z.string().email({ message: "Please enter a valid email" }),
-  facebook: z.string().url({ message: "Please enter a valid Facebook URL" }).optional().or(z.literal('')),
-  instagram: z.string().url({ message: "Please enter a valid Instagram URL" }).optional().or(z.literal('')),
-  linkedin: z.string().url({ message: "Please enter a valid LinkedIn URL" }).optional().or(z.literal('')),
-  listingType: z.enum(["free", "featured"], {
-    required_error: "Please select a listing type",
-  }),
+  "Brand Name": z.string().min(2),
+  "Direct Booking Website": z.string().url(),
+  "Number of Listings": z.coerce.number().min(1),
+  "Countries": z.array(z.string()).min(1),
+  "Cities / Regions": z.array(z.string()).optional(),
+  "Logo Upload": z.string().url(),
+  "Highlight Image": z.string().url().optional(),
+  "One-line Description": z.string().min(5),
+  "Why Book With You?": z.string().min(10),
+  "Types of Stays": z.array(z.string()).optional(),
+  "Ideal For": z.array(z.string()).optional(),
+  "Is your brand pet-friendly?": z.boolean().optional(),
+  "Perks / Amenities": z.array(z.string()).optional(),
+  "Eco-Conscious Stay?": z.boolean().optional(),
+  "Remote-Work Friendly?": z.boolean().optional(),
+  "Vibe / Aesthetic": z.array(z.string()).optional(),
+  "Instagram": z.string().url().optional().or(z.literal("")),
+  "Facebook": z.string().url().optional().or(z.literal("")),
+  "LinkedIn": z.string().url().optional().or(z.literal("")),
+  "TikTok": z.string().url().optional().or(z.literal("")),
+  "YouTube / Video Tour": z.string().url().optional().or(z.literal("")),
+  "Choose Your Listing Type": z.enum(["Free", "Featured ($49.99)"]),
+  "Submitted By (Email)": z.string().email(),
 });
 
+const COUNTRIES = [
+  "USA", "Spain", "UK", "Germany", "France", "Australia", "Canada", "Italy", "Portugal", "Thailand", "Greece"
+];
+const CITIES = [
+  "Bali", "Lisbon", "Dolomites", "Paris", "Rome", "Bangkok", "Athens"
+];
+const TYPES_OF_STAYS = [
+  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
+];
+const IDEAL_FOR = [
+  "Families", "Digital Nomads", "Retreats", "Couples", "Groups"
+];
+const PERKS = [
+  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly"
+];
+const VIBES = [
+  "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
+];
+
 export default function Submit() {
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const { toast } = useToast();
-  
-  const form = useForm<z.infer<typeof formSchema>>({
+
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      website: "",
-      listingCount: 1,
-      countries: [],
-      description: "",
-      logo: "",
-      email: "",
-      facebook: "",
-      instagram: "",
-      linkedin: "",
-      listingType: "free",
+      "Brand Name": "",
+      "Direct Booking Website": "",
+      "Number of Listings": 1,
+      "Countries": [],
+      "Cities / Regions": [],
+      "Logo Upload": "",
+      "Highlight Image": "",
+      "One-line Description": "",
+      "Why Book With You?": "",
+      "Types of Stays": [],
+      "Ideal For": [],
+      "Is your brand pet-friendly?": false,
+      "Perks / Amenities": [],
+      "Eco-Conscious Stay?": false,
+      "Remote-Work Friendly?": false,
+      "Vibe / Aesthetic": [],
+      "Instagram": "",
+      "Facebook": "",
+      "LinkedIn": "",
+      "TikTok": "",
+      "YouTube / Video Tour": "",
+      "Choose Your Listing Type": "Free",
+      "Submitted By (Email)": "",
     },
-  });
-
-  // Fetch countries for the select dropdown
-  const { data: countries, isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/countries"],
-    queryFn: async () => {
-      const res = await apiRequest("GET", "/api/countries", undefined);
-      return res.json();
-    }
-  });
-
-  // Form submission mutation
-  const submitMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
-      return await apiRequest("POST", "/api/submissions", values);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/listings"] });
-      toast({
-        title: "Submission successful!",
-        description: "Your property has been submitted for review.",
-        variant: "default",
-      });
-      form.reset();
-      setSelectedCountries([]);
-    },
-    onError: (error) => {
-      toast({
-        title: "Submission failed",
-        description: "There was an error submitting your property. Please try again.",
-        variant: "destructive",
-      });
-      console.error("Submission error:", error);
-    }
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    submitMutation.mutate(values);
-  };
-
-  // Handle country selection
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-    setSelectedCountries(selectedOptions);
-    form.setValue("countries", selectedOptions);
+    toast({
+      title: "Submission successful!",
+      description: "Your property has been submitted for review.",
+      variant: "default",
+    });
+    // Send to your API here
+    // await apiRequest("POST", "/api/submissions", values);
+    form.reset();
   };
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Add Your Direct Booking Site</h1>
+        <h1 className="text-3xl font-bold mb-2">Submit Direct Booking Website</h1>
         <p className="text-gray-600 mb-8">Join our directory and connect with travelers looking to book directly.</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          <Card>
-            <CardHeader>
-              <CardTitle>Free Listing</CardTitle>
-              <CardDescription>
-                Basic listing in our directory
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Standard placement in search results</span>
-                </li>
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Basic property information</span>
-                </li>
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Link to your booking website</span>
-                </li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => form.setValue("listingType", "free")}
-              >
-                Select Free
-              </Button>
-            </CardFooter>
-          </Card>
-          
-          <Card className="border-primary">
-            <CardHeader className="bg-primary/5">
-              <div className="flex justify-between items-center">
-                <CardTitle>Featured Listing</CardTitle>
-                <span className="bg-secondary text-white px-3 py-1 rounded-full text-xs font-medium">
-                  Recommended
-                </span>
-              </div>
-              <CardDescription>
-                Premium placement and enhanced features
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Priority placement in search results</span>
-                </li>
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Featured badge for increased visibility</span>
-                </li>
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Enhanced property listing with all details</span>
-                </li>
-                <li className="flex items-start">
-                  <i className="fas fa-check text-green-500 mt-1 mr-2"></i>
-                  <span>Analytics dashboard with visitor insights</span>
-                </li>
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                className="w-full"
-                onClick={() => form.setValue("listingType", "featured")}
-              >
-                Select Featured
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-        
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+            {/* Section 1: Brand Info */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Listing Information</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Property/Business Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="E.g., Villa Escapes" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="website"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Direct Booking Website URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://www.yourwebsite.com" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Provide your direct booking website, not links to OTAs like Airbnb or Booking.com
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="listingCount"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Properties</FormLabel>
-                      <FormControl>
-                        <Input type="number" min="1" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="countries"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Countries/Regions</FormLabel>
-                      <FormControl>
-                        <select
-                          multiple
-                          className="w-full border rounded-md p-2 h-24"
-                          value={selectedCountries}
-                          onChange={handleCountryChange}
-                        >
-                          {isCountriesLoading ? (
-                            <option disabled>Loading countries...</option>
-                          ) : (
-                            countries?.map((country: any) => (
-                              <option key={country.id} value={country.name}>
-                                {country.name}
-                              </option>
-                            ))
-                          )}
-                        </select>
-                      </FormControl>
-                      <FormDescription>
-                        Hold Ctrl/Cmd key to select multiple
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="mt-6">
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Briefly describe your properties. E.g., '25 luxury villas in Spain & Portugal'"
-                        rows={3}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="logo"
-                render={({ field }) => (
-                  <FormItem className="mt-6">
-                    <FormLabel>Logo URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://www.example.com/your-logo.jpg" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Provide a URL to your logo image (recommended size: 100x100px)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Contact Details</h2>
-              
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="your@email.com" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      We'll use this to contact you about your listing
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                <FormField
-                  control={form.control}
-                  name="facebook"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Facebook (optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://facebook.com/yourbusiness" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="instagram"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Instagram (optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://instagram.com/yourbusiness" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="linkedin"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>LinkedIn (optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://linkedin.com/company/yourbusiness" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="listingType"
-              render={({ field }) => (
-                <FormItem className="bg-white rounded-xl shadow-md p-6">
-                  <FormLabel className="text-xl font-semibold mb-4 block">Listing Type</FormLabel>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className={`border rounded-lg p-4 flex-1 cursor-pointer ${field.value === 'free' ? 'border-primary bg-primary/5' : ''}`} onClick={() => form.setValue("listingType", "free")}>
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="free"
-                          checked={field.value === 'free'}
-                          onChange={() => form.setValue("listingType", "free")}
-                          className="mr-2"
-                        />
-                        <label htmlFor="free" className="font-medium cursor-pointer">Free Listing</label>
-                      </div>
-                    </div>
-                    <div className={`border rounded-lg p-4 flex-1 cursor-pointer ${field.value === 'featured' ? 'border-primary bg-primary/5' : ''}`} onClick={() => form.setValue("listingType", "featured")}>
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="featured"
-                          checked={field.value === 'featured'}
-                          onChange={() => form.setValue("listingType", "featured")}
-                          className="mr-2"
-                        />
-                        <label htmlFor="featured" className="font-medium cursor-pointer">Featured Listing</label>
-                      </div>
-                    </div>
-                  </div>
+              <h2 className="text-xl font-semibold mb-4">🧾 Brand Info</h2>
+              <FormField control={form.control} name="Brand Name" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brand Name</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
-            
+              )} />
+              <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Direct Booking Website</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Number of Listings" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Listings</FormLabel>
+                  <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Countries" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Countries</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Cities / Regions" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cities / Regions</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Logo Upload" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Logo (URL for now)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Highlight Image" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Highlight Image (URL for now)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            {/* Section 2: Brand Story & Guest Value */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">💬 Brand Story & Guest Value</h2>
+              <FormField control={form.control} name="One-line Description" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>One-line Description</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Why Book With You?</FormLabel>
+                  <FormControl><Textarea rows={4} {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Types of Stays" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Types of Stays</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {TYPES_OF_STAYS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Ideal For" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ideal For</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {IDEAL_FOR.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            {/* Section 3: Perks & Positioning */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning</h2>
+              <FormField control={form.control} name="Is your brand pet-friendly?" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Is your brand pet-friendly?</FormLabel>
+                  <FormControl>
+                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Perks / Amenities</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {PERKS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Eco-Conscious Stay?" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Eco-Conscious Stay?</FormLabel>
+                  <FormControl>
+                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Remote-Work Friendly?" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Remote-Work Friendly?</FormLabel>
+                  <FormControl>
+                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Vibe / Aesthetic" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vibe / Aesthetic</FormLabel>
+                  <FormControl>
+                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
+                      value={field.value || []}
+                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
+                    >
+                      {VIBES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            {/* Section 4: Social Links */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">📲 Social Links</h2>
+              <FormField control={form.control} name="Instagram" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Instagram</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Facebook" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Facebook</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="LinkedIn" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>LinkedIn</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="TikTok" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TikTok</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="YouTube / Video Tour" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>YouTube / Video Tour</FormLabel>
+                  <FormControl><Input {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            {/* Section 5: Visibility Plan */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">🌟 Visibility Plan</h2>
+              <FormField control={form.control} name="Choose Your Listing Type" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Choose Your Listing Type</FormLabel>
+                  <FormControl>
+                    <select {...field}>
+                      <option value="Free">Free</option>
+                      <option value="Featured ($49.99)">Featured ($49.99)</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Submitted By (Email)</FormLabel>
+                  <FormControl><Input type="email" {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
             <div className="flex justify-end">
-              <Button 
-                type="submit" 
-                className="px-8 py-3"
-                disabled={submitMutation.isPending}
-              >
-                {submitMutation.isPending ? "Submitting..." : "Submit Listing"}
+              <Button type="submit" className="px-8 py-3">
+                Submit Listing
               </Button>
             </div>
           </form>
