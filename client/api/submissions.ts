@@ -46,12 +46,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         delete fields[key];
       }
     });
-    // Map 'Cities / Regions' to array of country names (last part after comma)
+    // Map 'Cities / Regions' to array of region/city names (first part before comma)
     if (Array.isArray(fields["Cities / Regions"])) {
       fields["Cities / Regions"] = fields["Cities / Regions"].map((c: any) => {
         const name = typeof c === "object" && c.name ? c.name : c;
-        const parts = name.split(",");
-        return parts[parts.length - 1].trim();
+        return name.split(",")[0].trim();
       });
     }
     // Format attachment fields for Airtable
