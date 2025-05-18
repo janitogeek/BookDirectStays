@@ -13,8 +13,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { CountryMultiSelect } from "@/components/country-multi-select";
-import { FileDrop } from "@/components/file-drop";
+import { CountryMultiSelect } from "../components/country-multi-select";
+import { FileDrop } from "../components/file-drop";
+import { CityRegionMultiSelect } from "../components/city-region-multi-select";
+import { SimpleMultiSelect } from "../components/simple-multi-select";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../components/ui/select";
+import { Tooltip } from "@/components/ui/tooltip";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -62,6 +66,17 @@ const PERKS = [
 const VIBES = [
   "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
 ];
+
+// Helper for required asterisk with tooltip
+const RequiredAsterisk = () => (
+  <span
+    className="text-red-500 ml-1 align-super cursor-help"
+    aria-label="mandatory"
+    title="mandatory"
+  >
+    *
+  </span>
+);
 
 export default function Submit() {
   const { toast } = useToast();
@@ -157,33 +172,33 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">🧾 Brand Info</h2>
               <FormField control={form.control} name="Brand Name" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Brand Name</FormLabel>
+                  <FormLabel>Brand Name<RequiredAsterisk /></FormLabel>
                   <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Direct Booking Website</FormLabel>
+                  <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
                   <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Number of Listings" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Listings</FormLabel>
+                  <FormLabel>Number of Listings<RequiredAsterisk /></FormLabel>
                   <FormControl><Input type="number" min="1" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Countries" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Countries</FormLabel>
+                  <FormLabel>Countries<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <CountryMultiSelect
                       options={COUNTRIES}
                       selected={field.value || []}
-                      onSelect={values => field.onChange(values)}
+                      onSelect={(values: string[]) => field.onChange(values)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -193,22 +208,21 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Cities / Regions</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <CityRegionMultiSelect
+                      options={CITIES}
+                      selected={field.value || []}
+                      onSelect={(values: string[]) => field.onChange(values)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Logo Upload" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Logo (URL for now)</FormLabel>
+                  <FormLabel>Logo (URL for now)<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <FileDrop
-                      onFileDrop={(file) => {
+                      onFileDrop={(file: File) => {
                         const url = URL.createObjectURL(file);
                         field.onChange(url);
                       }}
@@ -222,7 +236,7 @@ export default function Submit() {
                   <FormLabel>Highlight Image (URL for now)</FormLabel>
                   <FormControl>
                     <FileDrop
-                      onFileDrop={(file) => {
+                      onFileDrop={(file: File) => {
                         const url = URL.createObjectURL(file);
                         field.onChange(url);
                       }}
@@ -238,14 +252,14 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">💬 Brand Story & Guest Value</h2>
               <FormField control={form.control} name="One-line Description" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>One-line Description</FormLabel>
+                  <FormLabel>One-line Description<RequiredAsterisk /></FormLabel>
                   <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Why Book With You?</FormLabel>
+                  <FormLabel>Why Book With You?<RequiredAsterisk /></FormLabel>
                   <FormControl><Textarea rows={4} {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
@@ -254,12 +268,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Types of Stays</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {TYPES_OF_STAYS.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <SimpleMultiSelect
+                      options={TYPES_OF_STAYS}
+                      selected={field.value || []}
+                      onSelect={(values: string[]) => field.onChange(values)}
+                      placeholder="e.g. Villas, Cabins"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -268,12 +282,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Ideal For</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {IDEAL_FOR.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <SimpleMultiSelect
+                      options={IDEAL_FOR}
+                      selected={field.value || []}
+                      onSelect={(values: string[]) => field.onChange(values)}
+                      placeholder="e.g. Families, Digital Nomads"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -287,7 +301,18 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Is your brand pet-friendly?</FormLabel>
                   <FormControl>
-                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                    <Select
+                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
+                      onValueChange={val => field.onChange(val === "Yes")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -296,12 +321,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Perks / Amenities</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {PERKS.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <SimpleMultiSelect
+                      options={PERKS}
+                      selected={field.value || []}
+                      onSelect={(values: string[]) => field.onChange(values)}
+                      placeholder="e.g. Pool, WiFi"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -310,7 +335,18 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Eco-Conscious Stay?</FormLabel>
                   <FormControl>
-                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                    <Select
+                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
+                      onValueChange={val => field.onChange(val === "Yes")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,7 +355,18 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Remote-Work Friendly?</FormLabel>
                   <FormControl>
-                    <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                    <Select
+                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
+                      onValueChange={val => field.onChange(val === "Yes")}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Yes">Yes</SelectItem>
+                        <SelectItem value="No">No</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -328,12 +375,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Vibe / Aesthetic</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {VIBES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <SimpleMultiSelect
+                      options={VIBES}
+                      selected={field.value || []}
+                      onSelect={(values: string[]) => field.onChange(values)}
+                      placeholder="e.g. Boho, Minimalist"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -385,7 +432,7 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">🌟 Visibility Plan</h2>
               <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Submitted By (Email)</FormLabel>
+                  <FormLabel>Submitted By (Email)<RequiredAsterisk /></FormLabel>
                   <FormControl><Input type="email" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>

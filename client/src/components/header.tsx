@@ -36,7 +36,7 @@ export default function Header() {
               href="/submit" 
               className={`font-medium ${location === '/submit' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
             >
-              Add Your Property
+              Add Your Direct Booking Site
             </Link>
             <Link 
               href="/faq" 
@@ -81,7 +81,7 @@ export default function Header() {
                 className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/submit' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
                 onClick={closeMenu}
               >
-                Add Your Property
+                Add Your Direct Booking Site
               </Link>
               <Link 
                 href="/faq"
