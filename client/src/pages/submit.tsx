@@ -19,6 +19,7 @@ import { CityRegionAsyncMultiSelect } from "../components/city-region-async-mult
 import { SimpleMultiSelect } from "../components/simple-multi-select";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../components/ui/select";
 import { Tooltip } from "@/components/ui/tooltip";
+import { CheckboxGroup } from "../components/checkbox-group";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -124,46 +125,8 @@ export default function Submit() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Submit Your Direct Booking Website</h1>
+        <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">🚀 Boost your Direct Bookings!</h1>
         <p className="text-gray-600 mb-8">Join our directory and connect with travelers looking to book directly.</p>
-        <div className="flex flex-col md:flex-row gap-6 mb-10">
-          <div
-            className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Free" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
-            onClick={() => form.setValue("Choose Your Listing Type", "Free")}
-            tabIndex={0}
-            role="button"
-            aria-pressed={form.watch("Choose Your Listing Type") === "Free"}
-          >
-            <h2 className="text-2xl font-bold mb-1">Free Listing</h2>
-            <p className="text-gray-500 mb-4">Basic listing in our directory</p>
-            <ul className="space-y-2 mb-6">
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Basic property information</li>
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Link to your booking website</li>
-            </ul>
-            <Button variant={form.watch("Choose Your Listing Type") === "Free" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Free")}>Select Free</Button>
-          </div>
-          <div
-            className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
-            onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}
-            tabIndex={0}
-            role="button"
-            aria-pressed={form.watch("Choose Your Listing Type") === "Featured ($49.99)"}
-          >
-            <div className="flex justify-between items-center mb-1">
-              <h2 className="text-2xl font-bold">Featured Listing</h2>
-              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
-            </div>
-            <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
-            <ul className="space-y-2 mb-6">
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Priority placement in search results</li>
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Featured badge for increased visibility</li>
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Enhanced property listing with all details</li>
-              <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Analytics dashboard with visitor insights</li>
-            </ul>
-            <Button variant={form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}>Select Featured</Button>
-          </div>
-        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
@@ -270,11 +233,10 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Types of Stays</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <CheckboxGroup
                       options={TYPES_OF_STAYS}
                       selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
-                      placeholder="e.g. Villas, Cabins"
+                      onChange={values => field.onChange(values)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -284,11 +246,10 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Ideal For</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <CheckboxGroup
                       options={IDEAL_FOR}
                       selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
-                      placeholder="e.g. Families, Digital Nomads"
+                      onChange={values => field.onChange(values)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -298,7 +259,7 @@ export default function Submit() {
 
             {/* Section 3: Perks & Positioning */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning</h2>
+              <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning <span className='text-base font-normal text-green-700'>(the more, the better)</span></h2>
               <FormField control={form.control} name="Is your brand pet-friendly?" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Is your brand pet-friendly?</FormLabel>
@@ -323,11 +284,10 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Perks / Amenities</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <CheckboxGroup
                       options={PERKS}
                       selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
-                      placeholder="e.g. Pool, WiFi"
+                      onChange={values => field.onChange(values)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -377,11 +337,10 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Vibe / Aesthetic</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <CheckboxGroup
                       options={VIBES}
                       selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
-                      placeholder="e.g. Boho, Minimalist"
+                      onChange={values => field.onChange(values)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -391,7 +350,7 @@ export default function Submit() {
 
             {/* Section 4: Social Links */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">📲 Social Links</h2>
+              <h2 className="text-xl font-semibold mb-4">📲 Social Links <span className='text-base font-normal text-green-700'>(Recommended for higher conversion)</span></h2>
               <FormField control={form.control} name="Instagram" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Instagram</FormLabel>
@@ -434,11 +393,71 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">🌟 Visibility Plan</h2>
               <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Submitted By (Email)<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="email" {...field} placeholder="e.g. team@wynwood-house.com" /></FormControl>
+                  <FormLabel>Your e-mail<RequiredAsterisk /></FormLabel>
+                  <FormControl><Input type="email" {...field} placeholder="e.g. john@wynwood-house.com" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
+            </div>
+
+            {/* Dynamic summary before submit button */}
+            <div className="flex justify-end mb-4">
+              {form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? (
+                <div className="font-semibold text-lg text-green-700 bg-green-50 px-4 py-2 rounded-lg">
+                  Featured Listing — Total: 49.99 EUR
+                </div>
+              ) : (
+                <div className="font-semibold text-lg text-blue-700 bg-blue-50 px-4 py-2 rounded-lg">
+                  Free Listing — Total: 0 EUR
+                </div>
+              )}
+            </div>
+
+            {/* Plan selection now at the bottom */}
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">Choose your plan</h2>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Free" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  onClick={() => form.setValue("Choose Your Listing Type", "Free")}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={form.watch("Choose Your Listing Type") === "Free"}
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <h2 className="text-2xl font-bold">Free Listing</h2>
+                    <span className="inline-block bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">0 EUR</span>
+                  </div>
+                  <p className="text-gray-500 mb-4">Basic listing in our directory</p>
+                  <ul className="space-y-2 mb-6">
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Basic property information</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Link to your booking website</li>
+                  </ul>
+                  <Button variant={form.watch("Choose Your Listing Type") === "Free" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Free")}>Select Free</Button>
+                </div>
+                <div
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={form.watch("Choose Your Listing Type") === "Featured ($49.99)"}
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <h2 className="text-2xl font-bold">Featured Listing</h2>
+                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
+                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">49.99 EUR</span>
+                  </div>
+                  <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
+                  <ul className="space-y-2 mb-6">
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Priority placement in search results</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Featured badge for increased visibility</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Enhanced property listing with all details</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Analytics dashboard with visitor insights</li>
+                  </ul>
+                  <Button variant={form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}>Select Featured</Button>
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end">
