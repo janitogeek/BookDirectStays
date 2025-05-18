@@ -20,6 +20,7 @@ import { SimpleMultiSelect } from "../components/simple-multi-select";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "../components/ui/select";
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
+import { SearchableMultiSelect } from "../components/searchable-multi-select";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -59,10 +60,10 @@ const TYPES_OF_STAYS = [
   "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
 ];
 const IDEAL_FOR = [
-  "Families", "Digital Nomads", "Retreats", "Couples", "Groups"
+  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Corporate", "Solo"
 ];
 const PERKS = [
-  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly"
+  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly", "Eco-friendly", "Remote-work friendly", "Smoking friendly"
 ];
 const VIBES = [
   "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
@@ -240,7 +241,7 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Types of Stays</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <SearchableMultiSelect
                       options={TYPES_OF_STAYS}
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
@@ -254,7 +255,7 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Ideal For</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <SearchableMultiSelect
                       options={IDEAL_FOR}
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
@@ -269,42 +270,16 @@ export default function Submit() {
             {/* Section 3: Perks & Positioning */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning <span className='text-base font-normal text-green-700'>(the more, the better)</span></h2>
-              <FormField control={form.control} name="Eco-Conscious Stay?" render={({ field }) => (
+              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Eco-Conscious Stay?</FormLabel>
+                  <FormLabel>Perks / Amenities</FormLabel>
                   <FormControl>
-                    <Select
-                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
-                      onValueChange={val => field.onChange(val === "Yes")}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="Remote-Work Friendly?" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Remote-Work Friendly?</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
-                      onValueChange={val => field.onChange(val === "Yes")}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <SearchableMultiSelect
+                      options={PERKS}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Pool, WiFi"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -313,25 +288,11 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Vibe / Aesthetic</FormLabel>
                   <FormControl>
-                    <SimpleMultiSelect
+                    <SearchableMultiSelect
                       options={VIBES}
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
                       placeholder="e.g. Boho, Minimalist"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Perks / Amenities</FormLabel>
-                  <FormControl>
-                    <SimpleMultiSelect
-                      options={PERKS}
-                      selected={field.value || []}
-                      onSelect={values => field.onChange(values)}
-                      placeholder="e.g. Pool, WiFi"
                     />
                   </FormControl>
                   <FormMessage />
