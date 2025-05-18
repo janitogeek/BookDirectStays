@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,12 +22,19 @@ interface CountryMultiSelectProps {
 export function CountryMultiSelect({ options, selected, onSelect }: CountryMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const countryList = options || ALL_COUNTRIES;
   const filtered = countryList.filter(c =>
     c.toLowerCase().includes(search.toLowerCase())
   );
 
-  const display = selected.length > 0 ? selected.join(", ") : "e.g. France";
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [open]);
+
+  const display = selected.length > 0 ? selected.join(", ") : "e.g. United States, France";
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -44,7 +51,8 @@ export function CountryMultiSelect({ options, selected, onSelect }: CountryMulti
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-full min-w-[220px] max-h-60 overflow-y-auto p-1" align="start">
         <Input
-          placeholder="e.g. France"
+          ref={inputRef}
+          placeholder="e.g. United States, France"
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="mb-2"
