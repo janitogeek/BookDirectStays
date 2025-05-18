@@ -11,6 +11,20 @@ if (!baseId || !apiKey) {
 
 const base = new Airtable({ apiKey }).base(baseId);
 
+// Helper to get record IDs for city/region names
+async function getCityRecordIds(cityNames: string[], base: any) {
+  const recordIds: string[] = [];
+  for (const name of cityNames) {
+    const records = await base('Cities / Regions').select({
+      filterByFormula: `{Name} = "${name}"`
+    }).firstPage();
+    if (records.length > 0) {
+      recordIds.push(records[0].id);
+    }
+  }
+  return recordIds;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -48,10 +62,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
     // Map 'Cities / Regions' to array of region/city names (first part before comma)
     if (Array.isArray(fields["Cities / Regions"])) {
-      fields["Cities / Regions"] = fields["Cities / Regions"].map((c: any) => {
+      const cityNames = fields["Cities / Regions"].map((c: any) => {
         const name = typeof c === "object" && c.name ? c.name : c;
         return name.split(",")[0].trim();
       });
+      fields["Cities / Regions"] = await getCityRecordIds(cityNames, base);
     }
     // Format attachment fields for Airtable
     const attachmentFields = ["Logo Upload", "Highlight Image"];
