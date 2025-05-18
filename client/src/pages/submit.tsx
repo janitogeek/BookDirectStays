@@ -394,11 +394,11 @@ export default function Submit() {
               {/* Dynamic summary now directly below the plan boxes */}
               <div className="flex justify-end mt-4">
                 {form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? (
-                  <div className="text-green-800 bg-green-100 text-sm font-semibold px-3 py-1 rounded-full inline-block">
+                  <div className="text-green-800 bg-green-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
                     Featured Listing — Total: 49.99 EUR
                   </div>
                 ) : (
-                  <div className="font-medium text-base text-gray-800 bg-gray-100 px-4 py-2 rounded-full">
+                  <div className="text-gray-800 bg-gray-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
                     Free Listing — Total: 0 EUR
                   </div>
                 )}
