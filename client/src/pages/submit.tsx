@@ -133,6 +133,13 @@ export default function Submit() {
             {/* Section 1: Brand Info */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">🧾 Brand Info</h2>
+              <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your e-mail<RequiredAsterisk /></FormLabel>
+                  <FormControl><Input type="email" {...field} placeholder="e.g. john@wynwood-house.com" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
               <FormField control={form.control} name="Brand Name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name<RequiredAsterisk /></FormLabel>
@@ -233,10 +240,11 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Types of Stays</FormLabel>
                   <FormControl>
-                    <CheckboxGroup
+                    <SimpleMultiSelect
                       options={TYPES_OF_STAYS}
                       selected={field.value || []}
-                      onChange={values => field.onChange(values)}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Villas, Cabins"
                     />
                   </FormControl>
                   <FormMessage />
@@ -246,10 +254,11 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Ideal For</FormLabel>
                   <FormControl>
-                    <CheckboxGroup
+                    <SimpleMultiSelect
                       options={IDEAL_FOR}
                       selected={field.value || []}
-                      onChange={values => field.onChange(values)}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Families, Digital Nomads"
                     />
                   </FormControl>
                   <FormMessage />
@@ -260,39 +269,6 @@ export default function Submit() {
             {/* Section 3: Perks & Positioning */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning <span className='text-base font-normal text-green-700'>(the more, the better)</span></h2>
-              <FormField control={form.control} name="Is your brand pet-friendly?" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Is your brand pet-friendly?</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value === true ? "Yes" : field.value === false ? "No" : ""}
-                      onValueChange={val => field.onChange(val === "Yes")}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Perks / Amenities</FormLabel>
-                  <FormControl>
-                    <CheckboxGroup
-                      options={PERKS}
-                      selected={field.value || []}
-                      onChange={values => field.onChange(values)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
               <FormField control={form.control} name="Eco-Conscious Stay?" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Eco-Conscious Stay?</FormLabel>
@@ -337,10 +313,11 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Vibe / Aesthetic</FormLabel>
                   <FormControl>
-                    <CheckboxGroup
+                    <SimpleMultiSelect
                       options={VIBES}
                       selected={field.value || []}
-                      onChange={values => field.onChange(values)}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Boho, Minimalist"
                     />
                   </FormControl>
                   <FormMessage />
@@ -391,10 +368,17 @@ export default function Submit() {
             {/* Section 5: Visibility Plan */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">🌟 Visibility Plan</h2>
-              <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
+              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Your e-mail<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="email" {...field} placeholder="e.g. john@wynwood-house.com" /></FormControl>
+                  <FormLabel>Perks / Amenities</FormLabel>
+                  <FormControl>
+                    <SimpleMultiSelect
+                      options={PERKS}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Pool, WiFi"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -418,15 +402,15 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">Choose your plan</h2>
               <div className="flex flex-col md:flex-row gap-6">
                 <div
-                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Free" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative ${form.watch("Choose Your Listing Type") === "Free" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
                   onClick={() => form.setValue("Choose Your Listing Type", "Free")}
                   tabIndex={0}
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Free"}
                 >
-                  <div className="flex justify-between items-center mb-1">
+                  <div className="flex justify-between items-start mb-1">
                     <h2 className="text-2xl font-bold">Free Listing</h2>
-                    <span className="inline-block bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">0 EUR</span>
+                    <span className="inline-block bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">0 EUR</span>
                   </div>
                   <p className="text-gray-500 mb-4">Basic listing in our directory</p>
                   <ul className="space-y-2 mb-6">
@@ -437,16 +421,18 @@ export default function Submit() {
                   <Button variant={form.watch("Choose Your Listing Type") === "Free" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Free")}>Select Free</Button>
                 </div>
                 <div
-                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all ${form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative ${form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
                   onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}
                   tabIndex={0}
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Featured ($49.99)"}
                 >
-                  <div className="flex justify-between items-center mb-1">
+                  <div className="flex justify-between items-start mb-1">
                     <h2 className="text-2xl font-bold">Featured Listing</h2>
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
-                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">49.99 EUR</span>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">49.99 EUR</span>
+                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium mt-1">Recommended</span>
+                    </div>
                   </div>
                   <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
                   <ul className="space-y-2 mb-6">
