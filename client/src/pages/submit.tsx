@@ -196,7 +196,6 @@ export default function Submit() {
                   <FormLabel>Countries<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <CountryMultiSelect
-                      options={COUNTRIES}
                       selected={field.value || []}
                       onSelect={(values: string[]) => field.onChange(values)}
                     />
