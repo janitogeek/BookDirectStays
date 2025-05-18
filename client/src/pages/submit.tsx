@@ -60,10 +60,10 @@ const TYPES_OF_STAYS = [
   "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
 ];
 const IDEAL_FOR = [
-  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Corporate", "Solo"
+  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers"
 ];
 const PERKS = [
-  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly", "Eco-friendly", "Remote-work friendly", "Smoking friendly"
+  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly", "Eco-friendly", "Remote-work friendly", "Smoking friendly", "Concierge", "Early check-in", "Late check-out", "Mid-stay cleaning"
 ];
 const VIBES = [
   "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
@@ -358,8 +358,9 @@ export default function Submit() {
                   <p className="text-gray-500 mb-4">Basic listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
-                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Basic property information</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Detailed stays info</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Link to your booking website</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Get listed in 1-3 months</li>
                   </ul>
                   <div className="mt-auto">
                     <Button variant={form.watch("Choose Your Listing Type") === "Free" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Free")}>Select Free</Button>
@@ -380,11 +381,11 @@ export default function Submit() {
                     </div>
                   </div>
                   <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
+                  <div className="mb-2 font-medium text-gray-700">Same as Free Listing + :</div>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Priority placement in search results</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Featured badge for increased visibility</li>
-                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Enhanced property listing with all details</li>
-                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Analytics dashboard with visitor insights</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Get listed instantly</li>
                   </ul>
                   <div className="mt-auto">
                     <Button variant={form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}>Select Featured</Button>
