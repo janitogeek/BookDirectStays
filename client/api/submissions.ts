@@ -18,6 +18,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const fields = req.body;
+    // Map 'Cities / Regions' to array of names if needed
+    if (Array.isArray(fields["Cities / Regions"])) {
+      fields["Cities / Regions"] = fields["Cities / Regions"].map((c: any) => c.name || c);
+    }
     // Optionally, validate fields here
     const result = await base(tableName).create([{ fields }]);
     return res.status(200).json({ success: true, id: result[0].id });
