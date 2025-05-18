@@ -13,6 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { CountryMultiSelect } from "@/components/country-multi-select";
+import { FileDrop } from "@/components/file-drop";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -107,7 +109,7 @@ export default function Submit() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Submit Direct Booking Website</h1>
+        <h1 className="text-3xl font-bold mb-2">Submit Your Direct Booking Website</h1>
         <p className="text-gray-600 mb-8">Join our directory and connect with travelers looking to book directly.</p>
         <div className="flex flex-col md:flex-row gap-6 mb-10">
           <div
@@ -178,12 +180,11 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Countries</FormLabel>
                   <FormControl>
-                    <select multiple className="w-full border rounded-md p-2 h-24" {...field}
-                      value={field.value || []}
-                      onChange={e => field.onChange(Array.from(e.target.selectedOptions, o => o.value))}
-                    >
-                      {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                    <CountryMultiSelect
+                      options={COUNTRIES}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,7 +207,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Logo (URL for now)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://..." {...field} />
+                    <FileDrop
+                      onFileDrop={(file) => {
+                        const url = URL.createObjectURL(file);
+                        field.onChange(url);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,7 +221,12 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Highlight Image (URL for now)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://..." {...field} />
+                    <FileDrop
+                      onFileDrop={(file) => {
+                        const url = URL.createObjectURL(file);
+                        field.onChange(url);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
