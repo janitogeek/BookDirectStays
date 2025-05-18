@@ -351,10 +351,11 @@ export default function Submit() {
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Free"}
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <h2 className="text-2xl font-bold">Free Listing</h2>
+                  <div className="flex items-start justify-between mb-2 min-h-[40px]">
+                    <div />
                     <span className="inline-block bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">0 EUR</span>
                   </div>
+                  <h2 className="text-2xl font-bold mb-1">Free Listing</h2>
                   <p className="text-gray-500 mb-4">Basic listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
@@ -373,13 +374,11 @@ export default function Submit() {
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Featured ($49.99)"}
                 >
-                  <div className="flex justify-between items-start mb-1">
-                    <h2 className="text-2xl font-bold">Featured Listing</h2>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">49.99 EUR</span>
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium mt-1">Recommended</span>
-                    </div>
+                  <div className="flex items-start justify-between mb-2 min-h-[40px]">
+                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
+                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">49.99 EUR</span>
                   </div>
+                  <h2 className="text-2xl font-bold mb-1">Featured Listing</h2>
                   <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
                   <div className="mb-2 font-medium text-gray-700">Same as Free Listing + :</div>
                   <ul className="space-y-2 mb-6">
