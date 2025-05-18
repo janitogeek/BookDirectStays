@@ -70,7 +70,7 @@ const VIBES = [
 // Helper for required asterisk with tooltip
 const RequiredAsterisk = () => (
   <span
-    className="text-red-500 ml-1 align-super cursor-help"
+    className="text-red-500 ml-1 align-middle cursor-help"
     aria-label="mandatory"
     title="mandatory"
   >
@@ -173,21 +173,21 @@ export default function Submit() {
               <FormField control={form.control} name="Brand Name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. Wynwood House" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://wynwood-house.com/" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Number of Listings" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Listings<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="number" min="1" {...field} /></FormControl>
+                  <FormControl><Input type="number" min="1" {...field} placeholder="e.g. 12" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -219,7 +219,7 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Logo Upload" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Logo (URL for now)<RequiredAsterisk /></FormLabel>
+                  <FormLabel>Logo<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <FileDrop
                       onFileDrop={(file: File) => {
@@ -233,7 +233,8 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Highlight Image" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Highlight Image (URL for now)</FormLabel>
+                  <FormLabel>Highlight Image</FormLabel>
+                  <span className="text-xs text-muted-foreground block mt-1 mb-2">This image will be used to showcase your company card in the directory.</span>
                   <FormControl>
                     <FileDrop
                       onFileDrop={(file: File) => {
@@ -253,14 +254,14 @@ export default function Submit() {
               <FormField control={form.control} name="One-line Description" render={({ field }) => (
                 <FormItem>
                   <FormLabel>One-line Description<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. Boutique apartments in Latin America" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Why Book With You?<RequiredAsterisk /></FormLabel>
-                  <FormControl><Textarea rows={4} {...field} /></FormControl>
+                  <FormControl><Textarea rows={4} {...field} placeholder="e.g. Direct rates, local experiences, flexible stays" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -393,35 +394,35 @@ export default function Submit() {
               <FormField control={form.control} name="Instagram" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Instagram</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://instagram.com/wynwoodhouse" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Facebook" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Facebook</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://facebook.com/wynwoodhouse" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="LinkedIn" render={({ field }) => (
                 <FormItem>
                   <FormLabel>LinkedIn</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://linkedin.com/company/wynwoodhouse" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="TikTok" render={({ field }) => (
                 <FormItem>
                   <FormLabel>TikTok</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://tiktok.com/@wynwoodhouse" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="YouTube / Video Tour" render={({ field }) => (
                 <FormItem>
                   <FormLabel>YouTube / Video Tour</FormLabel>
-                  <FormControl><Input {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://youtube.com/watch?v=xxxx" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -433,7 +434,7 @@ export default function Submit() {
               <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Submitted By (Email)<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="email" {...field} /></FormControl>
+                  <FormControl><Input type="email" {...field} placeholder="e.g. team@wynwood-house.com" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
