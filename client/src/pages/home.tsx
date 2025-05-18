@@ -81,7 +81,7 @@ export default function Home() {
               <form onSubmit={handleSearch} className="relative max-w-2xl">
                 <Input 
                   type="text" 
-                  placeholder={`Search among ${totalListings} direct booking sites...`} 
+                  placeholder={`Search among ${totalListings} direct booking sites (with the most trusted ones ranked highest)`} 
                   className="w-full py-6 px-6 rounded-full text-gray-700 bg-white/95 shadow-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border-0"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
