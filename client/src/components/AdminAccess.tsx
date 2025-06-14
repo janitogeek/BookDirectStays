@@ -42,7 +42,8 @@ export default function AdminAccess() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 text-gray-400 hover:text-gray-600 text-xs opacity-30 hover:opacity-100 transition-opacity"
+        className="fixed bottom-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium shadow-sm transition-all duration-200 ease-in-out hover:shadow-md z-50"
+        style={{ opacity: 0.5 }}
       >
         Admin
       </button>
