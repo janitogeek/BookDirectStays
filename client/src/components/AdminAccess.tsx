@@ -1,77 +1,61 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
-export default function AdminAccess() {
+interface AdminAccessProps {
+  className?: string;
+}
+
+export default function AdminAccess({ className }: AdminAccessProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+  const [, setLocation] = useLocation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          email: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-          password 
-        }),
-      });
-
-      if (response.ok) {
-        const { token } = await response.json();
-        localStorage.setItem("adminToken", token);
-        router.push("/admin");
-      } else {
-        setError("Invalid password");
-      }
-    } catch (error) {
-      setError("Failed to login");
+    if (password === process.env.VITE_ADMIN_PASSWORD) {
+      setLocation("/admin/submissions");
+    } else {
+      setError("Invalid password");
     }
   };
 
   return (
-    <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium shadow-sm transition-all duration-200 ease-in-out hover:shadow-md z-50"
-        style={{ opacity: 0.5 }}
-      >
-        Admin
-      </button>
-
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Admin Access</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Enter admin password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={error ? "border-red-500" : ""}
-              />
-              {error && (
-                <p className="text-sm text-red-500">{error}</p>
-              )}
-            </div>
-            <Button type="submit" className="w-full">
-              Access Admin
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <button className={cn("text-gray-400 hover:text-white", className)}>
+          Admin
+        </button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Admin Access</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="password"
+              placeholder="Enter admin password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {error && <p className="text-sm text-red-500">{error}</p>}
+          </div>
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 } 

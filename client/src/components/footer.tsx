@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import AdminAccess from "@/components/AdminAccess";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -157,6 +158,7 @@ export default function Footer() {
             &copy; 2023 BookDirectStays.com. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0">
+            <AdminAccess className="text-gray-400 hover:text-white mr-4" />
             <a href="#" className="text-gray-400 hover:text-white mr-4">Privacy Policy</a>
             <a href="#" className="text-gray-400 hover:text-white mr-4">Terms of Service</a>
             <a href="#" className="text-gray-400 hover:text-white">Cookie Policy</a>
