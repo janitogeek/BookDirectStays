@@ -10,8 +10,13 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    sourcemap: true,
     rollupOptions: {
-      external: ["@/components/ui/toaster"],
+      input: {
+        main: resolve(__dirname, "index.html"),
+      },
     },
   },
 });
