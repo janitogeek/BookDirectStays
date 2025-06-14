@@ -17,6 +17,22 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
       },
+      output: {
+        manualChunks: {
+          vendor: [
+            'react',
+            'react-dom',
+            'wouter',
+            '@tanstack/react-query',
+            'lucide-react',
+          ],
+          ui: [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-tooltip',
+          ],
+        },
+      },
     },
   },
 });
