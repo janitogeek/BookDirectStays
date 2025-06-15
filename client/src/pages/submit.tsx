@@ -30,8 +30,14 @@ const formSchema = z.object({
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
   "Cities / Regions": z.array(z.object({ name: z.string(), geonameId: z.number() })).min(1),
-  "Logo Upload": z.string().url(),
-  "Highlight Image": z.string().url(),
+  "Logo Upload": z.object({
+    url: z.string().url(),
+    name: z.string()
+  }),
+  "Highlight Image": z.object({
+    url: z.string().url(),
+    name: z.string()
+  }),
   "One-line Description": z.string().min(5),
   "Why Book With You?": z.string().min(10),
   "Types of Stays": z.array(z.string()).optional(),
@@ -91,8 +97,8 @@ export default function Submit() {
       "Number of Listings": 1,
       "Countries": [],
       "Cities / Regions": [],
-      "Logo Upload": "",
-      "Highlight Image": "",
+      "Logo Upload": { url: "", name: "" },
+      "Highlight Image": { url: "", name: "" },
       "One-line Description": "",
       "Why Book With You?": "",
       "Types of Stays": [],
