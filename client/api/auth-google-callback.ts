@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       grant_type: 'authorization_code',
     }),
   });
-  const tokenData = await tokenRes.json();
+  const tokenData: any = await tokenRes.json();
   if (!tokenData.access_token) {
     return res.status(401).send('Failed to get access token');
   }
@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
     headers: { Authorization: `Bearer ${tokenData.access_token}` },
   });
-  const user = await userRes.json();
+  const user: any = await userRes.json();
   if (user.email !== adminEmail) {
     return res.status(403).send('Not authorized');
   }
