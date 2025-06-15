@@ -37,6 +37,8 @@ export interface IStorage {
   
   // Submission methods
   createSubmission(submission: InsertSubmission & { status: string, createdAt: string }): Promise<Submission>;
+  getSubmissions(): Promise<Submission[]>;
+  updateSubmissionStatus(id: number, status: "pending" | "approved" | "rejected"): Promise<Submission | undefined>;
   
   // FAQ methods
   getFAQs(): Promise<FAQ[]>;
@@ -203,6 +205,20 @@ export class MemStorage implements IStorage {
     const submission: Submission = { ...insertSubmission, id };
     this.submissions.set(id, submission);
     return submission;
+  }
+  
+  async getSubmissions(): Promise<Submission[]> {
+    return Array.from(this.submissions.values());
+  }
+  
+  async updateSubmissionStatus(id: number, status: "pending" | "approved" | "rejected"): Promise<Submission | undefined> {
+    const submission = this.submissions.get(id);
+    if (submission) {
+      const updatedSubmission = { ...submission, status };
+      this.submissions.set(id, updatedSubmission);
+      return updatedSubmission;
+    }
+    return undefined;
   }
   
   // FAQ methods

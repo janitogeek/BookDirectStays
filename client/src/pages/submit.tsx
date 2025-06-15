@@ -115,7 +115,13 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await apiRequest("POST", "/api/submissions", values);
+      const newRecord = {
+        ...values,
+        Approved: { select: "Pending" }, // For single select
+        // Approved: false, // For checkbox
+      };
+
+      await apiRequest("POST", "/api/submissions", newRecord);
       toast({
         title: "Submission successful!",
         description: "Your property has been submitted for review.",

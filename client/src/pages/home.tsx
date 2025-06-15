@@ -7,6 +7,7 @@ import CountryFilter from "@/components/country-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiRequest } from "@/lib/queryClient";
+import AdminAccess from "@/components/AdminAccess";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,6 +63,7 @@ export default function Home() {
 
   return (
     <main>
+      <AdminAccess />
       {/* Hero Section */}
       <section className="relative">
         <div 
