@@ -7,7 +7,7 @@ export default function AdminLogin() {
   const [, setLocation] = useLocation();
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    window.location.href = "/api/auth-google";
   };
 
   return (
