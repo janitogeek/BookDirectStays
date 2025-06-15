@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Airtable from 'airtable';
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
 
 const baseId = process.env.AIRTABLE_BASE_ID;
 const apiKey = process.env.AIRTABLE_API_KEY;
@@ -25,6 +27,21 @@ async function getCityRecordIds(cityNames: string[], base: any) {
   return recordIds;
 }
 
+// Helper to handle file uploads
+async function handleFileUpload(file: { url: string, name: string }) {
+  try {
+    const response = await fetch(file.url);
+    const buffer = await response.arrayBuffer();
+    const fileName = `${Date.now()}-${file.name}`;
+    const filePath = join(process.cwd(), 'public', 'uploads', fileName);
+    await writeFile(filePath, Buffer.from(buffer));
+    return `/uploads/${fileName}`;
+  } catch (error) {
+    console.error('File upload error:', error);
+    throw new Error('Failed to upload file');
+  }
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
     // Fetch all submissions for admin dashboard
@@ -39,6 +56,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (error: any) {
       console.error('Airtable fetch error:', error);
       return res.status(500).json({ error: error.message || 'Failed to fetch submissions from Airtable' });
+    }
+  }
+
+  if (req.method === 'PATCH') {
+    // Handle approval/rejection
+    try {
+      const { id, status } = req.body;
+      if (!id || !status) {
+        return res.status(400).json({ error: 'Missing id or status' });
+      }
+      
+      const record = await base(tableName).update(id, {
+        Status: status,
+        Approved: status === 'approved'
+      });
+      
+      return res.status(200).json(record);
+    } catch (error: any) {
+      console.error('Airtable update error:', error);
+      return res.status(500).json({ error: error.message || 'Failed to update submission' });
     }
   }
 
@@ -76,6 +113,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         delete fields[key];
       }
     });
+
+    // Handle file uploads
+    if (fields["Logo Upload"]) {
+      fields["Logo Upload"] = await handleFileUpload(fields["Logo Upload"]);
+    }
+    if (fields["Highlight Image"]) {
+      fields["Highlight Image"] = await handleFileUpload(fields["Highlight Image"]);
+    }
+
     // Map 'Cities / Regions' to array of region/city names (first part before comma)
     if (Array.isArray(fields["Cities / Regions"])) {
       const cityNames = fields["Cities / Regions"].map((c: any) => {
@@ -84,20 +130,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
       fields["Cities / Regions"] = await getCityRecordIds(cityNames, base);
     }
-    // Format attachment fields for Airtable
-    const attachmentFields = ["Logo Upload", "Highlight Image"];
-    attachmentFields.forEach(field => {
-      if (fields[field]) {
-        if (typeof fields[field] === "string") {
-          fields[field] = [{ url: fields[field] }];
-        } else if (Array.isArray(fields[field])) {
-          fields[field] = fields[field].map((item: any) =>
-            typeof item === "string" ? { url: item } : item
-          );
-        }
-      }
-    });
-    // Optionally, validate fields here
+
+    // Add status and approval fields
+    fields.Status = 'pending';
+    fields.Approved = false;
+
+    // Create the record
     const result = await base(tableName).create([{ fields }]);
     return res.status(200).json({ success: true, id: result[0].id });
   } catch (error: any) {

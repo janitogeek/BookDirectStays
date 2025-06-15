@@ -207,8 +207,10 @@ export default function Submit() {
                   <FormControl>
                     <FileDrop
                       onFileDrop={(file: File) => {
-                        const url = URL.createObjectURL(file);
-                        field.onChange(url);
+                        field.onChange({
+                          url: URL.createObjectURL(file),
+                          name: file.name
+                        });
                       }}
                     />
                   </FormControl>
@@ -224,8 +226,10 @@ export default function Submit() {
                   <FormControl>
                     <FileDrop
                       onFileDrop={(file: File) => {
-                        const url = URL.createObjectURL(file);
-                        field.onChange(url);
+                        field.onChange({
+                          url: URL.createObjectURL(file),
+                          name: file.name
+                        });
                       }}
                     />
                   </FormControl>

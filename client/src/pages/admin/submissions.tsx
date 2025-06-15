@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { apiRequest } from "@/lib/queryClient";
 
 const FIELD_ORDER = [
   "Brand Name",
@@ -62,7 +63,39 @@ export default function AdminSubmissions() {
     }
   };
 
-  // Approve/Reject handlers would go here (if needed)
+  const handleApprove = async (id: string) => {
+    try {
+      await apiRequest("PATCH", "/api/submissions", { id, status: "approved" });
+      toast({
+        title: "Success",
+        description: "Submission approved successfully",
+      });
+      fetchSubmissions();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to approve submission",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReject = async (id: string) => {
+    try {
+      await apiRequest("PATCH", "/api/submissions", { id, status: "rejected" });
+      toast({
+        title: "Success",
+        description: "Submission rejected successfully",
+      });
+      fetchSubmissions();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to reject submission",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -92,6 +125,7 @@ export default function AdminSubmissions() {
               {columns.map((field) => (
                 <TableHead key={field}>{field}</TableHead>
               ))}
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -113,11 +147,39 @@ export default function AdminSubmissions() {
                           <a href={submission[field].url} target="_blank" rel="noopener noreferrer">{submission[field].url}</a>
                         ) : field === "createdTime" && submission[field] ? (
                           format(new Date(submission[field]), "MMM d, yyyy")
+                        ) : field === "Status" ? (
+                          <Badge variant={
+                            submission[field] === "approved" ? "default" :
+                            submission[field] === "rejected" ? "destructive" :
+                            "secondary"
+                          }>
+                            {submission[field]}
+                          </Badge>
                         ) : (
                           submission[field] ?? ""
                         )}
                   </TableCell>
                 ))}
+                <TableCell>
+                  {submission.Status === "pending" && (
+                    <div className="space-x-2">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleApprove(submission.id)}
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleReject(submission.id)}
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
