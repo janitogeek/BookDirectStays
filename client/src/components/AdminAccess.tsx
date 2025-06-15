@@ -10,9 +10,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { apiRequest } from "@/lib/queryClient";
 
 interface AdminAccessProps {
   className?: string;
+}
+
+interface LoginResponse {
+  token: string;
 }
 
 export default function AdminAccess({ className }: AdminAccessProps) {
@@ -21,11 +26,19 @@ export default function AdminAccess({ className }: AdminAccessProps) {
   const [error, setError] = useState("");
   const [, setLocation] = useLocation();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === process.env.VITE_ADMIN_PASSWORD) {
+    setError("");
+
+    try {
+      const response = await apiRequest<LoginResponse>("POST", "/api/admin/login", { password });
+      
+      // Store the token
+      localStorage.setItem("adminToken", response.token);
+      
+      // Redirect to admin page
       setLocation("/admin/submissions");
-    } else {
+    } catch (error) {
       setError("Invalid password");
     }
   };
