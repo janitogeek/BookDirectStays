@@ -11,7 +11,6 @@ import { Router } from "express";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { listings, submissions } from "./schema";
-import { authenticateToken } from "./middleware";
 import bcrypt from "bcryptjs";
 
 const router = Router();
@@ -148,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes for managing submissions
-  app.get("/api/admin/submissions", authenticateToken, async (req, res) => {
+  app.get("/api/admin/submissions", async (req, res) => {
     try {
       const submissions = await storage.getSubmissions();
       res.json(submissions);
