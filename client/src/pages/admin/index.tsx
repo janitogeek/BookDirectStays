@@ -32,41 +32,10 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <AdminLayout>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalSubmissions}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Submissions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingSubmissions}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Approved Submissions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.approvedSubmissions}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rejected Submissions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.rejectedSubmissions}</div>
-          </CardContent>
-        </Card>
-      </div>
-    </AdminLayout>
+    <div style={{ padding: 32 }}>
+      <h1 style={{ fontSize: 32, fontWeight: 'bold' }}>Admin Dashboard</h1>
+      <p style={{ marginTop: 16 }}>Here you will see all submissions for review and approval.</p>
+      {/* TODO: Add submissions table/list here */}
+    </div>
   );
 } 
