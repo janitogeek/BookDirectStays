@@ -53,6 +53,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    console.log('Received submission data:', req.body); // Debug log
+
     const fields = req.body;
     
     // Add status and approval fields
@@ -60,11 +62,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     fields.Approved = false;
     fields.createdTime = new Date().toISOString();
 
+    console.log('Creating Airtable record with fields:', fields); // Debug log
+
     // Create the record
     const result = await base(tableName).create([{ fields }]);
+    console.log('Airtable create result:', result); // Debug log
+
     return res.status(200).json({ success: true, id: result[0].id });
   } catch (error: any) {
     console.error('Airtable submission error:', error);
-    return res.status(500).json({ error: error.message || 'Failed to submit to Airtable' });
+    // Return more detailed error information
+    return res.status(500).json({ 
+      error: error.message || 'Failed to submit to Airtable',
+      details: error.toString(),
+      stack: error.stack
+    });
   }
 } 

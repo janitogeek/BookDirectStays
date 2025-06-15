@@ -128,7 +128,12 @@ export default function Submit() {
         "Highlight Image": values["Highlight Image"].url,
       };
 
-      await apiRequest("POST", "/api/submissions", submissionData);
+      console.log('Submitting data:', submissionData); // Debug log
+
+      const response = await apiRequest("POST", "/api/submissions", submissionData);
+      const result = await response.json();
+      console.log('Submission response:', result); // Debug log
+
       toast({
         title: "Submission successful!",
         description: "Your property has been submitted for review.",
@@ -136,6 +141,7 @@ export default function Submit() {
       });
       form.reset();
     } catch (error: any) {
+      console.error('Submission error:', error); // Debug log
       toast({
         title: "Submission failed",
         description: error?.message || "There was an error submitting your property. Please try again.",
