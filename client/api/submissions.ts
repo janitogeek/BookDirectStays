@@ -26,6 +26,22 @@ async function getCityRecordIds(cityNames: string[], base: any) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method === 'GET') {
+    // Fetch all submissions for admin dashboard
+    try {
+      const records = await base(tableName).select({}).all();
+      const submissions = records.map((record: any) => ({
+        id: record.id,
+        ...record.fields,
+        createdTime: record.createdTime,
+      }));
+      return res.status(200).json(submissions);
+    } catch (error: any) {
+      console.error('Airtable fetch error:', error);
+      return res.status(500).json({ error: error.message || 'Failed to fetch submissions from Airtable' });
+    }
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
