@@ -30,7 +30,7 @@ export default function AdminAccess({ className }: AdminAccessProps) {
   }, []);
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    window.location.href = "/api/auth-google";
   };
 
   return (
