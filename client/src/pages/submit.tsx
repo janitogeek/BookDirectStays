@@ -121,13 +121,14 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const newRecord = {
+      // Convert file objects to URLs
+      const submissionData = {
         ...values,
-        Approved: { select: "Pending" }, // For single select
-        // Approved: false, // For checkbox
+        "Logo Upload": values["Logo Upload"].url,
+        "Highlight Image": values["Highlight Image"].url,
       };
 
-      await apiRequest("POST", "/api/submissions", newRecord);
+      await apiRequest("POST", "/api/submissions", submissionData);
       toast({
         title: "Submission successful!",
         description: "Your property has been submitted for review.",
