@@ -10,6 +10,7 @@ import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import AdminDashboard from "@/pages/admin/index";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
           <Route path="/submit" component={Submit} />
           <Route path="/faq" component={FAQ} />
           <Route path="/testimonials" component={Testimonials} />
+          <Route path="/admin" component={AdminDashboard} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />
         </Switch>
