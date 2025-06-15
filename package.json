@@ -1,0 +1,26 @@
+{
+  "name": "bookdirectstays",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
+    "@vitejs/plugin-react": "^4.5.2",
+    "bcryptjs": "^3.0.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}
