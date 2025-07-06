@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: pocketbase-bookdirectstays
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerCommand: ./pocketbase serve --http=0.0.0.0:$PORT
+    envVars:
+      - key: PORT
+        value: 8080 

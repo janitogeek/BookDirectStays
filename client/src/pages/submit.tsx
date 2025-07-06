@@ -22,7 +22,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from ".
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
-import { submissionService, fileService } from "@/lib/appwrite-services";
+import { submissionService, fileService } from "@/lib/pocketbase-services";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -122,56 +122,55 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // Upload files to Appwrite Storage
-      let logoUrl = values["Logo Upload"].url;
-      let highlightImageUrl = values["Highlight Image"].url;
-
-      // If the URLs are blob URLs (from file upload), upload them to Appwrite
-      if (logoUrl.startsWith('blob:')) {
-        // Convert blob URL to File object
-        const logoResponse = await fetch(logoUrl);
+      // Create FormData for file uploads
+      const formData = new FormData();
+      
+      // Add all the form data
+      formData.append('name', values["Brand Name"]);
+      formData.append('website', values["Direct Booking Website"]);
+      formData.append('listingCount', values["Number of Listings"].toString());
+      formData.append('submittedByEmail', values["Submitted By (Email)"]);
+      formData.append('oneLineDescription', values["One-line Description"]);
+      formData.append('whyBookWithYou', values["Why Book With You?"]);
+      formData.append('listingType', values["Choose Your Listing Type"]);
+      
+      // Add arrays
+      formData.append('countries', JSON.stringify(values["Countries"]));
+      formData.append('citiesRegions', JSON.stringify(values["Cities / Regions"]));
+      formData.append('typesOfStays', JSON.stringify(values["Types of Stays"] || []));
+      formData.append('idealFor', JSON.stringify(values["Ideal For"] || []));
+      formData.append('perksAmenities', JSON.stringify(values["Perks / Amenities"] || []));
+      formData.append('vibeAesthetic', JSON.stringify(values["Vibe / Aesthetic"] || []));
+      
+      // Add booleans
+      formData.append('isPetFriendly', (values["Is your brand pet-friendly?"] || false).toString());
+      formData.append('isEcoConscious', (values["Eco-Conscious Stay?"] || false).toString());
+      formData.append('isRemoteWorkFriendly', (values["Remote-Work Friendly?"] || false).toString());
+      
+      // Add URLs
+      formData.append('instagram', values["Instagram"] || "");
+      formData.append('facebook', values["Facebook"] || "");
+      formData.append('linkedin', values["LinkedIn"] || "");
+      formData.append('tiktok', values["TikTok"] || "");
+      formData.append('youtubeVideoTour', values["YouTube / Video Tour"] || "");
+      
+      // Add files if they exist
+      if (values["Logo Upload"].url.startsWith('blob:')) {
+        const logoResponse = await fetch(values["Logo Upload"].url);
         const logoBlob = await logoResponse.blob();
         const logoFile = new File([logoBlob], values["Logo Upload"].name, { type: logoBlob.type });
-        logoUrl = await fileService.uploadLogo(logoFile);
+        formData.append('logo', logoFile);
       }
-
-      if (highlightImageUrl.startsWith('blob:')) {
-        // Convert blob URL to File object
-        const imageResponse = await fetch(highlightImageUrl);
+      
+      if (values["Highlight Image"].url.startsWith('blob:')) {
+        const imageResponse = await fetch(values["Highlight Image"].url);
         const imageBlob = await imageResponse.blob();
         const imageFile = new File([imageBlob], values["Highlight Image"].name, { type: imageBlob.type });
-        highlightImageUrl = await fileService.uploadImage(imageFile);
+        formData.append('highlightImage', imageFile);
       }
 
-      // Create submission data
-      const submissionData = {
-        name: values["Brand Name"],
-        website: values["Direct Booking Website"],
-        listingCount: values["Number of Listings"],
-        countries: values["Countries"],
-        citiesRegions: values["Cities / Regions"],
-        logo: logoUrl,
-        highlightImage: highlightImageUrl,
-        submittedByEmail: values["Submitted By (Email)"],
-        oneLineDescription: values["One-line Description"],
-        whyBookWithYou: values["Why Book With You?"],
-        typesOfStays: values["Types of Stays"] || [],
-        idealFor: values["Ideal For"] || [],
-        isPetFriendly: values["Is your brand pet-friendly?"] || false,
-        perksAmenities: values["Perks / Amenities"] || [],
-        isEcoConscious: values["Eco-Conscious Stay?"] || false,
-        isRemoteWorkFriendly: values["Remote-Work Friendly?"] || false,
-        vibeAesthetic: values["Vibe / Aesthetic"] || [],
-        instagram: values["Instagram"] || "",
-        facebook: values["Facebook"] || "",
-        linkedin: values["LinkedIn"] || "",
-        tiktok: values["TikTok"] || "",
-        youtubeVideoTour: values["YouTube / Video Tour"] || "",
-        listingType: values["Choose Your Listing Type"],
-      };
-
-      // Submit to Appwrite
-      await submissionService.create(submissionData);
+      // Submit to PocketBase
+      await submissionService.create(formData as any);
 
       toast({
         title: "Submission successful!",

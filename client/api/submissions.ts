@@ -1,30 +1,18 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import Airtable from 'airtable';
+import PocketBase from 'pocketbase';
 
-const baseId = process.env.AIRTABLE_BASE_ID;
-const apiKey = process.env.AIRTABLE_API_KEY;
-const tableName = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
-
-if (!baseId || !apiKey) {
-  throw new Error('Airtable credentials are not set in environment variables');
-}
-
-const base = new Airtable({ apiKey }).base(baseId);
+const POCKETBASE_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
+const pb = new PocketBase(POCKETBASE_URL);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
     // Fetch all submissions for admin dashboard
     try {
-      const records = await base(tableName).select({}).all();
-      const submissions = records.map((record: any) => ({
-        id: record.id,
-        ...record.fields,
-        createdTime: record.createdTime,
-      }));
-      return res.status(200).json(submissions);
+      const records = await pb.collection('submissions').getFullList();
+      return res.status(200).json(records);
     } catch (error: any) {
-      console.error('Airtable fetch error:', error);
-      return res.status(500).json({ error: error.message || 'Failed to fetch submissions from Airtable' });
+      console.error('PocketBase fetch error:', error);
+      return res.status(500).json({ error: error.message || 'Failed to fetch submissions from PocketBase' });
     }
   }
 
@@ -36,14 +24,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'Missing id or status' });
       }
       
-      const record = await base(tableName).update(id, {
-        Status: status,
-        Approved: status === 'approved'
+      const record = await pb.collection('submissions').update(id, {
+        status: status
       });
       
       return res.status(200).json(record);
     } catch (error: any) {
-      console.error('Airtable update error:', error);
+      console.error('PocketBase update error:', error);
       return res.status(500).json({ error: error.message || 'Failed to update submission' });
     }
   }
@@ -55,25 +42,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     console.log('Received submission data:', req.body); // Debug log
 
-    const fields = req.body;
-    
-    // Add status and approval fields
-    fields.Status = 'pending';
-    fields.Approved = false;
-    fields.createdTime = new Date().toISOString();
+    const data = {
+      ...req.body,
+      status: 'pending',
+      created: new Date().toISOString(),
+      updated: new Date().toISOString()
+    };
 
-    console.log('Creating Airtable record with fields:', fields); // Debug log
+    console.log('Creating PocketBase record with data:', data); // Debug log
 
     // Create the record
-    const result = await base(tableName).create([{ fields }]);
-    console.log('Airtable create result:', result); // Debug log
+    const result = await pb.collection('submissions').create(data);
+    console.log('PocketBase create result:', result); // Debug log
 
-    return res.status(200).json({ success: true, id: result[0].id });
+    return res.status(200).json({ success: true, id: result.id });
   } catch (error: any) {
-    console.error('Airtable submission error:', error);
+    console.error('PocketBase submission error:', error);
     // Return more detailed error information
     return res.status(500).json({ 
-      error: error.message || 'Failed to submit to Airtable',
+      error: error.message || 'Failed to submit to PocketBase',
       details: error.toString(),
       stack: error.stack
     });
