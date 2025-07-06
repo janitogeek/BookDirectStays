@@ -10,7 +10,6 @@ import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import AdminDashboard from "@/pages/admin/index";
 
 function Router() {
   return (
