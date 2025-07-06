@@ -1,27 +1,53 @@
 import { useRef, useState } from "react";
+import { storageService } from "@/lib/storage";
 
 interface FileDropProps {
   onFileDrop: (file: File) => void;
+  onUploadComplete?: (url: string) => void;
+  onUploadError?: (error: string) => void;
 }
 
-export function FileDrop({ onFileDrop }: FileDropProps) {
+export function FileDrop({ onFileDrop, onUploadComplete, onUploadError }: FileDropProps) {
   const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
       onFileDrop(file);
+      
+      // Upload to Supabase Storage
+      setUploading(true);
+      const result = await storageService.uploadFile(file);
+      setUploading(false);
+      
+      if (result.url) {
+        onUploadComplete?.(result.url);
+      } else {
+        onUploadError?.(result.error || 'Upload failed');
+      }
     }
   }
 
-  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+  async function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
       onFileDrop(file);
+      
+      // Upload to Supabase Storage
+      setUploading(true);
+      const result = await storageService.uploadFile(file);
+      setUploading(false);
+      
+      if (result.url) {
+        onUploadComplete?.(result.url);
+      } else {
+        onUploadError?.(result.error || 'Upload failed');
+      }
     }
   }
 
@@ -42,6 +68,11 @@ export function FileDrop({ onFileDrop }: FileDropProps) {
           <span className="text-3xl mb-2">☁️</span>
           <span>Click to upload</span>
         </>
+      )}
+      {uploading && (
+        <div className="mt-2 text-sm text-blue-600">
+          Uploading...
+        </div>
       )}
       <input
         ref={inputRef}

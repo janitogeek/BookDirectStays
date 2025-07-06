@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { apiRequest } from "@/lib/queryClient";
+import { submissionsService } from "@/lib/submissions";
 
 const FIELD_ORDER = [
   "Brand Name",
@@ -49,9 +49,12 @@ export default function AdminSubmissions() {
 
   const fetchSubmissions = async () => {
     try {
-      const response = await fetch("/api/submissions");
-      const data = await response.json();
-      setSubmissions(data);
+      const result = await submissionsService.getSubmissions();
+      if (result.data) {
+        setSubmissions(result.data);
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -63,14 +66,24 @@ export default function AdminSubmissions() {
     }
   };
 
-  const handleApprove = async (id: string) => {
+  const handleApprove = async (id: number) => {
     try {
-      await apiRequest("PATCH", "/api/submissions", { id, status: "approved" });
-      toast({
-        title: "Success",
-        description: "Submission approved successfully",
-      });
-      fetchSubmissions();
+      const result = await submissionsService.updateSubmissionStatus(id, "approved");
+      if (result.success) {
+        // Convert approved submission to listing
+        const submission = submissions.find(s => s.id === id);
+        if (submission) {
+          await submissionsService.convertToListing(submission);
+        }
+        
+        toast({
+          title: "Success",
+          description: "Submission approved and converted to listing",
+        });
+        fetchSubmissions();
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -80,14 +93,18 @@ export default function AdminSubmissions() {
     }
   };
 
-  const handleReject = async (id: string) => {
+  const handleReject = async (id: number) => {
     try {
-      await apiRequest("PATCH", "/api/submissions", { id, status: "rejected" });
-      toast({
-        title: "Success",
-        description: "Submission rejected successfully",
-      });
-      fetchSubmissions();
+      const result = await submissionsService.updateSubmissionStatus(id, "rejected");
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Submission rejected successfully",
+        });
+        fetchSubmissions();
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -116,7 +133,8 @@ export default function AdminSubmissions() {
               <TableHead>Website</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead>Status</TableHead>
+                              <TableHead>Approved</TableHead>
+                <TableHead>Status</TableHead>
               <TableHead>Submitted</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -124,28 +142,33 @@ export default function AdminSubmissions() {
           <TableBody>
             {submissions.map((submission) => (
               <TableRow key={submission.id}>
-                <TableCell className="font-medium">{submission["Brand Name"]}</TableCell>
+                <TableCell className="font-medium">{submission.name}</TableCell>
                 <TableCell>
-                  <a href={submission["Direct Booking Website"]} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    {submission["Direct Booking Website"]}
+                  <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {submission.website}
                   </a>
                 </TableCell>
-                <TableCell>{submission["Submitted By (Email)"]}</TableCell>
-                <TableCell>{submission["One-line Description"]}</TableCell>
+                <TableCell>{submission.email}</TableCell>
+                <TableCell>{submission.description}</TableCell>
                 <TableCell>
-                  <Badge variant={
-                    submission.Status === "approved" ? "default" :
-                    submission.Status === "rejected" ? "destructive" :
-                    "secondary"
-                  }>
-                    {submission.Status}
+                  <Badge variant={submission.approved ? "default" : "secondary"}>
+                    {submission.approved ? "Yes" : "No"}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {format(new Date(submission.createdTime), "MMM d, yyyy")}
+                  <Badge variant={
+                    submission.status === "approved" ? "default" :
+                    submission.status === "rejected" ? "destructive" :
+                    "secondary"
+                  }>
+                    {submission.status}
+                  </Badge>
                 </TableCell>
                 <TableCell>
-                  {submission.Status === "pending" && (
+                  {format(new Date(submission.created_at), "MMM d, yyyy")}
+                </TableCell>
+                <TableCell>
+                  {!submission.approved && submission.status === "pending" && (
                     <div className="space-x-2">
                       <Button
                         variant="default"
@@ -162,6 +185,11 @@ export default function AdminSubmissions() {
                         Reject
                       </Button>
                     </div>
+                  )}
+                  {submission.approved && (
+                    <Badge variant="default" className="text-xs">
+                      Auto-approved
+                    </Badge>
                   )}
                 </TableCell>
               </TableRow>

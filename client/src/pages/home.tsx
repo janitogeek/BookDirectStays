@@ -6,7 +6,7 @@ import CountryTags from "@/components/country-tags";
 import CountryFilter from "@/components/country-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { apiRequest } from "@/lib/queryClient";
+import { listingsService } from "@/lib/listings";
 import AdminAccess from "@/components/AdminAccess";
 
 export default function Home() {
@@ -17,30 +17,44 @@ export default function Home() {
   
   // Fetch listings
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({
-    queryKey: ["/api/listings", visibleCount, selectedCountries],
+    queryKey: ["listings", selectedCountries],
     queryFn: async () => {
-      let url = `/api/listings?limit=${visibleCount}`;
-      
-      // Add country filter params if countries are selected
       if (selectedCountries.length > 0) {
-        selectedCountries.forEach(country => {
-          url += `&countries=${country}`;
-        });
+        // Get listings for specific countries
+        const promises = selectedCountries.map(country => 
+          listingsService.getListingsByCountry(country)
+        );
+        const results = await Promise.all(promises);
+        const allListings = results.flatMap(result => result.data || []);
+        return { listings: allListings, total: allListings.length, hasMore: false };
+      } else {
+        // Get all listings
+        const result = await listingsService.getListings();
+        const listings = result.data || [];
+        return { 
+          listings: listings.slice(0, visibleCount), 
+          total: listings.length, 
+          hasMore: listings.length > visibleCount 
+        };
       }
-      
-      const res = await apiRequest("GET", url, undefined);
-      return res.json();
     }
   });
 
-  // Fetch countries
-  const { data: countries, isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/countries"],
-    queryFn: async () => {
-      const res = await apiRequest("GET", "/api/countries", undefined);
-      return res.json();
-    }
-  });
+  // For now, we'll use a static list of countries since we don't have a countries service yet
+  const countries = [
+    { id: 1, name: "United States", slug: "usa", code: "US", listingCount: 0 },
+    { id: 2, name: "Spain", slug: "spain", code: "ES", listingCount: 0 },
+    { id: 3, name: "United Kingdom", slug: "uk", code: "GB", listingCount: 0 },
+    { id: 4, name: "Germany", slug: "germany", code: "DE", listingCount: 0 },
+    { id: 5, name: "France", slug: "france", code: "FR", listingCount: 0 },
+    { id: 6, name: "Australia", slug: "australia", code: "AU", listingCount: 0 },
+    { id: 7, name: "Canada", slug: "canada", code: "CA", listingCount: 0 },
+    { id: 8, name: "Italy", slug: "italy", code: "IT", listingCount: 0 },
+    { id: 9, name: "Portugal", slug: "portugal", code: "PT", listingCount: 0 },
+    { id: 10, name: "Thailand", slug: "thailand", code: "TH", listingCount: 0 },
+    { id: 11, name: "Greece", slug: "greece", code: "GR", listingCount: 0 }
+  ];
+  const isCountriesLoading = false;
 
   const handleShowMore = () => {
     setVisibleCount(prevCount => prevCount + 6);
@@ -267,13 +281,8 @@ function handleEmailSubscribe(e: React.FormEvent<HTMLFormElement>) {
   const form = e.currentTarget;
   const email = new FormData(form).get('email') as string;
   
-  apiRequest("POST", "/api/subscribe", { email })
-    .then(() => {
-      alert("Thank you for subscribing!");
-      form.reset();
-    })
-    .catch((error) => {
-      console.error("Subscription failed:", error);
-      alert("Subscription failed. Please try again.");
-    });
+  // For now, just show a success message
+  // TODO: Implement email subscription with Supabase
+  alert("Thank you for subscribing!");
+  form.reset();
 }

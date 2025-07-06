@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from ".
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
-import { apiRequest } from "@/lib/queryClient";
+import { submissionsService } from "@/lib/submissions";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -119,29 +120,58 @@ export default function Submit() {
     mode: "onChange",
   });
 
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [highlightImageUrl, setHighlightImageUrl] = useState<string>("");
+
   const onSubmit = async (values: FormValues) => {
     try {
-      // Convert file objects to URLs
+      // Convert form data to match our Supabase schema
       const submissionData = {
-        ...values,
-        "Logo Upload": values["Logo Upload"].url,
-        "Highlight Image": values["Highlight Image"].url,
+        brand_name: values["Brand Name"],
+        direct_booking_website: values["Direct Booking Website"],
+        number_of_listings: values["Number of Listings"],
+        countries: values["Countries"],
+        cities_regions: values["Cities / Regions"],
+        logo_url: logoUrl,
+        highlight_image_url: highlightImageUrl,
+        submitted_by_email: values["Submitted By (Email)"],
+        one_line_description: values["One-line Description"],
+        why_book_with_you: values["Why Book With You?"],
+        types_of_stays: values["Types of Stays"] || [],
+        ideal_for: values["Ideal For"] || [],
+        is_pet_friendly: values["Is your brand pet-friendly?"] || false,
+        perks_amenities: values["Perks / Amenities"] || [],
+        is_eco_conscious: values["Eco-Conscious Stay?"] || false,
+        is_remote_work_friendly: values["Remote-Work Friendly?"] || false,
+        vibe_aesthetic: values["Vibe / Aesthetic"] || [],
+        instagram: values["Instagram"] || undefined,
+        facebook: values["Facebook"] || undefined,
+        linkedin: values["LinkedIn"] || undefined,
+        tiktok: values["TikTok"] || undefined,
+        youtube_video_tour: values["YouTube / Video Tour"] || undefined,
+        listing_type: values["Choose Your Listing Type"],
+        approved: values["Choose Your Listing Type"] === "Featured ($49.99)",
+        created_at: new Date().toISOString()
       };
 
-      console.log('Submitting data:', submissionData); // Debug log
+      console.log('Submitting data to Supabase:', submissionData);
 
-      const response = await apiRequest("POST", "/api/submissions", submissionData);
-      const result = await response.json();
-      console.log('Submission response:', result); // Debug log
-
-      toast({
-        title: "Submission successful!",
-        description: "Your property has been submitted for review.",
-        variant: "default",
-      });
-      form.reset();
+      const result = await submissionsService.createSubmission(submissionData);
+      
+      if (result.success) {
+        toast({
+          title: "Submission successful!",
+          description: "Your property has been submitted for review.",
+          variant: "default",
+        });
+        form.reset();
+        setLogoUrl("");
+        setHighlightImageUrl("");
+      } else {
+        throw new Error(result.error);
+      }
     } catch (error: any) {
-      console.error('Submission error:', error); // Debug log
+      console.error('Submission error:', error);
       toast({
         title: "Submission failed",
         description: error?.message || "There was an error submitting your property. Please try again.",
@@ -225,6 +255,16 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
+                      onUploadComplete={(url: string) => {
+                        setLogoUrl(url);
+                      }}
+                      onUploadError={(error: string) => {
+                        toast({
+                          title: "Upload failed",
+                          description: error,
+                          variant: "destructive",
+                        });
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -242,6 +282,16 @@ export default function Submit() {
                         field.onChange({
                           url: URL.createObjectURL(file),
                           name: file.name
+                        });
+                      }}
+                      onUploadComplete={(url: string) => {
+                        setHighlightImageUrl(url);
+                      }}
+                      onUploadError={(error: string) => {
+                        toast({
+                          title: "Upload failed",
+                          description: error,
+                          variant: "destructive",
                         });
                       }}
                     />
