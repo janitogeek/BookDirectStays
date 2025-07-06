@@ -1,7 +1,7 @@
 import PocketBase from 'pocketbase';
 
 // PocketBase configuration
-const POCKETBASE_URL = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090';
+const POCKETBASE_URL = 'https://pocketbase-bookdirectstays.onrender.com';
 
 // Debug: Log the URL being used
 console.log('PocketBase URL:', POCKETBASE_URL);
