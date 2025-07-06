@@ -22,6 +22,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from ".
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
+import { submissionService, fileService } from "@/lib/appwrite-services";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -121,14 +122,65 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // Placeholder: just show a success message
+      // Upload files to Appwrite Storage
+      let logoUrl = values["Logo Upload"].url;
+      let highlightImageUrl = values["Highlight Image"].url;
+
+      // If the URLs are blob URLs (from file upload), upload them to Appwrite
+      if (logoUrl.startsWith('blob:')) {
+        // Convert blob URL to File object
+        const logoResponse = await fetch(logoUrl);
+        const logoBlob = await logoResponse.blob();
+        const logoFile = new File([logoBlob], values["Logo Upload"].name, { type: logoBlob.type });
+        logoUrl = await fileService.uploadLogo(logoFile);
+      }
+
+      if (highlightImageUrl.startsWith('blob:')) {
+        // Convert blob URL to File object
+        const imageResponse = await fetch(highlightImageUrl);
+        const imageBlob = await imageResponse.blob();
+        const imageFile = new File([imageBlob], values["Highlight Image"].name, { type: imageBlob.type });
+        highlightImageUrl = await fileService.uploadImage(imageFile);
+      }
+
+      // Create submission data
+      const submissionData = {
+        name: values["Brand Name"],
+        website: values["Direct Booking Website"],
+        listingCount: values["Number of Listings"],
+        countries: values["Countries"],
+        citiesRegions: values["Cities / Regions"],
+        logo: logoUrl,
+        highlightImage: highlightImageUrl,
+        submittedByEmail: values["Submitted By (Email)"],
+        oneLineDescription: values["One-line Description"],
+        whyBookWithYou: values["Why Book With You?"],
+        typesOfStays: values["Types of Stays"] || [],
+        idealFor: values["Ideal For"] || [],
+        isPetFriendly: values["Is your brand pet-friendly?"] || false,
+        perksAmenities: values["Perks / Amenities"] || [],
+        isEcoConscious: values["Eco-Conscious Stay?"] || false,
+        isRemoteWorkFriendly: values["Remote-Work Friendly?"] || false,
+        vibeAesthetic: values["Vibe / Aesthetic"] || [],
+        instagram: values["Instagram"] || "",
+        facebook: values["Facebook"] || "",
+        linkedin: values["LinkedIn"] || "",
+        tiktok: values["TikTok"] || "",
+        youtubeVideoTour: values["YouTube / Video Tour"] || "",
+        listingType: values["Choose Your Listing Type"],
+      };
+
+      // Submit to Appwrite
+      await submissionService.create(submissionData);
+
       toast({
         title: "Submission successful!",
-        description: "Your property has been submitted (demo mode, not saved).",
+        description: "Your property has been submitted for review. We'll get back to you within 48 hours.",
         variant: "default",
       });
       form.reset();
     } catch (error: any) {
+      console.error('Submission error:', error);
       toast({
         title: "Submission failed",
         description: error?.message || "There was an error submitting your property. Please try again.",
@@ -212,16 +264,6 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
-                      onUploadComplete={(url: string) => {
-                        // setLogoUrl(url); // Removed
-                      }}
-                      onUploadError={(error: string) => {
-                        toast({
-                          title: "Upload failed",
-                          description: error,
-                          variant: "destructive",
-                        });
-                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -239,16 +281,6 @@ export default function Submit() {
                         field.onChange({
                           url: URL.createObjectURL(file),
                           name: file.name
-                        });
-                      }}
-                      onUploadComplete={(url: string) => {
-                        // setHighlightImageUrl(url); // Removed
-                      }}
-                      onUploadError={(error: string) => {
-                        toast({
-                          title: "Upload failed",
-                          description: error,
-                          variant: "destructive",
                         });
                       }}
                     />
