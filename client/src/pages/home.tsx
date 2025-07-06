@@ -6,7 +6,6 @@ import CountryTags from "@/components/country-tags";
 import CountryFilter from "@/components/country-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { listingsService } from "@/lib/listings";
 import AdminAccess from "@/components/AdminAccess";
 
 export default function Home() {
@@ -16,29 +15,8 @@ export default function Home() {
   const [, setLocation] = useLocation();
   
   // Fetch listings
-  const { data: listingsData, isLoading: isListingsLoading } = useQuery({
-    queryKey: ["listings", selectedCountries],
-    queryFn: async () => {
-      if (selectedCountries.length > 0) {
-        // Get listings for specific countries
-        const promises = selectedCountries.map(country => 
-          listingsService.getListingsByCountry(country)
-        );
-        const results = await Promise.all(promises);
-        const allListings = results.flatMap(result => result.data || []);
-        return { listings: allListings, total: allListings.length, hasMore: false };
-      } else {
-        // Get all listings
-        const result = await listingsService.getListings();
-        const listings = result.data || [];
-        return { 
-          listings: listings.slice(0, visibleCount), 
-          total: listings.length, 
-          hasMore: listings.length > visibleCount 
-        };
-      }
-    }
-  });
+  const listingsData = { listings: [], total: 0, hasMore: false };
+  const isListingsLoading = false;
 
   // For now, we'll use a static list of countries since we don't have a countries service yet
   const countries = [
