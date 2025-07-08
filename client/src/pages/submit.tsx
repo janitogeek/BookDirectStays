@@ -169,8 +169,32 @@ export default function Submit() {
         formData.append('highlightImage', imageFile);
       }
 
-      // Submit to PocketBase
-      await submissionService.create(formData as any);
+      // Convert FormData to JSON for Vercel API
+      const submissionData = {
+        Brand_name: values["Brand Name"],
+        Direct_Booking_Website: values["Direct Booking Website"],
+        Number_of_Listings: values["Number of Listings"],
+        E_mail: values["Submitted By (Email)"],
+        One_line_Description: values["One-line Description"],
+        Why_Book_With_You: values["Why Book With You?"],
+        Plan: values["Choose Your Listing Type"],
+        Countries: JSON.stringify(values["Countries"]),
+        Cities_Regions: JSON.stringify(values["Cities / Regions"]),
+        Types_of_Stays: JSON.stringify(values["Types of Stays"] || []),
+        Ideal_For: JSON.stringify(values["Ideal For"] || []),
+        Perks_Amenities: JSON.stringify(values["Perks / Amenities"] || []),
+        Vibe_Aesthetic: JSON.stringify(values["Vibe / Aesthetic"] || []),
+        Instagram: values["Instagram"] || "",
+        Facebook: values["Facebook"] || "",
+        LinkedIn: values["LinkedIn"] || "",
+        TikTok: values["TikTok"] || "",
+        Youtube: values["YouTube / Video Tour"] || "",
+        Logo: values["Logo Upload"]?.name || "",
+        Highlight_Image: values["Highlight Image"]?.name || "",
+      };
+
+      // Submit to Vercel API
+      await submissionService.create(submissionData);
 
       toast({
         title: "Submission successful!",

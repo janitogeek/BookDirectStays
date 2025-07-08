@@ -1,24 +1,41 @@
-import PocketBase from 'pocketbase';
+// API client for Vercel backend
 
-// PocketBase configuration - Environment aware
+// API configuration - Environment aware
 const getBaseUrl = () => {
   // Check if we're in development mode
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:8080';
+    return 'http://localhost:5000/api'; // Local development server
   }
   
-  // For production, use your Docker deployment
-  // You can override this with VITE_POCKETBASE_URL environment variable
-  return (import.meta as any).env?.VITE_POCKETBASE_URL || 'REPLACE_WITH_YOUR_NGROK_URL';
+  // For production, use Vercel API
+  return 'https://bookdirectstays.vercel.app/api';
 };
 
-const POCKETBASE_URL = getBaseUrl();
+const API_BASE_URL = getBaseUrl();
 
 // Debug: Log the URL being used
-console.log('PocketBase URL:', POCKETBASE_URL);
+console.log('API Base URL:', API_BASE_URL);
 
-// Initialize PocketBase client
-export const pb = new PocketBase(POCKETBASE_URL);
+// Create a simple API client that mimics PocketBase
+export const pb = {
+  collection: (name: string) => ({
+    create: async (data: any) => {
+      const response = await fetch(`${API_BASE_URL}/collections/${name}/records`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
+    }
+  })
+};
 
 // Collection names
 export const COLLECTIONS = {
@@ -32,5 +49,5 @@ export const COLLECTIONS = {
 
 // Helper function to get file URL
 export const getFileUrl = (collection: string, recordId: string, filename: string) => {
-  return `${POCKETBASE_URL}/api/files/${collection}/${recordId}/${filename}`;
+  return `${API_BASE_URL}/files/${collection}/${recordId}/${filename}`;
 }; 
