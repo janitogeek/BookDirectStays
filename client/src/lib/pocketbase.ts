@@ -1,45 +1,29 @@
-// API client for Vercel backend
+// PocketBase client configuration for BookDirectStays
 
-// API configuration - Environment aware
-const getBaseUrl = () => {
+import PocketBase from 'pocketbase';
+
+// Environment-aware PocketBase URL
+const getPocketBaseURL = () => {
   // Check if we're in development mode
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:5000/api'; // Local development server
+    return 'http://localhost:8080'; // Local development
   }
   
-  // For production, use Vercel API
-  return 'https://bookdirectstays.vercel.app/api';
+  // For production, use Render deployment
+  return 'https://pocketbase-bookdirectstays.onrender.com';
 };
 
-const API_BASE_URL = getBaseUrl();
+const PB_URL = getPocketBaseURL();
 
 // Debug: Log the URL being used
-console.log('API Base URL:', API_BASE_URL);
+console.log('PocketBase URL:', PB_URL);
 
-// Create a simple API client that mimics PocketBase
-export const pb = {
-  collection: (name: string) => ({
-    create: async (data: any) => {
-      const response = await fetch(`${API_BASE_URL}/collections/${name}/records`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      return response.json();
-    }
-  })
-};
+// Create PocketBase instance
+export const pb = new PocketBase(PB_URL);
 
 // Collection names
 export const COLLECTIONS = {
-  SUBMISSIONS: 'Submissios',
+  SUBMISSIONS: 'Submissions',
   LISTINGS: 'listings',
   COUNTRIES: 'countries',
   SUBSCRIPTIONS: 'subscriptions',
@@ -49,5 +33,5 @@ export const COLLECTIONS = {
 
 // Helper function to get file URL
 export const getFileUrl = (collection: string, recordId: string, filename: string) => {
-  return `${API_BASE_URL}/files/${collection}/${recordId}/${filename}`;
+  return `${pb.baseUrl}/api/files/${collection}/${recordId}/${filename}`;
 }; 

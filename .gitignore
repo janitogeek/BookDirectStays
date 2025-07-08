@@ -1,6 +1,33 @@
-node_modules
-dist
+# PocketBase data - exclude sensitive files
+pb_data/data.db*
+pb_data/logs.db*
+pb_data/backups/
+pb_data/storage/
+
+# Keep structure but exclude sensitive data
+!pb_data/
+!pb_data/types.d.ts
+
+# OS files
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Temporary files
+tmp/
+temp/
+node_modules

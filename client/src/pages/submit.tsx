@@ -125,88 +125,63 @@ export default function Submit() {
       // Create FormData for file uploads
       const formData = new FormData();
       
-      // Add all the form data - matching database field names
+      // Add all the form data - matching database field names exactly
       formData.append('Brand_name', values["Brand Name"]);
       formData.append('Direct_Booking_Website', values["Direct Booking Website"]);
       formData.append('Number_of_Listings', values["Number of Listings"].toString());
       formData.append('E_mail', values["Submitted By (Email)"]);
-      formData.append('field9', values["One-line Description"]); // These map to field9, field10 etc in migration
+      formData.append('Countries', JSON.stringify(values["Countries"]));
+      formData.append('Cities_Regions', JSON.stringify(values["Cities / Regions"]));
+      
+      // Map to the generic field names as per database schema
+      formData.append('field9', values["One-line Description"]);
       formData.append('field10', values["Why Book With You?"]);
       formData.append('field11', values["Choose Your Listing Type"]);
-      
-      // Add arrays
-      formData.append('countries', JSON.stringify(values["Countries"]));
-      formData.append('citiesRegions', JSON.stringify(values["Cities / Regions"]));
-      formData.append('typesOfStays', JSON.stringify(values["Types of Stays"] || []));
-      formData.append('idealFor', JSON.stringify(values["Ideal For"] || []));
-      formData.append('perksAmenities', JSON.stringify(values["Perks / Amenities"] || []));
-      formData.append('vibeAesthetic', JSON.stringify(values["Vibe / Aesthetic"] || []));
-      
-      // Add booleans
-      formData.append('isPetFriendly', (values["Is your brand pet-friendly?"] || false).toString());
-      formData.append('isEcoConscious', (values["Eco-Conscious Stay?"] || false).toString());
-      formData.append('isRemoteWorkFriendly', (values["Remote-Work Friendly?"] || false).toString());
-      
-      // Add URLs
-      formData.append('instagram', values["Instagram"] || "");
-      formData.append('facebook', values["Facebook"] || "");
-      formData.append('linkedin', values["LinkedIn"] || "");
-      formData.append('tiktok', values["TikTok"] || "");
-      formData.append('youtubeVideoTour', values["YouTube / Video Tour"] || "");
+      formData.append('field12', JSON.stringify(values["Types of Stays"] || []));
+      formData.append('field13', JSON.stringify(values["Ideal For"] || []));
+      formData.append('field14', (values["Is your brand pet-friendly?"] || false).toString());
+      formData.append('field15', JSON.stringify(values["Perks / Amenities"] || []));
+      formData.append('field16', (values["Eco-Conscious Stay?"] || false).toString());
+      formData.append('field17', (values["Remote-Work Friendly?"] || false).toString());
+      formData.append('field18', JSON.stringify(values["Vibe / Aesthetic"] || []));
+      formData.append('field19', values["Instagram"] || "");
+      formData.append('field20', values["Facebook"] || "");
+      formData.append('field21', values["LinkedIn"] || "");
+      formData.append('field22', values["TikTok"] || "");
+      formData.append('field23', values["YouTube / Video Tour"] || "");
       
       // Add files if they exist
       if (values["Logo Upload"].url.startsWith('blob:')) {
         const logoResponse = await fetch(values["Logo Upload"].url);
         const logoBlob = await logoResponse.blob();
         const logoFile = new File([logoBlob], values["Logo Upload"].name, { type: logoBlob.type });
-        formData.append('logo', logoFile);
+        formData.append('Logo', logoFile);
       }
       
       if (values["Highlight Image"].url.startsWith('blob:')) {
         const imageResponse = await fetch(values["Highlight Image"].url);
         const imageBlob = await imageResponse.blob();
         const imageFile = new File([imageBlob], values["Highlight Image"].name, { type: imageBlob.type });
-        formData.append('highlightImage', imageFile);
+        formData.append('Highlight_Image', imageFile);
       }
 
-      // Convert FormData to JSON for Vercel API
-      const submissionData = {
-        Brand_name: values["Brand Name"],
-        Direct_Booking_Website: values["Direct Booking Website"],
-        Number_of_Listings: values["Number of Listings"],
-        E_mail: values["Submitted By (Email)"],
-        One_line_Description: values["One-line Description"],
-        Why_Book_With_You: values["Why Book With You?"],
-        Plan: values["Choose Your Listing Type"],
-        Countries: JSON.stringify(values["Countries"]),
-        Cities_Regions: JSON.stringify(values["Cities / Regions"]),
-        Types_of_Stays: JSON.stringify(values["Types of Stays"] || []),
-        Ideal_For: JSON.stringify(values["Ideal For"] || []),
-        Perks_Amenities: JSON.stringify(values["Perks / Amenities"] || []),
-        Vibe_Aesthetic: JSON.stringify(values["Vibe / Aesthetic"] || []),
-        Instagram: values["Instagram"] || "",
-        Facebook: values["Facebook"] || "",
-        LinkedIn: values["LinkedIn"] || "",
-        TikTok: values["TikTok"] || "",
-        Youtube: values["YouTube / Video Tour"] || "",
-        Logo: values["Logo Upload"]?.name || "",
-        Highlight_Image: values["Highlight Image"]?.name || "",
-      };
-
-      // Submit to Vercel API
-      await submissionService.create(submissionData);
-
+      // Submit using PocketBase service
+      const result = await submissionService.create(formData as any);
+      
       toast({
         title: "Submission successful!",
-        description: "Your property has been submitted for review. We'll get back to you within 48 hours.",
+        description: "Your property has been submitted for review. We'll get back to you soon!",
         variant: "default",
       });
+      
+      // Reset form
       form.reset();
-    } catch (error: any) {
+      
+    } catch (error) {
       console.error('Submission error:', error);
       toast({
         title: "Submission failed",
-        description: error?.message || "There was an error submitting your property. Please try again.",
+        description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
         variant: "destructive",
       });
     }
