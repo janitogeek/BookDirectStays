@@ -3,10 +3,10 @@
 // Airtable configuration
 const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY || '';
 const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID || '';
-const AIRTABLE_TABLE_NAME = 'Submissions'; // Your table name
+const AIRTABLE_TABLE_NAME = 'Directory Submissions'; // Your actual table name
 
 // Airtable API endpoint
-const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
+const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
 
 // Debug: Log configuration (remove in production)
 console.log('Airtable Config:', {
