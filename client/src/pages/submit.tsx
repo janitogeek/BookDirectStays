@@ -137,7 +137,6 @@ export default function Submit() {
       formData.append('field9', values["One-line Description"]);
       formData.append('field10', values["Why Book With You?"]);
       formData.append('field11', values["Choose Your Listing Type"]);
-      formData.append('field12', JSON.stringify(values["Types of Stays"] || []));
       formData.append('field13', JSON.stringify(values["Ideal For"] || []));
       formData.append('field14', (values["Is your brand pet-friendly?"] || false).toString());
       formData.append('field15', JSON.stringify(values["Perks / Amenities"] || []));
@@ -176,7 +175,6 @@ export default function Submit() {
         field11: values["Choose Your Listing Type"],
         Countries: JSON.stringify(values["Countries"]),
         Cities_Regions: JSON.stringify(values["Cities / Regions"]),
-        field12: JSON.stringify(values["Types of Stays"] || []),
         field13: JSON.stringify(values["Ideal For"] || []),
         field14: (values["Is your brand pet-friendly?"] || false).toString(),
         field15: JSON.stringify(values["Perks / Amenities"] || []),
