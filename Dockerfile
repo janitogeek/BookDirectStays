@@ -14,11 +14,18 @@ RUN chmod +x pocketbase
 # Copy database and migrations
 COPY pb_data ./pb_data
 COPY pb_migrations ./pb_migrations
-COPY pb_hooks ./pb_hooks
 
-# Create start script
+# Create pb_hooks directory (empty is fine)
+RUN mkdir -p pb_hooks
+
+# Ensure migrations run and database is initialized
+RUN chmod -R 755 pb_migrations pb_hooks
+
+# Create start script that ensures migrations run
 RUN echo '#!/bin/sh' > start.sh && \
-    echo 'exec ./pocketbase serve --http=0.0.0.0:$PORT' >> start.sh && \
+    echo 'echo "Starting PocketBase..."' >> start.sh && \
+    echo 'echo "Running migrations..."' >> start.sh && \
+    echo 'exec ./pocketbase serve --http=0.0.0.0:$PORT --migrationsDir=./pb_migrations' >> start.sh && \
     chmod +x start.sh
 
 # Expose port

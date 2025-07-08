@@ -22,7 +22,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from ".
 import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
-import { submissionService, fileService } from "@/lib/pocketbase-services";
+import { airtableService } from "@/lib/airtable";
 
 const planEnum = z.enum(["Free", "Featured ($49.99)"]);
 const formSchema = z.object({
@@ -165,8 +165,35 @@ export default function Submit() {
         formData.append('Highlight_Image', imageFile);
       }
 
-      // Submit using PocketBase service
-      const result = await submissionService.create(formData as any);
+      // Convert FormData to object for Airtable
+      const submissionData = {
+        Brand_name: values["Brand Name"],
+        Direct_Booking_Website: values["Direct Booking Website"],
+        Number_of_Listings: values["Number of Listings"],
+        E_mail: values["Submitted By (Email)"],
+        field9: values["One-line Description"],
+        field10: values["Why Book With You?"],
+        field11: values["Choose Your Listing Type"],
+        Countries: JSON.stringify(values["Countries"]),
+        Cities_Regions: JSON.stringify(values["Cities / Regions"]),
+        field12: JSON.stringify(values["Types of Stays"] || []),
+        field13: JSON.stringify(values["Ideal For"] || []),
+        field14: (values["Is your brand pet-friendly?"] || false).toString(),
+        field15: JSON.stringify(values["Perks / Amenities"] || []),
+        field16: (values["Eco-Conscious Stay?"] || false).toString(),
+        field17: (values["Remote-Work Friendly?"] || false).toString(),
+        field18: JSON.stringify(values["Vibe / Aesthetic"] || []),
+        field19: values["Instagram"] || "",
+        field20: values["Facebook"] || "",
+        field21: values["LinkedIn"] || "",
+        field22: values["TikTok"] || "",
+        field23: values["YouTube / Video Tour"] || "",
+        Logo: values["Logo Upload"]?.url || "",
+        Highlight_Image: values["Highlight Image"]?.url || "",
+      };
+
+      // Submit using Airtable service
+      const result = await airtableService.createSubmission(submissionData);
       
       toast({
         title: "Submission successful!",

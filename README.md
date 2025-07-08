@@ -13,6 +13,8 @@ This repository contains the PocketBase backend for the BookDirectStays website.
 
 🚀 **Live**: https://pocketbase-bookdirectstays.onrender.com/
 
+**Last deployment**: July 8, 2025 - Force deployment with complete database files
+
 ## API Endpoints
 
 - **Admin Panel**: https://pocketbase-bookdirectstays.onrender.com/_/
