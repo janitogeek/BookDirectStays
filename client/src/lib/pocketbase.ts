@@ -23,7 +23,7 @@ export const pb = new PocketBase(PB_URL);
 
 // Collection names
 export const COLLECTIONS = {
-  SUBMISSIONS: 'Submissions',
+  SUBMISSIONS: 'Submissios',
   LISTINGS: 'listings',
   COUNTRIES: 'countries',
   SUBSCRIPTIONS: 'subscriptions',
