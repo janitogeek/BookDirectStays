@@ -8,6 +8,7 @@ import Country from "@/pages/country";
 import Submit from "@/pages/submit";
 import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
+import CMSAdmin from "@/pages/admin/cms";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -22,6 +23,7 @@ function Router() {
           <Route path="/submit" component={Submit} />
           <Route path="/faq" component={FAQ} />
           <Route path="/testimonials" component={Testimonials} />
+          <Route path="/admin/cms" component={CMSAdmin} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />
         </Switch>

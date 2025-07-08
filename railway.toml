@@ -1,0 +1,13 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.pocketbase"
+
+[deploy]
+startCommand = "./pocketbase serve --http=0.0.0.0:$PORT --dir=/app/pb_data --migrationsDir=/app/pb_migrations --hooksDir=/app/pb_hooks"
+
+[[services]]
+name = "pocketbase"
+source = "."
+
+[services.variables]
+PORT = "8080" 

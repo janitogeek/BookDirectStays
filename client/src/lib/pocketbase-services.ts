@@ -125,6 +125,15 @@ export const submissionService = {
       filter: 'status = "approved"'
     });
     return records as unknown as Submission[];
+  },
+
+  async update(id: string, submission: Partial<Submission>): Promise<Submission> {
+    const record = await pb.collection(COLLECTIONS.SUBMISSIONS).update(id, submission);
+    return record as unknown as Submission;
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.SUBMISSIONS).delete(id);
   }
 };
 
@@ -164,6 +173,15 @@ export const listingService = {
     });
     
     return records as unknown as Listing[];
+  },
+
+  async update(id: string, listing: Partial<Listing>): Promise<Listing> {
+    const record = await pb.collection(COLLECTIONS.LISTINGS).update(id, listing);
+    return record as unknown as Listing;
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.LISTINGS).delete(id);
   }
 };
 
@@ -184,6 +202,20 @@ export const countryService = {
     } catch (error) {
       return null;
     }
+  },
+
+  async create(country: Omit<Country, 'id'>): Promise<Country> {
+    const record = await pb.collection(COLLECTIONS.COUNTRIES).create(country);
+    return record as unknown as Country;
+  },
+
+  async update(id: string, country: Partial<Country>): Promise<Country> {
+    const record = await pb.collection(COLLECTIONS.COUNTRIES).update(id, country);
+    return record as unknown as Country;
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.COUNTRIES).delete(id);
   }
 };
 
@@ -197,6 +229,15 @@ export const subscriptionService = {
     
     const record = await pb.collection(COLLECTIONS.SUBSCRIPTIONS).create(data);
     return record as unknown as Subscription;
+  },
+
+  async getAll(): Promise<Subscription[]> {
+    const records = await pb.collection(COLLECTIONS.SUBSCRIPTIONS).getFullList();
+    return records as unknown as Subscription[];
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.SUBSCRIPTIONS).delete(id);
   }
 };
 
@@ -207,6 +248,20 @@ export const faqService = {
       sort: 'order'
     });
     return records as unknown as FAQ[];
+  },
+
+  async create(faq: Omit<FAQ, 'id'>): Promise<FAQ> {
+    const record = await pb.collection(COLLECTIONS.FAQS).create(faq);
+    return record as unknown as FAQ;
+  },
+
+  async update(id: string, faq: Partial<FAQ>): Promise<FAQ> {
+    const record = await pb.collection(COLLECTIONS.FAQS).update(id, faq);
+    return record as unknown as FAQ;
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.FAQS).delete(id);
   }
 };
 
@@ -215,6 +270,20 @@ export const testimonialService = {
   async getAll(): Promise<Testimonial[]> {
     const records = await pb.collection(COLLECTIONS.TESTIMONIALS).getFullList();
     return records as unknown as Testimonial[];
+  },
+
+  async create(testimonial: Omit<Testimonial, 'id'>): Promise<Testimonial> {
+    const record = await pb.collection(COLLECTIONS.TESTIMONIALS).create(testimonial);
+    return record as unknown as Testimonial;
+  },
+
+  async update(id: string, testimonial: Partial<Testimonial>): Promise<Testimonial> {
+    const record = await pb.collection(COLLECTIONS.TESTIMONIALS).update(id, testimonial);
+    return record as unknown as Testimonial;
+  },
+
+  async delete(id: string): Promise<void> {
+    await pb.collection(COLLECTIONS.TESTIMONIALS).delete(id);
   }
 };
 

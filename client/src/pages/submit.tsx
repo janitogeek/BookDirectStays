@@ -125,14 +125,14 @@ export default function Submit() {
       // Create FormData for file uploads
       const formData = new FormData();
       
-      // Add all the form data
-      formData.append('name', values["Brand Name"]);
-      formData.append('website', values["Direct Booking Website"]);
-      formData.append('listingCount', values["Number of Listings"].toString());
-      formData.append('submittedByEmail', values["Submitted By (Email)"]);
-      formData.append('oneLineDescription', values["One-line Description"]);
-      formData.append('whyBookWithYou', values["Why Book With You?"]);
-      formData.append('listingType', values["Choose Your Listing Type"]);
+      // Add all the form data - matching database field names
+      formData.append('Brand_name', values["Brand Name"]);
+      formData.append('Direct_Booking_Website', values["Direct Booking Website"]);
+      formData.append('Number_of_Listings', values["Number of Listings"].toString());
+      formData.append('E_mail', values["Submitted By (Email)"]);
+      formData.append('field9', values["One-line Description"]); // These map to field9, field10 etc in migration
+      formData.append('field10', values["Why Book With You?"]);
+      formData.append('field11', values["Choose Your Listing Type"]);
       
       // Add arrays
       formData.append('countries', JSON.stringify(values["Countries"]));
