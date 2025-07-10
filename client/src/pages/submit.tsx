@@ -190,8 +190,21 @@ export default function Submit() {
         Highlight_Image: values["Highlight Image"]?.url || "",
       };
 
-      // Submit using Airtable service
-      const result = await airtableService.createSubmission(submissionData);
+      // Submit using the new Airtable API endpoint
+      const response = await fetch('/api/airtable-submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Submission failed');
+      }
+
+      const result = await response.json();
       
       toast({
         title: "Submission successful!",
