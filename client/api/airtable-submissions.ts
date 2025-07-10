@@ -1,12 +1,25 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Airtable from 'airtable';
 
+// Debug logging
+console.log('Environment check:', {
+  hasApiKey: !!process.env.AIRTABLE_API_KEY,
+  hasBaseId: !!process.env.AIRTABLE_BASE_ID,
+  apiKeyPrefix: process.env.AIRTABLE_API_KEY?.substring(0, 4),
+  baseIdPrefix: process.env.AIRTABLE_BASE_ID?.substring(0, 4),
+  allEnvKeys: Object.keys(process.env).filter(key => key.includes('AIRTABLE'))
+});
+
 // Initialize Airtable
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
 
 if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+  console.error('Missing environment variables:', {
+    AIRTABLE_API_KEY: !!AIRTABLE_API_KEY,
+    AIRTABLE_BASE_ID: !!AIRTABLE_BASE_ID
+  });
   throw new Error('Airtable configuration missing. Please set AIRTABLE_API_KEY and AIRTABLE_BASE_ID');
 }
 
