@@ -141,7 +141,7 @@ export default function Submit() {
 
       // MINIMAL TEST VERSION - Only send basic fields that definitely exist
       const submissionData = {
-        "E-mail": values["Submitted By (Email)"],
+        "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
