@@ -139,39 +139,17 @@ export default function Submit() {
         return new File([blob], fileName, { type: blob.type });
       };
 
-      // For now, we'll skip file attachments and just send the form data
-      // TODO: Implement proper file upload to cloud storage service
-      let logoAttachment: any[] = [];
-      let highlightImageAttachment: any[] = [];
-
-      // Convert FormData to object for Airtable (using exact column names from your Airtable table)
+      // MINIMAL TEST VERSION - Only send basic fields that definitely exist
       const submissionData = {
-        "Email": values["Submitted By (Email)"],
+        "E-mail": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
-        "Countries": values["Countries"].join(", "), // Convert array to comma-separated string
-        "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "), // Convert to comma-separated string
-        "Logo": logoAttachment,
-        "Highlight Image": highlightImageAttachment,
         "One-line Description": values["One-line Description"],
-        "Why Book With You?": values["Why Book With You?"],
-        "Types of Stays": values["Types of Stays"]?.join(", ") || "",
-        "Ideal For": values["Ideal For"]?.join(", ") || "",
-        "Is your brand pet-friendly?": values["Is your brand pet-friendly?"] ? "Yes" : "No",
-        "Perks / Amenities": values["Perks / Amenities"]?.join(", ") || "",
-        "Eco-Conscious Stay?": values["Eco-Conscious Stay?"] ? "Yes" : "No",
-        "Remote-Work Friendly?": values["Remote-Work Friendly?"] ? "Yes" : "No",
-        "Vibe / Aesthetic": values["Vibe / Aesthetic"]?.join(", ") || "",
-        "Instagram": values["Instagram"] || "",
-        "Facebook": values["Facebook"] || "",
-        "LinkedIn": values["LinkedIn"] || "",
-        "TikTok": values["TikTok"] || "",
-        "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
-        "Plan": values["Choose Your Listing Type"],
-        "Submission Date": new Date().toISOString().split('T')[0], // Add current date
-        "Status": "Pending Review" // Set default status
+        "Why Book With You?": values["Why Book With You?"]
       };
+
+      console.log("Sending to Airtable:", submissionData);
 
       // Submit directly to Airtable using the service (bypass API route)
       const airtableService = {
