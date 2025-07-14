@@ -139,9 +139,41 @@ export default function Submit() {
         return new File([blob], fileName, { type: blob.type });
       };
 
+      // First, let's get the actual field names from Airtable Meta API
+      const getAirtableFields = async () => {
+        const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
+        const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID;
+        
+        const response = await fetch(`https://api.airtable.com/v0/meta/bases/${AIRTABLE_BASE_ID}/tables`, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          }
+        });
+        
+        const data = await response.json();
+        const directorySubmissionsTable = data.tables.find((table: any) => table.name === 'Directory Submissions');
+        
+        if (directorySubmissionsTable) {
+          console.log('Actual Airtable fields:', directorySubmissionsTable.fields.map((f: any) => f.name));
+          return directorySubmissionsTable.fields;
+        }
+        
+        throw new Error('Directory Submissions table not found');
+      };
+
+      // Get the actual field names
+      const airtableFields = await getAirtableFields();
+      
+      // Find the email field (might be E-mail, Email, etc.)
+      const emailField = airtableFields.find((f: any) => 
+        f.name.toLowerCase().includes('email') || f.name.toLowerCase().includes('e-mail')
+      );
+      
+      console.log('Found email field:', emailField?.name);
+
       // MINIMAL TEST VERSION - Only send basic fields that definitely exist
       const submissionData = {
-        "E-mail": values["Submitted By (Email)"],
+        [emailField?.name || "E-mail"]: values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
