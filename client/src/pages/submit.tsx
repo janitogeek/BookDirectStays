@@ -263,9 +263,13 @@ export default function Submit() {
           const logoUrl = await uploadToTempHost(logoFile);
           console.log('Logo uploaded successfully to:', logoUrl);
           
+          // Validate URL format
+          if (!logoUrl.startsWith('http://') && !logoUrl.startsWith('https://')) {
+            throw new Error('Invalid logo URL format: ' + logoUrl);
+          }
+          
           logoAttachment = [{ 
-            url: logoUrl,
-            filename: values["Logo Upload"].name 
+            url: logoUrl
           }];
           
           console.log('Logo attachment created:', logoAttachment);
@@ -302,9 +306,13 @@ export default function Submit() {
           const imageUrl = await uploadToTempHost(imageFile);
           console.log('Highlight image uploaded successfully to:', imageUrl);
           
+          // Validate URL format
+          if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+            throw new Error('Invalid highlight image URL format: ' + imageUrl);
+          }
+          
           highlightImageAttachment = [{ 
-            url: imageUrl,
-            filename: values["Highlight Image"].name 
+            url: imageUrl
           }];
           
           console.log('Highlight image attachment created:', highlightImageAttachment);
@@ -322,15 +330,13 @@ export default function Submit() {
       }
 
       // FULL VERSION - Send all fields using exact Airtable field names
-      const submissionData = {
+      const submissionData: any = {
         "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "),
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
-        "Logo": logoAttachment,
-        "Highlight Image": highlightImageAttachment,
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
         "Types of Stays": values["Types of Stays"] || [],
@@ -346,6 +352,14 @@ export default function Submit() {
         "Submission Date": new Date().toISOString().split('T')[0],
         "Status": "Pending Review"
       };
+
+      // Only add attachment fields if they have content
+      if (logoAttachment.length > 0) {
+        submissionData["Logo"] = logoAttachment;
+      }
+      if (highlightImageAttachment.length > 0) {
+        submissionData["Highlight Image"] = highlightImageAttachment;
+      }
 
       console.log("=== SUBMISSION DATA DEBUG ===");
       console.log("Logo attachment:", logoAttachment);
@@ -368,6 +382,13 @@ export default function Submit() {
           
           // Data is already properly formatted for Airtable
           const fields = { ...data };
+
+          console.log('Sending to Airtable:', {
+            url: airtableUrl,
+            fields: fields,
+            logoAttachment: fields.Logo,
+            highlightImageAttachment: fields['Highlight Image']
+          });
 
           const response = await fetch(airtableUrl, {
             method: 'POST',
