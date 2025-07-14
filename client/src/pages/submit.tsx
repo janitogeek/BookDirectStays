@@ -163,32 +163,78 @@ export default function Submit() {
       
       console.log('Found email field:', emailField?.name);
 
-      // Helper function to convert file to base64 for storage in Airtable text fields
+      // Helper function to convert file to base64 for Airtable upload API
       const fileToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result as string);
+          reader.onload = () => {
+            const result = reader.result as string;
+            // Remove the data:image/png;base64, prefix for Airtable API
+            const base64Data = result.split(',')[1];
+            resolve(base64Data);
+          };
           reader.onerror = error => reject(error);
         });
       };
 
-      // Process image file and return base64 data
-      const processImageFile = async (file: File): Promise<string> => {
+      // Process image file and return base64 data (without data URL prefix)
+      const processImageFile = async (file: File): Promise<{ base64: string; contentType: string; filename: string }> => {
         console.log(`Processing image file: ${file.name} Size: ${file.size} Type: ${file.type}`);
         
         try {
           const base64Data = await fileToBase64(file);
           console.log(`Successfully converted to base64, length: ${base64Data.length}`);
-          return base64Data;
+          return {
+            base64: base64Data,
+            contentType: file.type,
+            filename: file.name
+          };
         } catch (error) {
           console.error('Error converting file to base64:', error);
           throw new Error('Failed to process image');
         }
       };
 
+      // Upload attachment to Airtable using the upload API
+      const uploadAttachmentToAirtable = async (recordId: string, fieldName: string, imageData: { base64: string; contentType: string; filename: string }) => {
+        const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
+        const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID;
+
+        if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+          throw new Error('Airtable configuration missing');
+        }
+
+        const uploadUrl = `https://content.airtable.com/v0/${AIRTABLE_BASE_ID}/${recordId}/${encodeURIComponent(fieldName)}/uploadAttachment`;
+        
+        console.log(`Uploading ${imageData.filename} to field ${fieldName} for record ${recordId}`);
+        
+        const response = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contentType: imageData.contentType,
+            file: imageData.base64,
+            filename: imageData.filename
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Upload failed for ${fieldName}:`, response.status, errorText);
+          throw new Error(`Upload failed: ${response.status} ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log(`Successfully uploaded ${imageData.filename} to ${fieldName}:`, result);
+        return result;
+      };
+
       // Process logo file
-      let logoBase64: string = '';
+      let logoData: { base64: string; contentType: string; filename: string } | null = null;
       if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
         try {
           console.log('Processing logo file...');
@@ -204,8 +250,8 @@ export default function Submit() {
             type: logoFile.type
           });
           
-          logoBase64 = await processImageFile(logoFile);
-          console.log('Logo processed successfully, base64 length:', logoBase64.length);
+          logoData = await processImageFile(logoFile);
+          console.log('Logo processed successfully, base64 length:', logoData.base64.length);
           
         } catch (error) {
           console.error('Error processing logo:', error);
@@ -214,14 +260,14 @@ export default function Submit() {
             description: `Could not process logo file: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without logo.`,
             variant: "destructive",
           });
-          logoBase64 = '';
+          logoData = null;
         }
       } else {
         console.log('No logo file to process or invalid URL');
       }
 
       // Process highlight image file
-      let highlightImageBase64: string = '';
+      let highlightImageData: { base64: string; contentType: string; filename: string } | null = null;
       if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
         try {
           console.log('Processing highlight image file...');
@@ -237,8 +283,8 @@ export default function Submit() {
             type: imageFile.type
           });
           
-          highlightImageBase64 = await processImageFile(imageFile);
-          console.log('Highlight image processed successfully, base64 length:', highlightImageBase64.length);
+          highlightImageData = await processImageFile(imageFile);
+          console.log('Highlight image processed successfully, base64 length:', highlightImageData.base64.length);
           
         } catch (error) {
           console.error('Error processing highlight image:', error);
@@ -247,13 +293,13 @@ export default function Submit() {
             description: `Could not process highlight image: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without image.`,
             variant: "destructive",
           });
-          highlightImageBase64 = '';
+          highlightImageData = null;
         }
       } else {
         console.log('No highlight image to process or invalid URL');
       }
 
-      // FULL VERSION - Send all fields using exact Airtable field names
+      // STEP 1: Create record with text fields only (no attachments yet)
       const submissionData: any = {
         "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
@@ -277,21 +323,13 @@ export default function Submit() {
         "Status": "Pending Review"
       };
 
-      // Store images as base64 in text fields (since attachment fields have CORS issues)
-      if (logoBase64) {
-        submissionData["Logo Base64"] = logoBase64;
-      }
-      if (highlightImageBase64) {
-        submissionData["Highlight Image Base64"] = highlightImageBase64;
-      }
-
       console.log("=== SUBMISSION DATA DEBUG ===");
-      console.log("Logo base64 length:", logoBase64?.length || 0);
-      console.log("Highlight Image base64 length:", highlightImageBase64?.length || 0);
+      console.log("Logo data:", logoData ? `${logoData.filename} (${logoData.base64.length} chars)` : 'None');
+      console.log("Highlight Image data:", highlightImageData ? `${highlightImageData.filename} (${highlightImageData.base64.length} chars)` : 'None');
       console.log("Full submission data:", submissionData);
       console.log("=== END DEBUG ===");
 
-      // Submit directly to Airtable using the service (bypass API route)
+      // Submit directly to Airtable using two-step process
       const airtableService = {
         async createSubmission(data: any) {
           const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
@@ -304,15 +342,8 @@ export default function Submit() {
 
           const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
           
-          // Data is already properly formatted for Airtable
-          const fields = { ...data };
-
-          console.log('Sending to Airtable:', {
-            url: airtableUrl,
-            fields: fields,
-            logoAttachment: fields.Logo,
-            highlightImageAttachment: fields['Highlight Image']
-          });
+          // STEP 1: Create record with text fields only (no attachments)
+          console.log('Creating Airtable record with data:', data);
 
           const response = await fetch(airtableUrl, {
             method: 'POST',
@@ -321,11 +352,7 @@ export default function Submit() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              records: [
-                {
-                  fields: fields
-                }
-              ]
+              fields: data
             })
           });
 
@@ -335,11 +362,58 @@ export default function Submit() {
             throw new Error(`Airtable API error: ${errorData.error?.message || response.statusText}`);
           }
 
-          return response.json();
+          const result = await response.json();
+          console.log('Airtable record created successfully:', result);
+          return result;
         }
       };
 
+      console.log('Creating Airtable record...');
       const result = await airtableService.createSubmission(submissionData);
+      const recordId = result.id;
+      console.log('Record created with ID:', recordId);
+      
+      // STEP 2: Upload attachments to the created record
+      const uploadPromises = [];
+      
+      if (logoData) {
+        console.log('Uploading logo attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Logo', logoData)
+            .then(() => console.log('Logo uploaded successfully'))
+            .catch(error => {
+              console.error('Logo upload failed:', error);
+              toast({
+                title: "Logo upload failed",
+                description: "The submission was created but the logo couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      if (highlightImageData) {
+        console.log('Uploading highlight image attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Highlight Image', highlightImageData)
+            .then(() => console.log('Highlight image uploaded successfully'))
+            .catch(error => {
+              console.error('Highlight image upload failed:', error);
+              toast({
+                title: "Highlight image upload failed",
+                description: "The submission was created but the highlight image couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      // Wait for all uploads to complete (but don't fail if some uploads fail)
+      if (uploadPromises.length > 0) {
+        console.log('Waiting for attachment uploads to complete...');
+        await Promise.allSettled(uploadPromises);
+        console.log('All attachment uploads completed');
+      }
       
       toast({
         title: "Submission successful!",
