@@ -141,7 +141,7 @@ export default function Submit() {
 
       // MINIMAL TEST VERSION - Only send basic fields that definitely exist
       const submissionData = {
-        "Email": values["Submitted By (Email)"],
+        "E-mail": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
@@ -156,7 +156,7 @@ export default function Submit() {
         async createSubmission(data: any) {
           const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
           const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID;
-          const AIRTABLE_TABLE_NAME = 'Directory Submissions';
+          const AIRTABLE_TABLE_NAME = 'Submissions';
 
           if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
             throw new Error('Airtable configuration missing in environment variables');
