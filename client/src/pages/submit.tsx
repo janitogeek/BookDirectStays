@@ -194,7 +194,7 @@ export default function Submit() {
         "LinkedIn": values["LinkedIn"] || "",
         "TikTok": values["TikTok"] || "",
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
-        "Plan": values["Choose Your Listing Type"],
+        "Plan": values["Choose Your Listing Type"] === "Free" ? "Free Listing" : values["Choose Your Listing Type"] === "Featured ($49.99)" ? "Featured Listing" : values["Choose Your Listing Type"],
         "Submission Date": new Date().toISOString().split('T')[0],
         "Status": "Pending Review"
       };
