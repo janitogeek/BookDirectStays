@@ -58,16 +58,18 @@ export default function Home() {
             backgroundImage: "url('https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
               Book Vacation Rentals Direct
             </h1>
-            <p className="text-xl lg:text-2xl text-blue-100 mb-8 font-light">
-              <span className="text-blue-400">No fees, just better stays</span> - Save 10-20%
+            <p className="text-2xl lg:text-3xl mb-8">
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-bold">No fees,</span> 
+              <span className="text-white font-bold"> just better stays</span> - 
+              <span className="text-white font-bold"> Save 10-20%</span>
             </p>
-            <p className="text-lg text-blue-100/90 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto font-medium">
               World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
             </p>
             
