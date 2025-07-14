@@ -318,7 +318,7 @@ export default function Submit() {
         "LinkedIn": values["LinkedIn"] || "",
         "TikTok": values["TikTok"] || "",
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
-        "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing – €99.99/year" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing – €499.99/year" : values["Choose Your Listing Type"],
+        "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing - 99.99/y" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing - 499.99/y" : values["Choose Your Listing Type"],
         "Submission Date": new Date().toISOString().split('T')[0],
         "Status": "Pending Review"
       };
