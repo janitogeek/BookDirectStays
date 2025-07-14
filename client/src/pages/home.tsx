@@ -55,7 +55,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
+            backgroundImage: "url('https://images.unsplash.com/photo-1580541832626-2a7131ee809f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
           }}
         ></div>
         <div className="absolute inset-0 bg-blue-900/70"></div>
@@ -65,7 +65,7 @@ export default function Home() {
               Book Vacation Rentals Direct
             </h1>
             <p className="text-xl lg:text-2xl text-blue-100 mb-8 font-light">
-              <span className="text-blue-400">Skip OTA Fees</span> - Save 10-20%
+              <span className="text-blue-400">No fees, just better stays</span> - Save 10-20%
             </p>
             <p className="text-lg text-blue-100/90 mb-12 max-w-2xl mx-auto">
               World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
