@@ -166,7 +166,7 @@ export default function Submit() {
 
       // Convert FormData to object for Airtable (using exact column names from your Airtable table)
       const submissionData = {
-        "E-mail": values["Submitted By (Email)"],
+        "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
