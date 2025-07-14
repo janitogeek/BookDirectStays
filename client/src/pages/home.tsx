@@ -288,24 +288,22 @@ export default function Home() {
         </section>
       )}
 
-      {/* CTA Section - Clean and Focused */}
-      <section className="py-20 bg-blue-600">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-              Ready to Save on Your Next Vacation?
-            </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of travelers who save 15.7% on average by booking directly with property managers.
-            </p>
-            <Link href="/submit">
-              <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold">
-                List Your Property
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+             {/* CTA Section - Clean and Focused */}
+       <section className="py-20 bg-blue-600">
+         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="max-w-4xl mx-auto text-center">
+             <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+               Ready to Save on Your Next Vacation?
+             </h2>
+             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+               Join thousands of travelers who save 15.7% on average by booking directly with property managers.
+             </p>
+             <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold">
+               Start Searching Properties
+             </Button>
+           </div>
+         </div>
+       </section>
 
       {/* Footer Citation */}
       <section className="py-8 bg-gray-100">
