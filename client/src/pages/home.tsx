@@ -64,7 +64,7 @@ export default function Home() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
               Book Vacation Rentals Direct
             </h1>
-            <p className="text-2xl lg:text-3xl mb-8">
+            <p className="text-3xl lg:text-4xl mb-8">
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-bold">No fees,</span> 
               <span className="text-white"> just better stays</span> 
               <span className="text-white"> - </span>
