@@ -164,30 +164,30 @@ export default function Submit() {
         formData.append('Highlight_Image', imageFile);
       }
 
-      // Convert FormData to object for Airtable
+      // Convert FormData to object for Airtable (using exact column names)
       const submissionData = {
-        Brand_name: values["Brand Name"],
-        Direct_Booking_Website: values["Direct Booking Website"],
-        Number_of_Listings: values["Number of Listings"],
-        E_mail: values["Submitted By (Email)"],
-        field9: values["One-line Description"],
-        field10: values["Why Book With You?"],
-        field11: values["Choose Your Listing Type"],
-        Countries: JSON.stringify(values["Countries"]),
-        Cities_Regions: JSON.stringify(values["Cities / Regions"]),
-        field13: JSON.stringify(values["Ideal For"] || []),
-        field14: (values["Is your brand pet-friendly?"] || false).toString(),
-        field15: JSON.stringify(values["Perks / Amenities"] || []),
-        field16: (values["Eco-Conscious Stay?"] || false).toString(),
-        field17: (values["Remote-Work Friendly?"] || false).toString(),
-        field18: JSON.stringify(values["Vibe / Aesthetic"] || []),
-        field19: values["Instagram"] || "",
-        field20: values["Facebook"] || "",
-        field21: values["LinkedIn"] || "",
-        field22: values["TikTok"] || "",
-        field23: values["YouTube / Video Tour"] || "",
-        Logo: values["Logo Upload"]?.url || "",
-        Highlight_Image: values["Highlight Image"]?.url || "",
+        "Brand Name": values["Brand Name"],
+        "Direct Booking Website": values["Direct Booking Website"],
+        "Number of Listings": values["Number of Listings"],
+        "Submitted By (Email)": values["Submitted By (Email)"],
+        "One-line Description": values["One-line Description"],
+        "Why Book With You?": values["Why Book With You?"],
+        "Choose Your Listing Type": values["Choose Your Listing Type"],
+        "Countries": JSON.stringify(values["Countries"]),
+        "Cities / Regions": JSON.stringify(values["Cities / Regions"]),
+        "Ideal For": JSON.stringify(values["Ideal For"] || []),
+        "Is your brand pet-friendly?": (values["Is your brand pet-friendly?"] || false).toString(),
+        "Perks / Amenities": JSON.stringify(values["Perks / Amenities"] || []),
+        "Eco-Conscious Stay?": (values["Eco-Conscious Stay?"] || false).toString(),
+        "Remote-Work Friendly?": (values["Remote-Work Friendly?"] || false).toString(),
+        "Vibe / Aesthetic": JSON.stringify(values["Vibe / Aesthetic"] || []),
+        "Instagram": values["Instagram"] || "",
+        "Facebook": values["Facebook"] || "",
+        "LinkedIn": values["LinkedIn"] || "",
+        "TikTok": values["TikTok"] || "",
+        "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
+        "Logo Upload": values["Logo Upload"]?.url || "",
+        "Highlight Image": values["Highlight Image"]?.url || "",
       };
 
       // Submit directly to Airtable using the service (bypass API route)
