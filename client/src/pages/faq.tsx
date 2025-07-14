@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { faqs as staticFaqs } from "@/lib/data";
 import {
   Accordion,
@@ -13,26 +11,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
 export default function FAQ() {
-  // Fetch FAQs with fallback to static data
-  const { data: faqs, isLoading } = useQuery({
-    queryKey: ["/api/faqs"],
-    queryFn: async () => {
-      try {
-        const res = await apiRequest("GET", "/api/faqs", undefined);
-        return res.json();
-      } catch (error) {
-        // Fallback to static data if API fails
-        return staticFaqs;
-      }
-    }
-  });
-
-  // Use static FAQs as fallback
-  const faqData = faqs || staticFaqs;
+  // For now, just use static FAQs directly to ensure they show up
+  const faqData = staticFaqs;
+  const isLoading = false;
 
   // Group FAQs by category
   const travelerFaqs = faqData?.filter((faq: any) => faq.category === "traveler") || [];
   const hostFaqs = faqData?.filter((faq: any) => faq.category === "host") || [];
+
+  console.log("FAQ Data:", faqData);
+  console.log("Traveler FAQs:", travelerFaqs);
+  console.log("Host FAQs:", hostFaqs);
 
   return (
     <div className="container mx-auto px-4 py-12">
