@@ -24,7 +24,7 @@ import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
 import { airtableService } from "@/lib/airtable";
 
-const planEnum = z.enum(["Free", "Featured ($49.99)"]);
+const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const formSchema = z.object({
   "Brand Name": z.string().min(2),
   "Direct Booking Website": z.string().url(),
@@ -114,7 +114,7 @@ export default function Submit() {
       "LinkedIn": "",
       "TikTok": "",
       "YouTube / Video Tour": "",
-      "Choose Your Listing Type": "Free",
+      "Choose Your Listing Type": "Basic (€99.99/year)",
       "Submitted By (Email)": "",
     },
     mode: "onChange",
@@ -318,7 +318,7 @@ export default function Submit() {
         "LinkedIn": values["LinkedIn"] || "",
         "TikTok": values["TikTok"] || "",
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
-        "Plan": values["Choose Your Listing Type"] === "Free" ? "Free Listing – 0 EUR" : values["Choose Your Listing Type"] === "Featured ($49.99)" ? "Featured Listing – 49.99 EUR" : values["Choose Your Listing Type"],
+        "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing – €99.99/year" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing – €499.99/year" : values["Choose Your Listing Type"],
         "Submission Date": new Date().toISOString().split('T')[0],
         "Status": "Pending Review"
       };
@@ -660,18 +660,18 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">Choose your plan</h2>
               <div className="flex flex-col md:flex-row gap-6">
                 <div
-                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Free" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
-                  onClick={() => form.setValue("Choose Your Listing Type", "Free")}
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Basic (€99.99/year)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  onClick={() => form.setValue("Choose Your Listing Type", "Basic (€99.99/year)")}
                   tabIndex={0}
                   role="button"
-                  aria-pressed={form.watch("Choose Your Listing Type") === "Free"}
+                  aria-pressed={form.watch("Choose Your Listing Type") === "Basic (€99.99/year)"}
                 >
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <div />
-                    <span className="inline-block bg-gray-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">0 EUR</span>
+                    <span className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€99.99/year</span>
                   </div>
-                  <h2 className="text-2xl font-bold mb-1">Free Listing</h2>
-                  <p className="text-gray-500 mb-4">Basic listing in our directory</p>
+                  <h2 className="text-2xl font-bold mb-1">Basic Listing</h2>
+                  <p className="text-gray-500 mb-4">Standard listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Detailed stays info</li>
@@ -679,42 +679,44 @@ export default function Submit() {
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Get listed in 1-3 months</li>
                   </ul>
                   <div className="mt-auto">
-                    <Button variant={form.watch("Choose Your Listing Type") === "Free" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Free")}>Select Free</Button>
+                    <Button variant={form.watch("Choose Your Listing Type") === "Basic (€99.99/year)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Basic (€99.99/year)")}>Select Basic</Button>
                   </div>
                 </div>
                 <div
-                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
-                  onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  onClick={() => form.setValue("Choose Your Listing Type", "Premium (€499.99/year)")}
                   tabIndex={0}
                   role="button"
-                  aria-pressed={form.watch("Choose Your Listing Type") === "Featured ($49.99)"}
+                  aria-pressed={form.watch("Choose Your Listing Type") === "Premium (€499.99/year)"}
                 >
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
-                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">49.99 EUR</span>
+                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</span>
                   </div>
-                  <h2 className="text-2xl font-bold mb-1">Featured Listing</h2>
-                  <p className="text-gray-500 mb-4">Premium placement and enhanced features</p>
-                  <div className="mb-2 font-medium text-gray-700">Same as Free Listing + :</div>
+                  <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
+                  <p className="text-gray-500 mb-4">Priority placement with marketing support</p>
+                  <div className="mb-2 font-medium text-gray-700">Same as Basic Listing + :</div>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Priority placement in search results</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Featured badge for increased visibility</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Social media ads support</li>
+                    <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Website banner ads</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Get listed instantly</li>
                   </ul>
                   <div className="mt-auto">
-                    <Button variant={form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Featured ($49.99)")}>Select Featured</Button>
+                    <Button variant={form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? "default" : "outline"} className="w-full" type="button" onClick={() => form.setValue("Choose Your Listing Type", "Premium (€499.99/year)")}>Select Premium</Button>
                   </div>
                 </div>
               </div>
               {/* Dynamic summary now directly below the plan boxes */}
               <div className="flex justify-end mt-4">
-                {form.watch("Choose Your Listing Type") === "Featured ($49.99)" ? (
+                {form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? (
                   <div className="text-green-800 bg-green-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
-                    Featured Listing — Total: 49.99 EUR
+                    Premium Listing — Total: €499.99/year
                   </div>
                 ) : (
-                  <div className="text-gray-800 bg-gray-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
-                    Free Listing — Total: 0 EUR
+                  <div className="text-blue-800 bg-blue-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
+                    Basic Listing — Total: €99.99/year
                   </div>
                 )}
               </div>
