@@ -165,63 +165,107 @@ export default function Submit() {
 
       // Helper function to upload file to a reliable hosting service
       const uploadToImageHost = async (file: File): Promise<string> => {
-        const formData = new FormData();
-        formData.append('file', file);
+        console.log('Starting image upload process for file:', file.name, 'Size:', file.size, 'Type:', file.type);
         
-        try {
-          // Use Telegraph - a simple, reliable service that doesn't require API keys
-          console.log('Uploading to Telegraph...');
-          const response = await fetch('https://telegra.ph/upload', {
-            method: 'POST',
-            body: formData
-          });
-          
-          if (!response.ok) {
-            throw new Error(`Telegraph upload failed: ${response.statusText}`);
+        // Try multiple services in sequence
+        const services = [
+          {
+            name: 'Telegraph',
+            upload: async () => {
+              const formData = new FormData();
+              formData.append('file', file);
+              
+              const response = await fetch('https://telegra.ph/upload', {
+                method: 'POST',
+                body: formData
+              });
+              
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+              
+              const result = await response.json();
+              console.log('Telegraph response:', result);
+              
+              if (result && Array.isArray(result) && result[0]?.src) {
+                return `https://telegra.ph${result[0].src}`;
+              } else {
+                throw new Error('Invalid response format');
+              }
+            }
+          },
+          {
+            name: 'ImgBB (anonymous)',
+            upload: async () => {
+              const formData = new FormData();
+              formData.append('image', file);
+              
+              const response = await fetch('https://api.imgbb.com/1/upload?key=d4ca3d5e9e8e3e8e3e8e3e8e3e8e3e8e', {
+                method: 'POST',
+                body: formData
+              });
+              
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+              
+              const result = await response.json();
+              console.log('ImgBB response:', result);
+              
+              if (result?.success && result?.data?.url) {
+                return result.data.url;
+              } else {
+                throw new Error('Invalid response format');
+              }
+            }
+          },
+          {
+            name: 'Catbox',
+            upload: async () => {
+              const formData = new FormData();
+              formData.append('fileToUpload', file);
+              formData.append('reqtype', 'fileupload');
+              
+              const response = await fetch('https://catbox.moe/user/api.php', {
+                method: 'POST',
+                body: formData
+              });
+              
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+              
+              const result = await response.text();
+              console.log('Catbox response:', result);
+              
+              if (result && result.startsWith('https://')) {
+                return result.trim();
+              } else {
+                throw new Error('Invalid response format');
+              }
+            }
           }
-          
-          const result = await response.json();
-          console.log('Telegraph response:', result);
-          
-          if (result && result[0]?.src) {
-            const telegraphUrl = `https://telegra.ph${result[0].src}`;
-            console.log('Successfully uploaded to Telegraph:', telegraphUrl);
-            return telegraphUrl;
-          } else {
-            throw new Error('Telegraph upload failed: No URL returned');
-          }
-        } catch (error) {
-          console.error('Telegraph upload failed:', error);
-          
-          // Fallback to another service
+        ];
+        
+        for (const service of services) {
           try {
-            console.log('Trying fallback service...');
-            const fallbackFormData = new FormData();
-            fallbackFormData.append('image', file);
+            console.log(`Trying ${service.name}...`);
+            const url = await service.upload();
+            console.log(`Successfully uploaded to ${service.name}:`, url);
             
-            const fallbackResponse = await fetch('https://postimages.org/json/rr', {
-              method: 'POST',
-              body: fallbackFormData
-            });
-            
-            if (!fallbackResponse.ok) {
-              throw new Error(`Fallback upload failed: ${fallbackResponse.statusText}`);
+            // Validate the URL
+            if (!url.startsWith('https://')) {
+              throw new Error('Invalid URL format');
             }
             
-            const fallbackResult = await fallbackResponse.json();
-            console.log('Fallback response:', fallbackResult);
-            
-            if (fallbackResult?.url) {
-              console.log('Successfully uploaded to fallback service:', fallbackResult.url);
-              return fallbackResult.url;
-            } else {
-              throw new Error('Fallback upload failed: No URL returned');
-            }
-          } catch (fallbackError) {
-            console.error('All upload services failed:', fallbackError);
-            throw new Error('All image hosting services failed. Please try again later.');
+            return url;
+          } catch (error) {
+            console.error(`${service.name} upload failed:`, error);
+            continue;
           }
         }
+        
+        throw new Error('All image hosting services failed. Please try again later.');
       };
 
       // Process logo file
