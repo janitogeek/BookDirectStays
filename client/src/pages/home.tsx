@@ -5,12 +5,10 @@ import PropertyCard from "@/components/property-card";
 import CountryTags from "@/components/country-tags";
 import CountryFilter from "@/components/country-filter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [, setLocation] = useLocation();
@@ -39,11 +37,7 @@ export default function Home() {
     setVisibleCount(prevCount => prevCount + 6);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Searching for:", searchTerm);
-    // Implement search functionality
-  };
+
   
   const handleCountryChange = (countrySlugs: string[]) => {
     setSelectedCountries(countrySlugs);
@@ -71,22 +65,15 @@ export default function Home() {
               World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
             </p>
             
-            {/* Search Bar */}
-            <form onSubmit={handleSearch} className="relative max-w-2xl mx-auto mb-16">
-              <Input 
-                type="text" 
-                placeholder="Search verified direct booking sites..." 
-                className="w-full py-6 px-8 rounded-full text-gray-700 bg-white/95 shadow-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-300 border-0 text-lg"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            {/* Find a Host Button */}
+            <div className="relative max-w-2xl mx-auto mb-16">
               <Button 
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all shadow-lg"
+                onClick={() => setLocation("/find-host")}
+                className="w-full py-6 px-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-lg font-semibold"
               >
-                Search
+                Find a Host Now!
               </Button>
-            </form>
+            </div>
 
             {/* Key Benefits - Clean Cards */}
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
