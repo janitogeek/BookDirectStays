@@ -173,14 +173,30 @@ export default function Submit() {
       
       console.log('Found email field:', emailField?.name);
 
-      // MINIMAL TEST VERSION - Only send basic fields that definitely exist
+      // FULL VERSION - Send all fields using exact Airtable field names
       const submissionData = {
         "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
+        "Countries": values["Countries"].join(", "),
+        "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
+        "Logo": [], // Skip for now - will implement file upload later
+        "Highlight Image": [], // Skip for now - will implement file upload later
         "One-line Description": values["One-line Description"],
-        "Why Book With You": values["Why Book With You?"]
+        "Why Book With You": values["Why Book With You?"],
+        "Types of Stays": values["Types of Stays"]?.join(", ") || "",
+        "Ideal For": values["Ideal For"]?.join(", ") || "",
+        "Perks / Amenities": values["Perks / Amenities"]?.join(", ") || "",
+        "Vibe / Aesthetic": values["Vibe / Aesthetic"]?.join(", ") || "",
+        "Instagram": values["Instagram"] || "",
+        "Facebook": values["Facebook"] || "",
+        "LinkedIn": values["LinkedIn"] || "",
+        "TikTok": values["TikTok"] || "",
+        "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
+        "Plan": values["Choose Your Listing Type"],
+        "Submission Date": new Date().toISOString().split('T')[0],
+        "Status": "Pending Review"
       };
 
       console.log("Sending to Airtable:", submissionData);
