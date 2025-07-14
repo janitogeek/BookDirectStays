@@ -139,29 +139,10 @@ export default function Submit() {
         return new File([blob], fileName, { type: blob.type });
       };
 
-      // Prepare logo attachment for Airtable
+      // For now, we'll skip file attachments and just send the form data
+      // TODO: Implement proper file upload to cloud storage service
       let logoAttachment: any[] = [];
-      if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
-        const logoFile = await getFileFromBlobUrl(values["Logo Upload"].url, values["Logo Upload"].name);
-        const logoBase64 = await fileToBase64(logoFile);
-        logoAttachment = [{
-          filename: values["Logo Upload"].name,
-          contents: logoBase64.split(',')[1], // Remove data:image/png;base64, prefix
-          contentType: logoFile.type
-        }];
-      }
-
-      // Prepare highlight image attachment for Airtable
       let highlightImageAttachment: any[] = [];
-      if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
-        const imageFile = await getFileFromBlobUrl(values["Highlight Image"].url, values["Highlight Image"].name);
-        const imageBase64 = await fileToBase64(imageFile);
-        highlightImageAttachment = [{
-          filename: values["Highlight Image"].name,
-          contents: imageBase64.split(',')[1], // Remove data:image/png;base64, prefix
-          contentType: imageFile.type
-        }];
-      }
 
       // Convert FormData to object for Airtable (using exact column names from your Airtable table)
       const submissionData = {
