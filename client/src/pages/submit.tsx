@@ -169,7 +169,7 @@ export default function Submit() {
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
-        "Submitted By (Email)": values["Submitted By (Email)"],
+        "Email": values["Submitted By (Email)"],
         "One-line Description": values["One-line Description"],
         "Why Book With You?": values["Why Book With You?"],
         "Choose Your Listing Type": values["Choose Your Listing Type"],
