@@ -163,113 +163,32 @@ export default function Submit() {
       
       console.log('Found email field:', emailField?.name);
 
-      // Helper function to upload file to a reliable hosting service
-      const uploadToImageHost = async (file: File): Promise<string> => {
-        console.log('Starting image upload process for file:', file.name, 'Size:', file.size, 'Type:', file.type);
+      // Helper function to convert file to base64 for storage in Airtable text fields
+      const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+        });
+      };
+
+      // Process image file and return base64 data
+      const processImageFile = async (file: File): Promise<string> => {
+        console.log(`Processing image file: ${file.name} Size: ${file.size} Type: ${file.type}`);
         
-        // Try multiple services in sequence
-        const services = [
-          {
-            name: 'Telegraph',
-            upload: async () => {
-              const formData = new FormData();
-              formData.append('file', file);
-              
-              const response = await fetch('https://telegra.ph/upload', {
-                method: 'POST',
-                body: formData
-              });
-              
-              if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-              }
-              
-              const result = await response.json();
-              console.log('Telegraph response:', result);
-              
-              if (result && Array.isArray(result) && result[0]?.src) {
-                return `https://telegra.ph${result[0].src}`;
-              } else {
-                throw new Error('Invalid response format');
-              }
-            }
-          },
-          {
-            name: 'ImgBB (anonymous)',
-            upload: async () => {
-              const formData = new FormData();
-              formData.append('image', file);
-              
-              const response = await fetch('https://api.imgbb.com/1/upload?key=d4ca3d5e9e8e3e8e3e8e3e8e3e8e3e8e', {
-                method: 'POST',
-                body: formData
-              });
-              
-              if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-              }
-              
-              const result = await response.json();
-              console.log('ImgBB response:', result);
-              
-              if (result?.success && result?.data?.url) {
-                return result.data.url;
-              } else {
-                throw new Error('Invalid response format');
-              }
-            }
-          },
-          {
-            name: 'Catbox',
-            upload: async () => {
-              const formData = new FormData();
-              formData.append('fileToUpload', file);
-              formData.append('reqtype', 'fileupload');
-              
-              const response = await fetch('https://catbox.moe/user/api.php', {
-                method: 'POST',
-                body: formData
-              });
-              
-              if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-              }
-              
-              const result = await response.text();
-              console.log('Catbox response:', result);
-              
-              if (result && result.startsWith('https://')) {
-                return result.trim();
-              } else {
-                throw new Error('Invalid response format');
-              }
-            }
-          }
-        ];
-        
-        for (const service of services) {
-          try {
-            console.log(`Trying ${service.name}...`);
-            const url = await service.upload();
-            console.log(`Successfully uploaded to ${service.name}:`, url);
-            
-            // Validate the URL
-            if (!url.startsWith('https://')) {
-              throw new Error('Invalid URL format');
-            }
-            
-            return url;
-          } catch (error) {
-            console.error(`${service.name} upload failed:`, error);
-            continue;
-          }
+        try {
+          const base64Data = await fileToBase64(file);
+          console.log(`Successfully converted to base64, length: ${base64Data.length}`);
+          return base64Data;
+        } catch (error) {
+          console.error('Error converting file to base64:', error);
+          throw new Error('Failed to process image');
         }
-        
-        throw new Error('All image hosting services failed. Please try again later.');
       };
 
       // Process logo file
-      let logoAttachment: any[] = [];
+      let logoBase64: string = '';
       if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
         try {
           console.log('Processing logo file...');
@@ -285,30 +204,24 @@ export default function Submit() {
             type: logoFile.type
           });
           
-          const logoUrl = await uploadToImageHost(logoFile);
-          console.log('Logo uploaded successfully to:', logoUrl);
+          logoBase64 = await processImageFile(logoFile);
+          console.log('Logo processed successfully, base64 length:', logoBase64.length);
           
-          // Create proper Airtable attachment format
-          logoAttachment = [{ 
-            url: logoUrl
-          }];
-          
-          console.log('Logo attachment created:', logoAttachment);
         } catch (error) {
           console.error('Error processing logo:', error);
           toast({
             title: "Logo upload failed",
-            description: `Could not upload logo file: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without logo.`,
+            description: `Could not process logo file: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without logo.`,
             variant: "destructive",
           });
-          logoAttachment = [];
+          logoBase64 = '';
         }
       } else {
         console.log('No logo file to process or invalid URL');
       }
 
       // Process highlight image file
-      let highlightImageAttachment: any[] = [];
+      let highlightImageBase64: string = '';
       if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
         try {
           console.log('Processing highlight image file...');
@@ -324,23 +237,17 @@ export default function Submit() {
             type: imageFile.type
           });
           
-          const imageUrl = await uploadToImageHost(imageFile);
-          console.log('Highlight image uploaded successfully to:', imageUrl);
+          highlightImageBase64 = await processImageFile(imageFile);
+          console.log('Highlight image processed successfully, base64 length:', highlightImageBase64.length);
           
-          // Create proper Airtable attachment format
-          highlightImageAttachment = [{ 
-            url: imageUrl
-          }];
-          
-          console.log('Highlight image attachment created:', highlightImageAttachment);
         } catch (error) {
           console.error('Error processing highlight image:', error);
           toast({
             title: "Highlight image upload failed",
-            description: `Could not upload highlight image: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without image.`,
+            description: `Could not process highlight image: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without image.`,
             variant: "destructive",
           });
-          highlightImageAttachment = [];
+          highlightImageBase64 = '';
         }
       } else {
         console.log('No highlight image to process or invalid URL');
@@ -370,17 +277,17 @@ export default function Submit() {
         "Status": "Pending Review"
       };
 
-      // Only add attachment fields if they have content
-      if (logoAttachment.length > 0) {
-        submissionData["Logo"] = logoAttachment;
+      // Store images as base64 in text fields (since attachment fields have CORS issues)
+      if (logoBase64) {
+        submissionData["Logo Base64"] = logoBase64;
       }
-      if (highlightImageAttachment.length > 0) {
-        submissionData["Highlight Image"] = highlightImageAttachment;
+      if (highlightImageBase64) {
+        submissionData["Highlight Image Base64"] = highlightImageBase64;
       }
 
       console.log("=== SUBMISSION DATA DEBUG ===");
-      console.log("Logo attachment:", logoAttachment);
-      console.log("Highlight Image attachment:", highlightImageAttachment);
+      console.log("Logo base64 length:", logoBase64?.length || 0);
+      console.log("Highlight Image base64 length:", highlightImageBase64?.length || 0);
       console.log("Full submission data:", submissionData);
       console.log("=== END DEBUG ===");
 

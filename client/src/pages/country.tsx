@@ -46,8 +46,71 @@ export default function Country() {
 
   const hasMore = listingsData?.hasMore || false;
 
+  // Breadcrumb structured data for AI understanding
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "BookDirectStays.com",
+        "item": "https://bookdirectstays.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Countries",
+        "item": "https://bookdirectstays.com/#countries"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": `${country?.name} Direct Booking Sites`,
+        "item": `https://bookdirectstays.com/country/${countrySlug}`
+      }
+    ]
+  };
+
+  // Country-specific structured data
+  const countryStructuredData = country ? {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    "name": `${country.name} Vacation Rentals`,
+    "description": `Find ${country.listingCount} direct booking vacation rental websites in ${country.name}. Skip OTA fees and book directly with property managers.`,
+    "url": `https://bookdirectstays.com/country/${countrySlug}`,
+    "containsPlace": {
+      "@type": "Country",
+      "name": country.name,
+      "identifier": country.code
+    },
+    "touristType": "Vacation Rental Seekers",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": `${country.name} Direct Booking Vacation Rentals`,
+      "numberOfItems": country.listingCount
+    }
+  } : null;
+
   return (
     <main>
+      {/* Structured Data for AI Understanding */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData)
+        }}
+      />
+      
+      {countryStructuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(countryStructuredData)
+          }}
+        />
+      )}
+
       {/* Country Tags Section */}
       <CountryTags countries={countries || []} isLoading={isCountriesLoading} activeCountry={countrySlug} />
 
@@ -113,7 +176,7 @@ export default function Country() {
               </div>
             ) : (
               listingsData?.listings.map((listing: any) => (
-                <PropertyCard key={listing.id} listing={listing} />
+                <PropertyCard key={listing.id} property={listing} />
               ))
             )}
           </div>

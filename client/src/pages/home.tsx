@@ -455,7 +455,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
+
       {/* Enhanced Local SEO Benefits Section with Expert Citations */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -556,22 +556,22 @@ export default function Home() {
             <form onSubmit={handleEmailSubscribe} className="max-w-md mx-auto">
               <div className="flex gap-3">
                 <input
-                  type="email"
+              type="email" 
                   placeholder="Enter your email address"
-                  required
+              required
                   className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+            />
                 <button
-                  type="submit"
+              type="submit" 
                   className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Subscribe
+            >
+              Subscribe
                 </button>
               </div>
               <p className="text-xs text-gray-400 mt-3">
                 Join travelers from 85+ countries. Unsubscribe anytime. Privacy policy compliant.
               </p>
-            </form>
+          </form>
             
             <div className="mt-8">
               <blockquote className="text-gray-300 italic">

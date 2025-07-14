@@ -1,133 +1,142 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { ExternalLink, MapPin, Star } from "lucide-react";
 import { Link } from "wouter";
-import { Info } from "lucide-react";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { Card, CardContent } from "./ui/card";
+import { Listing } from "@/lib/data";
 
 interface PropertyCardProps {
-  listing: {
-    id: number;
-    name: string;
-    description: string;
-    website: string;
-    logo: string;
-    image: string;
-    featured: boolean;
-    countries: string[];
-    whyBookWith?: string;
-    socials: {
-      facebook?: string;
-      instagram?: string;
-      linkedin?: string;
-    };
+  property: Listing;
+}
+
+export default function PropertyCard({ property }: PropertyCardProps) {
+  const getFlagEmoji = (countryCode: string) => {
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
   };
-}
 
-export default function PropertyCard({ listing }: PropertyCardProps) {
+  // Generate structured data for each property
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "TouristAttraction",
+    "name": property.name,
+    "description": property.description,
+    "url": property.website,
+    "image": property.image,
+    "logo": property.logo,
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": property.countries
+    },
+    "offers": {
+      "@type": "Offer",
+      "availability": "https://schema.org/InStock",
+      "priceValidUntil": "2025-12-31",
+      "description": "Direct booking available - no OTA fees"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": property.name,
+      "url": property.website,
+      "sameAs": [
+        property.socials.facebook,
+        property.socials.instagram,
+        property.socials.linkedin
+      ].filter(Boolean)
+    },
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": property.website,
+      "result": {
+        "@type": "Reservation",
+        "name": `Book ${property.name} directly`
+      }
+    }
+  };
+
   return (
-    <Card className="rounded-xl shadow-md overflow-hidden card-hover group">
-      <div className="relative overflow-hidden">
-        <img 
-          src={listing.image} 
-          alt={`${listing.name} properties`} 
-          className="listing-image transform transition-transform duration-300 group-hover:scale-105"
-        />
-        {listing.featured && (
-          <div className="absolute top-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">
-            Featured
-          </div>
-        )}
-      </div>
-      <CardContent className="p-6">
-        <div className="flex items-center mb-3">
-          <Avatar className="w-10 h-10 rounded-full mr-3">
-            <AvatarImage 
-              src={listing.logo} 
-              alt={`${listing.name} logo`}
-              className="object-cover"
-            />
-            <AvatarFallback>{listing.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <h3 className="text-xl font-semibold text-gray-800">{listing.name}</h3>
+    <>
+      {/* Structured Data for AI/LLM Understanding */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData)
+        }}
+      />
+      
+      <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 overflow-hidden">
+        <div className="relative">
+          <img 
+            src={property.image} 
+            alt={`${property.name} - Direct booking vacation rental`}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {property.featured && (
+            <Badge className="absolute top-3 left-3 bg-amber-500 text-white">
+              ✦ Featured
+            </Badge>
+          )}
         </div>
-        <p className="text-gray-600 mb-3">{listing.description}</p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {listing.countries.map((country, index) => (
-            <Link key={index} href={`/country/${slugify(country)}`}>
-              <Badge variant="outline" className="bg-gray-100 hover:bg-primary hover:text-white cursor-pointer">
-                {country}
-              </Badge>
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-2">
-            {listing.socials.facebook && (
-              <a 
-                href={listing.socials.facebook} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-500 hover:text-primary"
-                aria-label={`${listing.name} Facebook`}
-              >
-                <i className="fab fa-facebook"></i>
-              </a>
-            )}
-            {listing.socials.instagram && (
-              <a 
-                href={listing.socials.instagram} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-500 hover:text-primary"
-                aria-label={`${listing.name} Instagram`}
-              >
-                <i className="fab fa-instagram"></i>
-              </a>
-            )}
-            {listing.socials.linkedin && (
-              <a 
-                href={listing.socials.linkedin} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-gray-500 hover:text-primary"
-                aria-label={`${listing.name} LinkedIn`}
-              >
-                <i className="fab fa-linkedin"></i>
-              </a>
-            )}
+        
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <img 
+                src={property.logo} 
+                alt={`${property.name} logo`}
+                className="w-8 h-8 rounded-full object-cover border border-gray-200"
+              />
+              <h3 className="font-semibold text-lg group-hover:text-blue-600 transition-colors">
+                {property.name}
+              </h3>
+            </div>
           </div>
-          <Button
-            asChild
-            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-5 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
-          >
-            <a 
-              href={listing.website} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2"
+          
+          <div className="flex flex-wrap items-center gap-1 mb-3">
+            <MapPin className="h-4 w-4 text-gray-500" />
+            {property.countries.map((country, index) => (
+              <span key={country} className="text-sm text-gray-600">
+                {getFlagEmoji(country.substring(0, 2))} {country}
+                {index < property.countries.length - 1 && ", "}
+              </span>
+            ))}
+          </div>
+          
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+            {property.description}
+          </p>
+          
+          <div className="flex flex-col gap-2">
+            <Button 
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              asChild
             >
-              <span className="hidden sm:inline-block">Visit</span>
-              <span className="font-bold">Direct Booking Site</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </a>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+              <a 
+                href={property.website} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2"
+              >
+                <span>Visit Direct Booking Site</span>
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              size="sm"
+              asChild
+            >
+              <Link href={`/property/${property.id}`}>
+                View Details
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
-}
-
-// Helper function to convert country name to slug
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
 }
