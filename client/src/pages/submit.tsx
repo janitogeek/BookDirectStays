@@ -154,7 +154,9 @@ export default function Submit() {
         const directorySubmissionsTable = data.tables.find((table: any) => table.name === 'Directory Submissions');
         
         if (directorySubmissionsTable) {
-          console.log('Actual Airtable fields:', directorySubmissionsTable.fields.map((f: any) => f.name));
+          const fieldNames = directorySubmissionsTable.fields.map((f: any) => f.name);
+          console.log('Actual Airtable fields:', fieldNames);
+          console.log('Field names as list:', fieldNames.join(', '));
           return directorySubmissionsTable.fields;
         }
         
