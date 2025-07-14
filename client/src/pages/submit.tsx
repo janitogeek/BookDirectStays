@@ -122,16 +122,6 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // Helper function to convert file to base64
-      const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = error => reject(error);
-        });
-      };
-
       // Helper function to get file from blob URL
       const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {
         const response = await fetch(blobUrl);
@@ -173,34 +163,162 @@ export default function Submit() {
       
       console.log('Found email field:', emailField?.name);
 
+      // Helper function to upload file to temporary hosting service
+      const uploadToTempHost = async (file: File): Promise<string> => {
+        // Using a free temporary file hosting service
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        try {
+          // First try file.io
+          console.log('Attempting upload to file.io...');
+          const response = await fetch('https://file.io', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!response.ok) {
+            throw new Error(`file.io upload failed: ${response.statusText}`);
+          }
+          
+          const result = await response.json();
+          console.log('file.io response:', result);
+          
+          if (result.success && result.link) {
+            console.log('Successfully uploaded to file.io:', result.link);
+            return result.link;
+          } else {
+            throw new Error('file.io upload failed: No link returned');
+          }
+        } catch (error) {
+          console.error('file.io upload failed:', error);
+          
+          // Fallback: try 0x0.st
+          try {
+            console.log('Trying fallback service 0x0.st...');
+            const fallbackResponse = await fetch('https://0x0.st', {
+              method: 'POST',
+              body: formData
+            });
+            
+            if (!fallbackResponse.ok) {
+              throw new Error(`0x0.st upload failed: ${fallbackResponse.statusText}`);
+            }
+            
+            const fallbackUrl = await fallbackResponse.text();
+            console.log('Successfully uploaded to 0x0.st:', fallbackUrl.trim());
+            return fallbackUrl.trim();
+          } catch (fallbackError) {
+            console.error('Fallback upload also failed:', fallbackError);
+            
+            // Final fallback: try tmpfiles.org
+            try {
+              console.log('Trying final fallback tmpfiles.org...');
+              const tmpFormData = new FormData();
+              tmpFormData.append('file', file);
+              
+              const tmpResponse = await fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: tmpFormData
+              });
+              
+              if (!tmpResponse.ok) {
+                throw new Error(`tmpfiles.org upload failed: ${tmpResponse.statusText}`);
+              }
+              
+              const tmpResult = await tmpResponse.json();
+              console.log('tmpfiles.org response:', tmpResult);
+              
+              if (tmpResult.status === 'success' && tmpResult.data?.url) {
+                console.log('Successfully uploaded to tmpfiles.org:', tmpResult.data.url);
+                return tmpResult.data.url;
+              } else {
+                throw new Error('tmpfiles.org upload failed: No URL returned');
+              }
+            } catch (tmpError) {
+              console.error('All upload services failed:', tmpError);
+              throw new Error('All file upload services failed. Please try again later.');
+            }
+          }
+        }
+      };
+
       // Process logo file
       let logoAttachment: any[] = [];
       if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
         try {
+          console.log('Processing logo file...');
+          console.log('Logo file info:', {
+            url: values["Logo Upload"].url,
+            name: values["Logo Upload"].name
+          });
+          
           const logoFile = await getFileFromBlobUrl(values["Logo Upload"].url, values["Logo Upload"].name);
-          const logoBase64 = await fileToBase64(logoFile);
+          console.log('Logo file created:', {
+            name: logoFile.name,
+            size: logoFile.size,
+            type: logoFile.type
+          });
+          
+          const logoUrl = await uploadToTempHost(logoFile);
+          console.log('Logo uploaded successfully to:', logoUrl);
+          
           logoAttachment = [{ 
-            url: logoBase64,
+            url: logoUrl,
             filename: values["Logo Upload"].name 
           }];
+          
+          console.log('Logo attachment created:', logoAttachment);
         } catch (error) {
           console.error('Error processing logo:', error);
+          toast({
+            title: "Logo upload failed",
+            description: `Could not upload logo file: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without logo.`,
+            variant: "destructive",
+          });
+          logoAttachment = [];
         }
+      } else {
+        console.log('No logo file to process or invalid URL');
       }
 
       // Process highlight image file
       let highlightImageAttachment: any[] = [];
       if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
         try {
+          console.log('Processing highlight image file...');
+          console.log('Highlight image info:', {
+            url: values["Highlight Image"].url,
+            name: values["Highlight Image"].name
+          });
+          
           const imageFile = await getFileFromBlobUrl(values["Highlight Image"].url, values["Highlight Image"].name);
-          const imageBase64 = await fileToBase64(imageFile);
+          console.log('Highlight image file created:', {
+            name: imageFile.name,
+            size: imageFile.size,
+            type: imageFile.type
+          });
+          
+          const imageUrl = await uploadToTempHost(imageFile);
+          console.log('Highlight image uploaded successfully to:', imageUrl);
+          
           highlightImageAttachment = [{ 
-            url: imageBase64,
+            url: imageUrl,
             filename: values["Highlight Image"].name 
           }];
+          
+          console.log('Highlight image attachment created:', highlightImageAttachment);
         } catch (error) {
           console.error('Error processing highlight image:', error);
+          toast({
+            title: "Highlight image upload failed",
+            description: `Could not upload highlight image: ${error instanceof Error ? error.message : 'Unknown error'}. Submission will continue without image.`,
+            variant: "destructive",
+          });
+          highlightImageAttachment = [];
         }
+      } else {
+        console.log('No highlight image to process or invalid URL');
       }
 
       // FULL VERSION - Send all fields using exact Airtable field names
@@ -229,7 +347,11 @@ export default function Submit() {
         "Status": "Pending Review"
       };
 
-      console.log("Sending to Airtable:", submissionData);
+      console.log("=== SUBMISSION DATA DEBUG ===");
+      console.log("Logo attachment:", logoAttachment);
+      console.log("Highlight Image attachment:", highlightImageAttachment);
+      console.log("Full submission data:", submissionData);
+      console.log("=== END DEBUG ===");
 
       // Submit directly to Airtable using the service (bypass API route)
       const airtableService = {
