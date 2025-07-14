@@ -122,46 +122,45 @@ export default function Submit() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      // Create FormData for file uploads
-      const formData = new FormData();
-      
-      // Add all the form data - matching database field names exactly
-      formData.append('Brand_name', values["Brand Name"]);
-      formData.append('Direct_Booking_Website', values["Direct Booking Website"]);
-      formData.append('Number_of_Listings', values["Number of Listings"].toString());
-      formData.append('E_mail', values["Submitted By (Email)"]);
-      formData.append('Countries', JSON.stringify(values["Countries"]));
-      formData.append('Cities_Regions', JSON.stringify(values["Cities / Regions"]));
-      
-      // Map to the generic field names as per database schema
-      formData.append('field9', values["One-line Description"]);
-      formData.append('field10', values["Why Book With You?"]);
-      formData.append('field11', values["Choose Your Listing Type"]);
-      formData.append('field13', JSON.stringify(values["Ideal For"] || []));
-      formData.append('field14', (values["Is your brand pet-friendly?"] || false).toString());
-      formData.append('field15', JSON.stringify(values["Perks / Amenities"] || []));
-      formData.append('field16', (values["Eco-Conscious Stay?"] || false).toString());
-      formData.append('field17', (values["Remote-Work Friendly?"] || false).toString());
-      formData.append('field18', JSON.stringify(values["Vibe / Aesthetic"] || []));
-      formData.append('field19', values["Instagram"] || "");
-      formData.append('field20', values["Facebook"] || "");
-      formData.append('field21', values["LinkedIn"] || "");
-      formData.append('field22', values["TikTok"] || "");
-      formData.append('field23', values["YouTube / Video Tour"] || "");
-      
-      // Add files if they exist
-      if (values["Logo Upload"].url.startsWith('blob:')) {
-        const logoResponse = await fetch(values["Logo Upload"].url);
-        const logoBlob = await logoResponse.blob();
-        const logoFile = new File([logoBlob], values["Logo Upload"].name, { type: logoBlob.type });
-        formData.append('Logo', logoFile);
+      // Helper function to convert file to base64
+      const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+        });
+      };
+
+      // Helper function to get file from blob URL
+      const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
+        return new File([blob], fileName, { type: blob.type });
+      };
+
+      // Prepare logo attachment for Airtable
+      let logoAttachment: any[] = [];
+      if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
+        const logoFile = await getFileFromBlobUrl(values["Logo Upload"].url, values["Logo Upload"].name);
+        const logoBase64 = await fileToBase64(logoFile);
+        logoAttachment = [{
+          filename: values["Logo Upload"].name,
+          contents: logoBase64.split(',')[1], // Remove data:image/png;base64, prefix
+          contentType: logoFile.type
+        }];
       }
-      
-      if (values["Highlight Image"].url.startsWith('blob:')) {
-        const imageResponse = await fetch(values["Highlight Image"].url);
-        const imageBlob = await imageResponse.blob();
-        const imageFile = new File([imageBlob], values["Highlight Image"].name, { type: imageBlob.type });
-        formData.append('Highlight_Image', imageFile);
+
+      // Prepare highlight image attachment for Airtable
+      let highlightImageAttachment: any[] = [];
+      if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
+        const imageFile = await getFileFromBlobUrl(values["Highlight Image"].url, values["Highlight Image"].name);
+        const imageBase64 = await fileToBase64(imageFile);
+        highlightImageAttachment = [{
+          filename: values["Highlight Image"].name,
+          contents: imageBase64.split(',')[1], // Remove data:image/png;base64, prefix
+          contentType: imageFile.type
+        }];
       }
 
       // Convert FormData to object for Airtable (using exact column names from your Airtable table)
@@ -172,8 +171,8 @@ export default function Submit() {
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "), // Convert array to comma-separated string
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "), // Convert to comma-separated string
-        "Logo": values["Logo Upload"]?.url ? [{ url: values["Logo Upload"].url }] : [],
-        "Highlight Image": values["Highlight Image"]?.url ? [{ url: values["Highlight Image"].url }] : [],
+        "Logo": logoAttachment,
+        "Highlight Image": highlightImageAttachment,
         "One-line Description": values["One-line Description"],
         "Why Book With You?": values["Why Book With You?"],
         "Types of Stays": values["Types of Stays"]?.join(", ") || "",
