@@ -190,21 +190,52 @@ export default function Submit() {
         Highlight_Image: values["Highlight Image"]?.url || "",
       };
 
-      // Submit using the new Airtable API endpoint
-      const response = await fetch('/api/airtable-submissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
-      });
+      // Submit directly to Airtable using the service (bypass API route)
+      const airtableService = {
+        async createSubmission(data: any) {
+          const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
+          const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID;
+          const AIRTABLE_TABLE_NAME = 'Submissions';
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Submission failed');
-      }
+          if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+            throw new Error('Airtable configuration missing in environment variables');
+          }
 
-      const result = await response.json();
+          const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
+          
+          // Convert arrays to JSON strings for Airtable
+          const fields = { ...data };
+          Object.keys(fields).forEach(key => {
+            if (Array.isArray(fields[key])) {
+              fields[key] = JSON.stringify(fields[key]);
+            }
+          });
+
+          const response = await fetch(airtableUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              records: [
+                {
+                  fields: fields
+                }
+              ]
+            })
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Airtable API error: ${errorData.error?.message || response.statusText}`);
+          }
+
+          return response.json();
+        }
+      };
+
+      const result = await airtableService.createSubmission(submissionData);
       
       toast({
         title: "Submission successful!",
