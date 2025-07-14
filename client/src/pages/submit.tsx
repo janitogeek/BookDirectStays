@@ -164,30 +164,33 @@ export default function Submit() {
         formData.append('Highlight_Image', imageFile);
       }
 
-      // Convert FormData to object for Airtable (using exact column names)
+      // Convert FormData to object for Airtable (using exact column names from your Airtable table)
       const submissionData = {
+        "E-mail": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
         "Number of Listings": values["Number of Listings"],
-        "E-mail": values["Submitted By (Email)"],
+        "Countries": values["Countries"].join(", "), // Convert array to comma-separated string
+        "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "), // Convert to comma-separated string
+        "Logo": values["Logo Upload"]?.url || "",
+        "Highlight Image": values["Highlight Image"]?.url || "",
         "One-line Description": values["One-line Description"],
         "Why Book With You?": values["Why Book With You?"],
-        "Choose Your Listing Type": values["Choose Your Listing Type"],
-        "Countries": JSON.stringify(values["Countries"]),
-        "Cities / Regions": JSON.stringify(values["Cities / Regions"]),
-        "Ideal For": JSON.stringify(values["Ideal For"] || []),
-        "Is your brand pet-friendly?": (values["Is your brand pet-friendly?"] || false).toString(),
-        "Perks / Amenities": JSON.stringify(values["Perks / Amenities"] || []),
-        "Eco-Conscious Stay?": (values["Eco-Conscious Stay?"] || false).toString(),
-        "Remote-Work Friendly?": (values["Remote-Work Friendly?"] || false).toString(),
-        "Vibe / Aesthetic": JSON.stringify(values["Vibe / Aesthetic"] || []),
+        "Types of Stays": values["Types of Stays"]?.join(", ") || "",
+        "Ideal For": values["Ideal For"]?.join(", ") || "",
+        "Is your brand pet-friendly?": values["Is your brand pet-friendly?"] ? "Yes" : "No",
+        "Perks / Amenities": values["Perks / Amenities"]?.join(", ") || "",
+        "Eco-Conscious Stay?": values["Eco-Conscious Stay?"] ? "Yes" : "No",
+        "Remote-Work Friendly?": values["Remote-Work Friendly?"] ? "Yes" : "No",
+        "Vibe / Aesthetic": values["Vibe / Aesthetic"]?.join(", ") || "",
         "Instagram": values["Instagram"] || "",
         "Facebook": values["Facebook"] || "",
         "LinkedIn": values["LinkedIn"] || "",
         "TikTok": values["TikTok"] || "",
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
-        "Logo Upload": values["Logo Upload"]?.url || "",
-        "Highlight Image": values["Highlight Image"]?.url || "",
+        "Plan": values["Choose Your Listing Type"],
+        "Submission Date": new Date().toISOString().split('T')[0], // Add current date
+        "Status": "Pending Review" // Set default status
       };
 
       // Submit directly to Airtable using the service (bypass API route)
@@ -203,13 +206,8 @@ export default function Submit() {
 
           const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
           
-          // Convert arrays to JSON strings for Airtable
+          // Data is already properly formatted for Airtable
           const fields = { ...data };
-          Object.keys(fields).forEach(key => {
-            if (Array.isArray(fields[key])) {
-              fields[key] = JSON.stringify(fields[key]);
-            }
-          });
 
           const response = await fetch(airtableUrl, {
             method: 'POST',
