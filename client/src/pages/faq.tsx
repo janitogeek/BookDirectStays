@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { faqs as staticFaqs } from "@/lib/data";
 import {
   Accordion,
   AccordionContent,
@@ -8,21 +9,30 @@ import {
 } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
 export default function FAQ() {
-  // Fetch FAQs
+  // Fetch FAQs with fallback to static data
   const { data: faqs, isLoading } = useQuery({
     queryKey: ["/api/faqs"],
     queryFn: async () => {
-      const res = await apiRequest("GET", "/api/faqs", undefined);
-      return res.json();
+      try {
+        const res = await apiRequest("GET", "/api/faqs", undefined);
+        return res.json();
+      } catch (error) {
+        // Fallback to static data if API fails
+        return staticFaqs;
+      }
     }
   });
 
+  // Use static FAQs as fallback
+  const faqData = faqs || staticFaqs;
+
   // Group FAQs by category
-  const travelerFaqs = faqs?.filter((faq: any) => faq.category === "traveler") || [];
-  const hostFaqs = faqs?.filter((faq: any) => faq.category === "host") || [];
+  const travelerFaqs = faqData?.filter((faq: any) => faq.category === "traveler") || [];
+  const hostFaqs = faqData?.filter((faq: any) => faq.category === "host") || [];
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -96,17 +106,16 @@ export default function FAQ() {
             consider adding your property to our directory.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/submit">
-              <a className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg transition">
+            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Link href="/submit">
                 Add Your Direct Booking Site
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+              <a href="mailto:info@bookdirectstays.com">
+                Contact Support
               </a>
-            </Link>
-            <a 
-              href="mailto:info@bookdirectstays.com" 
-              className="bg-white border border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary/5 transition"
-            >
-              Contact Support
-            </a>
+            </Button>
           </div>
         </div>
       </div>
