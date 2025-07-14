@@ -218,6 +218,7 @@ export default function Submit() {
 
           if (!response.ok) {
             const errorData = await response.json();
+            console.error('Full Airtable error response:', errorData);
             throw new Error(`Airtable API error: ${errorData.error?.message || response.statusText}`);
           }
 
