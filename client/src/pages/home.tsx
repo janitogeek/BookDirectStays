@@ -55,40 +55,31 @@ export default function Home() {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
+            backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')"
           }}
         ></div>
         <div className="absolute inset-0 bg-blue-900/70"></div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Discover and book direct.
+              Book Vacation Rentals Direct
             </h1>
             <p className="text-xl lg:text-2xl text-blue-100 mb-8 font-light">
-              <span className="text-blue-400">No fees</span>, just better stays.
+              <span className="text-blue-400">Skip OTA Fees</span> - Save 10-20%
             </p>
             <p className="text-lg text-blue-100/90 mb-12 max-w-2xl mx-auto">
-              Explore trusted rentals worldwide — skip the middleman.
+              World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
             </p>
             
-            {/* Search Bar */}
-            <form onSubmit={(e) => { e.preventDefault(); setLocation("/find-host"); }} className="relative max-w-2xl mx-auto mb-16">
-              <input 
-                type="text" 
-                placeholder="Search among 0 direct booking sites (with the most trusted ones ranked highest)"
-                className="w-full py-6 px-8 rounded-full text-gray-700 bg-white/95 shadow-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-300 border-0 text-lg"
-                readOnly
-                onClick={() => setLocation("/find-host")}
-              />
+            {/* Find a Host Button */}
+            <div className="relative max-w-2xl mx-auto mb-16">
               <Button 
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-all shadow-lg"
+                onClick={() => setLocation("/find-host")}
+                className="w-full py-6 px-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-lg font-semibold"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                Find a Host Now!
               </Button>
-            </form>
+            </div>
 
             {/* Key Benefits - Clean Cards */}
             <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
