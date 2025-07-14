@@ -172,8 +172,8 @@ export default function Submit() {
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "), // Convert array to comma-separated string
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "), // Convert to comma-separated string
-        "Logo": values["Logo Upload"]?.url || "",
-        "Highlight Image": values["Highlight Image"]?.url || "",
+        "Logo": values["Logo Upload"]?.url ? [{ url: values["Logo Upload"].url }] : [],
+        "Highlight Image": values["Highlight Image"]?.url ? [{ url: values["Highlight Image"].url }] : [],
         "One-line Description": values["One-line Description"],
         "Why Book With You?": values["Why Book With You?"],
         "Types of Stays": values["Types of Stays"]?.join(", ") || "",
