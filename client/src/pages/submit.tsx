@@ -173,6 +173,36 @@ export default function Submit() {
       
       console.log('Found email field:', emailField?.name);
 
+      // Process logo file
+      let logoAttachment: any[] = [];
+      if (values["Logo Upload"]?.url && values["Logo Upload"]?.url.startsWith('blob:')) {
+        try {
+          const logoFile = await getFileFromBlobUrl(values["Logo Upload"].url, values["Logo Upload"].name);
+          const logoBase64 = await fileToBase64(logoFile);
+          logoAttachment = [{ 
+            url: logoBase64,
+            filename: values["Logo Upload"].name 
+          }];
+        } catch (error) {
+          console.error('Error processing logo:', error);
+        }
+      }
+
+      // Process highlight image file
+      let highlightImageAttachment: any[] = [];
+      if (values["Highlight Image"]?.url && values["Highlight Image"]?.url.startsWith('blob:')) {
+        try {
+          const imageFile = await getFileFromBlobUrl(values["Highlight Image"].url, values["Highlight Image"].name);
+          const imageBase64 = await fileToBase64(imageFile);
+          highlightImageAttachment = [{ 
+            url: imageBase64,
+            filename: values["Highlight Image"].name 
+          }];
+        } catch (error) {
+          console.error('Error processing highlight image:', error);
+        }
+      }
+
       // FULL VERSION - Send all fields using exact Airtable field names
       const submissionData = {
         "Email": values["Submitted By (Email)"],
@@ -181,8 +211,8 @@ export default function Submit() {
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "),
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
-        "Logo": [], // Skip for now - will implement file upload later
-        "Highlight Image": [], // Skip for now - will implement file upload later
+        "Logo": logoAttachment,
+        "Highlight Image": highlightImageAttachment,
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
         "Types of Stays": values["Types of Stays"] || [],
