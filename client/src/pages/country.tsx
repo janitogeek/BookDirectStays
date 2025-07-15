@@ -211,7 +211,15 @@ export default function Country() {
             {/* City Navigation Button */}
             {cities.length > 0 && (
               <Button 
-                onClick={() => document.getElementById('city-navigation')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => {
+                  const element = document.getElementById('city-navigation');
+                  if (element) {
+                    element.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }
+                }}
                 variant="outline"
                 className="border-blue-600 text-blue-600 hover:bg-blue-50"
               >
