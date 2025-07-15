@@ -443,7 +443,7 @@ var MemStorage = class {
 var storage = new MemStorage();
 
 // ../shared/schema.ts
-import { pgTable, text, serial, integer, boolean, varchar, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, varchar, jsonb, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 var users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -462,6 +462,20 @@ var countries = pgTable("countries", {
   listingCount: integer("listing_count").notNull().default(0)
 });
 var insertCountrySchema = createInsertSchema(countries).omit({
+  id: true
+});
+var cities = pgTable("cities", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull(),
+  countryId: integer("country_id").notNull().references(() => countries.id),
+  countryCode: varchar("country_code", { length: 2 }).notNull(),
+  geonameId: integer("geoname_id"),
+  // For validation with GeoNames API
+  listingCount: integer("listing_count").notNull().default(0),
+  createdAt: text("created_at").notNull()
+});
+var insertCitySchema = createInsertSchema(cities).omit({
   id: true
 });
 var listings = pgTable("listings", {
@@ -493,6 +507,8 @@ var submissions = pgTable("submissions", {
   website: text("website").notNull(),
   listingCount: integer("listing_count").notNull(),
   countries: text("countries").array().notNull(),
+  citiesRegions: jsonb("cities_regions").$type(),
+  // Original city data from form
   description: text("description").notNull(),
   logo: text("logo").notNull(),
   email: text("email").notNull(),
@@ -510,6 +526,13 @@ var insertSubmissionSchema = createInsertSchema(submissions).omit({
   status: true,
   createdAt: true
 });
+var submissionCities = pgTable("submission_cities", {
+  submissionId: integer("submission_id").notNull().references(() => submissions.id),
+  cityId: integer("city_id").notNull().references(() => cities.id),
+  createdAt: text("created_at").notNull()
+}, (table) => ({
+  pk: primaryKey(table.submissionId, table.cityId)
+}));
 var testimonials = pgTable("testimonials", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),

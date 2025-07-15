@@ -1,7 +1,7 @@
 // Submission processing service
 // Handles validation and creation of cities when submissions are approved
 
-import { validateCitiesForCountries } from './geonames';
+import { validateCitiesForCountries, getCountryCode } from './geonames';
 import { airtableService, type Submission } from './airtable';
 import { slugify } from './utils';
 
@@ -66,6 +66,9 @@ export async function processApprovedSubmission(submission: Submission): Promise
   }
 }
 
+// In-memory storage for validated cities (in production, this would be a proper database)
+const validatedCitiesCache = new Map<string, ProcessedCity[]>();
+
 /**
  * Process a single valid city and create/update records
  */
@@ -77,22 +80,32 @@ async function processValidCity(
   
   console.log(`🏙️ Processing city: ${validatedName || cityName} in ${countryName}`);
   
-  // For now, we'll log what we would do
-  // In a full implementation, this would interact with your database
+  const cityKey = `${countryName}`;
+  const existingCities = validatedCitiesCache.get(cityKey) || [];
   
-  console.log(`📝 Would create/update city record:`, {
-    name: validatedName || cityName,
-    slug: slugify(validatedName || cityName),
-    countryName,
-    geonameId,
-    submissionId: submission.id,
-  });
+  // Check if city already exists for this country
+  const existingCity = existingCities.find(city => 
+    city.geonameId === geonameId || 
+    city.name.toLowerCase() === (validatedName || cityName).toLowerCase()
+  );
   
-  // TODO: Implement actual database operations
-  // 1. Check if city already exists in this country
-  // 2. Create city if it doesn't exist
-  // 3. Link submission to city
-  // 4. Update listing counts
+  if (!existingCity) {
+    // Create new city record
+    const newCity: ProcessedCity = {
+      name: validatedName || cityName,
+      slug: slugify(validatedName || cityName),
+      countryName: capitalizeCountryName(countryName),
+      countryCode: getCountryCode(countryName) || 'XX',
+      geonameId: geonameId
+    };
+    
+    existingCities.push(newCity);
+    validatedCitiesCache.set(cityKey, existingCities);
+    
+    console.log(`✅ Created city record:`, newCity);
+  } else {
+    console.log(`🔄 City already exists: ${existingCity.name} in ${countryName}`);
+  }
 }
 
 /**
@@ -122,6 +135,30 @@ export async function processAllApprovedSubmissions(): Promise<void> {
 }
 
 /**
+ * Properly capitalize country names
+ */
+function capitalizeCountryName(countryName: string): string {
+  // Handle special cases first
+  const specialCases: Record<string, string> = {
+    'usa': 'United States',
+    'uk': 'United Kingdom',
+    'uae': 'United Arab Emirates',
+    'drc': 'Democratic Republic of Congo',
+  };
+  
+  const lowerName = countryName.toLowerCase().trim();
+  if (specialCases[lowerName]) {
+    return specialCases[lowerName];
+  }
+  
+  // Standard capitalization for other countries
+  return countryName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+/**
  * Get unique countries from all approved submissions
  */
 export async function getActiveCountries(): Promise<string[]> {
@@ -132,7 +169,8 @@ export async function getActiveCountries(): Promise<string[]> {
     
     approvedSubmissions.forEach(submission => {
       submission.countries.forEach(country => {
-        uniqueCountries.add(country);
+        const capitalizedCountry = capitalizeCountryName(country);
+        uniqueCountries.add(capitalizedCountry);
       });
     });
     
@@ -152,9 +190,14 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
     const approvedSubmissions = await airtableService.getApprovedSubmissions();
     
     return approvedSubmissions.filter(submission =>
-      submission.countries.some(country => 
-        country.toLowerCase() === countryName.toLowerCase()
-      )
+      submission.countries.some(country => {
+        const capitalizedOriginal = capitalizeCountryName(country);
+        const capitalizedQuery = capitalizeCountryName(countryName);
+        
+        // Match either the original or capitalized version
+        return country.toLowerCase() === countryName.toLowerCase() ||
+               capitalizedOriginal.toLowerCase() === capitalizedQuery.toLowerCase();
+      })
     );
     
   } catch (error) {
@@ -191,9 +234,41 @@ export async function getSubmissionsForCity(
  */
 export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
   try {
+    // Check cache first
+    const capitalizedCountryName = capitalizeCountryName(countryName);
+    const cachedCities = validatedCitiesCache.get(capitalizedCountryName);
+    
+    if (cachedCities && cachedCities.length > 0) {
+      console.log(`📦 Using cached cities for ${capitalizedCountryName}:`, cachedCities.map(c => c.name));
+      return cachedCities.map(city => city.name).sort();
+    }
+    
+    // If not in cache, process submissions for this country
+    console.log(`🔄 Processing submissions to build cities for ${capitalizedCountryName}`);
     const countrySubmissions = await getSubmissionsForCountry(countryName);
     
-    const allCityValidations = [];
+    // Process all submissions to populate the cache
+    for (const submission of countrySubmissions) {
+      await processApprovedSubmission(submission);
+    }
+    
+    // Now get from cache
+    const newCachedCities = validatedCitiesCache.get(capitalizedCountryName) || [];
+    return newCachedCities.map(city => city.name).sort();
+    
+  } catch (error) {
+    console.error(`❌ Error getting validated cities for country ${countryName}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Get city submission counts for a specific country
+ */
+export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
+  try {
+    const countrySubmissions = await getSubmissionsForCountry(countryName);
+    const cityCounts: Record<string, number> = {};
     
     for (const submission of countrySubmissions) {
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
@@ -207,19 +282,19 @@ export async function getValidatedCitiesForCountry(countryName: string): Promise
           [countryName]
         );
         
-        allCityValidations.push(...validations);
+        validations
+          .filter(validation => validation.isValid)
+          .forEach(validation => {
+            const cityName = validation.validatedName || validation.cityName;
+            cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+          });
       }
     }
     
-    // Get unique valid cities
-    const validCities = allCityValidations
-      .filter(validation => validation.isValid)
-      .map(validation => validation.validatedName || validation.cityName);
-    
-    return Array.from(new Set(validCities)).sort();
+    return cityCounts;
     
   } catch (error) {
-    console.error(`❌ Error getting validated cities for country ${countryName}:`, error);
-    return [];
+    console.error(`❌ Error getting city submission counts for country ${countryName}:`, error);
+    return {};
   }
 } 

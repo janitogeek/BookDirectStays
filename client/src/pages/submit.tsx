@@ -30,7 +30,7 @@ const formSchema = z.object({
   "Direct Booking Website": z.string().url(),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
-  "Cities / Regions": z.array(z.object({ name: z.string(), geonameId: z.number() })).min(1),
+  "Cities / Regions": z.array(z.object({ name: z.string(), displayName: z.string(), geonameId: z.number() })).min(1),
   "Logo Upload": z.object({
     url: z.string().url(),
     name: z.string()
@@ -490,7 +490,7 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Cities / Regions" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cities / Regions<RequiredAsterisk /></FormLabel>
+                  <FormLabel>Cities<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <CityRegionAsyncMultiSelect
                       selected={field.value || []}

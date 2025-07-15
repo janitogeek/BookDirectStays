@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
+import { getValidatedCitiesForCountry, getCitySubmissionCounts } from "@/lib/submission-processor";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
@@ -47,26 +48,23 @@ export default function Country() {
     return countryMap[slug] || slug;
   };
 
-  // Sample cities/regions for each country (in real app, this would come from API)
-  const getCitiesForCountry = (slug: string) => {
-    const cityMap: { [key: string]: string[] } = {
-      usa: ['New York', 'Los Angeles', 'Miami', 'Las Vegas', 'San Francisco', 'Chicago', 'Boston', 'Seattle'],
-      spain: ['Barcelona', 'Madrid', 'Valencia', 'Seville', 'Bilbao', 'Granada', 'Málaga', 'Palma'],
-      uk: ['London', 'Edinburgh', 'Manchester', 'Liverpool', 'Bath', 'Brighton', 'Oxford', 'Cambridge'],
-      germany: ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart', 'Dresden', 'Heidelberg'],
-      france: ['Paris', 'Lyon', 'Marseille', 'Nice', 'Bordeaux', 'Toulouse', 'Strasbourg', 'Nantes'],
-      australia: ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Cairns', 'Darwin'],
-      canada: ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Ottawa', 'Edmonton', 'Quebec City', 'Halifax'],
-      italy: ['Rome', 'Milan', 'Naples', 'Florence', 'Venice', 'Bologna', 'Turin', 'Palermo'],
-      portugal: ['Lisbon', 'Porto', 'Faro', 'Coimbra', 'Braga', 'Aveiro', 'Évora', 'Funchal'],
-      thailand: ['Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Krabi', 'Koh Samui', 'Hua Hin', 'Ayutthaya'],
-      greece: ['Athens', 'Thessaloniki', 'Mykonos', 'Santorini', 'Crete', 'Rhodes', 'Corfu', 'Delphi']
-    };
-    return cityMap[slug] || [];
-  };
-  
-  const cities = getCitiesForCountry(countrySlug || '');
   const countryName = getCountryNameFromSlug(countrySlug || '');
+  
+  // Fetch validated cities for this country from submissions
+  const { data: cities = [], isLoading: isCitiesLoading } = useQuery({
+    queryKey: [`/api/validated-cities/${countryName}`],
+    queryFn: () => getValidatedCitiesForCountry(countryName),
+    enabled: !!countryName,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Fetch city submission counts
+  const { data: citySubmissionCounts = {}, isLoading: isCityCountsLoading } = useQuery({
+    queryKey: [`/api/city-submission-counts/${countryName}`],
+    queryFn: () => getCitySubmissionCounts(countryName),
+    enabled: !!countryName,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
   
   // Fetch country
   const { data: country, isLoading: isCountryLoading } = useQuery({
@@ -102,18 +100,15 @@ export default function Country() {
   console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
   console.log('🎬 React component - countryName:', countryName);
 
-  // Count submissions by city
+  // Get submission count for a city from the fetched counts
   const getCitySubmissionCount = (cityName: string) => {
-    return submissions.filter(submission => 
-      submission.citiesRegions.some(city => 
-        city.toLowerCase().includes(cityName.toLowerCase()) ||
-        cityName.toLowerCase().includes(city.toLowerCase())
-      )
-    ).length;
+    return citySubmissionCounts[cityName] || 0;
   };
 
   console.log('🏙️ Cities for country:', cities);
-  console.log('🏙️ Madrid count:', getCitySubmissionCount('Madrid'));
+  console.log('🏙️ City submission counts:', citySubmissionCounts);
+  console.log('🏙️ Cities loading:', isCitiesLoading);
+  console.log('🏙️ City counts loading:', isCityCountsLoading);
 
   // Fetch all countries for the tags
   const { data: countries, isLoading: isCountriesLoading } = useQuery({
@@ -212,14 +207,14 @@ export default function Country() {
               </h1>
             )}
             
-            {/* City/Region Navigation Button */}
+            {/* City Navigation Button */}
             {cities.length > 0 && (
               <Button 
                 onClick={() => document.getElementById('city-navigation')?.scrollIntoView({ behavior: 'smooth' })}
                 variant="outline"
                 className="border-blue-600 text-blue-600 hover:bg-blue-50"
               >
-                Find Hosts by City/Region
+                Find Hosts by City
               </Button>
             )}
           </div>
@@ -302,38 +297,56 @@ export default function Country() {
         </div>
       </section>
 
-      {/* City/Region Navigation Section */}
-      {cities.length > 0 && (
+      {/* City Navigation Section */}
+      {(isCitiesLoading || isCityCountsLoading || cities.length > 0) && (
         <section id="city-navigation" className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Find Hosts by City/Region in {country?.name || countryName}
+                  Find Hosts by City in {country?.name || countryName}
                 </h2>
                 <p className="text-xl text-gray-600">
-                  Looking for something more specific? Browse hosts by city or region
+                  Looking for something more specific? Browse hosts by city
                 </p>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {cities.map((city, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
-                    <CardContent className="p-4">
-                      <Link 
-                        href={`/country/${countrySlug}/${city.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="block text-center"
-                      >
-                        <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                          {city}
-                        </h3>
-                        <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-800">
-                          {getCitySubmissionCount(city)} hosts
-                        </Badge>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))}
+                {isCitiesLoading || isCityCountsLoading ? (
+                  // Loading skeleton
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <Card key={i} className="hover:shadow-md transition-shadow duration-200">
+                      <CardContent className="p-4">
+                        <div className="animate-pulse text-center">
+                          <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+                          <div className="h-6 bg-gray-200 rounded w-12 mx-auto"></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : cities.length === 0 ? (
+                  <div className="col-span-full text-center py-8">
+                    <p className="text-gray-500">No cities found for this country yet.</p>
+                  </div>
+                ) : (
+                  cities.map((city, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                      <CardContent className="p-4">
+                        <Link 
+                          href={`/country/${countrySlug}/${city.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="block text-center"
+                        >
+                          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                            {city}
+                          </h3>
+                          <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-800">
+                            {getCitySubmissionCount(city)} hosts
+                          </Badge>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
               </div>
               
               <div className="text-center mt-12">
