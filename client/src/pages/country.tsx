@@ -96,6 +96,12 @@ export default function Country() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
+  // Debug submissions in React component
+  console.log('🎬 React component - submissions data:', submissions);
+  console.log('🎬 React component - submissions length:', submissions.length);
+  console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
+  console.log('🎬 React component - countryName:', countryName);
+
   // Fetch all countries for the tags
   const { data: countries, isLoading: isCountriesLoading } = useQuery({
     queryKey: ["/api/countries"],

@@ -233,8 +233,20 @@ export const airtableService = {
       }
     }
 
-    const transformedSubmissions = records.map(this.transformSubmission);
-    console.log('✨ Transformed submissions:', transformedSubmissions);
+    const transformedSubmissions = records.map((record, index) => {
+      try {
+        console.log(`🔄 Transforming record ${index + 1}/${records.length}:`, record.id);
+        const transformed = this.transformSubmission(record);
+        console.log(`✅ Successfully transformed record ${index + 1}:`, transformed);
+        return transformed;
+      } catch (error) {
+        console.error(`❌ Error transforming record ${index + 1}:`, error);
+        console.error('📋 Problematic record:', record);
+        throw error;
+      }
+    });
+    
+    console.log('✨ All transformed submissions:', transformedSubmissions);
     console.log('📝 Number of transformed submissions:', transformedSubmissions.length);
     
     if (transformedSubmissions.length > 0) {
@@ -270,45 +282,60 @@ export const airtableService = {
 
   // Helper method to transform Airtable records to normalized format
   transformSubmission(record: AirtableSubmission): Submission {
-    console.log('🔄 Transforming record:', record.id);
-    const fields = record.fields;
-    console.log('📋 Record fields:', fields);
-    
-    // Helper function to parse comma-separated strings into arrays
-    const parseArray = (value: string | undefined): string[] => {
-      if (!value) return [];
-      return value.split(',').map(item => item.trim()).filter(Boolean);
-    };
+    try {
+      console.log('🔄 Transforming record:', record.id);
+      const fields = record.fields;
+      console.log('📋 Record fields:', fields);
+      
+      // Helper function to parse comma-separated strings into arrays
+      const parseArray = (value: string | undefined): string[] => {
+        if (!value) return [];
+        return value.split(',').map(item => item.trim()).filter(Boolean);
+      };
 
-    const transformed = {
-      id: record.id,
-      brandName: fields['Brand Name'] || '',
-      website: fields['Direct Booking Website'] || '',
-      numberOfListings: fields['Number of Listings'] || 0,
-      email: fields['Email'] || '',
-      oneLineDescription: fields['One-line Description'] || '',
-      whyBookWithYou: fields['Why Book With You'] || '',
-      plan: fields['Plan'] || '',
-      countries: parseArray(fields['Countries']),
-      citiesRegions: parseArray(fields['Cities / Regions']),
-      typesOfStays: parseArray(fields['Types of Stays']),
-      idealFor: parseArray(fields['Ideal For']),
-      perksAmenities: parseArray(fields['Perks / Amenities']),
-      vibeAesthetic: parseArray(fields['Vibe / Aesthetic']),
-      instagram: fields['Instagram'] || undefined,
-      facebook: fields['Facebook'] || undefined,
-      linkedin: fields['LinkedIn'] || undefined,
-      tiktok: fields['TikTok'] || undefined,
-      youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
-      logo: fields['Logo']?.[0]?.url || undefined,
-      highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
-      status: fields['Status'] || '',
-      submissionDate: fields['Submission Date'] || '',
-      createdTime: record.createdTime
-    };
+      console.log('🔧 Starting field extraction...');
+      
+      const transformed = {
+        id: record.id,
+        brandName: fields['Brand Name'] || '',
+        website: fields['Direct Booking Website'] || '',
+        numberOfListings: fields['Number of Listings'] || 0,
+        email: fields['Email'] || '',
+        oneLineDescription: fields['One-line Description'] || '',
+        whyBookWithYou: fields['Why Book With You'] || '',
+        plan: fields['Plan'] || '',
+        countries: parseArray(fields['Countries']),
+        citiesRegions: parseArray(fields['Cities / Regions']),
+        typesOfStays: parseArray(fields['Types of Stays']),
+        idealFor: parseArray(fields['Ideal For']),
+        perksAmenities: parseArray(fields['Perks / Amenities']),
+        vibeAesthetic: parseArray(fields['Vibe / Aesthetic']),
+        instagram: fields['Instagram'] || undefined,
+        facebook: fields['Facebook'] || undefined,
+        linkedin: fields['LinkedIn'] || undefined,
+        tiktok: fields['TikTok'] || undefined,
+        youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
+        logo: fields['Logo']?.[0]?.url || undefined,
+        highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
+        status: fields['Status'] || '',
+        submissionDate: fields['Submission Date'] || '',
+        createdTime: record.createdTime
+      };
 
-    console.log('✅ Transformation complete:', transformed);
-    return transformed;
+      console.log('✅ Transformation complete for record:', record.id);
+      console.log('📊 Transformed data:', transformed);
+      console.log('🏷️ Brand name:', transformed.brandName);
+      console.log('🌍 Parsed countries:', transformed.countries);
+      console.log('🖼️ Logo URL:', transformed.logo);
+      console.log('🎨 Highlight image URL:', transformed.highlightImage);
+      
+      return transformed;
+    } catch (error) {
+      console.error('❌ Error in transformSubmission for record:', record.id);
+      console.error('❌ Error details:', error);
+      console.error('📋 Record that failed:', record);
+      throw error;
+    }
   }
 };
 
