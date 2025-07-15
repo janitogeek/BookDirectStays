@@ -152,7 +152,7 @@ export const airtableService = {
     }
 
     // Use Airtable filter to get approved/published submissions
-    const filterFormula = `OR({Status} = "Approved", {Status} = "Published")`;
+    const filterFormula = `OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     const response = await fetch(url, {
@@ -178,7 +178,7 @@ export const airtableService = {
     }
 
     // Filter for approved/published submissions in specific country
-    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published"), FIND("${countryName}", {Countries}) > 0)`;
+    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published"), FIND("${countryName}", {Countries}) > 0)`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     const response = await fetch(url, {
