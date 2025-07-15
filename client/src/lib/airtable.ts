@@ -26,12 +26,12 @@ export interface AirtableSubmission {
     'One-line Description': string;
     'Why Book With You': string;
     'Plan': string;
-    'Countries': string;
-    'Cities / Regions': string;
-    'Types of Stays': string;
-    'Ideal For': string;
-    'Perks / Amenities': string;
-    'Vibe / Aesthetic': string;
+    'Countries': string | string[];
+    'Cities / Regions': string | string[];
+    'Types of Stays': string | string[];
+    'Ideal For': string | string[];
+    'Perks / Amenities': string | string[];
+    'Vibe / Aesthetic': string | string[];
     'Instagram'?: string;
     'Facebook'?: string;
     'LinkedIn'?: string;
@@ -288,9 +288,22 @@ export const airtableService = {
       console.log('📋 Record fields:', fields);
       
       // Helper function to parse comma-separated strings into arrays
-      const parseArray = (value: string | undefined): string[] => {
+      const parseArray = (value: string | string[] | undefined): string[] => {
         if (!value) return [];
-        return value.split(',').map(item => item.trim()).filter(Boolean);
+        
+        // If it's already an array (Airtable multi-select fields), return it
+        if (Array.isArray(value)) {
+          return value.filter(Boolean);
+        }
+        
+        // If it's a string, split by comma
+        if (typeof value === 'string') {
+          return value.split(',').map(item => item.trim()).filter(Boolean);
+        }
+        
+        // Fallback for unexpected types
+        console.warn('⚠️ Unexpected value type for parseArray:', typeof value, value);
+        return [];
       };
 
       console.log('🔧 Starting field extraction...');
@@ -326,6 +339,8 @@ export const airtableService = {
       console.log('📊 Transformed data:', transformed);
       console.log('🏷️ Brand name:', transformed.brandName);
       console.log('🌍 Parsed countries:', transformed.countries);
+      console.log('🏢 Types of stays:', transformed.typesOfStays);
+      console.log('🎯 Ideal for:', transformed.idealFor);
       console.log('🖼️ Logo URL:', transformed.logo);
       console.log('🎨 Highlight image URL:', transformed.highlightImage);
       
