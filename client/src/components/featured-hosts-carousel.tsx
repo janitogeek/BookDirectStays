@@ -55,17 +55,8 @@ export default function FeaturedHostsCarousel() {
     );
   }
 
-  // Debug: Log all submissions to see what we're working with
-  console.log('🔍 All submissions:', submissions);
-  console.log('📊 Total submissions count:', submissions?.length);
-  if (submissions && submissions.length > 0) {
-    console.log('📋 Sample submission:', submissions[0]);
-    console.log('🏷️ All plans:', submissions.map(s => s.plan));
-    console.log('📈 All statuses:', submissions.map(s => s.status));
-  }
-
-  // Filter for featured hosts (Premium plans that are approved/published)
-  // Shows ALL featured companies regardless of whether they have stats
+    // Filter for featured hosts (Premium plans that are approved/published)
+  // Shows ALL featured companies with consistent card heights
   const featuredHosts = submissions?.filter(submission => {
     const isPremium = submission.plan?.includes('Premium') || 
                      submission.plan?.includes('€499.99') || 
@@ -74,20 +65,8 @@ export default function FeaturedHostsCarousel() {
                       submission.status === 'Approved' || 
                       submission.status === 'Approved – Not Yet Published';
     
-    console.log(`🔍 Checking ${submission.brandName}:`, {
-      plan: submission.plan,
-      status: submission.status,
-      isPremium,
-      isApproved,
-      included: isPremium && isApproved
-    });
-    
-         return isPremium && isApproved;
-   }) || [];
-
-   console.log('✨ Featured hosts after filtering:', featuredHosts);
-   console.log('🎯 Featured hosts count:', featuredHosts.length);
-   console.log('🏢 Featured host names:', featuredHosts.map(h => h.brandName));
+    return isPremium && isApproved;
+  }) || [];
 
   if (featuredHosts.length === 0) {
     return (
@@ -173,12 +152,16 @@ export default function FeaturedHostsCarousel() {
                       {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
                     </div>
                     
-                    {/* Stats - only show if they exist */}
-                    {host.topStats && host.topStats.trim() && (
-                      <div className="text-sm text-gray-600 mb-4">
-                        <span className="font-medium">Stats:</span> {host.topStats}
-                      </div>
-                    )}
+                    {/* Stats - always reserve space for consistent card height */}
+                    <div className="text-sm text-gray-600 mb-4 min-h-[20px]">
+                      {host.topStats && host.topStats.trim() ? (
+                        <>
+                          <span className="font-medium">Stats:</span> {host.topStats}
+                        </>
+                      ) : (
+                        <span className="invisible">placeholder</span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Action Buttons */}
