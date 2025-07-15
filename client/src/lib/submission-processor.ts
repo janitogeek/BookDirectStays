@@ -230,31 +230,20 @@ export async function getSubmissionsForCity(
 }
 
 /**
- * Get validated cities for a specific country
+ * Get validated cities for a specific country (only those with actual submissions)
  */
 export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
   try {
-    // Check cache first
-    const capitalizedCountryName = capitalizeCountryName(countryName);
-    const cachedCities = validatedCitiesCache.get(capitalizedCountryName);
+    // Get city submission counts first
+    const cityCounts = await getCitySubmissionCounts(countryName);
     
-    if (cachedCities && cachedCities.length > 0) {
-      console.log(`📦 Using cached cities for ${capitalizedCountryName}:`, cachedCities.map(c => c.name));
-      return cachedCities.map(city => city.name).sort();
-    }
+    // Return only cities that have at least 1 submission
+    const citiesWithSubmissions = Object.keys(cityCounts).filter(cityName => cityCounts[cityName] > 0);
     
-    // If not in cache, process submissions for this country
-    console.log(`🔄 Processing submissions to build cities for ${capitalizedCountryName}`);
-    const countrySubmissions = await getSubmissionsForCountry(countryName);
+    console.log(`🏙️ Cities with submissions for ${countryName}:`, citiesWithSubmissions);
+    console.log(`📊 City counts:`, cityCounts);
     
-    // Process all submissions to populate the cache
-    for (const submission of countrySubmissions) {
-      await processApprovedSubmission(submission);
-    }
-    
-    // Now get from cache
-    const newCachedCities = validatedCitiesCache.get(capitalizedCountryName) || [];
-    return newCachedCities.map(city => city.name).sort();
+    return citiesWithSubmissions.sort();
     
   } catch (error) {
     console.error(`❌ Error getting validated cities for country ${countryName}:`, error);

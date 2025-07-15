@@ -43,9 +43,10 @@ export default function Country() {
       norway: 'Norway',
       poland: 'Poland',
       sweden: 'Sweden',
-      turkey: 'Turkey'
+      turkey: 'Turkey',
+      albania: 'Albania'
     };
-    return countryMap[slug] || slug;
+    return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
   };
 
   const countryName = getCountryNameFromSlug(countrySlug || '');
@@ -124,7 +125,7 @@ export default function Country() {
   };
 
   const hasMore = listingsData?.hasMore || false;
-  const totalListings = (listingsData?.listings?.length || 0) + submissions.length;
+  const totalHosts = (listingsData?.listings?.length || 0) + submissions.length;
 
   // Breadcrumb structured data for AI understanding
   const breadcrumbStructuredData = {
@@ -157,7 +158,7 @@ export default function Country() {
     "@context": "https://schema.org",
     "@type": "TouristDestination",
     "name": `${country.name} Vacation Rentals`,
-    "description": `Find ${totalListings} direct booking vacation rental websites in ${country.name}. Skip OTA fees and book directly with property managers.`,
+    "description": `Find ${totalHosts} direct booking vacation rental websites in ${country.name}. Skip OTA fees and book directly with property managers.`,
     "url": `https://bookdirectstays.com/country/${countrySlug}`,
     "containsPlace": {
       "@type": "Country",
@@ -168,7 +169,7 @@ export default function Country() {
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": `${country.name} Direct Booking Vacation Rentals`,
-      "numberOfItems": totalListings
+      "numberOfItems": totalHosts
     }
   } : null;
 
@@ -203,7 +204,7 @@ export default function Country() {
             ) : (
               <h1 className="text-3xl font-bold mb-4 md:mb-0">
                 {country?.name || countryName} Direct Booking Sites
-                <span className="text-gray-500 text-lg ml-2">({totalListings} listings)</span>
+                <span className="text-gray-500 text-lg ml-2">({totalHosts} hosts)</span>
               </h1>
             )}
             
@@ -246,13 +247,13 @@ export default function Country() {
                   </div>
                 </div>
               ))
-            ) : totalListings === 0 ? (
+            ) : totalHosts === 0 ? (
               <div className="col-span-3 text-center py-16">
                 <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found for {country?.name || countryName}</h3>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No hosts found for {country?.name || countryName}</h3>
                   <p className="text-gray-500 mb-6">We couldn't find any direct booking sites for this country.</p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button 

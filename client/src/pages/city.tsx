@@ -32,9 +32,10 @@ export default function City() {
       italy: 'Italy',
       portugal: 'Portugal',
       thailand: 'Thailand',
-      greece: 'Greece'
+      greece: 'Greece',
+      albania: 'Albania'
     };
-    return countryMap[slug] || slug;
+    return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
   };
   
   const countryName = getCountryName(countrySlug || '');
