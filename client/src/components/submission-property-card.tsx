@@ -1,4 +1,4 @@
-import { ExternalLink, MapPin, Users, Eye } from "lucide-react";
+import { ExternalLink, MapPin, Building2, Eye } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -50,15 +50,15 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
   const getSocialIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'instagram':
-        return <SiInstagram className="w-4 h-4" />;
+        return <SiInstagram className="w-4 h-4 text-pink-600" />;
       case 'facebook':
-        return <SiFacebook className="w-4 h-4" />;
+        return <SiFacebook className="w-4 h-4 text-blue-600" />;
       case 'linkedin':
-        return <SiLinkedin className="w-4 h-4" />;
+        return <SiLinkedin className="w-4 h-4 text-blue-700" />;
       case 'tiktok':
-        return <SiTiktok className="w-4 h-4" />;
+        return <SiTiktok className="w-4 h-4 text-black" />;
       case 'youtube':
-        return <SiYoutube className="w-4 h-4" />;
+        return <SiYoutube className="w-4 h-4 text-red-600" />;
       default:
         return <ExternalLink className="w-4 h-4" />;
     }
@@ -82,9 +82,21 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
     socialLinks.push({ platform: 'YouTube', url: submission.youtubeVideoTour });
   }
 
+  // Check if it's a premium listing
+  const isPremium = submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99');
+
   return (
     <>
-      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white">
+      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative">
+        {/* Featured Badge */}
+        {isPremium && (
+          <div className="absolute top-3 right-3 z-10">
+            <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
+              Featured
+            </Badge>
+          </div>
+        )}
+
         <CardContent className="p-6">
           {/* Header Image */}
           {submission.highlightImage && (
@@ -130,7 +142,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
             {submission.numberOfListings && (
               <div className="flex items-center gap-1">
-                <Users className="w-4 h-4" />
+                <Building2 className="w-4 h-4" />
                 <span>{submission.numberOfListings} properties</span>
               </div>
             )}
@@ -153,7 +165,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  className="hover:scale-110 transition-transform"
                   title={social.platform}
                 >
                   {getSocialIcon(social.platform)}
@@ -201,8 +213,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               className="flex items-center gap-2"
             >
               <Link href={`/property/${submission.id}`}>
-                <Eye className="w-4 h-4" />
-                View Details
+                Why book with {submission.brandName}?
               </Link>
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import { ExternalLink, MapPin, Users } from "lucide-react";
+import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 
 import { Button } from "@/components/ui/button";
@@ -53,15 +53,15 @@ export default function SubmissionProperty() {
   const getSocialIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'instagram':
-        return <SiInstagram className="w-5 h-5" />;
+        return <SiInstagram className="w-5 h-5 text-pink-600" />;
       case 'facebook':
-        return <SiFacebook className="w-5 h-5" />;
+        return <SiFacebook className="w-5 h-5 text-blue-600" />;
       case 'linkedin':
-        return <SiLinkedin className="w-5 h-5" />;
+        return <SiLinkedin className="w-5 h-5 text-blue-700" />;
       case 'tiktok':
-        return <SiTiktok className="w-5 h-5" />;
+        return <SiTiktok className="w-5 h-5 text-black" />;
       case 'youtube':
-        return <SiYoutube className="w-5 h-5" />;
+        return <SiYoutube className="w-5 h-5 text-red-600" />;
       default:
         return <ExternalLink className="w-5 h-5" />;
     }
@@ -162,7 +162,7 @@ export default function SubmissionProperty() {
             <div className="flex items-center gap-6 mb-6">
               {submission.numberOfListings && (
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                  <Building2 className="w-5 h-5" />
                   <span>{submission.numberOfListings} Properties</span>
                 </div>
               )}
@@ -238,6 +238,70 @@ export default function SubmissionProperty() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Ideal For */}
+              {submission.idealFor && submission.idealFor.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-blue-600" />
+                      Ideal For
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.idealFor.map((item, index) => (
+                        <Badge key={index} variant="outline" className="text-sm">
+                          {item.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Perks & Amenities */}
+              {submission.perksAmenities && submission.perksAmenities.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-green-600" />
+                      Perks & Amenities
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {submission.perksAmenities.map((perk, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                          {perk.trim()}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Vibe & Aesthetic */}
+              {submission.vibeAesthetic && submission.vibeAesthetic.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-purple-600" />
+                      Vibe & Aesthetic
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.vibeAesthetic.map((vibe, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm bg-purple-50 text-purple-700">
+                          {vibe.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Sidebar */}
@@ -305,7 +369,7 @@ export default function SubmissionProperty() {
                           href={social.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-gray-600 hover:text-gray-900 transition-colors"
+                          className="hover:scale-110 transition-transform"
                           title={social.platform}
                         >
                           {getSocialIcon(social.platform)}
