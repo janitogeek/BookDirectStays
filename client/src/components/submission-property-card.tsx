@@ -42,7 +42,8 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
       'Norway': '🇳🇴',
       'Poland': '🇵🇱',
       'Sweden': '🇸🇪',
-      'Turkey': '🇹🇷'
+      'Turkey': '🇹🇷',
+      'Albania': '🇦🇱'
     };
     return countryMap[countryName] || '🌍';
   };

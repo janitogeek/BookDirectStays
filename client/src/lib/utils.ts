@@ -34,6 +34,48 @@ export function getFlagEmoji(countryCode: string): string {
 }
 
 /**
+ * Gets flag emoji for a country name
+ */
+export function getFlagByCountryName(countryName: string): string {
+  const countryMap: { [key: string]: string } = {
+    'United States': '🇺🇸',
+    'Spain': '🇪🇸',
+    'United Kingdom': '🇬🇧',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Australia': '🇦🇺',
+    'Canada': '🇨🇦',
+    'Italy': '🇮🇹',
+    'Portugal': '🇵🇹',
+    'Thailand': '🇹🇭',
+    'Greece': '🇬🇷',
+    'Mexico': '🇲🇽',
+    'Brazil': '🇧🇷',
+    'Japan': '🇯🇵',
+    'South Korea': '🇰🇷',
+    'Netherlands': '🇳🇱',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Croatia': '🇭🇷',
+    'Czech Republic': '🇨🇿',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Hungary': '🇭🇺',
+    'Iceland': '🇮🇸',
+    'Ireland': '🇮🇪',
+    'Norway': '🇳🇴',
+    'Poland': '🇵🇱',
+    'Sweden': '🇸🇪',
+    'Turkey': '🇹🇷',
+    'Albania': '🇦🇱',
+    'USA': '🇺🇸',
+    'UK': '🇬🇧'
+  };
+  return countryMap[countryName] || '🌍';
+}
+
+/**
  * Format a date to a readable string
  */
 export function formatDate(dateString: string): string {

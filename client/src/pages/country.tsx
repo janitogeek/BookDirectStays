@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 import { getValidatedCitiesForCountry, getCitySubmissionCounts } from "@/lib/submission-processor";
+import { getFlagByCountryName } from "@/lib/utils";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
@@ -271,9 +272,12 @@ export default function Country() {
             {isCountryLoading ? (
               <div className="h-8 bg-gray-300 w-64 mb-4 md:mb-0 rounded animate-pulse"></div>
             ) : (
-              <h1 className="text-3xl font-bold mb-4 md:mb-0">
-                {country?.name || countryName} Direct Booking Sites
-                <span className="text-gray-500 text-lg ml-2">({totalHosts} hosts)</span>
+              <h1 className="text-3xl font-bold mb-4 md:mb-0 flex items-center gap-3">
+                <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
+                <span>
+                  {country?.name || countryName} Direct Booking Sites
+                  <span className="text-gray-500 text-lg ml-2">({totalHosts} hosts)</span>
+                </span>
               </h1>
             )}
             
@@ -384,8 +388,12 @@ export default function Country() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Find Hosts by City in {country?.name || countryName}
+                <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                  <span>Find Hosts by City in</span> 
+                  <span className="inline-flex items-center gap-2">
+                    <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
+                    {country?.name || countryName}
+                  </span>
                 </h2>
                 <p className="text-xl text-gray-600">
                   Looking for something more specific? Browse hosts by city

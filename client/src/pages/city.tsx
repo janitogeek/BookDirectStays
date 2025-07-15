@@ -3,20 +3,25 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
+import HostFilters, { FilterState } from "@/components/host-filters";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
+import { getFlagByCountryName } from "@/lib/utils";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
   const countrySlug = params?.country;
   const citySlug = params?.city;
   const [visibleCount, setVisibleCount] = useState(6);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    propertyTypes: [],
+    idealFor: [],
+    perksAmenities: [],
+    vibeAesthetic: []
+  });
   
   // Convert slug back to readable city name
   const cityName = citySlug?.split('-').map(word => 
@@ -60,26 +65,66 @@ export default function City() {
     )
   );
 
-  // Filter submissions by search term
+  // Filter submissions by all active filters
   const filteredSubmissions = useMemo(() => {
-    if (!searchTerm) return citySubmissions;
+    if (!citySubmissions.length) return [];
     
-    const search = searchTerm.toLowerCase();
+    const hasActiveFilters = Object.values(filters).some(filterArray => Array.isArray(filterArray) ? filterArray.length > 0 : Boolean(filterArray));
+    if (!hasActiveFilters) return citySubmissions;
+
     return citySubmissions.filter(submission => {
-      const searchableContent = [
-        submission.brandName,
-        submission.oneLineDescription,
-        submission.whyBookWithYou,
-        submission.topStats,
-        ...(submission.typesOfStays || []),
-        ...(submission.idealFor || []),
-        ...(submission.perksAmenities || []),
-        ...(submission.vibeAesthetic || [])
-      ].join(' ').toLowerCase();
-      
-      return searchableContent.includes(search);
+      // Check keyword search first
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        const searchableContent = [
+          submission.brandName,
+          submission.oneLineDescription,
+          submission.whyBookWithYou,
+          submission.topStats,
+          ...(submission.typesOfStays || []),
+          ...(submission.idealFor || []),
+          ...(submission.perksAmenities || []),
+          ...(submission.vibeAesthetic || [])
+        ].join(' ').toLowerCase();
+        
+        if (!searchableContent.includes(searchTerm)) return false;
+      }
+
+      // Check property types (Types of Stays)
+      if (filters.propertyTypes.length > 0) {
+        const hasMatchingPropertyType = submission.typesOfStays?.some(type =>
+          filters.propertyTypes.includes(type)
+        );
+        if (!hasMatchingPropertyType) return false;
+      }
+
+      // Check ideal for
+      if (filters.idealFor.length > 0) {
+        const hasMatchingIdealFor = submission.idealFor?.some(ideal =>
+          filters.idealFor.includes(ideal)
+        );
+        if (!hasMatchingIdealFor) return false;
+      }
+
+      // Check perks & amenities
+      if (filters.perksAmenities.length > 0) {
+        const hasMatchingPerks = submission.perksAmenities?.some(perk =>
+          filters.perksAmenities.includes(perk)
+        );
+        if (!hasMatchingPerks) return false;
+      }
+
+      // Check vibe & aesthetic
+      if (filters.vibeAesthetic.length > 0) {
+        const hasMatchingVibe = submission.vibeAesthetic?.some(vibe =>
+          filters.vibeAesthetic.includes(vibe)
+        );
+        if (!hasMatchingVibe) return false;
+      }
+
+      return true;
     });
-  }, [citySubmissions, searchTerm]);
+  }, [citySubmissions, filters]);
 
   console.log('🏙️ City page - cityName:', cityName);
   console.log('🏙️ City page - countryName:', countryName);
@@ -159,8 +204,8 @@ export default function City() {
                 </li>
                 <li className="text-blue-300">›</li>
                 <li>
-                  <Link href={`/country/${countrySlug}`} className="hover:text-white transition-colors">
-                    {countryName}
+                  <Link href={`/country/${countrySlug}`} className="hover:text-white transition-colors inline-flex items-center gap-1">
+                    {getFlagByCountryName(countryName)} {countryName}
                   </Link>
                 </li>
                 <li className="text-blue-300">›</li>
@@ -168,11 +213,12 @@ export default function City() {
               </ol>
             </nav>
             
-            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-              {cityName} Vacation Rental Hosts
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6 flex items-center gap-4">
+              <span className="text-5xl">{getFlagByCountryName(countryName)}</span>
+              <span>{cityName} Vacation Rental Hosts</span>
             </h1>
             <p className="text-xl text-blue-100 mb-8">
-              Direct booking vacation rental hosts in {cityName}, {countryName}
+              Direct booking vacation rental hosts in {cityName}, <span className="inline-flex items-center gap-1">{getFlagByCountryName(countryName)} {countryName}</span>
             </p>
             
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
@@ -195,35 +241,9 @@ export default function City() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             
-            {/* Search Input */}
+            {/* Host Filters */}
             {citySubmissions.length > 0 && (
-              <Card className="mb-8">
-                <CardContent className="p-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      type="text"
-                      placeholder={`Search ${cityName} hosts by name, description, amenities...`}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 pr-10"
-                    />
-                    {searchTerm && (
-                      <button
-                        onClick={() => setSearchTerm("")}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                  {searchTerm && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      Showing {filteredSubmissions.length} of {citySubmissions.length} hosts
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <HostFilters onFiltersChange={setFilters} />
             )}
             
             {/* Property Manager Cards Grid */}
@@ -261,10 +281,10 @@ export default function City() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      {searchTerm ? `No hosts found matching "${searchTerm}"` : `No hosts found in ${cityName}`}
+                      {filters.search ? `No hosts found matching "${filters.search}"` : `No hosts found in ${cityName}`}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                      {searchTerm ? "Try adjusting your search terms." : "We couldn't find any direct booking hosts in this city yet."}
+                      {filters.search ? "Try adjusting your search terms or filters." : "We couldn't find any direct booking hosts in this city yet."}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <Button 
@@ -272,8 +292,8 @@ export default function City() {
                         variant="outline" 
                         className="border-blue-600 text-blue-600"
                       >
-                        <Link href={`/country/${countrySlug}`}>
-                          View all {countryName} hosts
+                        <Link href={`/country/${countrySlug}`} className="inline-flex items-center gap-1">
+                          View all {getFlagByCountryName(countryName)} {countryName} hosts
                         </Link>
                       </Button>
                       <Button 
@@ -322,8 +342,12 @@ export default function City() {
       <section className="bg-gray-100 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Have a vacation rental in {cityName}?
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center justify-center gap-3">
+              <span>Have a vacation rental in</span> 
+              <span className="inline-flex items-center gap-2">
+                <span className="text-4xl">{getFlagByCountryName(countryName)}</span>
+                {cityName}?
+              </span>
             </h2>
             <p className="text-xl text-gray-600 mb-8">
               Join our directory and connect directly with travelers. No commission fees, just direct bookings.

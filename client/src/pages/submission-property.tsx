@@ -45,7 +45,8 @@ export default function SubmissionProperty() {
       'Norway': '🇳🇴',
       'Poland': '🇵🇱',
       'Sweden': '🇸🇪',
-      'Turkey': '🇹🇷'
+      'Turkey': '🇹🇷',
+      'Albania': '🇦🇱'
     };
     return countryMap[countryName] || '🌍';
   };
