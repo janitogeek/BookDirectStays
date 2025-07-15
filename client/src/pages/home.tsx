@@ -101,8 +101,8 @@ export default function Home() {
               </Card>
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
                 <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-2">$1.2B</div>
-                  <div className="text-sm font-medium">Guest Savings</div>
+                  <div className="text-3xl font-bold text-blue-200 mb-2">1000+</div>
+                  <div className="text-sm font-medium">Verified Hosts</div>
                 </CardContent>
               </Card>
             </div>
