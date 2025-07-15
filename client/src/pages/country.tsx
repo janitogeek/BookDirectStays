@@ -102,6 +102,19 @@ export default function Country() {
   console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
   console.log('🎬 React component - countryName:', countryName);
 
+  // Count submissions by city
+  const getCitySubmissionCount = (cityName: string) => {
+    return submissions.filter(submission => 
+      submission.citiesRegions.some(city => 
+        city.toLowerCase().includes(cityName.toLowerCase()) ||
+        cityName.toLowerCase().includes(city.toLowerCase())
+      )
+    ).length;
+  };
+
+  console.log('🏙️ Cities for country:', cities);
+  console.log('🏙️ Madrid count:', getCitySubmissionCount('Madrid'));
+
   // Fetch all countries for the tags
   const { data: countries, isLoading: isCountriesLoading } = useQuery({
     queryKey: ["/api/countries"],
@@ -315,7 +328,7 @@ export default function Country() {
                           {city}
                         </h3>
                         <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-800">
-                          0 hosts
+                          {getCitySubmissionCount(city)} hosts
                         </Badge>
                       </Link>
                     </CardContent>

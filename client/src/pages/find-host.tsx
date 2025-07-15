@@ -5,22 +5,45 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
+import { airtableService } from "@/lib/airtable";
 
 export default function FindHost() {
-  // For now, we'll use a static list of countries since we don't have a countries service yet
+  // Fetch all approved submissions to count by country
+  const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
+    queryKey: ["/api/submissions/all"],
+    queryFn: () => airtableService.getApprovedSubmissions(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Count submissions by country
+  const getCountrySubmissionCount = (countryName: string) => {
+    return allSubmissions.filter(submission => 
+      submission.countries.some(country => 
+        country.toLowerCase() === countryName.toLowerCase()
+      )
+    ).length;
+  };
+
+  // Static list of countries with dynamic counts
   const countries = [
-    { id: 1, name: "United States", slug: "usa", code: "US", listingCount: 0 },
-    { id: 2, name: "Spain", slug: "spain", code: "ES", listingCount: 0 },
-    { id: 3, name: "United Kingdom", slug: "uk", code: "GB", listingCount: 0 },
-    { id: 4, name: "Germany", slug: "germany", code: "DE", listingCount: 0 },
-    { id: 5, name: "France", slug: "france", code: "FR", listingCount: 0 },
-    { id: 6, name: "Australia", slug: "australia", code: "AU", listingCount: 0 },
-    { id: 7, name: "Canada", slug: "canada", code: "CA", listingCount: 0 },
-    { id: 8, name: "Italy", slug: "italy", code: "IT", listingCount: 0 },
-    { id: 9, name: "Portugal", slug: "portugal", code: "PT", listingCount: 0 },
-    { id: 10, name: "Thailand", slug: "thailand", code: "TH", listingCount: 0 },
-    { id: 11, name: "Greece", slug: "greece", code: "GR", listingCount: 0 }
-  ];
+    { id: 1, name: "United States", slug: "usa", code: "US" },
+    { id: 2, name: "Spain", slug: "spain", code: "ES" },
+    { id: 3, name: "United Kingdom", slug: "uk", code: "GB" },
+    { id: 4, name: "Germany", slug: "germany", code: "DE" },
+    { id: 5, name: "France", slug: "france", code: "FR" },
+    { id: 6, name: "Australia", slug: "australia", code: "AU" },
+    { id: 7, name: "Canada", slug: "canada", code: "CA" },
+    { id: 8, name: "Italy", slug: "italy", code: "IT" },
+    { id: 9, name: "Portugal", slug: "portugal", code: "PT" },
+    { id: 10, name: "Thailand", slug: "thailand", code: "TH" },
+    { id: 11, name: "Greece", slug: "greece", code: "GR" }
+  ].map(country => ({
+    ...country,
+    listingCount: getCountrySubmissionCount(country.name)
+  }));
+
+  console.log('🌍 Find Host - All submissions:', allSubmissions);
+  console.log('📊 Find Host - Countries with counts:', countries);
 
   const getFlagEmoji = (countryCode: string) => {
     const codePoints = countryCode
