@@ -10,6 +10,8 @@ import City from "@/pages/city";
 import Submit from "@/pages/submit";
 import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
+import Property from "@/pages/property";
+import SubmissionProperty from "@/pages/submission-property";
 import CMSAdmin from "@/pages/admin/cms";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -27,6 +29,8 @@ function Router() {
           <Route path="/submit" component={Submit} />
           <Route path="/faq" component={FAQ} />
           <Route path="/testimonials" component={Testimonials} />
+          <Route path="/property/:id" component={SubmissionProperty} />
+          <Route path="/listing/:id" component={Property} />
           <Route path="/admin/cms" component={CMSAdmin} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />

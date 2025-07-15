@@ -2,17 +2,51 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
+import SubmissionPropertyCard from "@/components/submission-property-card";
 import CountryTags from "@/components/country-tags";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
+import { airtableService } from "@/lib/airtable";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
   const countrySlug = params?.country;
   const [visibleCount, setVisibleCount] = useState(6);
   
+  // Map country slugs to full country names for Airtable matching
+  const getCountryNameFromSlug = (slug: string) => {
+    const countryMap: { [key: string]: string } = {
+      usa: 'United States',
+      spain: 'Spain',
+      uk: 'United Kingdom',
+      germany: 'Germany',
+      france: 'France',
+      australia: 'Australia',
+      canada: 'Canada',
+      italy: 'Italy',
+      portugal: 'Portugal',
+      thailand: 'Thailand',
+      greece: 'Greece',
+      netherlands: 'Netherlands',
+      switzerland: 'Switzerland',
+      austria: 'Austria',
+      belgium: 'Belgium',
+      croatia: 'Croatia',
+      'czech-republic': 'Czech Republic',
+      denmark: 'Denmark',
+      finland: 'Finland',
+      hungary: 'Hungary',
+      ireland: 'Ireland',
+      norway: 'Norway',
+      poland: 'Poland',
+      sweden: 'Sweden',
+      turkey: 'Turkey'
+    };
+    return countryMap[slug] || slug;
+  };
+
   // Sample cities/regions for each country (in real app, this would come from API)
   const getCitiesForCountry = (slug: string) => {
     const cityMap: { [key: string]: string[] } = {
@@ -32,6 +66,7 @@ export default function Country() {
   };
   
   const cities = getCitiesForCountry(countrySlug || '');
+  const countryName = getCountryNameFromSlug(countrySlug || '');
   
   // Fetch country
   const { data: country, isLoading: isCountryLoading } = useQuery({
@@ -53,6 +88,14 @@ export default function Country() {
     enabled: !!countrySlug
   });
 
+  // Fetch approved submissions for this country from Airtable
+  const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({
+    queryKey: [`/api/submissions/country/${countryName}`],
+    queryFn: () => airtableService.getSubmissionsByCountry(countryName),
+    enabled: !!countryName,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   // Fetch all countries for the tags
   const { data: countries, isLoading: isCountriesLoading } = useQuery({
     queryKey: ["/api/countries"],
@@ -67,6 +110,7 @@ export default function Country() {
   };
 
   const hasMore = listingsData?.hasMore || false;
+  const totalListings = (listingsData?.listings?.length || 0) + submissions.length;
 
   // Breadcrumb structured data for AI understanding
   const breadcrumbStructuredData = {
@@ -88,7 +132,7 @@ export default function Country() {
       {
         "@type": "ListItem",
         "position": 3,
-        "name": `${country?.name} Direct Booking Sites`,
+        "name": `${country?.name || countryName} Direct Booking Sites`,
         "item": `https://bookdirectstays.com/country/${countrySlug}`
       }
     ]
@@ -99,7 +143,7 @@ export default function Country() {
     "@context": "https://schema.org",
     "@type": "TouristDestination",
     "name": `${country.name} Vacation Rentals`,
-    "description": `Find ${country.listingCount} direct booking vacation rental websites in ${country.name}. Skip OTA fees and book directly with property managers.`,
+    "description": `Find ${totalListings} direct booking vacation rental websites in ${country.name}. Skip OTA fees and book directly with property managers.`,
     "url": `https://bookdirectstays.com/country/${countrySlug}`,
     "containsPlace": {
       "@type": "Country",
@@ -110,7 +154,7 @@ export default function Country() {
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": `${country.name} Direct Booking Vacation Rentals`,
-      "numberOfItems": country.listingCount
+      "numberOfItems": totalListings
     }
   } : null;
 
@@ -144,8 +188,8 @@ export default function Country() {
               <div className="h-8 bg-gray-300 w-64 mb-4 md:mb-0 rounded animate-pulse"></div>
             ) : (
               <h1 className="text-3xl font-bold mb-4 md:mb-0">
-                {country?.name} Direct Booking Sites
-                <span className="text-gray-500 text-lg ml-2">({country?.listingCount} listings)</span>
+                {country?.name || countryName} Direct Booking Sites
+                <span className="text-gray-500 text-lg ml-2">({totalListings} listings)</span>
               </h1>
             )}
             
@@ -163,7 +207,7 @@ export default function Country() {
           
           {/* Property Manager Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {isListingsLoading ? (
+            {isListingsLoading || isSubmissionsLoading ? (
               // Loading skeleton
               Array.from({ length: 6 }).map((_, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
@@ -188,13 +232,13 @@ export default function Country() {
                   </div>
                 </div>
               ))
-            ) : listingsData?.listings.length === 0 ? (
+            ) : totalListings === 0 ? (
               <div className="col-span-3 text-center py-16">
                 <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found for {country?.name}</h3>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No listings found for {country?.name || countryName}</h3>
                   <p className="text-gray-500 mb-6">We couldn't find any direct booking sites for this country.</p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button 
@@ -210,9 +254,17 @@ export default function Country() {
                 </div>
               </div>
             ) : (
-              listingsData?.listings.map((listing: any) => (
-                <PropertyCard key={listing.id} property={listing} />
-              ))
+              <>
+                {/* Display approved submissions first */}
+                {submissions.map((submission) => (
+                  <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
+                ))}
+                
+                {/* Display existing listings */}
+                {listingsData?.listings?.map((listing: any) => (
+                  <PropertyCard key={`listing-${listing.id}`} property={listing} />
+                ))}
+              </>
             )}
           </div>
           
@@ -238,7 +290,7 @@ export default function Country() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  Find Hosts by City/Region in {country?.name}
+                  Find Hosts by City/Region in {country?.name || countryName}
                 </h2>
                 <p className="text-xl text-gray-600">
                   Looking for something more specific? Browse hosts by city or region
