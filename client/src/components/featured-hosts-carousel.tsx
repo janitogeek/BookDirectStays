@@ -55,12 +55,39 @@ export default function FeaturedHostsCarousel() {
     );
   }
 
-  // Filter for featured hosts (Premium Listing plans that are published)
-  // Shows ALL published featured companies regardless of whether they have stats
-  const featuredHosts = submissions.filter(submission => 
-    (submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99')) &&
-    submission.status === 'Published'
-  );
+  // Debug: Log all submissions to see what we're working with
+  console.log('🔍 All submissions:', submissions);
+  console.log('📊 Total submissions count:', submissions?.length);
+  if (submissions && submissions.length > 0) {
+    console.log('📋 Sample submission:', submissions[0]);
+    console.log('🏷️ All plans:', submissions.map(s => s.plan));
+    console.log('📈 All statuses:', submissions.map(s => s.status));
+  }
+
+  // Filter for featured hosts (Premium plans that are approved/published)
+  // Shows ALL featured companies regardless of whether they have stats
+  const featuredHosts = submissions?.filter(submission => {
+    const isPremium = submission.plan?.includes('Premium') || 
+                     submission.plan?.includes('€499.99') || 
+                     submission.plan?.includes('499.99');
+    const isApproved = submission.status === 'Published' || 
+                      submission.status === 'Approved' || 
+                      submission.status === 'Approved – Not Yet Published';
+    
+    console.log(`🔍 Checking ${submission.brandName}:`, {
+      plan: submission.plan,
+      status: submission.status,
+      isPremium,
+      isApproved,
+      included: isPremium && isApproved
+    });
+    
+         return isPremium && isApproved;
+   }) || [];
+
+   console.log('✨ Featured hosts after filtering:', featuredHosts);
+   console.log('🎯 Featured hosts count:', featuredHosts.length);
+   console.log('🏢 Featured host names:', featuredHosts.map(h => h.brandName));
 
   if (featuredHosts.length === 0) {
     return (
