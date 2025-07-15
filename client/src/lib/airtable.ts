@@ -217,6 +217,10 @@ export const airtableService = {
     
     if (records.length > 0) {
       console.log('🏠 First record fields:', records[0].fields);
+      console.log('🔍 Status field:', records[0].fields['Status']);
+      console.log('🌍 Countries field:', records[0].fields['Countries']);
+      console.log('🏢 Brand Name field:', records[0].fields['Brand Name']);
+      console.log('🌐 Website field:', records[0].fields['Direct Booking Website']);
     } else {
       console.log('🔍 No records found, let me check all approved submissions...');
       // Fallback: get all approved submissions to debug
@@ -231,6 +235,13 @@ export const airtableService = {
 
     const transformedSubmissions = records.map(this.transformSubmission);
     console.log('✨ Transformed submissions:', transformedSubmissions);
+    console.log('📝 Number of transformed submissions:', transformedSubmissions.length);
+    
+    if (transformedSubmissions.length > 0) {
+      console.log('🎯 First transformed submission:', transformedSubmissions[0]);
+      console.log('🏷️ Brand name after transformation:', transformedSubmissions[0].brandName);
+      console.log('🌍 Countries after transformation:', transformedSubmissions[0].countries);
+    }
     
     return transformedSubmissions;
   },
@@ -259,7 +270,9 @@ export const airtableService = {
 
   // Helper method to transform Airtable records to normalized format
   transformSubmission(record: AirtableSubmission): Submission {
+    console.log('🔄 Transforming record:', record.id);
     const fields = record.fields;
+    console.log('📋 Record fields:', fields);
     
     // Helper function to parse comma-separated strings into arrays
     const parseArray = (value: string | undefined): string[] => {
@@ -267,7 +280,7 @@ export const airtableService = {
       return value.split(',').map(item => item.trim()).filter(Boolean);
     };
 
-    return {
+    const transformed = {
       id: record.id,
       brandName: fields['Brand Name'] || '',
       website: fields['Direct Booking Website'] || '',
@@ -289,10 +302,13 @@ export const airtableService = {
       youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
       logo: fields['Logo']?.[0]?.url || undefined,
       highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
-      status: fields['Status'] || 'Pending Review',
+      status: fields['Status'] || '',
       submissionDate: fields['Submission Date'] || '',
       createdTime: record.createdTime
     };
+
+    console.log('✅ Transformation complete:', transformed);
+    return transformed;
   }
 };
 
