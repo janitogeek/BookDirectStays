@@ -1,1 +1,324 @@
- 
+import { useQuery } from "@tanstack/react-query";
+import { useRoute } from "wouter";
+import { ExternalLink, MapPin, Users } from "lucide-react";
+import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
+
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { airtableService, Submission } from "@/lib/airtable";
+
+export default function SubmissionProperty() {
+  const [, params] = useRoute('/property/:id');
+  const submissionId = params?.id;
+
+  const { data: submission, isLoading, error } = useQuery({
+    queryKey: ["/api/submission", submissionId],
+    queryFn: () => submissionId ? airtableService.getSubmissionById(submissionId) : null,
+    enabled: !!submissionId,
+  });
+
+  const getFlagEmoji = (countryName: string) => {
+    const countryMap: { [key: string]: string } = {
+      'United States': '🇺🇸',
+      'Spain': '🇪🇸',
+      'United Kingdom': '🇬🇧',
+      'Germany': '🇩🇪',
+      'France': '🇫🇷',
+      'Australia': '🇦🇺',
+      'Canada': '🇨🇦',
+      'Italy': '🇮🇹',
+      'Portugal': '🇵🇹',
+      'Thailand': '🇹🇭',
+      'Greece': '🇬🇷',
+      'Netherlands': '🇳🇱',
+      'Switzerland': '🇨🇭',
+      'Austria': '🇦🇹',
+      'Belgium': '🇧🇪',
+      'Croatia': '🇭🇷',
+      'Czech Republic': '🇨🇿',
+      'Denmark': '🇩🇰',
+      'Finland': '🇫🇮',
+      'Hungary': '🇭🇺',
+      'Ireland': '🇮🇪',
+      'Norway': '🇳🇴',
+      'Poland': '🇵🇱',
+      'Sweden': '🇸🇪',
+      'Turkey': '🇹🇷'
+    };
+    return countryMap[countryName] || '🌍';
+  };
+
+  const getSocialIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'instagram':
+        return <SiInstagram className="w-5 h-5" />;
+      case 'facebook':
+        return <SiFacebook className="w-5 h-5" />;
+      case 'linkedin':
+        return <SiLinkedin className="w-5 h-5" />;
+      case 'tiktok':
+        return <SiTiktok className="w-5 h-5" />;
+      case 'youtube':
+        return <SiYoutube className="w-5 h-5" />;
+      default:
+        return <ExternalLink className="w-5 h-5" />;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <Skeleton className="h-64 w-full mb-6" />
+          <Skeleton className="h-8 w-3/4 mb-4" />
+          <Skeleton className="h-6 w-1/2 mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-48" />
+            <Skeleton className="h-48" />
+            <Skeleton className="h-48" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !submission) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Property Not Found</h1>
+          <p className="text-gray-600 mb-8">
+            The property you're looking for doesn't exist or has been removed.
+          </p>
+          <Button asChild>
+            <a href="/">← Back to Home</a>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Parse social media links
+  const socialLinks = [];
+  if (submission.instagram) {
+    socialLinks.push({ platform: 'Instagram', url: submission.instagram });
+  }
+  if (submission.facebook) {
+    socialLinks.push({ platform: 'Facebook', url: submission.facebook });
+  }
+  if (submission.linkedin) {
+    socialLinks.push({ platform: 'LinkedIn', url: submission.linkedin });
+  }
+  if (submission.tiktok) {
+    socialLinks.push({ platform: 'TikTok', url: submission.tiktok });
+  }
+  if (submission.youtubeVideoTour) {
+    socialLinks.push({ platform: 'YouTube', url: submission.youtubeVideoTour });
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="relative h-96 bg-gradient-to-r from-blue-600 to-blue-800">
+        {submission.highlightImage && (
+          <div className="absolute inset-0">
+            <img
+              src={submission.highlightImage}
+              alt={submission.brandName}
+              className="w-full h-full object-cover opacity-30"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-800/80" />
+          </div>
+        )}
+        
+        <div className="relative container mx-auto px-4 h-full flex items-center">
+          <div className="text-white">
+            <div className="flex items-center gap-4 mb-4">
+              {submission.logo && (
+                <img
+                  src={submission.logo}
+                  alt={`${submission.brandName} logo`}
+                  className="w-16 h-16 rounded-lg bg-white p-2"
+                />
+              )}
+              <div>
+                <h1 className="text-4xl font-bold mb-2">{submission.brandName}</h1>
+                <div className="flex items-center gap-2 text-blue-100">
+                  <MapPin className="w-5 h-5" />
+                  <span className="flex items-center gap-2">
+                    {submission.countries.map((country, index) => (
+                      <span key={country} className="flex items-center gap-1">
+                        {getFlagEmoji(country)} {country}
+                        {index < submission.countries.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-6 mb-6">
+              {submission.numberOfListings && (
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span>{submission.numberOfListings} Properties</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              {submission.website && (
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                  <a 
+                    href={submission.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    Book Direct
+                  </a>
+                </Button>
+              )}
+              
+              {socialLinks.length > 0 && (
+                <div className="flex items-center gap-3">
+                  {socialLinks.map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white hover:text-blue-200 transition-colors"
+                      title={social.platform}
+                    >
+                      {getSocialIcon(social.platform)}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Description */}
+              {submission.oneLineDescription && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About {submission.brandName}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 leading-relaxed">
+                      {submission.oneLineDescription}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Why Book With */}
+              {submission.whyBookWithYou && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {submission.whyBookWithYou}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Property Types */}
+              {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Property Types</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.typesOfStays.map((type, index) => (
+                        <Badge key={index} variant="secondary">
+                          {type}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Locations */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Locations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {submission.countries.map((country, index) => (
+                      <div key={country} className="flex items-center gap-2">
+                        <span className="text-xl">{getFlagEmoji(country)}</span>
+                        <span className="font-medium">{country}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Contact */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Get in Touch</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {submission.website && (
+                    <Button asChild className="w-full">
+                      <a 
+                        href={submission.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Visit Website
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {socialLinks.length > 0 && (
+                    <div className="flex justify-center gap-4 pt-4">
+                      {socialLinks.map((social, index) => (
+                        <a
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:text-gray-900 transition-colors"
+                          title={social.platform}
+                        >
+                          {getSocialIcon(social.platform)}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 

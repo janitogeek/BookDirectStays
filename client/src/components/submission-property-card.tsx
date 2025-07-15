@@ -1,1 +1,213 @@
- 
+import { ExternalLink, MapPin, Users, Eye } from "lucide-react";
+import { Link } from "wouter";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { Card, CardContent } from "./ui/card";
+import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
+import { Submission } from "@/lib/airtable";
+
+interface SubmissionPropertyCardProps {
+  submission: Submission;
+}
+
+export default function SubmissionPropertyCard({ submission }: SubmissionPropertyCardProps) {
+  const getFlagEmoji = (countryName: string) => {
+    const countryMap: { [key: string]: string } = {
+      'United States': '🇺🇸',
+      'Spain': '🇪🇸',
+      'United Kingdom': '🇬🇧',
+      'Germany': '🇩🇪',
+      'France': '🇫🇷',
+      'Australia': '🇦🇺',
+      'Canada': '🇨🇦',
+      'Italy': '🇮🇹',
+      'Portugal': '🇵🇹',
+      'Thailand': '🇹🇭',
+      'Greece': '🇬🇷',
+      'Mexico': '🇲🇽',
+      'Brazil': '🇧🇷',
+      'Japan': '🇯🇵',
+      'South Korea': '🇰🇷',
+      'Netherlands': '🇳🇱',
+      'Switzerland': '🇨🇭',
+      'Austria': '🇦🇹',
+      'Belgium': '🇧🇪',
+      'Croatia': '🇭🇷',
+      'Czech Republic': '🇨🇿',
+      'Denmark': '🇩🇰',
+      'Finland': '🇫🇮',
+      'Hungary': '🇭🇺',
+      'Iceland': '🇮🇸',
+      'Ireland': '🇮🇪',
+      'Norway': '🇳🇴',
+      'Poland': '🇵🇱',
+      'Sweden': '🇸🇪',
+      'Turkey': '🇹🇷'
+    };
+    return countryMap[countryName] || '🌍';
+  };
+
+  const getSocialIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'instagram':
+        return <SiInstagram className="w-4 h-4" />;
+      case 'facebook':
+        return <SiFacebook className="w-4 h-4" />;
+      case 'linkedin':
+        return <SiLinkedin className="w-4 h-4" />;
+      case 'tiktok':
+        return <SiTiktok className="w-4 h-4" />;
+      case 'youtube':
+        return <SiYoutube className="w-4 h-4" />;
+      default:
+        return <ExternalLink className="w-4 h-4" />;
+    }
+  };
+
+  // Parse social media links if they exist
+  const socialLinks = [];
+  if (submission.instagram) {
+    socialLinks.push({ platform: 'Instagram', url: submission.instagram });
+  }
+  if (submission.facebook) {
+    socialLinks.push({ platform: 'Facebook', url: submission.facebook });
+  }
+  if (submission.linkedin) {
+    socialLinks.push({ platform: 'LinkedIn', url: submission.linkedin });
+  }
+  if (submission.tiktok) {
+    socialLinks.push({ platform: 'TikTok', url: submission.tiktok });
+  }
+  if (submission.youtubeVideoTour) {
+    socialLinks.push({ platform: 'YouTube', url: submission.youtubeVideoTour });
+  }
+
+  return (
+    <>
+      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white">
+        <CardContent className="p-6">
+          {/* Header Image */}
+          {submission.highlightImage && (
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <img
+                src={submission.highlightImage}
+                alt={submission.brandName}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+              />
+            </div>
+          )}
+
+          {/* Brand Header */}
+          <div className="flex items-start gap-3 mb-4">
+            {submission.logo && (
+              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                <img
+                  src={submission.logo}
+                  alt={`${submission.brandName} logo`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
+                {submission.brandName}
+              </h3>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <MapPin className="w-4 h-4 flex-shrink-0" />
+                <span className="flex items-center gap-1">
+                  {submission.countries.map((country, index) => (
+                    <span key={country}>
+                      {getFlagEmoji(country)} {country}
+                      {index < submission.countries.length - 1 && ", "}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+            {submission.numberOfListings && (
+              <div className="flex items-center gap-1">
+                <Users className="w-4 h-4" />
+                <span>{submission.numberOfListings} properties</span>
+              </div>
+            )}
+          </div>
+
+          {/* Description */}
+          {submission.oneLineDescription && (
+            <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">
+              {submission.oneLineDescription}
+            </p>
+          )}
+
+          {/* Social Media Links */}
+          {socialLinks.length > 0 && (
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm text-gray-600 mr-2">Follow:</span>
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  title={social.platform}
+                >
+                  {getSocialIcon(social.platform)}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {/* Property Types */}
+          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {submission.typesOfStays.map((type, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {type.trim()}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 pt-2">
+            {submission.website && (
+              <Button 
+                asChild 
+                variant="default" 
+                size="sm"
+                className="flex-1"
+              >
+                <a 
+                  href={submission.website} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Book Direct
+                </a>
+              </Button>
+            )}
+            
+            <Button 
+              asChild 
+              variant="outline" 
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Link href={`/property/${submission.id}`}>
+                <Eye className="w-4 h-4" />
+                View Details
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
+  );
+} 
