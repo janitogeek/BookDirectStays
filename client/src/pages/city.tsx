@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
+import SubmissionPropertyCard from "@/components/submission-property-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
+import { airtableService } from "@/lib/airtable";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -36,6 +38,28 @@ export default function City() {
   };
   
   const countryName = getCountryName(countrySlug || '');
+
+  // Fetch submissions for this country and filter by city
+  const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
+    queryKey: [`/api/submissions/country/${countryName}`],
+    queryFn: () => airtableService.getSubmissionsByCountry(countryName),
+    enabled: !!countryName,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Filter submissions by city
+  const citySubmissions = allSubmissions.filter(submission => 
+    submission.citiesRegions.some(city => 
+      city.toLowerCase().includes(cityName?.toLowerCase() || '') ||
+      (cityName?.toLowerCase() || '').includes(city.toLowerCase())
+    )
+  );
+
+  console.log('🏙️ City page - cityName:', cityName);
+  console.log('🏙️ City page - countryName:', countryName);
+  console.log('🏙️ City page - allSubmissions:', allSubmissions);
+  console.log('🏙️ City page - citySubmissions:', citySubmissions);
+  console.log('🏙️ City page - citySubmissions length:', citySubmissions.length);
   
   // Fetch listings for this city (placeholder - would be real API call)
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({
@@ -128,7 +152,7 @@ export default function City() {
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
               <div className="flex items-center space-x-4">
                 <Badge className="bg-blue-500 text-white">
-                  {listingsData?.total || 0} hosts
+                  {(listingsData?.total || 0) + citySubmissions.length} hosts
                 </Badge>
                 <span className="text-blue-100">•</span>
                 <span className="text-blue-100">Skip OTA fees</span>
@@ -147,7 +171,7 @@ export default function City() {
             
             {/* Property Manager Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {isListingsLoading ? (
+              {(isListingsLoading || isSubmissionsLoading) ? (
                 // Loading skeleton
                 Array.from({ length: 6 }).map((_, index) => (
                   <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
@@ -172,7 +196,7 @@ export default function City() {
                     </div>
                   </div>
                 ))
-              ) : listingsData?.listings.length === 0 ? (
+              ) : (listingsData?.listings.length === 0 && citySubmissions.length === 0) ? (
                 <div className="col-span-3 text-center py-16">
                   <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -203,9 +227,17 @@ export default function City() {
                   </div>
                 </div>
               ) : (
-                listingsData?.listings.map((listing: any) => (
-                  <PropertyCard key={listing.id} property={listing} />
-                ))
+                <>
+                  {/* Display approved submissions first */}
+                  {citySubmissions.map((submission) => (
+                    <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
+                  ))}
+                  
+                  {/* Display existing listings */}
+                  {listingsData?.listings.map((listing: any) => (
+                    <PropertyCard key={`listing-${listing.id}`} property={listing} />
+                  ))}
+                </>
               )}
             </div>
             
