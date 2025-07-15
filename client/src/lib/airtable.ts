@@ -151,9 +151,14 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
+    console.log('🔍 Fetching all approved submissions...');
+
     // Use Airtable filter to get approved/published submissions
     const filterFormula = `OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+
+    console.log('🔗 All approved URL:', url);
+    console.log('📝 All approved filter:', filterFormula);
 
     const response = await fetch(url, {
       headers: {
@@ -162,14 +167,21 @@ export const airtableService = {
     });
 
     if (!response.ok) {
+      console.error('❌ Airtable API error for approved submissions:', response.status, response.statusText);
       throw new Error(`Airtable API error: ${response.statusText}`);
     }
 
     const data = await response.json();
     const records: AirtableSubmission[] = data.records || [];
 
+    console.log('📦 All approved raw response:', data);
+    console.log('📊 Total approved records:', records.length);
+
     // Transform Airtable records to normalized format
-    return records.map(this.transformSubmission);
+    const transformed = records.map(this.transformSubmission);
+    console.log('✨ All approved transformed:', transformed);
+    
+    return transformed;
   },
 
   async getSubmissionsByCountry(countryName: string): Promise<Submission[]> {
@@ -177,9 +189,14 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
-    // Filter for approved/published submissions in specific country
-    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published"), FIND("${countryName}", {Countries}) > 0)`;
+    console.log('🔍 Fetching submissions for country:', countryName);
+
+    // Filter for approved/published submissions in specific country (case-insensitive)
+    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published"), OR(FIND(UPPER("${countryName.toUpperCase()}"), UPPER({Countries})) > 0, FIND(LOWER("${countryName.toLowerCase()}"), LOWER({Countries})) > 0, FIND("${countryName}", {Countries}) > 0))`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+    
+    console.log('🔗 API URL:', url);
+    console.log('📝 Filter formula:', filterFormula);
 
     const response = await fetch(url, {
       headers: {
@@ -188,13 +205,34 @@ export const airtableService = {
     });
 
     if (!response.ok) {
+      console.error('❌ Airtable API error:', response.status, response.statusText);
       throw new Error(`Airtable API error: ${response.statusText}`);
     }
 
     const data = await response.json();
     const records: AirtableSubmission[] = data.records || [];
+    
+    console.log('📦 Raw Airtable response:', data);
+    console.log('📊 Number of records found:', records.length);
+    
+    if (records.length > 0) {
+      console.log('🏠 First record fields:', records[0].fields);
+    } else {
+      console.log('🔍 No records found, let me check all approved submissions...');
+      // Fallback: get all approved submissions to debug
+      try {
+        const allApproved = await this.getApprovedSubmissions();
+        console.log('📋 All approved submissions:', allApproved);
+        console.log('🌍 Countries in approved submissions:', allApproved.map(s => s.countries));
+      } catch (error) {
+        console.error('❌ Error fetching all approved submissions:', error);
+      }
+    }
 
-    return records.map(this.transformSubmission);
+    const transformedSubmissions = records.map(this.transformSubmission);
+    console.log('✨ Transformed submissions:', transformedSubmissions);
+    
+    return transformedSubmissions;
   },
 
   async getSubmissionById(id: string): Promise<Submission | null> {
