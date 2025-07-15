@@ -41,6 +41,7 @@ const formSchema = z.object({
   }),
   "One-line Description": z.string().min(5),
   "Why Book With You?": z.string().min(10),
+  "Top Stats": z.string().optional().or(z.literal("")),
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
@@ -102,6 +103,7 @@ export default function Submit() {
       "Highlight Image": { url: "", name: "" },
       "One-line Description": "",
       "Why Book With You?": "",
+      "Top Stats": "",
       "Types of Stays": [],
       "Ideal For": [],
       "Is your brand pet-friendly?": false,
@@ -309,6 +311,7 @@ export default function Submit() {
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
+        "Top Stats": values["Top Stats"] || "",
         "Types of Stays": values["Types of Stays"] || [],
         "Ideal For": values["Ideal For"] || [],
         "Perks / Amenities": values["Perks / Amenities"] || [],
@@ -549,6 +552,15 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Why Book With You?<RequiredAsterisk /></FormLabel>
                   <FormControl><Textarea rows={4} {...field} placeholder="e.g. Direct rates, local experiences, flexible stays (tell guests what makes you special, why should they book with you direct and not through an OTA)" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Top Stats" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Top Stats (e.g., 4.8/5 stars, 100+ reviews, 50+ awards)</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="e.g., 4.8/5 stars, 100+ reviews, 50+ awards" />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
