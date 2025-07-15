@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from "wouter";
+import { ExternalLink, Eye } from "lucide-react";
 import { airtableService, Submission } from "@/lib/airtable";
 import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
 // Import Swiper styles
@@ -53,9 +55,10 @@ export default function FeaturedHostsCarousel() {
     );
   }
 
-  // Filter for featured hosts (Premium Listing plans)
+  // Filter for featured hosts (Premium Listing plans that are published)
   const featuredHosts = submissions.filter(submission => 
-    submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99')
+    (submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99')) &&
+    submission.status === 'Published'
   );
 
   if (featuredHosts.length === 0) {
@@ -105,50 +108,82 @@ export default function FeaturedHostsCarousel() {
       >
         {featuredHosts.map((host) => (
           <SwiperSlide key={host.id}>
-            <Link to={`/property/${host.id}`}>
-              <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-full cursor-pointer">
-                <CardContent className="p-8 text-center h-full flex flex-col justify-between">
-                  {/* Logo */}
-                  <div className="mb-6">
-                    {host.logo ? (
-                      <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-100 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <img
-                          src={host.logo}
-                          alt={`${host.brandName} logo`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-xl">
-                          {host.brandName.charAt(0)}
-                        </span>
+            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-full">
+              <CardContent className="p-8 text-center h-full flex flex-col">
+                {/* Logo */}
+                <div className="mb-6">
+                  {host.logo ? (
+                    <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <img
+                        src={host.logo}
+                        alt={`${host.brandName} logo`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 font-bold text-xl">
+                        {host.brandName.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content - fills available space */}
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    {/* Brand Name */}
+                    <div className="mb-3">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {host.brandName}
+                      </h3>
+                    </div>
+
+                    {/* Countries */}
+                    <div className="text-sm text-gray-700 mb-3">
+                      {host.countries.slice(0, 2).join(", ")}
+                      {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
+                    </div>
+                    
+                    {/* Stats - only show if they exist */}
+                    {host.topStats && host.topStats.trim() && (
+                      <div className="text-sm text-gray-600 mb-4">
+                        <span className="font-medium">Stats:</span> {host.topStats}
                       </div>
                     )}
                   </div>
 
-                  {/* Brand Name */}
-                  <div className="mb-3">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                      {host.brandName}
-                    </h3>
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-2 mt-4">
+                    <Button 
+                      asChild
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <a 
+                        href={host.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Book Direct
+                      </a>
+                    </Button>
+                    
+                    <Button 
+                      asChild
+                      variant="outline" 
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                    >
+                      <Link to={`/property/${host.id}`} className="flex items-center justify-center gap-2">
+                        <Eye className="w-4 h-4" />
+                        View Details
+                      </Link>
+                    </Button>
                   </div>
-
-                  {/* Countries */}
-                  <div className="text-sm text-gray-700 mb-3">
-                    {host.countries.slice(0, 2).join(", ")}
-                    {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
-                  </div>
-                  
-                  {/* Stats */}
-                  {host.topStats && (
-                    <div className="text-sm text-gray-600">
-                      <span className="font-medium">Stats:</span> {host.topStats}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
+                </div>
+              </CardContent>
+            </Card>
           </SwiperSlide>
         ))}
       </Swiper>

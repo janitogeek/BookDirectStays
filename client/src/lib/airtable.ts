@@ -282,6 +282,79 @@ export const airtableService = {
     return this.transformSubmission(record);
   },
 
+  /**
+   * Update submission status in Airtable
+   * Status workflow: 
+   * 1. "Pending" → "Approved – Not Yet Published" (admin approval)
+   * 2. "Approved – Not Yet Published" → "Published" (when live on site)
+   * 3. "Published" submissions appear in featured carousel and public listings
+   */
+  async updateSubmissionStatus(id: string, status: string): Promise<void> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    const response = await fetch(`${AIRTABLE_API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fields: {
+          'Status': status
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Airtable API error: ${response.statusText}`);
+    }
+
+    console.log(`✅ Updated submission ${id} status to: ${status}`);
+  },
+
+  /**
+   * Convenience method to mark approved submissions as published
+   */
+  async markAsPublished(id: string): Promise<void> {
+    await this.updateSubmissionStatus(id, 'Published');
+  },
+
+  async getPublishedSubmissions(): Promise<Submission[]> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('🔍 Fetching published submissions only...');
+
+    // Filter for only published submissions
+    const filterFormula = `{Status} = "Published"`;
+    const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error('❌ Airtable API error for published submissions:', response.status, response.statusText);
+      throw new Error(`Airtable API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const records: AirtableSubmission[] = data.records || [];
+
+    console.log('📦 Published submissions count:', records.length);
+
+    // Transform Airtable records to normalized format
+    const transformed = records.map(this.transformSubmission);
+    console.log('✨ Published submissions transformed:', transformed);
+    
+    return transformed;
+  },
+
   // Helper method to transform Airtable records to normalized format
   transformSubmission(record: AirtableSubmission): Submission {
     try {
