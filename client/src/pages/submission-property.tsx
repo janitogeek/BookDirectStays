@@ -121,20 +121,19 @@ export default function SubmissionProperty() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-blue-600 to-blue-800">
+      <div className="relative h-96">
         {submission.highlightImage && (
           <div className="absolute inset-0">
             <img
               src={submission.highlightImage}
               alt={submission.brandName}
-              className="w-full h-full object-cover opacity-30"
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-800/80" />
           </div>
         )}
         
-        <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="text-white">
+        <div className="relative container mx-auto px-4 h-full flex items-center bg-black/40">
+          <div className="text-white max-w-2xl">
             <div className="flex items-center gap-4 mb-4">
               {submission.logo && (
                 <img
@@ -143,9 +142,18 @@ export default function SubmissionProperty() {
                   className="w-16 h-16 rounded-lg bg-white p-2"
                 />
               )}
-              <div>
+              <div className="flex-1">
                 <h1 className="text-4xl font-bold mb-2">{submission.brandName}</h1>
-                <div className="flex items-center gap-2 text-blue-100">
+                
+                {/* One-line Description in Italic */}
+                {submission.oneLineDescription && (
+                  <p className="text-lg italic text-blue-100 mb-3 leading-relaxed">
+                    {submission.oneLineDescription}
+                  </p>
+                )}
+
+                {/* Countries */}
+                <div className="flex items-center gap-2 text-blue-100 mb-2">
                   <MapPin className="w-5 h-5" />
                   <span className="flex items-center gap-2">
                     {submission.countries.map((country, index) => (
@@ -156,10 +164,18 @@ export default function SubmissionProperty() {
                     ))}
                   </span>
                 </div>
+
+                {/* Cities/Regions */}
+                {submission.citiesRegions && submission.citiesRegions.length > 0 && (
+                  <div className="text-blue-200 text-sm mb-3">
+                    Cities: {submission.citiesRegions.join(", ")}
+                  </div>
+                )}
               </div>
             </div>
             
-            <div className="flex items-center gap-6 mb-6">
+            {/* Property Count */}
+            <div className="flex items-center gap-2 mb-3">
               {submission.numberOfListings && (
                 <div className="flex items-center gap-2">
                   <Building2 className="w-5 h-5" />
@@ -168,38 +184,16 @@ export default function SubmissionProperty() {
               )}
             </div>
 
-            <div className="flex flex-wrap gap-4">
-              {submission.website && (
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  <a 
-                    href={submission.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                    Book Direct
-                  </a>
-                </Button>
-              )}
-              
-              {socialLinks.length > 0 && (
-                <div className="flex items-center gap-3">
-                  {socialLinks.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-white hover:text-blue-200 transition-colors"
-                      title={social.platform}
-                    >
-                      {getSocialIcon(social.platform)}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Types of Stays */}
+            {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {submission.typesOfStays.map((type, index) => (
+                  <Badge key={index} variant="secondary" className="bg-white/20 text-white border-white/30">
+                    {type}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -209,20 +203,6 @@ export default function SubmissionProperty() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Description */}
-              {submission.oneLineDescription && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>About {submission.brandName}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 leading-relaxed">
-                      {submission.oneLineDescription}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
               {/* Why Book With */}
               {submission.whyBookWithYou && (
                 <Card>
@@ -302,41 +282,82 @@ export default function SubmissionProperty() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Bottom Section: Social Links and Book Direct */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    {/* Social Media Links - Left */}
+                    <div className="flex items-center gap-4">
+                      {socialLinks.length > 0 && (
+                        <>
+                          <span className="text-gray-600 font-medium">Follow us:</span>
+                          <div className="flex gap-3">
+                            {socialLinks.map((social, index) => (
+                              <a
+                                key={index}
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:scale-110 transition-transform"
+                                title={social.platform}
+                              >
+                                {getSocialIcon(social.platform)}
+                              </a>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Book Direct - Right */}
+                    {submission.website && (
+                      <Button size="lg" asChild>
+                        <a 
+                          href={submission.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink className="w-5 h-5" />
+                          Book Direct
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Property Types */}
-              {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Property Types</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {submission.typesOfStays.map((type, index) => (
-                        <Badge key={index} variant="secondary">
-                          {type}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
               {/* Locations */}
               <Card>
                 <CardHeader>
                   <CardTitle>Locations</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {submission.countries.map((country, index) => (
                       <div key={country} className="flex items-center gap-2">
                         <span className="text-xl">{getFlagEmoji(country)}</span>
                         <span className="font-medium">{country}</span>
                       </div>
                     ))}
+                    
+                    {/* Cities/Regions in Sidebar */}
+                    {submission.citiesRegions && submission.citiesRegions.length > 0 && (
+                      <div className="pt-2 border-t border-gray-200">
+                        <h4 className="text-sm font-medium text-gray-600 mb-2">Cities & Regions:</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {submission.citiesRegions.map((city, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {city.trim()}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -359,23 +380,6 @@ export default function SubmissionProperty() {
                         Visit Website
                       </a>
                     </Button>
-                  )}
-                  
-                  {socialLinks.length > 0 && (
-                    <div className="flex justify-center gap-4 pt-4">
-                      {socialLinks.map((social, index) => (
-                        <a
-                          key={index}
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:scale-110 transition-transform"
-                          title={social.platform}
-                        >
-                          {getSocialIcon(social.platform)}
-                        </a>
-                      ))}
-                    </div>
                   )}
                 </CardContent>
               </Card>
