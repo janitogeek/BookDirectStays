@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, varchar, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, varchar, jsonb, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -32,6 +32,25 @@ export const insertCountrySchema = createInsertSchema(countries).omit({
 
 export type InsertCountry = z.infer<typeof insertCountrySchema>;
 export type Country = typeof countries.$inferSelect;
+
+// Cities schema - dynamically created when submissions are validated
+export const cities = pgTable("cities", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull(),
+  countryId: integer("country_id").notNull().references(() => countries.id),
+  countryCode: varchar("country_code", { length: 2 }).notNull(),
+  geonameId: integer("geoname_id"), // For validation with GeoNames API
+  listingCount: integer("listing_count").notNull().default(0),
+  createdAt: text("created_at").notNull(),
+});
+
+export const insertCitySchema = createInsertSchema(cities).omit({
+  id: true,
+});
+
+export type InsertCity = z.infer<typeof insertCitySchema>;
+export type City = typeof cities.$inferSelect;
 
 // Property Manager/Listing schema
 export const listings = pgTable("listings", {
@@ -79,6 +98,7 @@ export const submissions = pgTable("submissions", {
   website: text("website").notNull(),
   listingCount: integer("listing_count").notNull(),
   countries: text("countries").array().notNull(),
+  citiesRegions: jsonb("cities_regions").$type<Array<{ name: string; geonameId: number }>>(), // Original city data from form
   description: text("description").notNull(),
   logo: text("logo").notNull(),
   email: text("email").notNull(),
@@ -98,6 +118,17 @@ export const insertSubmissionSchema = createInsertSchema(submissions).omit({
 
 export type InsertSubmission = z.infer<typeof insertSubmissionSchema>;
 export type Submission = typeof submissions.$inferSelect;
+
+// Many-to-many relationship between submissions and validated cities
+export const submissionCities = pgTable("submission_cities", {
+  submissionId: integer("submission_id").notNull().references(() => submissions.id),
+  cityId: integer("city_id").notNull().references(() => cities.id),
+  createdAt: text("created_at").notNull(),
+}, (table) => ({
+  pk: primaryKey(table.submissionId, table.cityId),
+}));
+
+export type SubmissionCity = typeof submissionCities.$inferSelect;
 
 // Testimonial schema
 export const testimonials = pgTable("testimonials", {

@@ -6,44 +6,55 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
+import { getActiveCountries, getSubmissionsForCountry } from "@/lib/submission-processor";
+import { getCountryCode } from "@/lib/geonames";
+import { slugify } from "@/lib/utils";
 
 export default function FindHost() {
-  // Fetch all approved submissions to count by country
-  const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: ["/api/submissions/all"],
-    queryFn: () => airtableService.getApprovedSubmissions(),
+  // Fetch active countries (countries that have approved submissions)
+  const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
+    queryKey: ["/api/active-countries"],
+    queryFn: () => getActiveCountries(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Count submissions by country
-  const getCountrySubmissionCount = (countryName: string) => {
-    return allSubmissions.filter(submission => 
-      submission.countries.some(country => 
-        country.toLowerCase() === countryName.toLowerCase()
-      )
-    ).length;
-  };
+  // Transform active country names into country objects with metadata
+  const countries = activeCountryNames.map((countryName, index) => {
+    const countryCode = getCountryCode(countryName) || "XX";
+    const slug = slugify(countryName);
+    
+    return {
+      id: index + 1,
+      name: countryName,
+      slug: slug,
+      code: countryCode,
+    };
+  });
 
-  // Static list of countries with dynamic counts
-  const countries = [
-    { id: 1, name: "United States", slug: "usa", code: "US" },
-    { id: 2, name: "Spain", slug: "spain", code: "ES" },
-    { id: 3, name: "United Kingdom", slug: "uk", code: "GB" },
-    { id: 4, name: "Germany", slug: "germany", code: "DE" },
-    { id: 5, name: "France", slug: "france", code: "FR" },
-    { id: 6, name: "Australia", slug: "australia", code: "AU" },
-    { id: 7, name: "Canada", slug: "canada", code: "CA" },
-    { id: 8, name: "Italy", slug: "italy", code: "IT" },
-    { id: 9, name: "Portugal", slug: "portugal", code: "PT" },
-    { id: 10, name: "Thailand", slug: "thailand", code: "TH" },
-    { id: 11, name: "Greece", slug: "greece", code: "GR" }
-  ].map(country => ({
-    ...country,
-    listingCount: getCountrySubmissionCount(country.name)
-  }));
+  // Fetch submission counts for each active country
+  const { data: countriesWithCounts = [], isLoading: isCountsLoading } = useQuery({
+    queryKey: ["/api/countries-with-counts", activeCountryNames],
+    queryFn: async () => {
+      const countriesWithCounts = [];
+      
+      for (const country of countries) {
+        const submissions = await getSubmissionsForCountry(country.name);
+        countriesWithCounts.push({
+          ...country,
+          listingCount: submissions.length
+        });
+      }
+      
+      return countriesWithCounts.sort((a, b) => b.listingCount - a.listingCount);
+    },
+    enabled: activeCountryNames.length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  console.log('🌍 Find Host - All submissions:', allSubmissions);
-  console.log('📊 Find Host - Countries with counts:', countries);
+  console.log('🌍 Find Host - Active countries:', activeCountryNames);
+  console.log('📊 Find Host - Countries with counts:', countriesWithCounts);
+
+  const isLoading = isCountriesLoading || isCountsLoading;
 
   const getFlagEmoji = (countryCode: string) => {
     const codePoints = countryCode
@@ -84,7 +95,28 @@ export default function FindHost() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {countries.map((country) => (
+              {isLoading ? (
+                // Loading skeleton
+                Array.from({ length: 6 }).map((_, i) => (
+                  <Card key={i} className="hover:shadow-lg transition-shadow duration-300 border-0 shadow-md">
+                    <CardContent className="p-6">
+                      <div className="animate-pulse">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                            <div className="h-6 bg-gray-200 rounded w-24"></div>
+                          </div>
+                          <div className="h-6 bg-gray-200 rounded w-16"></div>
+                        </div>
+                        <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                        <div className="h-10 bg-gray-200 rounded w-full"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                countriesWithCounts.map((country) => (
                 <Card key={country.id} className="hover:shadow-lg transition-shadow duration-300 border-0 shadow-md">
                   <CardContent className="p-6">
                     <Link href={`/country/${country.slug}`} className="block">
@@ -108,7 +140,8 @@ export default function FindHost() {
                     </Link>
                   </CardContent>
                 </Card>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
