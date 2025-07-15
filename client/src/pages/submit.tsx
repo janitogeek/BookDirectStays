@@ -557,9 +557,9 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Top Stats (e.g., 4.8/5 stars, 100+ reviews, 50+ awards)</FormLabel>
+                  <FormLabel>Top Stats (list comma separated: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g., 4.8/5 stars, 100+ reviews, 50+ awards" />
+                    <Input {...field} placeholder="Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

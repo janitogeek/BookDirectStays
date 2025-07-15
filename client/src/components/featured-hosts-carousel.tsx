@@ -128,24 +128,24 @@ export default function FeaturedHostsCarousel() {
                   </div>
 
                   {/* Brand Name */}
-                  <div className="mb-4">
+                  <div className="mb-3">
                     <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                       {host.brandName}
                     </h3>
-                    
-                    {/* Top Stats */}
-                    {host.topStats && (
-                      <p className="text-sm text-gray-600 font-medium">
-                        {host.topStats}
-                      </p>
-                    )}
                   </div>
 
                   {/* Countries */}
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-700 mb-3">
                     {host.countries.slice(0, 2).join(", ")}
                     {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
                   </div>
+                  
+                  {/* Stats */}
+                  {host.topStats && (
+                    <div className="text-sm text-gray-600">
+                      <span className="font-medium">Stats:</span> {host.topStats}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </Link>
