@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 
@@ -13,6 +16,7 @@ export default function City() {
   const countrySlug = params?.country;
   const citySlug = params?.city;
   const [visibleCount, setVisibleCount] = useState(6);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Convert slug back to readable city name
   const cityName = citySlug?.split('-').map(word => 
@@ -55,6 +59,27 @@ export default function City() {
       (cityName?.toLowerCase() || '').includes(city.toLowerCase())
     )
   );
+
+  // Filter submissions by search term
+  const filteredSubmissions = useMemo(() => {
+    if (!searchTerm) return citySubmissions;
+    
+    const search = searchTerm.toLowerCase();
+    return citySubmissions.filter(submission => {
+      const searchableContent = [
+        submission.brandName,
+        submission.oneLineDescription,
+        submission.whyBookWithYou,
+        submission.topStats,
+        ...(submission.typesOfStays || []),
+        ...(submission.idealFor || []),
+        ...(submission.perksAmenities || []),
+        ...(submission.vibeAesthetic || [])
+      ].join(' ').toLowerCase();
+      
+      return searchableContent.includes(search);
+    });
+  }, [citySubmissions, searchTerm]);
 
   console.log('🏙️ City page - cityName:', cityName);
   console.log('🏙️ City page - countryName:', countryName);
@@ -153,7 +178,7 @@ export default function City() {
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
               <div className="flex items-center space-x-4">
                 <Badge className="bg-blue-500 text-white">
-                  {(listingsData?.total || 0) + citySubmissions.length} hosts
+                  {(listingsData?.total || 0) + filteredSubmissions.length} hosts
                 </Badge>
                 <span className="text-blue-100">•</span>
                 <span className="text-blue-100">Skip OTA fees</span>
@@ -169,6 +194,37 @@ export default function City() {
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
+            
+            {/* Search Input */}
+            {citySubmissions.length > 0 && (
+              <Card className="mb-8">
+                <CardContent className="p-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      type="text"
+                      placeholder={`Search ${cityName} hosts by name, description, amenities...`}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 pr-10"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  {searchTerm && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      Showing {filteredSubmissions.length} of {citySubmissions.length} hosts
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
             
             {/* Property Manager Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -197,15 +253,19 @@ export default function City() {
                     </div>
                   </div>
                 ))
-              ) : (listingsData?.listings.length === 0 && citySubmissions.length === 0) ? (
+              ) : (listingsData?.listings.length === 0 && filteredSubmissions.length === 0) ? (
                 <div className="col-span-3 text-center py-16">
                   <div className="bg-gray-50 rounded-xl p-8 border border-gray-200 inline-block mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">No hosts found in {cityName}</h3>
-                    <p className="text-gray-500 mb-6">We couldn't find any direct booking hosts in this city yet.</p>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      {searchTerm ? `No hosts found matching "${searchTerm}"` : `No hosts found in ${cityName}`}
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                      {searchTerm ? "Try adjusting your search terms." : "We couldn't find any direct booking hosts in this city yet."}
+                    </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <Button 
                         asChild
@@ -230,7 +290,7 @@ export default function City() {
               ) : (
                 <>
                   {/* Display approved submissions first */}
-                  {citySubmissions.map((submission) => (
+                  {filteredSubmissions.map((submission) => (
                     <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
                   ))}
                   

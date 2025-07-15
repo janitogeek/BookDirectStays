@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -10,7 +11,7 @@ import {
   PopoverContent, 
   PopoverTrigger 
 } from "@/components/ui/popover";
-import { ChevronDown, Filter, X, Info } from "lucide-react";
+import { ChevronDown, Filter, X, Info, Search } from "lucide-react";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
@@ -36,6 +37,7 @@ interface HostFiltersProps {
 }
 
 export interface FilterState {
+  search: string;
   propertyTypes: string[];
   idealFor: string[];
   perksAmenities: string[];
@@ -44,6 +46,7 @@ export interface FilterState {
 
 export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
   const [filters, setFilters] = useState<FilterState>({
+    search: "",
     propertyTypes: [],
     idealFor: [],
     perksAmenities: [],
@@ -55,10 +58,14 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
   const updateFilter = (category: keyof FilterState, value: string, checked: boolean) => {
     const newFilters = { ...filters };
     
-    if (checked) {
-      newFilters[category] = [...newFilters[category], value];
+    if (category === 'search') {
+      newFilters.search = value;
     } else {
-      newFilters[category] = newFilters[category].filter(item => item !== value);
+      if (checked) {
+        (newFilters[category] as string[]) = [...(newFilters[category] as string[]), value];
+      } else {
+        (newFilters[category] as string[]) = (newFilters[category] as string[]).filter(item => item !== value);
+      }
     }
     
     setFilters(newFilters);
@@ -67,6 +74,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
 
   const clearAllFilters = () => {
     const emptyFilters = {
+      search: "",
       propertyTypes: [],
       idealFor: [],
       perksAmenities: [],
@@ -81,7 +89,11 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     updateFilter(category, value, false);
   };
 
-  const totalActiveFilters = Object.values(filters).flat().length;
+  const clearSearch = () => {
+    updateFilter('search', '', false);
+  };
+
+  const totalActiveFilters = Object.values(filters).flat().length + (filters.search ? 1 : 0);
 
   const renderFilterPopover = (
     title: string,
@@ -181,6 +193,26 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
       </CardHeader>
       
       <CardContent className="space-y-4">
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Search hosts by name, description, amenities..."
+            value={filters.search}
+            onChange={(e) => updateFilter('search', e.target.value, false)}
+            className="pl-10 pr-10"
+          />
+          {filters.search && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
         {/* Filter Buttons */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {renderFilterPopover(
@@ -216,8 +248,27 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-700">Active Filters:</div>
               <div className="flex flex-wrap gap-2">
-                {Object.entries(filters).map(([category, values]) =>
-                  values.map((value: string) => (
+                {/* Search filter */}
+                {filters.search && (
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-green-100 text-green-800 flex items-center gap-1"
+                  >
+                    <Search className="h-3 w-3" />
+                    "{filters.search}"
+                    <button
+                      onClick={clearSearch}
+                      className="ml-1 hover:bg-green-200 rounded-full p-0.5"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                )}
+                
+                {/* Category filters */}
+                {Object.entries(filters).map(([category, values]) => {
+                  if (category === 'search' || !Array.isArray(values)) return null;
+                  return values.map((value: string) => (
                     <Badge 
                       key={`${category}-${value}`} 
                       variant="secondary" 
@@ -232,7 +283,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
                       </button>
                     </Badge>
                   ))
-                )}
+                })}
               </div>
             </div>
           </>

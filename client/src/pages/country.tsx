@@ -17,6 +17,7 @@ export default function Country() {
   const countrySlug = params?.country;
   const [visibleCount, setVisibleCount] = useState(6);
   const [filters, setFilters] = useState<FilterState>({
+    search: "",
     propertyTypes: [],
     idealFor: [],
     perksAmenities: [],
@@ -131,10 +132,27 @@ export default function Country() {
   const filteredSubmissions = useMemo(() => {
     if (!submissions.length) return [];
     
-    const hasActiveFilters = Object.values(filters).some(filterArray => filterArray.length > 0);
+    const hasActiveFilters = Object.values(filters).some(filterArray => Array.isArray(filterArray) ? filterArray.length > 0 : Boolean(filterArray));
     if (!hasActiveFilters) return submissions;
 
     return submissions.filter(submission => {
+      // Check keyword search first
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        const searchableContent = [
+          submission.brandName,
+          submission.oneLineDescription,
+          submission.whyBookWithYou,
+          submission.topStats,
+          ...(submission.typesOfStays || []),
+          ...(submission.idealFor || []),
+          ...(submission.perksAmenities || []),
+          ...(submission.vibeAesthetic || [])
+        ].join(' ').toLowerCase();
+        
+        if (!searchableContent.includes(searchTerm)) return false;
+      }
+
       // Check property types (Types of Stays)
       if (filters.propertyTypes.length > 0) {
         const hasMatchingPropertyType = submission.typesOfStays?.some(type =>
