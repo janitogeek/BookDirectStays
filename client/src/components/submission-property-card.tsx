@@ -124,6 +124,14 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
                 {submission.brandName}
               </h3>
+              
+              {/* One-line Description in Italic */}
+              {submission.oneLineDescription && (
+                <p className="text-sm italic text-gray-600 mb-2 leading-relaxed line-clamp-2">
+                  {submission.oneLineDescription}
+                </p>
+              )}
+              
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <MapPin className="w-4 h-4 flex-shrink-0" />
                 <span className="flex items-center gap-1">
@@ -138,8 +146,8 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+          {/* Property Count */}
+          <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
             {submission.numberOfListings && (
               <div className="flex items-center gap-1">
                 <Building2 className="w-4 h-4" />
@@ -148,11 +156,15 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             )}
           </div>
 
-          {/* Description */}
-          {submission.oneLineDescription && (
-            <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">
-              {submission.oneLineDescription}
-            </p>
+          {/* Types of Stays */}
+          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {submission.typesOfStays.map((type, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {type.trim()}
+                </Badge>
+              ))}
+            </div>
           )}
 
           {/* Social Media Links */}
@@ -174,25 +186,51 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
-          {/* Property Types */}
-          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {submission.typesOfStays.map((type, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
-                  {type.trim()}
-                </Badge>
-              ))}
-            </div>
-          )}
+          {/* Why Book With CTA */}
+          <div className="mb-4">
+            <Button 
+              asChild 
+              variant="outline" 
+              size="sm"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Link href={`/property/${submission.id}`}>
+                Why book with {submission.brandName}?
+              </Link>
+            </Button>
+          </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-2">
+          {/* Bottom Section: Social Links Left, Book Direct Right */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+            {/* Social Media Links - Left */}
+            <div className="flex items-center gap-2">
+              {socialLinks.length > 0 && (
+                <div className="flex gap-2">
+                  {socialLinks.slice(0, 3).map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:scale-110 transition-transform"
+                      title={social.platform}
+                    >
+                      {getSocialIcon(social.platform)}
+                    </a>
+                  ))}
+                  {socialLinks.length > 3 && (
+                    <span className="text-xs text-gray-500">+{socialLinks.length - 3}</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Book Direct - Right */}
             {submission.website && (
               <Button 
                 asChild 
                 variant="default" 
                 size="sm"
-                className="flex-1"
               >
                 <a 
                   href={submission.website} 
@@ -205,17 +243,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                 </a>
               </Button>
             )}
-            
-            <Button 
-              asChild 
-              variant="outline" 
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Link href={`/property/${submission.id}`}>
-                Why book with {submission.brandName}?
-              </Link>
-            </Button>
           </div>
         </CardContent>
       </Card>
