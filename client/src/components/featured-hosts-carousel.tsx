@@ -56,6 +56,7 @@ export default function FeaturedHostsCarousel() {
   }
 
   // Filter for featured hosts (Premium Listing plans that are published)
+  // Shows ALL published featured companies regardless of whether they have stats
   const featuredHosts = submissions.filter(submission => 
     (submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99')) &&
     submission.status === 'Published'
@@ -175,7 +176,11 @@ export default function FeaturedHostsCarousel() {
                       variant="outline" 
                       className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
                     >
-                      <Link to={`/property/${host.id}`} className="flex items-center justify-center gap-2">
+                      <Link 
+                        to={`/property/${host.id}`} 
+                        className="flex items-center justify-center gap-2"
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      >
                         <Eye className="w-4 h-4" />
                         View Details
                       </Link>
