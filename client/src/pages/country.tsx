@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
 import CountryTags from "@/components/country-tags";
+import HostFilters, { FilterState } from "@/components/host-filters";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,12 @@ export default function Country() {
   const [, params] = useRoute('/country/:country');
   const countrySlug = params?.country;
   const [visibleCount, setVisibleCount] = useState(6);
+  const [filters, setFilters] = useState<FilterState>({
+    propertyTypes: [],
+    idealFor: [],
+    perksAmenities: [],
+    vibeAesthetic: []
+  });
   
   // Map country slugs to full country names for Airtable matching
   const getCountryNameFromSlug = (slug: string) => {
@@ -120,12 +127,56 @@ export default function Country() {
     }
   });
 
+  // Filter submissions based on active filters
+  const filteredSubmissions = useMemo(() => {
+    if (!submissions.length) return [];
+    
+    const hasActiveFilters = Object.values(filters).some(filterArray => filterArray.length > 0);
+    if (!hasActiveFilters) return submissions;
+
+    return submissions.filter(submission => {
+      // Check property types (Types of Stays)
+      if (filters.propertyTypes.length > 0) {
+        const hasMatchingPropertyType = submission.typesOfStays?.some(type =>
+          filters.propertyTypes.includes(type)
+        );
+        if (!hasMatchingPropertyType) return false;
+      }
+
+      // Check ideal for
+      if (filters.idealFor.length > 0) {
+        const hasMatchingIdealFor = submission.idealFor?.some(ideal =>
+          filters.idealFor.includes(ideal)
+        );
+        if (!hasMatchingIdealFor) return false;
+      }
+
+      // Check perks & amenities
+      if (filters.perksAmenities.length > 0) {
+        const hasMatchingPerks = submission.perksAmenities?.some(perk =>
+          filters.perksAmenities.includes(perk)
+        );
+        if (!hasMatchingPerks) return false;
+      }
+
+      // Check vibe & aesthetic
+      if (filters.vibeAesthetic.length > 0) {
+        const hasMatchingVibe = submission.vibeAesthetic?.some(vibe =>
+          filters.vibeAesthetic.includes(vibe)
+        );
+        if (!hasMatchingVibe) return false;
+      }
+
+      return true;
+    });
+  }, [submissions, filters]);
+
   const handleShowMore = () => {
     setVisibleCount(prevCount => prevCount + 6);
   };
 
   const hasMore = listingsData?.hasMore || false;
-  const totalHosts = (listingsData?.listings?.length || 0) + submissions.length;
+  const totalHosts = (listingsData?.listings?.length || 0) + filteredSubmissions.length;
 
   // Breadcrumb structured data for AI understanding
   const breadcrumbStructuredData = {
@@ -228,6 +279,9 @@ export default function Country() {
             )}
           </div>
           
+          {/* Host Filters */}
+          <HostFilters onFiltersChange={setFilters} />
+
           {/* Property Manager Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {isListingsLoading || isSubmissionsLoading ? (
@@ -279,7 +333,7 @@ export default function Country() {
             ) : (
               <>
                 {/* Display approved submissions first */}
-                {submissions.map((submission) => (
+                {filteredSubmissions.map((submission) => (
                   <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
                 ))}
                 
