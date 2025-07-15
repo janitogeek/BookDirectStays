@@ -132,7 +132,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                 </p>
               )}
               
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-sm text-gray-900">
                 <MapPin className="w-4 h-4 flex-shrink-0" />
                 <span className="flex items-center gap-1">
                   {submission.countries.map((country, index) => (
@@ -167,25 +167,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
-          {/* Social Media Links */}
-          {socialLinks.length > 0 && (
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm text-gray-600 mr-2">Follow:</span>
-              {socialLinks.map((social, index) => (
-                <a
-                  key={index}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:scale-110 transition-transform"
-                  title={social.platform}
-                >
-                  {getSocialIcon(social.platform)}
-                </a>
-              ))}
-            </div>
-          )}
-
           {/* Why Book With CTA */}
           <div className="mb-4">
             <Button 
@@ -202,11 +183,11 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
 
           {/* Bottom Section: Social Links Left, Book Direct Right */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-            {/* Social Media Links - Left */}
+            {/* Social Media Links - Left (All icons, no truncation) */}
             <div className="flex items-center gap-2">
               {socialLinks.length > 0 && (
                 <div className="flex gap-2">
-                  {socialLinks.slice(0, 3).map((social, index) => (
+                  {socialLinks.map((social, index) => (
                     <a
                       key={index}
                       href={social.url}
@@ -218,9 +199,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                       {getSocialIcon(social.platform)}
                     </a>
                   ))}
-                  {socialLinks.length > 3 && (
-                    <span className="text-xs text-gray-500">+{socialLinks.length - 3}</span>
-                  )}
                 </div>
               )}
             </div>

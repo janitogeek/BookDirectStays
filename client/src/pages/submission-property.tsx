@@ -120,115 +120,112 @@ export default function SubmissionProperty() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-blue-600 to-blue-800">
-        {submission.highlightImage && (
-          <div className="absolute inset-0">
-            <img
-              src={submission.highlightImage}
-              alt={submission.brandName}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-        
-        <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="text-white">
-            <div className="flex items-center gap-4 mb-4">
-              {submission.logo && (
-                <img
-                  src={submission.logo}
-                  alt={`${submission.brandName} logo`}
-                  className="w-16 h-16 rounded-lg bg-white p-2"
-                />
-              )}
-              <div>
-                <h1 className="text-4xl font-bold mb-2">{submission.brandName}</h1>
-                <div className="flex items-center gap-2 text-blue-100">
-                  <MapPin className="w-5 h-5" />
-                  <span className="flex items-center gap-2">
-                    {submission.countries.map((country, index) => (
-                      <span key={country} className="flex items-center gap-1">
-                        {getFlagEmoji(country)} {country}
-                        {index < submission.countries.length - 1 && ", "}
-                      </span>
-                    ))}
-                  </span>
-                </div>
-                
-                {/* Cities/Regions */}
-                {submission.citiesRegions && submission.citiesRegions.length > 0 && (
-                  <div className="text-blue-200 text-sm mt-2">
-                    Cities: {submission.citiesRegions.join(", ")}
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-6 mb-6">
-              {submission.numberOfListings && (
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5" />
-                  <span>{submission.numberOfListings} Properties</span>
-                </div>
-              )}
-            </div>
+      {/* Hero Section with Image */}
+      {submission.highlightImage && (
+        <div className="relative h-96">
+          <img
+            src={submission.highlightImage}
+            alt={submission.brandName}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
-            <div className="flex flex-wrap gap-4">
-              {submission.website && (
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  <a 
-                    href={submission.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                    Book Direct
-                  </a>
-                </Button>
+      {/* Content Section with Light Grey Background */}
+      <section className="py-12 bg-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Brand Header Section */}
+            <div className="flex items-start gap-4 mb-6">
+              {submission.logo && (
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+                  <img
+                    src={submission.logo}
+                    alt={`${submission.brandName} logo`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
-              
-              {socialLinks.length > 0 && (
-                <div className="flex items-center gap-3">
-                  {socialLinks.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-white hover:text-blue-200 transition-colors"
-                      title={social.platform}
-                    >
-                      {getSocialIcon(social.platform)}
-                    </a>
+              <div className="flex-1">
+                <h1 className="text-4xl font-bold text-gray-900 mb-3">{submission.brandName}</h1>
+                
+                {/* One-line Description */}
+                {submission.oneLineDescription && (
+                  <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+                    {submission.oneLineDescription}
+                  </p>
+                )}
+
+                {/* Countries */}
+                <div className="flex items-center gap-2 text-gray-900 mb-2">
+                  {submission.countries.map((country, index) => (
+                    <span key={country} className="flex items-center gap-1">
+                      {getFlagEmoji(country)} {country}
+                      {index < submission.countries.length - 1 && ", "}
+                    </span>
                   ))}
                 </div>
-              )}
+
+                {/* Cities/Regions */}
+                {submission.citiesRegions && submission.citiesRegions.length > 0 && (
+                  <div className="text-gray-700 mb-4">
+                    <span className="font-medium">Cities:</span> {submission.citiesRegions.join(", ")}
+                  </div>
+                )}
+
+                {/* Property Count */}
+                {submission.numberOfListings && (
+                  <div className="flex items-center gap-2 text-gray-700 mb-4">
+                    <Building2 className="w-5 h-5" />
+                    <span className="font-medium">{submission.numberOfListings} Properties</span>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-4">
+                  {submission.website && (
+                    <Button size="lg" asChild>
+                      <a 
+                        href={submission.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                        Book Direct
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {socialLinks.length > 0 && (
+                    <div className="flex items-center gap-3">
+                      {socialLinks.map((social, index) => (
+                        <a
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:scale-110 transition-transform"
+                          title={social.platform}
+                        >
+                          {getSocialIcon(social.platform)}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
+      {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Description */}
-              {submission.oneLineDescription && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>About {submission.brandName}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 leading-relaxed">
-                      {submission.oneLineDescription}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
               {/* Why Book With */}
               {submission.whyBookWithYou && (
                 <Card>
@@ -241,6 +238,23 @@ export default function SubmissionProperty() {
                         {submission.whyBookWithYou}
                       </p>
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Host's Stats */}
+              {submission.topStats && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-600" />
+                      Host's Stats
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 text-lg font-medium">
+                      {submission.topStats}
+                    </p>
                   </CardContent>
                 </Card>
               )}
