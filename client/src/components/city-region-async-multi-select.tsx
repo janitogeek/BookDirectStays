@@ -47,7 +47,7 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
         .then(data => {
           setResults(
             (data.geonames || []).map((g: any) => ({
-              name: `${g.name}${g.adminName1 ? ", " + g.adminName1 : ""}${g.countryName ? ", " + g.countryName : ""}`,
+              name: g.name, // Just the city name
               geonameId: g.geonameId,
             }))
           );
