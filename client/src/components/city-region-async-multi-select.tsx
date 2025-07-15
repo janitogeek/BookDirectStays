@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface CityRegion {
-  name: string;
+  name: string; // Just the city name (stored value)
+  displayName: string; // Full geographic context (shown in dropdown)
   geonameId: number;
 }
 
@@ -47,7 +48,8 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
         .then(data => {
           setResults(
             (data.geonames || []).map((g: any) => ({
-              name: g.name, // Just the city name
+              name: g.name, // Just the city name (stored)
+              displayName: `${g.name}${g.adminName1 ? ", " + g.adminName1 : ""}${g.countryName ? ", " + g.countryName : ""}`, // Full context (displayed)
               geonameId: g.geonameId,
             }))
           );
@@ -96,7 +98,7 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
                   else onSelect(selected.filter(v => v.geonameId !== city.geonameId));
                 }}
               />
-              {city.name}
+              {city.displayName}
             </label>
           ))}
         </div>
