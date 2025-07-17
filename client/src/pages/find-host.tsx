@@ -122,7 +122,7 @@ export default function FindHost() {
                   placeholder="Search for a country..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-10 py-3 text-center text-lg"
+                  className="pl-10 pr-10 py-3 text-lg"
                 />
                 {searchQuery && (
                   <button

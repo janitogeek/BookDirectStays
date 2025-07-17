@@ -427,7 +427,7 @@ export default function Country() {
                         placeholder="Search for a city..."
                         value={citySearchQuery}
                         onChange={(e) => setCitySearchQuery(e.target.value)}
-                        className="pl-10 pr-10 py-3 text-center"
+                        className="pl-10 pr-10 py-3"
                       />
                       {citySearchQuery && (
                         <button
