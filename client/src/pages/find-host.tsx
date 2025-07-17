@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 import { getActiveCountries, getSubmissionsForCountry } from "@/lib/submission-processor";
@@ -11,6 +13,8 @@ import { getCountryCode } from "@/lib/geonames";
 import { slugify } from "@/lib/utils";
 
 export default function FindHost() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Fetch active countries (countries that have approved submissions)
   const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
     queryKey: ["/api/active-countries"],
@@ -56,6 +60,21 @@ export default function FindHost() {
 
   const isLoading = isCountriesLoading || isCountsLoading;
 
+  // Filter countries based on search query
+  const filteredCountries = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return countriesWithCounts;
+    }
+    
+    return countriesWithCounts.filter(country =>
+      country.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [countriesWithCounts, searchQuery]);
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   const getFlagEmoji = (countryCode: string) => {
     const codePoints = countryCode
       .toUpperCase()
@@ -90,9 +109,31 @@ export default function FindHost() {
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
               Choose Your Destination
             </h2>
+            
+            {/* Search Input */}
+            <div className="max-w-md mx-auto mb-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Input
+                  type="text"
+                  placeholder="Search for a country..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-10 py-3 text-center text-lg"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {isLoading ? (
@@ -115,8 +156,25 @@ export default function FindHost() {
                     </CardContent>
                   </Card>
                 ))
+              ) : filteredCountries.length === 0 ? (
+                <div className="col-span-full text-center py-12">
+                  <div className="text-gray-500">
+                    <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <h3 className="text-xl font-semibold mb-2">No countries found</h3>
+                    <p>Try searching for a different country name.</p>
+                    {searchQuery && (
+                      <Button 
+                        variant="outline" 
+                        onClick={clearSearch}
+                        className="mt-4"
+                      >
+                        Clear search
+                      </Button>
+                    )}
+                  </div>
+                </div>
               ) : (
-                countriesWithCounts.map((country) => (
+                filteredCountries.map((country) => (
                 <Card key={country.id} className="hover:shadow-lg transition-shadow duration-300 border-0 shadow-md">
                   <CardContent className="p-6">
                     <Link href={`/country/${country.slug}`} className="block">

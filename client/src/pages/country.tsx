@@ -8,6 +8,8 @@ import HostFilters, { FilterState } from "@/components/host-filters";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 import { getValidatedCitiesForCountry, getCitySubmissionCounts } from "@/lib/submission-processor";
@@ -17,6 +19,7 @@ export default function Country() {
   const [, params] = useRoute('/country/:country');
   const countrySlug = params?.country;
   const [visibleCount, setVisibleCount] = useState(6);
+  const [citySearchQuery, setCitySearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     propertyTypes: [],
@@ -119,6 +122,21 @@ export default function Country() {
   console.log('🏙️ City submission counts:', citySubmissionCounts);
   console.log('🏙️ Cities loading:', isCitiesLoading);
   console.log('🏙️ City counts loading:', isCityCountsLoading);
+
+  // Filter cities based on search query
+  const filteredCities = useMemo(() => {
+    if (!citySearchQuery.trim()) {
+      return cities;
+    }
+    
+    return cities.filter(city =>
+      city.toLowerCase().includes(citySearchQuery.toLowerCase())
+    );
+  }, [cities, citySearchQuery]);
+
+  const clearCitySearch = () => {
+    setCitySearchQuery("");
+  };
 
   // Fetch all countries for the tags
   const { data: countries, isLoading: isCountriesLoading } = useQuery({
@@ -387,7 +405,7 @@ export default function Country() {
         <section id="city-navigation" className="py-16 bg-gray-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
+              <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
                   <span>Find Hosts by City in</span> 
                   <span className="inline-flex items-center gap-2">
@@ -395,9 +413,33 @@ export default function Country() {
                     {country?.name || countryName}
                   </span>
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-gray-600 mb-6">
                   Looking for something more specific? Browse hosts by city
                 </p>
+                
+                {/* City Search Input */}
+                {cities.length > 0 && (
+                  <div className="max-w-md mx-auto mb-6">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                      <Input
+                        type="text"
+                        placeholder="Search for a city..."
+                        value={citySearchQuery}
+                        onChange={(e) => setCitySearchQuery(e.target.value)}
+                        className="pl-10 pr-10 py-3 text-center"
+                      />
+                      {citySearchQuery && (
+                        <button
+                          onClick={clearCitySearch}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -417,8 +459,25 @@ export default function Country() {
                   <div className="col-span-full text-center py-8">
                     <p className="text-gray-500">No cities found for this country yet.</p>
                   </div>
+                ) : filteredCities.length === 0 ? (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-500">
+                      <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <h3 className="text-xl font-semibold mb-2">No cities found</h3>
+                      <p>Try searching for a different city name.</p>
+                      {citySearchQuery && (
+                        <Button 
+                          variant="outline" 
+                          onClick={clearCitySearch}
+                          className="mt-4"
+                        >
+                          Clear search
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 ) : (
-                  cities.map((city, index) => (
+                  filteredCities.map((city, index) => (
                     <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
                       <CardContent className="p-4">
                         <Link 
