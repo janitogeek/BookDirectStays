@@ -93,7 +93,12 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     updateFilter('search', '', false);
   };
 
-  const totalActiveFilters = Object.values(filters).flat().length + (filters.search ? 1 : 0);
+  const totalActiveFilters = 
+    filters.propertyTypes.length + 
+    filters.idealFor.length + 
+    filters.perksAmenities.length + 
+    filters.vibeAesthetic.length + 
+    (filters.search ? 1 : 0);
 
   const renderFilterPopover = (
     title: string,
