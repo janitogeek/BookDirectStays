@@ -1,4 +1,6 @@
 {
+  "buildCommand": "cd client && npm run build",
+  "outputDirectory": "client/dist",
   "functions": {
     "client/api/*.ts": {
       "maxDuration": 30
@@ -24,7 +26,16 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
   ]
 } 
