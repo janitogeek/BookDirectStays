@@ -1,5 +1,4 @@
 {
-  "_comment": "SPA routing configuration - updated to fix 404 errors on page refresh",
   "buildCommand": "cd client && npm run build",
   "outputDirectory": "client/dist",
   "functions": {
