@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
+import { isAirtableId } from "@/lib/utils";
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
@@ -15,7 +16,16 @@ export default function SubmissionProperty() {
 
   const { data: submission, isLoading, error } = useQuery({
     queryKey: ["/api/submission", submissionId],
-    queryFn: () => submissionId ? airtableService.getSubmissionById(submissionId) : null,
+    queryFn: () => {
+      if (!submissionId) return null;
+      
+      // Check if it's an Airtable ID or a slug
+      if (isAirtableId(submissionId)) {
+        return airtableService.getSubmissionById(submissionId);
+      } else {
+        return airtableService.getSubmissionBySlug(submissionId);
+      }
+    },
     enabled: !!submissionId,
   });
 

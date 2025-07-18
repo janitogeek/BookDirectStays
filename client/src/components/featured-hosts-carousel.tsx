@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from "wouter";
-import { ExternalLink, Eye } from "lucide-react";
+import { ExternalLink, Eye, MapPin } from "lucide-react";
 import { airtableService, Submission } from "@/lib/airtable";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { Badge } from "./ui/badge";
+import { generateSlug } from "@/lib/utils";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -187,7 +189,7 @@ export default function FeaturedHostsCarousel() {
                       className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
                     >
                       <Link 
-                        to={`/property/${host.id}`} 
+                        to={`/property/${generateSlug(host.brandName)}`} 
                         className="flex items-center justify-center gap-2"
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                       >

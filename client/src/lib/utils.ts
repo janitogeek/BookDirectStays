@@ -113,3 +113,25 @@ export function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2);
 }
+
+/**
+ * Generate a URL-friendly slug from a brand name
+ */
+export function generateSlug(brandName: string): string {
+  return brandName
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+}
+
+/**
+ * Check if a string is an Airtable record ID
+ */
+export function isAirtableId(str: string): boolean {
+  return str.startsWith('rec') && str.length === 17;
+}

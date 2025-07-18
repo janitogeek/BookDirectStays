@@ -1,16 +1,20 @@
-import { ExternalLink, MapPin, Building2, Eye } from "lucide-react";
-import { Link } from "wouter";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { Card, CardContent } from "./ui/card";
+import { ExternalLink, MapPin, Building2, Globe, Users, Heart } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
+import { Link } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
+import { generateSlug } from "@/lib/utils";
 
 interface SubmissionPropertyCardProps {
   submission: Submission;
 }
 
 export default function SubmissionPropertyCard({ submission }: SubmissionPropertyCardProps) {
+  // Generate slug from brand name
+  const slug = generateSlug(submission.brandName);
+
   const getFlagEmoji = (countryName: string) => {
     const countryMap: { [key: string]: string } = {
       'United States': '🇺🇸',
@@ -176,7 +180,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               size="sm"
               className="w-full flex items-center justify-center gap-2"
             >
-              <Link href={`/property/${submission.id}`}>
+              <Link href={`/property/${slug}`}>
                 Why book with {submission.brandName}?
               </Link>
             </Button>

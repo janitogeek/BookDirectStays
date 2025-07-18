@@ -4,12 +4,16 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { Listing } from "@/lib/data";
+import { generateSlug } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: Listing;
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
+  // Generate slug from property name
+  const slug = generateSlug(property.name);
+
   const getFlagEmoji = (countryCode: string) => {
     const codePoints = countryCode
       .toUpperCase()
@@ -130,7 +134,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               size="sm"
               asChild
             >
-              <Link href={`/property/${property.id}`}>
+              <Link href={`/property/${slug}`}>
                 View Details
               </Link>
             </Button>

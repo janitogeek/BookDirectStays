@@ -282,6 +282,37 @@ export const airtableService = {
     return this.transformSubmission(record);
   },
 
+  async getSubmissionBySlug(slug: string): Promise<Submission | null> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    try {
+      // Get all approved submissions and find the one with matching slug
+      const submissions = await this.getApprovedSubmissions();
+      
+      // Generate slug for each submission and find match
+      const submission = submissions.find(sub => {
+        const generatedSlug = sub.brandName
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '') // Remove accents
+          .replace(/&/g, 'and')
+          .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .replace(/-+/g, '-') // Replace multiple hyphens with single
+          .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+        
+        return generatedSlug === slug;
+      });
+
+      return submission || null;
+    } catch (error) {
+      console.error('Error fetching submission by slug:', error);
+      return null;
+    }
+  },
+
   /**
    * Update submission status in Airtable
    * Status workflow: 
