@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
 import { isAirtableId } from "@/lib/utils";
+import { useClickTracking } from "@/lib/click-tracking";
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
@@ -28,6 +29,9 @@ export default function SubmissionProperty() {
     },
     enabled: !!submissionId,
   });
+
+  // Initialize click tracking when submission data is available
+  const clickTracking = submission ? useClickTracking(submission.id) : null;
 
   const getFlagEmoji = (countryName: string) => {
     const countryMap: { [key: string]: string } = {
@@ -201,6 +205,7 @@ export default function SubmissionProperty() {
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-2"
+                        onClick={() => clickTracking?.trackWebsite()} // Track website clicks
                       >
                         <ExternalLink className="w-5 h-5" />
                         Book Direct
@@ -218,6 +223,26 @@ export default function SubmissionProperty() {
                           rel="noopener noreferrer"
                           className="hover:scale-110 transition-transform"
                           title={social.platform}
+                          onClick={() => {
+                            // Track social media clicks based on platform
+                            switch (social.platform.toLowerCase()) {
+                              case 'instagram':
+                                clickTracking?.trackInstagram();
+                                break;
+                              case 'facebook':
+                                clickTracking?.trackFacebook();
+                                break;
+                              case 'linkedin':
+                                clickTracking?.trackLinkedIn();
+                                break;
+                              case 'tiktok':
+                              case 'youtube':
+                                clickTracking?.trackYouTube();
+                                break;
+                              default:
+                                clickTracking?.track('website');
+                            }
+                          }}
                         >
                           {getSocialIcon(social.platform)}
                         </a>

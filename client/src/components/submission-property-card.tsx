@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
 import { generateSlug } from "@/lib/utils";
+import { useClickTracking, detectClickTypeFromUrl } from "@/lib/click-tracking";
 
 interface SubmissionPropertyCardProps {
   submission: Submission;
@@ -14,6 +15,17 @@ interface SubmissionPropertyCardProps {
 export default function SubmissionPropertyCard({ submission }: SubmissionPropertyCardProps) {
   // Generate slug from brand name
   const slug = generateSlug(submission.brandName);
+
+  // Initialize click tracking for this submission
+  const {
+    trackWebsite,
+    trackInstagram,
+    trackFacebook,
+    trackLinkedIn,
+    trackYouTube,
+    trackCompany,
+    track
+  } = useClickTracking(submission.id);
 
   const getFlagEmoji = (countryName: string) => {
     const countryMap: { [key: string]: string } = {
@@ -172,6 +184,25 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
+          {/* Book Direct Button */}
+          {submission.website && (
+            <Button 
+              asChild
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-3"
+            >
+              <a 
+                href={submission.website} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2"
+                onClick={() => trackWebsite()} // Track website clicks
+              >
+                <ExternalLink className="w-4 h-4" />
+                Book Direct
+              </a>
+            </Button>
+          )}
+
           {/* Why Book With CTA */}
           <div className="mb-4">
             <Button 
@@ -180,10 +211,65 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               size="sm"
               className="w-full flex items-center justify-center gap-2"
             >
-              <Link href={`/property/${slug}`}>
+              <Link 
+                href={`/property/${slug}`}
+                onClick={() => trackCompany()} // Track company page clicks
+              >
                 Why book with {submission.brandName}?
               </Link>
             </Button>
+          </div>
+
+          {/* Social Links */}
+          <div className="flex items-center justify-start gap-4">
+            {submission.instagram && (
+              <a
+                href={submission.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-600 hover:scale-110 transition-transform"
+                title="Instagram"
+                onClick={() => trackInstagram()} // Track Instagram clicks
+              >
+                <SiInstagram className="w-5 h-5" />
+              </a>
+            )}
+            {submission.facebook && (
+              <a
+                href={submission.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:scale-110 transition-transform"
+                title="Facebook"
+                onClick={() => trackFacebook()} // Track Facebook clicks
+              >
+                <SiFacebook className="w-5 h-5" />
+              </a>
+            )}
+            {submission.linkedin && (
+              <a
+                href={submission.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 hover:scale-110 transition-transform"
+                title="LinkedIn"
+                onClick={() => trackLinkedIn()} // Track LinkedIn clicks
+              >
+                <SiLinkedin className="w-5 h-5" />
+              </a>
+            )}
+            {submission.youtubeVideoTour && (
+              <a
+                href={submission.youtubeVideoTour}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-red-600 hover:scale-110 transition-transform"
+                title="YouTube"
+                onClick={() => trackYouTube()} // Track YouTube clicks
+              >
+                <SiYoutube className="w-5 h-5" />
+              </a>
+            )}
           </div>
 
           {/* Bottom Section: Social Links Left, Book Direct Right */}
@@ -209,23 +295,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
 
             {/* Book Direct - Right */}
-            {submission.website && (
-              <Button 
-                asChild 
-                variant="default" 
-                size="sm"
-              >
-                <a 
-                  href={submission.website} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Book Direct
-                </a>
-              </Button>
-            )}
+            {/* This section is now handled by the new Book Direct button */}
           </div>
         </CardContent>
       </Card>
