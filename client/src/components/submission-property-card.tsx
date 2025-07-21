@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
 import { generateSlug } from "@/lib/utils";
-import { useClickTracking, detectClickTypeFromUrl } from "@/lib/click-tracking";
+import { useClickTracking } from "@/lib/click-tracking";
 
 interface SubmissionPropertyCardProps {
   submission: Submission;
@@ -23,6 +23,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
     trackFacebook,
     trackLinkedIn,
     trackYouTube,
+    trackTikTok,
     trackCompany,
     track
   } = useClickTracking(submission.id);
@@ -184,25 +185,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
-          {/* Book Direct Button */}
-          {submission.website && (
-            <Button 
-              asChild
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-3"
-            >
-              <a 
-                href={submission.website} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2"
-                onClick={() => trackWebsite()} // Track website clicks
-              >
-                <ExternalLink className="w-4 h-4" />
-                Book Direct
-              </a>
-            </Button>
-          )}
-
           {/* Why Book With CTA */}
           <div className="mb-4">
             <Button 
@@ -220,82 +202,91 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </Button>
           </div>
 
-          {/* Social Links */}
-          <div className="flex items-center justify-start gap-4">
-            {submission.instagram && (
-              <a
-                href={submission.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-pink-600 hover:scale-110 transition-transform"
-                title="Instagram"
-                onClick={() => trackInstagram()} // Track Instagram clicks
-              >
-                <SiInstagram className="w-5 h-5" />
-              </a>
-            )}
-            {submission.facebook && (
-              <a
-                href={submission.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:scale-110 transition-transform"
-                title="Facebook"
-                onClick={() => trackFacebook()} // Track Facebook clicks
-              >
-                <SiFacebook className="w-5 h-5" />
-              </a>
-            )}
-            {submission.linkedin && (
-              <a
-                href={submission.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-700 hover:scale-110 transition-transform"
-                title="LinkedIn"
-                onClick={() => trackLinkedIn()} // Track LinkedIn clicks
-              >
-                <SiLinkedin className="w-5 h-5" />
-              </a>
-            )}
-            {submission.youtubeVideoTour && (
-              <a
-                href={submission.youtubeVideoTour}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-red-600 hover:scale-110 transition-transform"
-                title="YouTube"
-                onClick={() => trackYouTube()} // Track YouTube clicks
-              >
-                <SiYoutube className="w-5 h-5" />
-              </a>
-            )}
-          </div>
-
           {/* Bottom Section: Social Links Left, Book Direct Right */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-            {/* Social Media Links - Left (All icons, no truncation) */}
-            <div className="flex items-center gap-2">
-              {socialLinks.length > 0 && (
-                <div className="flex gap-2">
-                  {socialLinks.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:scale-110 transition-transform"
-                      title={social.platform}
-                    >
-                      {getSocialIcon(social.platform)}
-                    </a>
-                  ))}
-                </div>
+          <div className="flex items-center justify-between">
+            {/* Social Links - Left */}
+            <div className="flex items-center gap-3">
+              {submission.instagram && (
+                <a
+                  href={submission.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-600 hover:scale-110 transition-transform"
+                  title="Instagram"
+                  onClick={() => trackInstagram()}
+                >
+                  <SiInstagram className="w-5 h-5" />
+                </a>
+              )}
+              {submission.facebook && (
+                <a
+                  href={submission.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:scale-110 transition-transform"
+                  title="Facebook"
+                  onClick={() => trackFacebook()}
+                >
+                  <SiFacebook className="w-5 h-5" />
+                </a>
+              )}
+              {submission.linkedin && (
+                <a
+                  href={submission.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 hover:scale-110 transition-transform"
+                  title="LinkedIn"
+                  onClick={() => trackLinkedIn()}
+                >
+                  <SiLinkedin className="w-5 h-5" />
+                </a>
+              )}
+              {submission.tiktok && (
+                <a
+                  href={submission.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-black hover:scale-110 transition-transform"
+                  title="TikTok"
+                  onClick={() => trackTikTok()}
+                >
+                  <SiTiktok className="w-5 h-5" />
+                </a>
+              )}
+              {submission.youtubeVideoTour && (
+                <a
+                  href={submission.youtubeVideoTour}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-red-600 hover:scale-110 transition-transform"
+                  title="YouTube"
+                  onClick={() => trackYouTube()}
+                >
+                  <SiYoutube className="w-5 h-5" />
+                </a>
               )}
             </div>
 
             {/* Book Direct - Right */}
-            {/* This section is now handled by the new Book Direct button */}
+            {submission.website && (
+              <Button 
+                asChild 
+                variant="default" 
+                size="sm"
+              >
+                <a 
+                  href={submission.website} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                  onClick={() => trackWebsite()}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Book Direct
+                </a>
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>

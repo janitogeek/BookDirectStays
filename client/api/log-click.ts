@@ -7,7 +7,7 @@ const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${enco
 
 interface ClickRequest {
   hostId: string;
-  type: 'website' | 'instagram' | 'facebook' | 'linkedin' | 'youtube' | 'company';
+  type: 'website' | 'instagram' | 'facebook' | 'linkedin' | 'youtube' | 'tiktok' | 'company';
 }
 
 // Map click types to Airtable field names
@@ -17,6 +17,7 @@ const FIELD_MAPPING = {
   facebook: 'Clicks to Facebook',
   linkedin: 'Clicks to LinkedIn',
   youtube: 'Clicks to YouTube',
+  tiktok: 'Clicks to TikTok',
   company: 'Clicks to Company Page'
 } as const;
 

@@ -5,7 +5,7 @@ import React from 'react';
  * Tracks user interactions with host links in a fire-and-forget manner
  */
 
-type ClickType = 'website' | 'instagram' | 'facebook' | 'linkedin' | 'youtube' | 'company';
+type ClickType = 'website' | 'instagram' | 'facebook' | 'linkedin' | 'youtube' | 'tiktok' | 'company';
 
 interface ClickTrackingOptions {
   hostId: string;
@@ -85,6 +85,7 @@ export function useClickTracking(hostId: string) {
     trackFacebook: () => track('facebook'),
     trackLinkedIn: () => track('linkedin'),
     trackYouTube: () => track('youtube'),
+    trackTikTok: () => track('tiktok'),
     trackCompany: () => track('company'),
     track, // Generic tracker
   };
@@ -100,6 +101,7 @@ export function detectClickTypeFromUrl(url: string): ClickType | null {
   if (lowercaseUrl.includes('facebook.com')) return 'facebook';
   if (lowercaseUrl.includes('linkedin.com')) return 'linkedin';
   if (lowercaseUrl.includes('youtube.com') || lowercaseUrl.includes('youtu.be')) return 'youtube';
+  if (lowercaseUrl.includes('tiktok.com')) return 'tiktok';
   
   // Default to website for any other URL
   return 'website';

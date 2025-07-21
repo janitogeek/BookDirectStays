@@ -236,6 +236,8 @@ export default function SubmissionProperty() {
                                 clickTracking?.trackLinkedIn();
                                 break;
                               case 'tiktok':
+                                clickTracking?.trackTikTok();
+                                break;
                               case 'youtube':
                                 clickTracking?.trackYouTube();
                                 break;
