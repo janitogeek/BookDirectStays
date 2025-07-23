@@ -190,14 +190,14 @@ export const airtableService = {
     console.log('📋 Fetching all approved/published submissions...');
 
     // Filter for records that should be visible on frontend
-    // "Approved Not Published" = ready to show + trigger status change to "Published"
+    // "Approved" = ready to show + trigger status change to "Published"  
     // "Published" = already showing on frontend
-    const filterFormula = `OR({Status} = "Approved Not Published", {Status} = "Published")`;
+    const filterFormula = `OR({Status} = "Approved", {Status} = "Published")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
     console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for statuses: "Approved Not Published" OR "Published"');
+    console.log('🎯 Looking for statuses: "Approved" OR "Published"');
 
     const response = await fetch(url, {
       headers: {
@@ -224,7 +224,7 @@ export const airtableService = {
       const statuses = records.map(r => r.fields['Status']);
       console.log('📋 All statuses found:', statuses);
     } else {
-      console.log('❌ No records found with status "Approved Not Published" or "Published"');
+      console.log('❌ No records found with status "Approved" or "Published"');
       console.log('🔍 This might indicate a status name mismatch');
     }
 
@@ -233,8 +233,8 @@ export const airtableService = {
         console.log(`🔄 Transforming approved record ${index + 1}/${records.length}:`, record.id);
         console.log(`📝 Record status: ${record.fields['Status']}`);
         
-        // If status is "Approved Not Published", update it to "Published"
-        if (record.fields['Status'] === 'Approved Not Published') {
+        // If status is "Approved", update it to "Published"
+        if (record.fields['Status'] === 'Approved') {
           console.log('🚀 Triggering status update to Published for:', record.id);
           // Fire and forget - don't wait for this to complete
           this.updateStatusToPublished(record.id).catch(error => {
@@ -264,7 +264,7 @@ export const airtableService = {
     console.log('🔍 Fetching submissions for country:', countryName);
 
     // Filter for approved/published submissions in specific country (case-insensitive)
-    const filterFormula = `AND(OR({Status} = "Approved Not Published", {Status} = "Published"), OR(FIND(UPPER("${countryName.toUpperCase()}"), UPPER({Countries})) > 0, FIND(LOWER("${countryName.toLowerCase()}"), LOWER({Countries})) > 0, FIND("${countryName}", {Countries}) > 0))`;
+    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published"), OR(FIND(UPPER("${countryName.toUpperCase()}"), UPPER({Countries})) > 0, FIND(LOWER("${countryName.toLowerCase()}"), LOWER({Countries})) > 0, FIND("${countryName}", {Countries}) > 0))`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
@@ -309,8 +309,8 @@ export const airtableService = {
       try {
         console.log(`🔄 Transforming record ${index + 1}/${records.length}:`, record.id);
         
-        // If status is "Approved Not Published", update it to "Published"
-        if (record.fields['Status'] === 'Approved Not Published') {
+        // If status is "Approved", update it to "Published"
+        if (record.fields['Status'] === 'Approved') {
           console.log('🚀 Triggering status update to Published for:', record.id);
           // Fire and forget - don't wait for this to complete
           this.updateStatusToPublished(record.id).catch(error => {
@@ -397,13 +397,13 @@ export const airtableService = {
       
       // Check if record should be visible (has approved/published status)
       const status = record.fields['Status'];
-      if (status !== 'Approved Not Published' && status !== 'Published') {
+      if (status !== 'Approved' && status !== 'Published') {
         console.log('❌ Record not approved/published, status:', status);
         return null;
       }
       
-      // If status is "Approved Not Published", update it to "Published"
-      if (status === 'Approved Not Published') {
+      // If status is "Approved", update it to "Published"
+      if (status === 'Approved') {
         console.log('🚀 Triggering status update to Published for single record:', record.id);
         // Fire and forget - don't wait for this to complete
         this.updateStatusToPublished(record.id).catch(error => {
@@ -547,13 +547,14 @@ export const airtableService = {
     );
     console.log('🔍 Possible rating-related fields:', possibleRatingFields);
     
-    // Helper function to safely parse arrays
-    const parseArray = (value: string | string[] | undefined): string[] => {
-      if (!value) return [];
-      if (Array.isArray(value)) return value;
-      return value.split(',').map(item => item.trim()).filter(Boolean);
-    };
-
+    // Show ALL attachment fields for debugging
+    const attachmentFields = Object.keys(fields).filter(key => {
+      const value = fields[key as keyof typeof fields];
+      return Array.isArray(value) && value.length > 0 && 
+             typeof value[0] === 'object' && value[0] !== null && 'url' in value[0];
+    });
+    console.log('📎 All fields with attachments:', attachmentFields);
+    
     // Helper function to extract URL from Airtable attachment field
     const getAttachmentUrl = (attachmentField: any): string | undefined => {
       console.log('🔧 Processing attachment field:', attachmentField);
@@ -578,6 +579,13 @@ export const airtableService = {
              
       console.log('🔗 Extracted URL:', url);
       return url;
+    };
+    
+    // Helper function to safely parse arrays
+    const parseArray = (value: string | string[] | undefined): string[] => {
+      if (!value) return [];
+      if (Array.isArray(value)) return value;
+      return value.split(',').map(item => item.trim()).filter(Boolean);
     };
 
     const transformed = {

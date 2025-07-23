@@ -435,13 +435,19 @@ export default function SubmissionProperty() {
                     <p><strong>Screenshot URL:</strong> {submission.ratingScreenshot || 'None'}</p>
                     <p><strong>Brand:</strong> {submission.brandName}</p>
                     <p><strong>Status:</strong> {submission.status}</p>
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-blue-600">🔍 Click to see full submission data</summary>
+                      <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
+                        {JSON.stringify(submission, null, 2)}
+                      </pre>
+                    </details>
                   </div>
                   {!submission.ratingScreenshot && (
                     <p className="text-yellow-700 mt-2 text-xs">
                       ⚠️ No rating screenshot found. Check if:
                       <br />• Field name in Airtable matches "Rating (X/5) & Reviews (#) Screenshot"
                       <br />• Screenshot was uploaded successfully
-                      <br />• Record status is "Approved"
+                      <br />• Check browser console for attachment field debugging
                     </p>
                   )}
                 </CardContent>
