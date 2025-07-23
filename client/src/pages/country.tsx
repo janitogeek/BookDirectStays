@@ -99,12 +99,13 @@ export default function Country() {
     enabled: !!countrySlug
   });
 
-  // Fetch approved submissions for this country from Airtable
+  // Query submissions for this country
   const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: [`/api/submissions/country/${countryName}`],
+    queryKey: ['submissions', countrySlug],
     queryFn: () => airtableService.getSubmissionsByCountry(countryName),
     enabled: !!countryName,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 1000, // 30 seconds - shorter cache for faster status updates
+    refetchInterval: 60 * 1000, // Refetch every minute to catch status changes
   });
 
   // Debug submissions in React component

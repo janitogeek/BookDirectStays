@@ -150,7 +150,7 @@ export const airtableService = {
     return data.records || [];
   },
 
-  // Method to update status from "Approved Not Published" to "Published"
+  // Method to update status from "Approved" to "Published"
   async updateStatusToPublished(recordId: string): Promise<void> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
@@ -160,25 +160,76 @@ export const airtableService = {
 
     const url = `${AIRTABLE_API_URL}/${recordId}`;
     
-    const response = await fetch(url, {
-      method: 'PATCH',
+    try {
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields: {
+            'Status': 'Published'
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Failed to update status:', response.status, response.statusText);
+        console.error('❌ Error response:', errorText);
+        throw new Error(`Status update failed: ${response.status} ${errorText}`);
+      } else {
+        const result = await response.json();
+        console.log('✅ Successfully updated status to Published for record:', recordId);
+        console.log('📊 Updated record:', result);
+      }
+    } catch (error) {
+      console.error('❌ Error updating status to Published:', error);
+      throw error;
+    }
+  },
+
+  // Method to test if a specific record is being filtered correctly
+  async testRecordVisibility(recordId: string): Promise<void> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('🧪 Testing record visibility for:', recordId);
+
+    // Get the specific record
+    const recordUrl = `${AIRTABLE_API_URL}/${recordId}`;
+    const recordResponse = await fetch(recordUrl, {
       headers: {
         'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        fields: {
-          'Status': 'Published'
-        }
-      })
     });
 
-    if (!response.ok) {
-      console.error('❌ Failed to update status:', response.status, response.statusText);
-      const errorData = await response.json();
-      console.error('❌ Error details:', errorData);
-    } else {
-      console.log('✅ Successfully updated status to Published for record:', recordId);
+    if (recordResponse.ok) {
+      const record = await recordResponse.json();
+      console.log('📝 Record status:', record.fields['Status']);
+      console.log('📊 Record data:', record.fields);
+      
+      // Test if this record would be included in our filter
+      const filterFormula = `OR({Status} = "Approved", {Status} = "Published")`;
+      const filterUrl = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+      
+      const filterResponse = await fetch(filterUrl, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
+
+      if (filterResponse.ok) {
+        const filterData = await filterResponse.json();
+        const foundInFilter = filterData.records.some((r: any) => r.id === recordId);
+        console.log('🔍 Record found in filter results:', foundInFilter);
+        
+        if (!foundInFilter && (record.fields['Status'] === 'Approved' || record.fields['Status'] === 'Published')) {
+          console.log('⚠️  Record should be visible but is not found in filter - possible filter issue');
+        }
+      }
     }
   },
 
@@ -223,6 +274,13 @@ export const airtableService = {
       // Log all statuses found
       const statuses = records.map(r => r.fields['Status']);
       console.log('📋 All statuses found:', statuses);
+      
+      // Count statuses
+      const statusCounts = statuses.reduce((acc: any, status) => {
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {});
+      console.log('📊 Status breakdown:', statusCounts);
     } else {
       console.log('❌ No records found with status "Approved" or "Published"');
       console.log('🔍 This might indicate a status name mismatch');
@@ -233,13 +291,17 @@ export const airtableService = {
         console.log(`🔄 Transforming approved record ${index + 1}/${records.length}:`, record.id);
         console.log(`📝 Record status: ${record.fields['Status']}`);
         
-        // If status is "Approved", update it to "Published"
+        // If status is "Approved", update it to "Published" and wait a bit
         if (record.fields['Status'] === 'Approved') {
           console.log('🚀 Triggering status update to Published for:', record.id);
-          // Fire and forget - don't wait for this to complete
-          this.updateStatusToPublished(record.id).catch(error => {
-            console.error('❌ Failed to update status to Published:', error);
-          });
+          // Fire and forget but with better error handling
+          this.updateStatusToPublished(record.id)
+            .then(() => {
+              console.log('✅ Status update completed for:', record.id);
+            })
+            .catch(error => {
+              console.error('❌ Failed to update status to Published for:', record.id, error);
+            });
         }
         
         const transformed = this.transformSubmission(record);

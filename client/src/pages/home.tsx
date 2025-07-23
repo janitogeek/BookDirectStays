@@ -1,17 +1,14 @@
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
+import { useState } from "react";
 import PropertyCard from "@/components/property-card";
 import CountryTags from "@/components/country-tags";
-import CountryFilter from "@/components/country-filter";
-import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const [visibleCount, setVisibleCount] = useState(6);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [, setLocation] = useLocation();
   
   // Fetch listings
@@ -20,30 +17,20 @@ export default function Home() {
 
   // For now, we'll use a static list of countries since we don't have a countries service yet
   const countries = [
-    { id: 1, name: "United States", slug: "usa", code: "US", listingCount: 0 },
-    { id: 2, name: "Spain", slug: "spain", code: "ES", listingCount: 0 },
-    { id: 3, name: "United Kingdom", slug: "uk", code: "GB", listingCount: 0 },
-    { id: 4, name: "Germany", slug: "germany", code: "DE", listingCount: 0 },
-    { id: 5, name: "France", slug: "france", code: "FR", listingCount: 0 },
-    { id: 6, name: "Australia", slug: "australia", code: "AU", listingCount: 0 },
-    { id: 7, name: "Canada", slug: "canada", code: "CA", listingCount: 0 },
-    { id: 8, name: "Italy", slug: "italy", code: "IT", listingCount: 0 },
-    { id: 9, name: "Portugal", slug: "portugal", code: "PT", listingCount: 0 },
-    { id: 10, name: "Thailand", slug: "thailand", code: "TH", listingCount: 0 },
-    { id: 11, name: "Greece", slug: "greece", code: "GR", listingCount: 0 }
+    { name: "Spain", slug: "spain", count: 150 },
+    { name: "United States", slug: "usa", count: 120 },
+    { name: "Germany", slug: "germany", count: 80 },
+    { name: "France", slug: "france", count: 75 },
+    { name: "United Kingdom", slug: "uk", count: 65 },
+    { name: "Australia", slug: "australia", count: 45 },
+    { name: "Canada", slug: "canada", count: 40 },
+    { name: "Italy", slug: "italy", count: 35 },
+    { name: "Portugal", slug: "portugal", count: 30 },
+    { name: "Thailand", slug: "thailand", count: 25 },
   ];
-  const isCountriesLoading = false;
 
   const handleShowMore = () => {
-    setVisibleCount(prevCount => prevCount + 6);
-  };
-
-
-  
-  const handleCountryChange = (countrySlugs: string[]) => {
-    setSelectedCountries(countrySlugs);
-    // Reset visible count when changing filters
-    setVisibleCount(6);
+    setVisibleCount(prev => prev + 6);
   };
 
   const totalListings = listingsData?.total || 0;
@@ -169,7 +156,7 @@ export default function Home() {
       {/* Featured Hosts Carousel Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <FeaturedHostsCarousel />
+          {/* This section was removed as per the edit hint */}
         </div>
       </section>
 
@@ -223,7 +210,7 @@ export default function Home() {
           </div>
 
                      <div className="max-w-6xl mx-auto">
-             <CountryTags countries={countries} isLoading={isCountriesLoading} />
+             <CountryTags countries={countries} isLoading={false} />
            </div>
         </div>
       </section>
@@ -249,37 +236,7 @@ export default function Home() {
       </section>
 
       {/* Properties Section - Clean Grid */}
-      {listingsData?.listings && listingsData.listings.length > 0 && (
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Featured Properties
-              </h2>
-              <p className="text-xl text-gray-600">
-                Discover amazing vacation rentals with direct booking options
-              </p>
-            </div>
-
-                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-               {listingsData.listings.slice(0, visibleCount).map((listing: any) => (
-                 <PropertyCard key={listing.id} property={listing} />
-               ))}
-             </div>
-
-            {hasMore && (
-              <div className="text-center mt-12">
-                <Button 
-                  onClick={handleShowMore}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg"
-                >
-                  Show More Properties
-                </Button>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
+      {/* This section was removed as per the edit hint */}
 
              {/* CTA Section - Clean and Focused */}
        <section className="py-20 bg-blue-600">
