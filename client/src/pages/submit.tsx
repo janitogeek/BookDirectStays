@@ -361,12 +361,12 @@ export default function Submit() {
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
         "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : values["Choose Your Listing Type"],
         "Submission Date": new Date().toISOString().split('T')[0],
-        // Automation Workflow:
-        // - Basic/Standard plans: Start as "Pending Review" → Admin approves → "Approved" → Auto-published → "Published"
-        // - Premium plans: Start as "Approved" → Auto-published immediately → "Published" 
-        // - Records only appear on frontend when status is "Approved" or "Published"
-        // - Changing status back to "Pending Review" or "Rejected" removes from frontend
-        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Published" : "Pending Review"
+        // Status workflow:
+        // - Standard plans: start as "Pending Review" (manual approval required)
+        // - Premium plans: start as "Approved - Published" (auto-approved)
+        // - Frontend only shows "Approved - Published" records
+        // - Any other status ("Pending Review", "Rejected") withdraws from frontend
+        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved - Published" : "Pending Review"
       };
 
       console.log("=== SUBMISSION DATA DEBUG ===");
@@ -486,7 +486,7 @@ export default function Submit() {
       toast({
         title: "Submission successful!",
         description: isPremium 
-          ? "Your premium property has been submitted and will appear on the site shortly. We'll get back to you soon!"
+          ? "Your premium property has been approved and published! It will appear on the site shortly."
           : "Your property has been submitted for review. We'll review it and get back to you soon!",
         variant: "default",
       });

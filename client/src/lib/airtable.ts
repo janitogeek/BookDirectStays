@@ -155,16 +155,19 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
-    console.log('📋 Fetching published submissions...');
+    console.log('📋 Fetching approved-published submissions...');
 
-    // Only show "Published" records on the frontend
-    // Admin workflow: Pending Review → Published (when approved)
-    const filterFormula = `{Status} = "Published"`;
+    // Only show "Approved - Published" records on the frontend
+    // Admin workflow: 
+    // - Standard plans: "Pending Review" → "Approved - Published" (when approved)
+    // - Premium plans: "Approved - Published" (auto-approved)
+    // - Any other status ("Pending Review", "Rejected", etc.) = withdrawn from frontend
+    const filterFormula = `{Status} = "Approved - Published"`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
     console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for status: "Published"');
+    console.log('🎯 Looking for status: "Approved - Published"');
 
     const response = await fetch(url, {
       headers: {
@@ -180,32 +183,32 @@ export const airtableService = {
     const data = await response.json();
     const records: AirtableSubmission[] = data.records || [];
     
-    console.log('📦 Raw Airtable response for published submissions:', data);
-    console.log('📊 Number of published records found:', records.length);
+    console.log('📦 Raw Airtable response for approved-published submissions:', data);
+    console.log('📊 Number of approved-published records found:', records.length);
 
     if (records.length > 0) {
-      console.log('🏠 First published record:', records[0]);
+      console.log('🏠 First approved-published record:', records[0]);
       console.log('📝 First record status:', records[0].fields['Status']);
     } else {
-      console.log('❌ No records found with status "Published"');
+      console.log('❌ No records found with status "Approved - Published"');
     }
 
     const transformedSubmissions = records.map((record, index) => {
       try {
-        console.log(`🔄 Transforming published record ${index + 1}/${records.length}:`, record.id);
+        console.log(`🔄 Transforming approved-published record ${index + 1}/${records.length}:`, record.id);
         console.log(`📝 Record status: ${record.fields['Status']}`);
         
         const transformedSubmission = this.transformSubmission(record);
         console.log('✅ Successfully transformed submission:', transformedSubmission.brandName);
         return transformedSubmission;
       } catch (error) {
-        console.error(`❌ Error transforming published record ${index + 1}:`, error);
+        console.error(`❌ Error transforming approved-published record ${index + 1}:`, error);
         console.error('📋 Problematic record:', record);
         throw error;
       }
     });
     
-    console.log('✨ All transformed published submissions:', transformedSubmissions.length);
+    console.log('✨ All transformed approved-published submissions:', transformedSubmissions.length);
     return transformedSubmissions;
   },
 
@@ -214,10 +217,10 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
-    console.log('🌍 Fetching published submissions for country:', countryName);
+    console.log('🌍 Fetching approved-published submissions for country:', countryName);
 
-    // Only show "Published" records for this country
-    const filterFormula = `AND({Status} = "Published", {Country} = "${countryName}")`;
+    // Only show "Approved - Published" records for this country
+    const filterFormula = `AND({Status} = "Approved - Published", {Country} = "${countryName}")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     console.log('🔗 Country API URL:', url);
@@ -237,7 +240,7 @@ export const airtableService = {
     const data = await response.json();
     const records: AirtableSubmission[] = data.records || [];
     
-    console.log(`📦 Published submissions for ${countryName}:`, records.length);
+    console.log(`📦 Approved-published submissions for ${countryName}:`, records.length);
 
     return records.map(record => this.transformSubmission(record));
   },
@@ -269,9 +272,9 @@ export const airtableService = {
       console.log('📝 Single record status:', status);
       console.log('📊 Single record data:', record.fields);
       
-      // Only return records that are published
-      if (status !== 'Published') {
-        console.log('❌ Record not published, status:', status);
+      // Only return records that are approved-published
+      if (status !== 'Approved - Published') {
+        console.log('❌ Record not approved-published, status:', status);
         return null;
       }
 
