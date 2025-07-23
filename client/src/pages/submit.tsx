@@ -366,7 +366,7 @@ export default function Submit() {
         // - Premium plans: Start as "Approved" → Auto-published immediately → "Published" 
         // - Records only appear on frontend when status is "Approved" or "Published"
         // - Changing status back to "Pending Review" or "Rejected" removes from frontend
-        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved" : "Pending Review"
+        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Published" : "Pending Review"
       };
 
       console.log("=== SUBMISSION DATA DEBUG ===");
