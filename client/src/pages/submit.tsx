@@ -363,10 +363,10 @@ export default function Submit() {
         "Submission Date": new Date().toISOString().split('T')[0],
         // Status workflow:
         // - Standard plans: start as "Pending Review" (manual approval required)
-        // - Premium plans: start as "Approved - Published" (auto-approved)
-        // - Frontend only shows "Approved - Published" records
+        // - Premium plans: start as "Approved – Published" (auto-approved, note: em dash)
+        // - Frontend only shows "Approved – Published" records
         // - Any other status ("Pending Review", "Rejected") withdraws from frontend
-        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved - Published" : "Pending Review"
+        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review"
       };
 
       console.log("=== SUBMISSION DATA DEBUG ===");

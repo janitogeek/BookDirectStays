@@ -159,6 +159,7 @@ export const airtableService = {
     console.log('🧪 Testing different status variations...');
 
     const statusVariations = [
+      "Approved – Published", // ← This is the correct one (em dash)
       "Approved - Published",
       "Approved-Published", 
       "Approved - published",
@@ -203,8 +204,8 @@ export const airtableService = {
 
     console.log('📋 Fetching approved-published submissions...');
 
-    // Run status variation test first
-    await this.testStatusVariations();
+    // Run status variation test first (disabled - found the issue!)
+    // await this.testStatusVariations();
 
     // First, let's get ALL records to see what statuses actually exist
     const allRecordsUrl = `${AIRTABLE_API_URL}`;
@@ -240,7 +241,7 @@ export const airtableService = {
         console.log('📊 Status breakdown:', statusCounts);
         
         // Check if any match our target
-        const targetStatus = "Approved - Published";
+        const targetStatus = "Approved – Published"; // em dash
         const matchingRecords = allRecords.filter(r => r.fields['Status'] === targetStatus);
         console.log(`🎯 Records with exact status "${targetStatus}":`, matchingRecords.length);
         
@@ -253,12 +254,12 @@ export const airtableService = {
     }
 
     // Now try the filtered query
-    const filterFormula = `{Status} = "Approved - Published"`;
+    const filterFormula = `{Status} = "Approved – Published"`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
     console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for exact status: "Approved - Published"');
+    console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
 
     const response = await fetch(url, {
       headers: {
@@ -280,8 +281,9 @@ export const airtableService = {
     if (records.length > 0) {
       console.log('🏠 First approved-published record:', records[0]);
       console.log('📝 First record status:', records[0].fields['Status']);
+      console.log('✅ SUCCESS! Found records with em dash status!');
     } else {
-      console.log('❌ No records found with status "Approved - Published"');
+      console.log('❌ No records found with status "Approved – Published"');
       console.log('🔍 This suggests a status string mismatch');
     }
 
@@ -311,12 +313,13 @@ export const airtableService = {
 
     console.log('🌍 Fetching approved-published submissions for country:', countryName);
 
-    // Only show "Approved - Published" records for this country
-    const filterFormula = `AND({Status} = "Approved - Published", {Country} = "${countryName}")`;
+    // Only show "Approved – Published" records for this country (note: em dash)
+    const filterFormula = `AND({Status} = "Approved – Published", {Country} = "${countryName}")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     console.log('🔗 Country API URL:', url);
     console.log('📝 Country filter formula:', filterFormula);
+    console.log('🎯 Looking for status "Approved – Published" (em dash) in country:', countryName);
 
     const response = await fetch(url, {
       headers: {
@@ -364,9 +367,10 @@ export const airtableService = {
       console.log('📝 Single record status:', status);
       console.log('📊 Single record data:', record.fields);
       
-      // Only return records that are approved-published
-      if (status !== 'Approved - Published') {
+      // Only return records that are approved-published (note: em dash)
+      if (status !== 'Approved – Published') {
         console.log('❌ Record not approved-published, status:', status);
+        console.log('🔍 Expected: "Approved – Published" (em dash), Got:', JSON.stringify(status));
         return null;
       }
 

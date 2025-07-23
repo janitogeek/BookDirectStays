@@ -104,15 +104,9 @@ export default function Country() {
     queryKey: ['submissions', countrySlug],
     queryFn: () => airtableService.getSubmissionsByCountry(countryName),
     enabled: !!countryName,
-    staleTime: 0, // No cache - always fresh during debugging
-    refetchInterval: 10 * 1000, // Refetch every 10 seconds for debugging
+    staleTime: 30 * 1000, // 30 seconds - back to normal
+    refetchInterval: 60 * 1000, // Refetch every minute
   });
-
-  // Debug function to test status variations manually
-  const debugStatusVariations = async () => {
-    console.log('🧪 Manual debug trigger...');
-    await airtableService.testStatusVariations();
-  };
 
   // Debug submissions in React component
   console.log('🎬 React component - submissions data:', submissions);
@@ -286,20 +280,6 @@ export default function Country() {
           }}
         />
       )}
-
-      {/* Debug Button - Temporary */}
-      <div className="mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
-        <p className="text-sm text-yellow-800 mb-2">🐛 Debug Mode: Testing status variations</p>
-        <button 
-          onClick={debugStatusVariations}
-          className="bg-yellow-500 text-white px-4 py-2 rounded text-sm hover:bg-yellow-600"
-        >
-          Test Status Variations (Check Console)
-        </button>
-        <p className="text-xs text-yellow-700 mt-1">
-          Total submissions found: {submissions.length} | Check browser console for detailed logs
-        </p>
-      </div>
 
       {/* Hero Section */}
       <section className="py-12">
