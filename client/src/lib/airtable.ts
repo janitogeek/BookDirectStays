@@ -314,12 +314,13 @@ export const airtableService = {
     console.log('🌍 Fetching approved-published submissions for country:', countryName);
 
     // Only show "Approved – Published" records for this country (note: em dash)
-    const filterFormula = `AND({Status} = "Approved – Published", {Country} = "${countryName}")`;
+    // Use FIND() to search in the multi-select Countries field
+    const filterFormula = `AND({Status} = "Approved – Published", FIND("${countryName}", {Countries}) > 0)`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
 
     console.log('🔗 Country API URL:', url);
     console.log('📝 Country filter formula:', filterFormula);
-    console.log('🎯 Looking for status "Approved – Published" (em dash) in country:', countryName);
+    console.log('🎯 Looking for status "Approved – Published" (em dash) in Countries field for:', countryName);
 
     const response = await fetch(url, {
       headers: {
