@@ -1,19 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { useState } from "react";
-import PropertyCard from "@/components/property-card";
+import SubmissionPropertyCard from "@/components/submission-property-card";
 import CountryTags from "@/components/country-tags";
+import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { airtableService } from "@/lib/airtable";
 
 export default function Home() {
-  const [visibleCount, setVisibleCount] = useState(6);
   const [, setLocation] = useLocation();
-  
-  // Fetch listings
-  const listingsData = { listings: [], total: 0, hasMore: false };
-  const isListingsLoading = false;
+
+  // Fetch recent approved submissions for property showcase
+  const { data: recentSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
+    queryKey: ["/api/recent-submissions"],
+    queryFn: () => airtableService.getApprovedSubmissions(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   // For now, we'll use a static list of countries since we don't have a countries service yet
   const countries = [
@@ -28,13 +30,6 @@ export default function Home() {
     { name: "Portugal", slug: "portugal", count: 30 },
     { name: "Thailand", slug: "thailand", count: 25 },
   ];
-
-  const handleShowMore = () => {
-    setVisibleCount(prev => prev + 6);
-  };
-
-  const totalListings = listingsData?.total || 0;
-  const hasMore = listingsData?.hasMore || false;
 
   return (
     <main className="min-h-screen">
@@ -156,7 +151,7 @@ export default function Home() {
       {/* Featured Hosts Carousel Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* This section was removed as per the edit hint */}
+          <FeaturedHostsCarousel />
         </div>
       </section>
 
@@ -236,7 +231,74 @@ export default function Home() {
       </section>
 
       {/* Properties Section - Clean Grid */}
-      {/* This section was removed as per the edit hint */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+              Latest Direct Booking Properties
+            </h2>
+            <p className="text-xl text-gray-600">
+              Recently added verified vacation rental hosts offering commission-free bookings
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {isSubmissionsLoading ? (
+              // Loading skeleton
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+                  <div className="w-full h-48 bg-gray-300"></div>
+                  <div className="p-6">
+                    <div className="flex items-center mb-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-300 mr-3"></div>
+                      <div className="h-6 bg-gray-300 w-2/3 rounded"></div>
+                    </div>
+                    <div className="h-4 bg-gray-300 w-1/2 mb-3 rounded"></div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="h-6 bg-gray-300 w-16 rounded"></div>
+                      <div className="h-6 bg-gray-300 w-20 rounded"></div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex space-x-2">
+                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+                      </div>
+                      <div className="h-10 bg-gray-300 w-32 rounded-lg"></div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : recentSubmissions.length === 0 ? (
+              <div className="col-span-3 text-center py-16">
+                <div className="bg-white rounded-xl p-8 border border-gray-200 inline-block mx-auto">
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No properties available yet</h3>
+                  <p className="text-gray-500 mb-6">Check back soon for new direct booking properties.</p>
+                  <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                    <a href="/submit">Add Your Property</a>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              // Show first 6 recent submissions
+              recentSubmissions.slice(0, 6).map((submission) => (
+                <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
+              ))
+            )}
+          </div>
+
+          {/* View All Properties Button */}
+          {recentSubmissions.length > 6 && (
+            <div className="text-center mt-12">
+              <Button 
+                onClick={() => setLocation("/find-host")}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+              >
+                View All {recentSubmissions.length} Properties
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
 
              {/* CTA Section - Clean and Focused */}
        <section className="py-20 bg-blue-600">

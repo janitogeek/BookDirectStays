@@ -63,9 +63,7 @@ export default function FeaturedHostsCarousel() {
     const isPremium = submission.plan?.includes('Premium') || 
                      submission.plan?.includes('€499.99') || 
                      submission.plan?.includes('499.99');
-    const isApproved = submission.status === 'Published' || 
-                      submission.status === 'Approved' || 
-                      submission.status === 'Approved – Not Yet Published';
+    const isApproved = submission.status === 'Approved – Published';
     
     return isPremium && isApproved;
   }) || [];
