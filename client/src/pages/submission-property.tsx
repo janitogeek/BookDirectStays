@@ -205,7 +205,7 @@ export default function SubmissionProperty() {
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-2"
-                        onClick={() => clickTracking?.trackWebsite()} // Track website clicks
+                        onClick={() => clickTracking?.trackWebsite()}
                       >
                         <ExternalLink className="w-5 h-5" />
                         Book Direct
@@ -224,7 +224,6 @@ export default function SubmissionProperty() {
                           className="hover:scale-110 transition-transform"
                           title={social.platform}
                           onClick={() => {
-                            // Track social media clicks based on platform
                             switch (social.platform.toLowerCase()) {
                               case 'instagram':
                                 clickTracking?.trackInstagram();
@@ -259,140 +258,251 @@ export default function SubmissionProperty() {
       </section>
 
       {/* Main Content */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Main Content */}
-              <div className="lg:col-span-2">
-                {/* Why Book With Section */}
-                <Card className="mb-8">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
+              
+              {/* Why Book With */}
+              {submission.whyBookWithYou && (
+                <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Heart className="w-6 h-6 text-red-500" />
-                      Why book with {submission.brandName}?
-                    </CardTitle>
+                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-gray max-w-none">
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-gray-700 whitespace-pre-line">
                         {submission.whyBookWithYou}
                       </p>
                     </div>
                   </CardContent>
                 </Card>
+              )}
 
-                {/* Stats & Info Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  {/* Property Count */}
-                  {submission.numberOfListings && (
-                    <Card>
-                      <CardContent className="p-6 text-center">
-                        <Building2 className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                        <div className="text-2xl font-bold text-gray-900">{submission.numberOfListings}</div>
-                        <div className="text-sm text-gray-600">Properties Available</div>
-                      </CardContent>
-                    </Card>
+              {/* Host's Stats */}
+              {submission.topStats && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-600" />
+                      Host's Stats
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-700 text-lg font-medium">
+                      {submission.topStats}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Ideal For */}
+              {submission.idealFor && submission.idealFor.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-blue-600" />
+                      Ideal For
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.idealFor.map((item, index) => (
+                        <Badge key={index} variant="outline" className="text-sm">
+                          {item.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Perks & Amenities */}
+              {submission.perksAmenities && submission.perksAmenities.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-green-600" />
+                      Perks & Amenities
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {submission.perksAmenities.map((perk, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                          {perk.trim()}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Vibe & Aesthetic */}
+              {submission.vibeAesthetic && submission.vibeAesthetic.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-purple-600" />
+                      Vibe & Aesthetic
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.vibeAesthetic.map((vibe, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm bg-purple-50 text-purple-700">
+                          {vibe.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              
+              {/* Rating Screenshot */}
+              {submission.ratingScreenshot && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-500" />
+                      Guest Reviews & Ratings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-lg overflow-hidden">
+                      <img
+                        src={submission.ratingScreenshot}
+                        alt={`${submission.brandName} ratings and reviews`}
+                        className="w-full h-auto object-contain"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                      Real guest ratings and reviews from booking platforms
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Property Types */}
+              {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Property Types</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.typesOfStays.map((type, index) => (
+                        <Badge key={index} variant="secondary">
+                          {type}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Locations */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Locations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {submission.countries.map((country, index) => (
+                      <div key={country} className="flex items-center gap-2">
+                        <span className="text-xl">{getFlagEmoji(country)}</span>
+                        <span className="font-medium">{country}</span>
+                      </div>
+                    ))}
+                    
+                    {/* Cities/Regions in Sidebar */}
+                    {submission.citiesRegions && submission.citiesRegions.length > 0 && (
+                      <div className="pt-2 border-t border-gray-200">
+                        <h4 className="text-sm font-medium text-gray-600 mb-2">Cities & Regions:</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {submission.citiesRegions.map((city, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {city.trim()}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Contact */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Get in Touch</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {submission.website && (
+                    <Button asChild className="w-full">
+                      <a 
+                        href={submission.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2"
+                        onClick={() => clickTracking?.trackWebsite()}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Visit Website
+                      </a>
+                    </Button>
                   )}
-
-                  {/* Countries Count */}
-                  <Card>
-                    <CardContent className="p-6 text-center">
-                      <MapPin className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-gray-900">{submission.countries.length}</div>
-                      <div className="text-sm text-gray-600">
-                        {submission.countries.length === 1 ? 'Country' : 'Countries'}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Additional Info Sections */}
-                {/* Types of Stays */}
-                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-                  <Card className="mb-6">
-                    <CardHeader>
-                      <CardTitle>Types of Stays</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {submission.typesOfStays.map((type, index) => (
-                          <Badge key={index} variant="secondary">
-                            {type}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Ideal For */}
-                {submission.idealFor && submission.idealFor.length > 0 && (
-                  <Card className="mb-6">
-                    <CardHeader>
-                      <CardTitle>Ideal For</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {submission.idealFor.map((ideal, index) => (
-                          <Badge key={index} variant="outline">
-                            {ideal}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Perks & Amenities */}
-                {submission.perksAmenities && submission.perksAmenities.length > 0 && (
-                  <Card className="mb-6">
-                    <CardHeader>
-                      <CardTitle>Perks & Amenities</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {submission.perksAmenities.map((perk, index) => (
-                          <Badge key={index} variant="secondary">
-                            {perk}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Right Column - Rating Screenshot */}
-              <div className="lg:col-span-1">
-                {/* Rating Screenshot Card */}
-                {submission.ratingScreenshot && (
-                  <Card className="sticky top-6">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Star className="w-5 h-5 text-yellow-500" />
-                        Guest Reviews & Ratings
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="rounded-lg overflow-hidden bg-gray-50 p-2">
-                        <img
-                          src={submission.ratingScreenshot}
-                          alt={`${submission.brandName} ratings and reviews`}
-                          className="w-full h-auto object-contain rounded"
-                        />
-                      </div>
-                      <p className="text-xs text-gray-500 mt-3 text-center">
-                        Real guest ratings and reviews from booking platforms
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+                  
+                  {socialLinks.length > 0 && (
+                    <div className="flex justify-center gap-4 pt-4">
+                      {socialLinks.map((social, index) => (
+                        <a
+                          key={index}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:scale-110 transition-transform"
+                          title={social.platform}
+                          onClick={() => {
+                            switch (social.platform.toLowerCase()) {
+                              case 'instagram':
+                                clickTracking?.trackInstagram();
+                                break;
+                              case 'facebook':
+                                clickTracking?.trackFacebook();
+                                break;
+                              case 'linkedin':
+                                clickTracking?.trackLinkedIn();
+                                break;
+                              case 'tiktok':
+                                clickTracking?.trackTikTok();
+                                break;
+                              case 'youtube':
+                                clickTracking?.trackYouTube();
+                                break;
+                              default:
+                                clickTracking?.track('website');
+                            }
+                          }}
+                        >
+                          {getSocialIcon(social.platform)}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 } 
