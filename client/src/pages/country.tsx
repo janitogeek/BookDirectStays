@@ -104,9 +104,15 @@ export default function Country() {
     queryKey: ['submissions', countrySlug],
     queryFn: () => airtableService.getSubmissionsByCountry(countryName),
     enabled: !!countryName,
-    staleTime: 30 * 1000, // 30 seconds - shorter cache for faster status updates
-    refetchInterval: 60 * 1000, // Refetch every minute to catch status changes
+    staleTime: 0, // No cache - always fresh during debugging
+    refetchInterval: 10 * 1000, // Refetch every 10 seconds for debugging
   });
+
+  // Debug function to test status variations manually
+  const debugStatusVariations = async () => {
+    console.log('🧪 Manual debug trigger...');
+    await airtableService.testStatusVariations();
+  };
 
   // Debug submissions in React component
   console.log('🎬 React component - submissions data:', submissions);
@@ -140,13 +146,13 @@ export default function Country() {
   };
 
   // Fetch all countries for the tags
-  const { data: countries, isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/countries"],
-    queryFn: async () => {
-      const res = await apiRequest("GET", "/api/countries", undefined);
-      return res.json();
-    }
-  });
+  // const { data: countries, isLoading: isCountriesLoading } = useQuery({
+  //   queryKey: ["/api/countries"],
+  //   queryFn: async () => {
+  //     const res = await apiRequest("GET", "/api/countries", undefined);
+  //     return res.json();
+  //   }
+  // });
 
   // Filter submissions based on active filters
   const filteredSubmissions = useMemo(() => {
@@ -281,10 +287,21 @@ export default function Country() {
         />
       )}
 
-      {/* Country Tags Section */}
-      <CountryTags countries={countries || []} isLoading={isCountriesLoading} activeCountry={countrySlug} />
+      {/* Debug Button - Temporary */}
+      <div className="mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
+        <p className="text-sm text-yellow-800 mb-2">🐛 Debug Mode: Testing status variations</p>
+        <button 
+          onClick={debugStatusVariations}
+          className="bg-yellow-500 text-white px-4 py-2 rounded text-sm hover:bg-yellow-600"
+        >
+          Test Status Variations (Check Console)
+        </button>
+        <p className="text-xs text-yellow-700 mt-1">
+          Total submissions found: {submissions.length} | Check browser console for detailed logs
+        </p>
+      </div>
 
-      {/* Main Directory Section */}
+      {/* Hero Section */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">

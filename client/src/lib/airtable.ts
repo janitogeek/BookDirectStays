@@ -150,6 +150,52 @@ export const airtableService = {
     return data.records || [];
   },
 
+  // Temporary method to test different status variations
+  async testStatusVariations(): Promise<void> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('🧪 Testing different status variations...');
+
+    const statusVariations = [
+      "Approved - Published",
+      "Approved-Published", 
+      "Approved - published",
+      "approved - published",
+      "APPROVED - PUBLISHED",
+      "Approved  -  Published", // extra spaces
+      "Published",
+      "Approved"
+    ];
+
+    for (const testStatus of statusVariations) {
+      try {
+        const filterFormula = `{Status} = "${testStatus}"`;
+        const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+        
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const count = data.records?.length || 0;
+          console.log(`🎯 Status "${testStatus}": ${count} records found`);
+          
+          if (count > 0) {
+            console.log(`✅ FOUND MATCH with "${testStatus}"!`);
+            console.log('📝 First matching record:', data.records[0]);
+          }
+        }
+      } catch (error) {
+        console.error(`❌ Error testing status "${testStatus}":`, error);
+      }
+    }
+  },
+
   async getApprovedSubmissions(): Promise<Submission[]> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
@@ -157,17 +203,62 @@ export const airtableService = {
 
     console.log('📋 Fetching approved-published submissions...');
 
-    // Only show "Approved - Published" records on the frontend
-    // Admin workflow: 
-    // - Standard plans: "Pending Review" → "Approved - Published" (when approved)
-    // - Premium plans: "Approved - Published" (auto-approved)
-    // - Any other status ("Pending Review", "Rejected", etc.) = withdrawn from frontend
+    // Run status variation test first
+    await this.testStatusVariations();
+
+    // First, let's get ALL records to see what statuses actually exist
+    const allRecordsUrl = `${AIRTABLE_API_URL}`;
+    console.log('🔍 First, fetching ALL records to debug statuses...');
+    
+    const allResponse = await fetch(allRecordsUrl, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+      },
+    });
+
+    if (allResponse.ok) {
+      const allData = await allResponse.json();
+      const allRecords: AirtableSubmission[] = allData.records || [];
+      console.log('📊 Total records in Airtable:', allRecords.length);
+      
+      if (allRecords.length > 0) {
+        console.log('📝 First record for debugging:', allRecords[0]);
+        console.log('📝 First record fields:', allRecords[0].fields);
+        console.log('📝 First record status:', JSON.stringify(allRecords[0].fields['Status']));
+        
+        // Get all unique statuses
+        const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
+        const uniqueStatuses = [...new Set(allStatuses)];
+        console.log('📋 All unique statuses found:', uniqueStatuses);
+        console.log('📋 All statuses (with quotes):', uniqueStatuses.map(s => `"${s}"`));
+        
+        // Count each status
+        const statusCounts = allStatuses.reduce((acc: any, status) => {
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+        console.log('📊 Status breakdown:', statusCounts);
+        
+        // Check if any match our target
+        const targetStatus = "Approved - Published";
+        const matchingRecords = allRecords.filter(r => r.fields['Status'] === targetStatus);
+        console.log(`🎯 Records with exact status "${targetStatus}":`, matchingRecords.length);
+        
+        // Check for similar statuses
+        const similarStatuses = uniqueStatuses.filter(status => 
+          status && status.toLowerCase().includes('approved') && status.toLowerCase().includes('published')
+        );
+        console.log('🔍 Similar statuses containing "approved" and "published":', similarStatuses);
+      }
+    }
+
+    // Now try the filtered query
     const filterFormula = `{Status} = "Approved - Published"`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
     console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for status: "Approved - Published"');
+    console.log('🎯 Looking for exact status: "Approved - Published"');
 
     const response = await fetch(url, {
       headers: {
@@ -191,6 +282,7 @@ export const airtableService = {
       console.log('📝 First record status:', records[0].fields['Status']);
     } else {
       console.log('❌ No records found with status "Approved - Published"');
+      console.log('🔍 This suggests a status string mismatch');
     }
 
     const transformedSubmissions = records.map((record, index) => {
