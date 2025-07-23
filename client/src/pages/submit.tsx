@@ -361,10 +361,17 @@ export default function Submit() {
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
         "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : values["Choose Your Listing Type"],
         "Submission Date": new Date().toISOString().split('T')[0],
-        "Status": "Pending Review"
+        // Automation Workflow:
+        // - Basic/Standard plans: Start as "Pending Review" → Admin approves → "Approved" → Auto-published → "Published"
+        // - Premium plans: Start as "Approved" → Auto-published immediately → "Published" 
+        // - Records only appear on frontend when status is "Approved" or "Published"
+        // - Changing status back to "Pending Review" or "Rejected" removes from frontend
+        "Status": values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved" : "Pending Review"
       };
 
       console.log("=== SUBMISSION DATA DEBUG ===");
+      console.log("Plan selected:", values["Choose Your Listing Type"]);
+      console.log("Initial status will be:", submissionData["Status"]);
       console.log("Logo data:", logoData ? `${logoData.filename} (${logoData.base64.length} chars)` : 'None');
       console.log("Highlight Image data:", highlightImageData ? `${highlightImageData.filename} (${highlightImageData.base64.length} chars)` : 'None');
       console.log("Rating Screenshot data:", ratingScreenshotData ? `${ratingScreenshotData.filename} (${ratingScreenshotData.base64.length} chars)` : 'None');
@@ -473,9 +480,14 @@ export default function Submit() {
         console.log('All attachment uploads completed');
       }
       
+      // Show different success messages based on plan type
+      const isPremium = values["Choose Your Listing Type"] === "Premium (€499.99/year)";
+      
       toast({
         title: "Submission successful!",
-        description: "Your property has been submitted for review. We'll get back to you soon!",
+        description: isPremium 
+          ? "Your premium property has been submitted and will appear on the site shortly. We'll get back to you soon!"
+          : "Your property has been submitted for review. We'll review it and get back to you soon!",
         variant: "default",
       });
       

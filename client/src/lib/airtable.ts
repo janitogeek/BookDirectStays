@@ -340,38 +340,6 @@ export const airtableService = {
     return transformedSubmissions;
   },
 
-  // Debug method to check what statuses actually exist in the database
-  async debugStatuses(): Promise<void> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
-
-    console.log('🔍 DEBUG: Fetching all records to check statuses...');
-
-    const response = await fetch(AIRTABLE_API_URL, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      },
-    });
-
-    if (!response.ok) {
-      console.error('❌ Airtable API error:', response.status, response.statusText);
-      return;
-    }
-
-    const data = await response.json();
-    const records: AirtableSubmission[] = data.records || [];
-    
-    const statusCounts: { [key: string]: number } = {};
-    records.forEach(record => {
-      const status = record.fields['Status'] || 'No Status';
-      statusCounts[status] = (statusCounts[status] || 0) + 1;
-    });
-
-    console.log('📊 STATUS BREAKDOWN:', statusCounts);
-    console.log('📋 Available statuses:', Object.keys(statusCounts));
-  },
-
   async getSubmissionById(id: string): Promise<Submission | null> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
@@ -525,54 +493,16 @@ export const airtableService = {
   // Helper method to transform Airtable records to normalized format
   transformSubmission(record: AirtableSubmission): Submission {
     console.log('🔄 Transforming submission record:', record.id);
-    console.log('📊 Raw fields:', record.fields);
     
     const fields = record.fields;
     
-    // DEBUG: List all field names to help identify field name issues
-    console.log('🔍 Available field names:', Object.keys(fields));
-    console.log('🖼️ Attachment fields check:');
-    console.log('  - Logo field exists:', 'Logo' in fields);
-    console.log('  - Logo value:', fields['Logo']);
-    console.log('  - Highlight Image field exists:', 'Highlight Image' in fields);
-    console.log('  - Highlight Image value:', fields['Highlight Image']);
-    console.log('  - Rating Screenshot field exists:', 'Rating (X/5) & Reviews (#) Screenshot' in fields);
-    console.log('  - Rating Screenshot value:', fields['Rating (X/5) & Reviews (#) Screenshot']);
-    
-    // Check for similar field names that might be the rating screenshot
-    const possibleRatingFields = Object.keys(fields).filter(key => 
-      key.toLowerCase().includes('rating') || 
-      key.toLowerCase().includes('review') || 
-      key.toLowerCase().includes('screenshot')
-    );
-    console.log('🔍 Possible rating-related fields:', possibleRatingFields);
-    console.log('📋 Exact rating field names found:', possibleRatingFields);
-    
-    // Show ALL attachment fields for debugging
-    const attachmentFields = Object.keys(fields).filter(key => {
-      const value = fields[key as keyof typeof fields];
-      return Array.isArray(value) && value.length > 0 && 
-             typeof value[0] === 'object' && value[0] !== null && 'url' in value[0];
-    });
-    console.log('📎 All fields with attachments:', attachmentFields);
-    console.log('📋 Exact attachment field names:', attachmentFields);
-    
-    // Show first 10 field names for reference
-    const fieldNames = Object.keys(fields).slice(0, 20);
-    console.log('📝 Sample field names (first 20):', fieldNames);
-    
     // Helper function to extract URL from Airtable attachment field
     const getAttachmentUrl = (attachmentField: any): string | undefined => {
-      console.log('🔧 Processing attachment field:', attachmentField);
-      
       if (!attachmentField || !Array.isArray(attachmentField) || attachmentField.length === 0) {
-        console.log('❌ No attachment or empty array');
         return undefined;
       }
       
       const attachment = attachmentField[0];
-      console.log('📎 First attachment object:', attachment);
-      console.log('📋 Attachment properties:', Object.keys(attachment || {}));
       
       // Try different possible properties for the URL
       const url = attachment.url || 
@@ -583,7 +513,6 @@ export const airtableService = {
              attachment.thumbnails?.full?.url ||
              undefined;
              
-      console.log('🔗 Extracted URL:', url);
       return url;
     };
     
@@ -592,7 +521,6 @@ export const airtableService = {
       // First try exact field name
       const exactField = fields['Rating (X/5) & Reviews (#) Screenshot'];
       if (exactField) {
-        console.log('✅ Found exact rating field match');
         return getAttachmentUrl(exactField);
       }
       
@@ -609,11 +537,10 @@ export const airtableService = {
       
       if (ratingAttachmentFields.length > 0) {
         const foundFieldName = ratingAttachmentFields[0];
-        console.log('🎯 Found rating screenshot field by keyword:', foundFieldName);
+        console.log('📸 Using rating screenshot field:', foundFieldName);
         return getAttachmentUrl(fields[foundFieldName as keyof typeof fields]);
       }
       
-      console.log('❌ No rating screenshot field found by any method');
       return undefined;
     };
     
@@ -653,16 +580,7 @@ export const airtableService = {
       createdTime: record.createdTime
     };
 
-    console.log('✅ Transformation complete for record:', record.id);
-    console.log('📊 Transformed data:', transformed);
-    console.log('🏷️ Brand name:', transformed.brandName);
-    console.log('🌍 Parsed countries:', transformed.countries);
-    console.log('🏢 Types of stays:', transformed.typesOfStays);
-    console.log('🎯 Ideal for:', transformed.idealFor);
-    console.log('🖼️ Logo URL:', transformed.logo);
-    console.log('🎨 Highlight image URL:', transformed.highlightImage);
-    console.log('⭐ Rating screenshot URL:', transformed.ratingScreenshot);
-    console.log('📎 Rating screenshot raw field:', fields['Rating (X/5) & Reviews (#) Screenshot']);
+    console.log('✅ Transformed:', transformed.brandName, '- Status:', transformed.status);
     
     return transformed;
   }
