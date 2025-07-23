@@ -39,6 +39,10 @@ const formSchema = z.object({
     url: z.string().url(),
     name: z.string()
   }),
+  "Rating (X/5) & Reviews (#) Screenshot": z.object({
+    url: z.string().url(),
+    name: z.string()
+  }),
   "One-line Description": z.string().min(5),
   "Why Book With You?": z.string().min(10),
   "Top Stats": z.string().optional().or(z.literal("")),
@@ -101,6 +105,7 @@ export default function Submit() {
       "Cities / Regions": [],
       "Logo Upload": { url: "", name: "" },
       "Highlight Image": { url: "", name: "" },
+      "Rating (X/5) & Reviews (#) Screenshot": { url: "", name: "" },
       "One-line Description": "",
       "Why Book With You?": "",
       "Top Stats": "",
@@ -301,6 +306,39 @@ export default function Submit() {
         console.log('No highlight image to process or invalid URL');
       }
 
+      // Process rating screenshot file
+      let ratingScreenshotData: { base64: string; contentType: string; filename: string } | null = null;
+      if (values["Rating (X/5) & Reviews (#) Screenshot"]?.url && values["Rating (X/5) & Reviews (#) Screenshot"]?.url.startsWith('blob:')) {
+        try {
+          console.log('Processing rating screenshot file...');
+          console.log('Rating screenshot info:', {
+            url: values["Rating (X/5) & Reviews (#) Screenshot"].url,
+            name: values["Rating (X/5) & Reviews (#) Screenshot"].name
+          });
+          
+          const screenshotFile = await getFileFromBlobUrl(values["Rating (X/5) & Reviews (#) Screenshot"].url, values["Rating (X/5) & Reviews (#) Screenshot"].name);
+          console.log('Rating screenshot file created:', {
+            name: screenshotFile.name,
+            size: screenshotFile.size,
+            type: screenshotFile.type
+          });
+          
+          ratingScreenshotData = await processImageFile(screenshotFile);
+          console.log('Rating screenshot processed successfully, base64 length:', ratingScreenshotData.base64.length);
+          
+        } catch (error) {
+          console.error('Error processing rating screenshot:', error);
+          toast({
+            title: "Rating screenshot upload failed",
+            description: `Could not process rating screenshot: ${error instanceof Error ? error.message : 'Unknown error'}. Please try uploading again.`,
+            variant: "destructive",
+          });
+          ratingScreenshotData = null;
+        }
+      } else {
+        console.log('No rating screenshot to process or invalid URL');
+      }
+
       // STEP 1: Create record with text fields only (no attachments yet)
       const submissionData: any = {
         "Email": values["Submitted By (Email)"],
@@ -329,6 +367,7 @@ export default function Submit() {
       console.log("=== SUBMISSION DATA DEBUG ===");
       console.log("Logo data:", logoData ? `${logoData.filename} (${logoData.base64.length} chars)` : 'None');
       console.log("Highlight Image data:", highlightImageData ? `${highlightImageData.filename} (${highlightImageData.base64.length} chars)` : 'None');
+      console.log("Rating Screenshot data:", ratingScreenshotData ? `${ratingScreenshotData.filename} (${ratingScreenshotData.base64.length} chars)` : 'None');
       console.log("Full submission data:", submissionData);
       console.log("=== END DEBUG ===");
 
@@ -405,6 +444,22 @@ export default function Submit() {
               toast({
                 title: "Highlight image upload failed",
                 description: "The submission was created but the highlight image couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      if (ratingScreenshotData) {
+        console.log('Uploading rating screenshot attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Rating (X/5) & Reviews (#) Screenshot', ratingScreenshotData)
+            .then(() => console.log('Rating screenshot uploaded successfully'))
+            .catch(error => {
+              console.error('Rating screenshot upload failed:', error);
+              toast({
+                title: "Rating screenshot upload failed",
+                description: "The submission was created but the rating screenshot couldn't be uploaded. You can add it manually later.",
                 variant: "destructive",
               });
             })
@@ -521,6 +576,26 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>
                     Highlight Image (This will be the main image shown on your company card in the directory)
+                    <RequiredAsterisk />
+                  </FormLabel>
+                  <FormControl>
+                    <FileDrop
+                      onFileDrop={(file: File) => {
+                        field.onChange({
+                          url: URL.createObjectURL(file),
+                          name: file.name
+                        });
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="Rating (X/5) & Reviews (#) Screenshot" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Rating & Reviews Screenshot (Upload a screenshot showing your ratings and number of reviews from booking platforms)
                     <RequiredAsterisk />
                   </FormLabel>
                   <FormControl>

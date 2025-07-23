@@ -40,6 +40,7 @@ export interface AirtableSubmission {
     'YouTube / Video Tour'?: string;
     'Logo'?: Array<{ url: string; filename: string }>;
     'Highlight Image'?: Array<{ url: string; filename: string }>;
+    'Rating (X/5) & Reviews (#) Screenshot'?: Array<{ url: string; filename: string }>;
     'Status': string;
     'Submission Date': string;
   };
@@ -70,6 +71,7 @@ export interface Submission {
   youtubeVideoTour?: string;
   logo?: string;
   highlightImage?: string;
+  ratingScreenshot?: string;
   status: string;
   submissionDate: string;
   createdTime: string;
@@ -388,76 +390,58 @@ export const airtableService = {
 
   // Helper method to transform Airtable records to normalized format
   transformSubmission(record: AirtableSubmission): Submission {
-    try {
-      console.log('🔄 Transforming record:', record.id);
-      const fields = record.fields;
-      console.log('📋 Record fields:', fields);
-      
-      // Helper function to parse comma-separated strings into arrays
-      const parseArray = (value: string | string[] | undefined): string[] => {
-        if (!value) return [];
-        
-        // If it's already an array (Airtable multi-select fields), return it
-        if (Array.isArray(value)) {
-          return value.filter(Boolean);
-        }
-        
-        // If it's a string, split by comma
-        if (typeof value === 'string') {
-          return value.split(',').map(item => item.trim()).filter(Boolean);
-        }
-        
-        // Fallback for unexpected types
-        console.warn('⚠️ Unexpected value type for parseArray:', typeof value, value);
-        return [];
-      };
+    console.log('🔄 Transforming submission record:', record.id);
+    console.log('📊 Raw fields:', record.fields);
+    
+    const fields = record.fields;
+    
+    // Helper function to safely parse arrays
+    const parseArray = (value: string | string[] | undefined): string[] => {
+      if (!value) return [];
+      if (Array.isArray(value)) return value;
+      return value.split(',').map(item => item.trim()).filter(Boolean);
+    };
 
-      console.log('🔧 Starting field extraction...');
-      
-      const transformed = {
-        id: record.id,
-        brandName: fields['Brand Name'] || '',
-        website: fields['Direct Booking Website'] || '',
-        numberOfListings: fields['Number of Listings'] || 0,
-        email: fields['Email'] || '',
-        oneLineDescription: fields['One-line Description'] || '',
-        whyBookWithYou: fields['Why Book With You'] || '',
-        plan: fields['Plan'] || '',
-        topStats: fields['Top Stats'] || '',
-        countries: parseArray(fields['Countries']),
-        citiesRegions: parseArray(fields['Cities / Regions']),
-        typesOfStays: parseArray(fields['Types of Stays']),
-        idealFor: parseArray(fields['Ideal For']),
-        perksAmenities: parseArray(fields['Perks / Amenities']),
-        vibeAesthetic: parseArray(fields['Vibe / Aesthetic']),
-        instagram: fields['Instagram'] || undefined,
-        facebook: fields['Facebook'] || undefined,
-        linkedin: fields['LinkedIn'] || undefined,
-        tiktok: fields['TikTok'] || undefined,
-        youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
-        logo: fields['Logo']?.[0]?.url || undefined,
-        highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
-        status: fields['Status'] || '',
-        submissionDate: fields['Submission Date'] || '',
-        createdTime: record.createdTime
-      };
+    const transformed = {
+      id: record.id,
+      brandName: fields['Brand Name'] || '',
+      website: fields['Direct Booking Website'] || '',
+      numberOfListings: fields['Number of Listings'] || 0,
+      email: fields['Email'] || '',
+      oneLineDescription: fields['One-line Description'] || '',
+      whyBookWithYou: fields['Why Book With You'] || '',
+      plan: fields['Plan'] || '',
+      topStats: fields['Top Stats'] || '',
+      countries: parseArray(fields['Countries']),
+      citiesRegions: parseArray(fields['Cities / Regions']),
+      typesOfStays: parseArray(fields['Types of Stays']),
+      idealFor: parseArray(fields['Ideal For']),
+      perksAmenities: parseArray(fields['Perks / Amenities']),
+      vibeAesthetic: parseArray(fields['Vibe / Aesthetic']),
+      instagram: fields['Instagram'] || undefined,
+      facebook: fields['Facebook'] || undefined,
+      linkedin: fields['LinkedIn'] || undefined,
+      tiktok: fields['TikTok'] || undefined,
+      youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
+      logo: fields['Logo']?.[0]?.url || undefined,
+      highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
+      ratingScreenshot: fields['Rating (X/5) & Reviews (#) Screenshot']?.[0]?.url || undefined,
+      status: fields['Status'] || '',
+      submissionDate: fields['Submission Date'] || '',
+      createdTime: record.createdTime
+    };
 
-      console.log('✅ Transformation complete for record:', record.id);
-      console.log('📊 Transformed data:', transformed);
-      console.log('🏷️ Brand name:', transformed.brandName);
-      console.log('🌍 Parsed countries:', transformed.countries);
-      console.log('🏢 Types of stays:', transformed.typesOfStays);
-      console.log('🎯 Ideal for:', transformed.idealFor);
-      console.log('🖼️ Logo URL:', transformed.logo);
-      console.log('🎨 Highlight image URL:', transformed.highlightImage);
-      
-      return transformed;
-    } catch (error) {
-      console.error('❌ Error in transformSubmission for record:', record.id);
-      console.error('❌ Error details:', error);
-      console.error('📋 Record that failed:', record);
-      throw error;
-    }
+    console.log('✅ Transformation complete for record:', record.id);
+    console.log('📊 Transformed data:', transformed);
+    console.log('🏷️ Brand name:', transformed.brandName);
+    console.log('🌍 Parsed countries:', transformed.countries);
+    console.log('🏢 Types of stays:', transformed.typesOfStays);
+    console.log('🎯 Ideal for:', transformed.idealFor);
+    console.log('🖼️ Logo URL:', transformed.logo);
+    console.log('🎨 Highlight image URL:', transformed.highlightImage);
+    console.log('⭐ Rating screenshot URL:', transformed.ratingScreenshot);
+    
+    return transformed;
   }
 };
 
