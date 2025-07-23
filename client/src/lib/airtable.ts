@@ -546,6 +546,7 @@ export const airtableService = {
       key.toLowerCase().includes('screenshot')
     );
     console.log('🔍 Possible rating-related fields:', possibleRatingFields);
+    console.log('📋 Exact rating field names found:', possibleRatingFields);
     
     // Show ALL attachment fields for debugging
     const attachmentFields = Object.keys(fields).filter(key => {
@@ -554,6 +555,11 @@ export const airtableService = {
              typeof value[0] === 'object' && value[0] !== null && 'url' in value[0];
     });
     console.log('📎 All fields with attachments:', attachmentFields);
+    console.log('📋 Exact attachment field names:', attachmentFields);
+    
+    // Show first 10 field names for reference
+    const fieldNames = Object.keys(fields).slice(0, 20);
+    console.log('📝 Sample field names (first 20):', fieldNames);
     
     // Helper function to extract URL from Airtable attachment field
     const getAttachmentUrl = (attachmentField: any): string | undefined => {
@@ -579,6 +585,36 @@ export const airtableService = {
              
       console.log('🔗 Extracted URL:', url);
       return url;
+    };
+    
+    // Helper function to find rating screenshot field dynamically
+    const findRatingScreenshotUrl = (): string | undefined => {
+      // First try exact field name
+      const exactField = fields['Rating (X/5) & Reviews (#) Screenshot'];
+      if (exactField) {
+        console.log('✅ Found exact rating field match');
+        return getAttachmentUrl(exactField);
+      }
+      
+      // Then try to find any attachment field with rating/review/screenshot keywords
+      const ratingAttachmentFields = Object.keys(fields).filter(key => {
+        const isRatingRelated = key.toLowerCase().includes('rating') || 
+                               key.toLowerCase().includes('review') || 
+                               key.toLowerCase().includes('screenshot');
+        const value = fields[key as keyof typeof fields];
+        const hasAttachment = Array.isArray(value) && value.length > 0 && 
+                             typeof value[0] === 'object' && value[0] !== null && 'url' in value[0];
+        return isRatingRelated && hasAttachment;
+      });
+      
+      if (ratingAttachmentFields.length > 0) {
+        const foundFieldName = ratingAttachmentFields[0];
+        console.log('🎯 Found rating screenshot field by keyword:', foundFieldName);
+        return getAttachmentUrl(fields[foundFieldName as keyof typeof fields]);
+      }
+      
+      console.log('❌ No rating screenshot field found by any method');
+      return undefined;
     };
     
     // Helper function to safely parse arrays
@@ -611,7 +647,7 @@ export const airtableService = {
       youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
       logo: getAttachmentUrl(fields['Logo']),
       highlightImage: getAttachmentUrl(fields['Highlight Image']),
-      ratingScreenshot: getAttachmentUrl(fields['Rating (X/5) & Reviews (#) Screenshot']),
+      ratingScreenshot: findRatingScreenshotUrl(),
       status: fields['Status'] || '',
       submissionDate: fields['Submission Date'] || '',
       createdTime: record.createdTime
