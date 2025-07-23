@@ -33,6 +33,17 @@ export default function SubmissionProperty() {
   // Initialize click tracking when submission data is available
   const clickTracking = submission ? useClickTracking(submission.id) : null;
 
+  // DEBUG: Log submission data to help troubleshoot rating screenshot
+  if (submission) {
+    console.log('🔍 SUBMISSION DEBUG:', {
+      id: submission.id,
+      brandName: submission.brandName,
+      ratingScreenshot: submission.ratingScreenshot,
+      hasRatingScreenshot: !!submission.ratingScreenshot,
+      allFields: submission
+    });
+  }
+
   const getFlagEmoji = (countryName: string) => {
     const countryMap: { [key: string]: string } = {
       'United States': '🇺🇸',
@@ -389,6 +400,31 @@ export default function SubmissionProperty() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* DEBUG: Rating Screenshot Status */}
+              <Card className="border-yellow-200 bg-yellow-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-yellow-800">
+                    🐛 Debug: Rating Screenshot Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm space-y-1">
+                    <p><strong>Has rating screenshot:</strong> {submission.ratingScreenshot ? 'YES' : 'NO'}</p>
+                    <p><strong>Screenshot URL:</strong> {submission.ratingScreenshot || 'None'}</p>
+                    <p><strong>Brand:</strong> {submission.brandName}</p>
+                    <p><strong>Status:</strong> {submission.status}</p>
+                  </div>
+                  {!submission.ratingScreenshot && (
+                    <p className="text-yellow-700 mt-2 text-xs">
+                      ⚠️ No rating screenshot found. Check if:
+                      <br />• Field name in Airtable matches "Rating (X/5) & Reviews (#) Screenshot"
+                      <br />• Screenshot was uploaded successfully
+                      <br />• Record status is "Approved"
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
 
               {/* Property Types */}
               {submission.typesOfStays && submission.typesOfStays.length > 0 && (

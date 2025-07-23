@@ -395,6 +395,24 @@ export const airtableService = {
     
     const fields = record.fields;
     
+    // DEBUG: List all field names to help identify field name issues
+    console.log('🔍 Available field names:', Object.keys(fields));
+    console.log('🖼️ Attachment fields check:');
+    console.log('  - Logo field exists:', 'Logo' in fields);
+    console.log('  - Logo value:', fields['Logo']);
+    console.log('  - Highlight Image field exists:', 'Highlight Image' in fields);
+    console.log('  - Highlight Image value:', fields['Highlight Image']);
+    console.log('  - Rating Screenshot field exists:', 'Rating (X/5) & Reviews (#) Screenshot' in fields);
+    console.log('  - Rating Screenshot value:', fields['Rating (X/5) & Reviews (#) Screenshot']);
+    
+    // Check for similar field names that might be the rating screenshot
+    const possibleRatingFields = Object.keys(fields).filter(key => 
+      key.toLowerCase().includes('rating') || 
+      key.toLowerCase().includes('review') || 
+      key.toLowerCase().includes('screenshot')
+    );
+    console.log('🔍 Possible rating-related fields:', possibleRatingFields);
+    
     // Helper function to safely parse arrays
     const parseArray = (value: string | string[] | undefined): string[] => {
       if (!value) return [];
