@@ -155,14 +155,14 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
-    console.log('🔍 Fetching all approved submissions...');
+    console.log('📋 Fetching all approved/published submissions...');
 
-    // Use Airtable filter to get approved/published submissions
+    // Filter for approved, published, or approved but not yet published submissions
     const filterFormula = `OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
-
-    console.log('🔗 All approved URL:', url);
-    console.log('📝 All approved filter:', filterFormula);
+    
+    console.log('🔗 API URL:', url);
+    console.log('📝 Filter formula:', filterFormula);
 
     const response = await fetch(url, {
       headers: {
@@ -171,21 +171,36 @@ export const airtableService = {
     });
 
     if (!response.ok) {
-      console.error('❌ Airtable API error for approved submissions:', response.status, response.statusText);
+      console.error('❌ Airtable API error:', response.status, response.statusText);
       throw new Error(`Airtable API error: ${response.statusText}`);
     }
 
     const data = await response.json();
     const records: AirtableSubmission[] = data.records || [];
-
-    console.log('📦 All approved raw response:', data);
-    console.log('📊 Total approved records:', records.length);
-
-    // Transform Airtable records to normalized format
-    const transformed = records.map(this.transformSubmission);
-    console.log('✨ All approved transformed:', transformed);
     
-    return transformed;
+    console.log('📦 Raw Airtable response for approved submissions:', data);
+    console.log('📊 Number of approved/published records found:', records.length);
+
+    if (records.length > 0) {
+      console.log('🏠 First approved record:', records[0]);
+      console.log('📝 First record status:', records[0].fields['Status']);
+    }
+
+    const transformedSubmissions = records.map((record, index) => {
+      try {
+        console.log(`🔄 Transforming approved record ${index + 1}/${records.length}:`, record.id);
+        const transformed = this.transformSubmission(record);
+        console.log(`✅ Successfully transformed approved record ${index + 1}:`, transformed.brandName);
+        return transformed;
+      } catch (error) {
+        console.error(`❌ Error transforming approved record ${index + 1}:`, error);
+        console.error('📋 Problematic record:', record);
+        throw error;
+      }
+    });
+    
+    console.log('✨ All transformed approved submissions:', transformedSubmissions.length);
+    return transformedSubmissions;
   },
 
   async getSubmissionsByCountry(countryName: string): Promise<Submission[]> {
@@ -420,6 +435,32 @@ export const airtableService = {
       return value.split(',').map(item => item.trim()).filter(Boolean);
     };
 
+    // Helper function to extract URL from Airtable attachment field
+    const getAttachmentUrl = (attachmentField: any): string | undefined => {
+      console.log('🔧 Processing attachment field:', attachmentField);
+      
+      if (!attachmentField || !Array.isArray(attachmentField) || attachmentField.length === 0) {
+        console.log('❌ No attachment or empty array');
+        return undefined;
+      }
+      
+      const attachment = attachmentField[0];
+      console.log('📎 First attachment object:', attachment);
+      console.log('📋 Attachment properties:', Object.keys(attachment || {}));
+      
+      // Try different possible properties for the URL
+      const url = attachment.url || 
+             attachment.URL || 
+             attachment.link || 
+             attachment.Link ||
+             attachment.thumbnails?.large?.url ||
+             attachment.thumbnails?.full?.url ||
+             undefined;
+             
+      console.log('🔗 Extracted URL:', url);
+      return url;
+    };
+
     const transformed = {
       id: record.id,
       brandName: fields['Brand Name'] || '',
@@ -441,9 +482,9 @@ export const airtableService = {
       linkedin: fields['LinkedIn'] || undefined,
       tiktok: fields['TikTok'] || undefined,
       youtubeVideoTour: fields['YouTube / Video Tour'] || undefined,
-      logo: fields['Logo']?.[0]?.url || undefined,
-      highlightImage: fields['Highlight Image']?.[0]?.url || undefined,
-      ratingScreenshot: fields['Rating (X/5) & Reviews (#) Screenshot']?.[0]?.url || undefined,
+      logo: getAttachmentUrl(fields['Logo']),
+      highlightImage: getAttachmentUrl(fields['Highlight Image']),
+      ratingScreenshot: getAttachmentUrl(fields['Rating (X/5) & Reviews (#) Screenshot']),
       status: fields['Status'] || '',
       submissionDate: fields['Submission Date'] || '',
       createdTime: record.createdTime
@@ -458,6 +499,7 @@ export const airtableService = {
     console.log('🖼️ Logo URL:', transformed.logo);
     console.log('🎨 Highlight image URL:', transformed.highlightImage);
     console.log('⭐ Rating screenshot URL:', transformed.ratingScreenshot);
+    console.log('📎 Rating screenshot raw field:', fields['Rating (X/5) & Reviews (#) Screenshot']);
     
     return transformed;
   }
