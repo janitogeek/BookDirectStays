@@ -150,6 +150,38 @@ export const airtableService = {
     return data.records || [];
   },
 
+  // Method to update status from "Approved Not Published" to "Published"
+  async updateStatusToPublished(recordId: string): Promise<void> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('🔄 Updating record status to Published:', recordId);
+
+    const url = `${AIRTABLE_API_URL}/${recordId}`;
+    
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fields: {
+          'Status': 'Published'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      console.error('❌ Failed to update status:', response.status, response.statusText);
+      const errorData = await response.json();
+      console.error('❌ Error details:', errorData);
+    } else {
+      console.log('✅ Successfully updated status to Published for record:', recordId);
+    }
+  },
+
   async getApprovedSubmissions(): Promise<Submission[]> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
@@ -157,12 +189,15 @@ export const airtableService = {
 
     console.log('📋 Fetching all approved/published submissions...');
 
-    // Filter for approved, published, or approved but not yet published submissions
-    const filterFormula = `OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published")`;
+    // Filter for records that should be visible on frontend
+    // "Approved Not Published" = ready to show + trigger status change to "Published"
+    // "Published" = already showing on frontend
+    const filterFormula = `OR({Status} = "Approved Not Published", {Status} = "Published")`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
     console.log('📝 Filter formula:', filterFormula);
+    console.log('🎯 Looking for statuses: "Approved Not Published" OR "Published"');
 
     const response = await fetch(url, {
       headers: {
@@ -184,11 +219,29 @@ export const airtableService = {
     if (records.length > 0) {
       console.log('🏠 First approved record:', records[0]);
       console.log('📝 First record status:', records[0].fields['Status']);
+      
+      // Log all statuses found
+      const statuses = records.map(r => r.fields['Status']);
+      console.log('📋 All statuses found:', statuses);
+    } else {
+      console.log('❌ No records found with status "Approved Not Published" or "Published"');
+      console.log('🔍 This might indicate a status name mismatch');
     }
 
     const transformedSubmissions = records.map((record, index) => {
       try {
         console.log(`🔄 Transforming approved record ${index + 1}/${records.length}:`, record.id);
+        console.log(`📝 Record status: ${record.fields['Status']}`);
+        
+        // If status is "Approved Not Published", update it to "Published"
+        if (record.fields['Status'] === 'Approved Not Published') {
+          console.log('🚀 Triggering status update to Published for:', record.id);
+          // Fire and forget - don't wait for this to complete
+          this.updateStatusToPublished(record.id).catch(error => {
+            console.error('❌ Failed to update status to Published:', error);
+          });
+        }
+        
         const transformed = this.transformSubmission(record);
         console.log(`✅ Successfully transformed approved record ${index + 1}:`, transformed.brandName);
         return transformed;
@@ -211,7 +264,7 @@ export const airtableService = {
     console.log('🔍 Fetching submissions for country:', countryName);
 
     // Filter for approved/published submissions in specific country (case-insensitive)
-    const filterFormula = `AND(OR({Status} = "Approved", {Status} = "Published", {Status} = "Approved – Not Yet Published"), OR(FIND(UPPER("${countryName.toUpperCase()}"), UPPER({Countries})) > 0, FIND(LOWER("${countryName.toLowerCase()}"), LOWER({Countries})) > 0, FIND("${countryName}", {Countries}) > 0))`;
+    const filterFormula = `AND(OR({Status} = "Approved Not Published", {Status} = "Published"), OR(FIND(UPPER("${countryName.toUpperCase()}"), UPPER({Countries})) > 0, FIND(LOWER("${countryName.toLowerCase()}"), LOWER({Countries})) > 0, FIND("${countryName}", {Countries}) > 0))`;
     const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
     console.log('🔗 API URL:', url);
@@ -255,6 +308,16 @@ export const airtableService = {
     const transformedSubmissions = records.map((record, index) => {
       try {
         console.log(`🔄 Transforming record ${index + 1}/${records.length}:`, record.id);
+        
+        // If status is "Approved Not Published", update it to "Published"
+        if (record.fields['Status'] === 'Approved Not Published') {
+          console.log('🚀 Triggering status update to Published for:', record.id);
+          // Fire and forget - don't wait for this to complete
+          this.updateStatusToPublished(record.id).catch(error => {
+            console.error('❌ Failed to update status to Published:', error);
+          });
+        }
+        
         const transformed = this.transformSubmission(record);
         console.log(`✅ Successfully transformed record ${index + 1}:`, transformed);
         return transformed;
@@ -273,8 +336,40 @@ export const airtableService = {
       console.log('🏷️ Brand name after transformation:', transformedSubmissions[0].brandName);
       console.log('🌍 Countries after transformation:', transformedSubmissions[0].countries);
     }
-    
+
     return transformedSubmissions;
+  },
+
+  // Debug method to check what statuses actually exist in the database
+  async debugStatuses(): Promise<void> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('🔍 DEBUG: Fetching all records to check statuses...');
+
+    const response = await fetch(AIRTABLE_API_URL, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error('❌ Airtable API error:', response.status, response.statusText);
+      return;
+    }
+
+    const data = await response.json();
+    const records: AirtableSubmission[] = data.records || [];
+    
+    const statusCounts: { [key: string]: number } = {};
+    records.forEach(record => {
+      const status = record.fields['Status'] || 'No Status';
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
+
+    console.log('📊 STATUS BREAKDOWN:', statusCounts);
+    console.log('📋 Available statuses:', Object.keys(statusCounts));
   },
 
   async getSubmissionById(id: string): Promise<Submission | null> {
@@ -282,21 +377,45 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
-    const response = await fetch(`${AIRTABLE_API_URL}/${id}`, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      },
-    });
+    try {
+      const url = `${AIRTABLE_API_URL}/${id}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
 
-    if (!response.ok) {
-      if (response.status === 404) {
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null;
+        }
+        throw new Error(`Airtable API error: ${response.statusText}`);
+      }
+
+      const record: AirtableSubmission = await response.json();
+      
+      // Check if record should be visible (has approved/published status)
+      const status = record.fields['Status'];
+      if (status !== 'Approved Not Published' && status !== 'Published') {
+        console.log('❌ Record not approved/published, status:', status);
         return null;
       }
-      throw new Error(`Airtable API error: ${response.statusText}`);
-    }
+      
+      // If status is "Approved Not Published", update it to "Published"
+      if (status === 'Approved Not Published') {
+        console.log('🚀 Triggering status update to Published for single record:', record.id);
+        // Fire and forget - don't wait for this to complete
+        this.updateStatusToPublished(record.id).catch(error => {
+          console.error('❌ Failed to update status to Published:', error);
+        });
+      }
 
-    const record: AirtableSubmission = await response.json();
-    return this.transformSubmission(record);
+      return this.transformSubmission(record);
+    } catch (error) {
+      console.error('Error fetching submission by ID:', error);
+      return null;
+    }
   },
 
   async getSubmissionBySlug(slug: string): Promise<Submission | null> {

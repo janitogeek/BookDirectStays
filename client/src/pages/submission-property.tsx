@@ -1,3 +1,4 @@
+import React from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles } from "lucide-react";
@@ -10,6 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
 import { isAirtableId } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
+
+// Track if we've already run the debug check
+let statusDebugRun = false;
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
@@ -43,6 +47,23 @@ export default function SubmissionProperty() {
       allFields: submission
     });
   }
+
+  // DEBUG: Check what statuses are available in database
+  React.useEffect(() => {
+    const debugStatuses = async () => {
+      try {
+        await airtableService.debugStatuses();
+      } catch (error) {
+        console.error('Debug statuses failed:', error);
+      }
+    };
+    
+    // Only run debug once
+    if (!statusDebugRun) {
+      statusDebugRun = true;
+      debugStatuses();
+    }
+  }, []);
 
   const getFlagEmoji = (countryName: string) => {
     const countryMap: { [key: string]: string } = {
