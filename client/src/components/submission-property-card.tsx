@@ -178,7 +178,10 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           {/* Top Stats Component */}
           {submission.topStats && (
             <div className="mb-4">
-              <TopStats topStats={submission.topStats} />
+              <TopStats 
+                topStats={submission.topStats} 
+                brandName={submission.brandName}
+              />
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from "wouter";
@@ -17,12 +18,27 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 export default function FeaturedHostsCarousel() {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const swiperRef = useRef<any>(null);
+
   // Fetch all approved submissions and filter for featured ones
   const { data: submissions, isLoading, error } = useQuery({
     queryKey: ["/api/featured-submissions"],
     queryFn: () => airtableService.getApprovedSubmissions(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Handle popover open/close for carousel pause/resume
+  const handlePopoverChange = (open: boolean) => {
+    setIsPopoverOpen(open);
+    if (swiperRef.current?.swiper) {
+      if (open) {
+        swiperRef.current.swiper.autoplay.stop();
+      } else {
+        swiperRef.current.swiper.autoplay.start();
+      }
+    }
+  };
 
   if (isLoading) {
     return (
@@ -92,6 +108,7 @@ export default function FeaturedHostsCarousel() {
       </div>
 
       <Swiper
+        ref={swiperRef}
         modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={30}
         slidesPerView={1}
@@ -156,7 +173,12 @@ export default function FeaturedHostsCarousel() {
                     {/* Stats - always reserve space for consistent card height */}
                     <div className="mb-4 min-h-[20px]">
                       {host.topStats && host.topStats.trim() ? (
-                        <TopStats topStats={host.topStats} maxLength={120} />
+                        <TopStats 
+                          topStats={host.topStats} 
+                          brandName={host.brandName}
+                          showIcon={false}
+                          onOpenChange={handlePopoverChange}
+                        />
                       ) : (
                         <span className="invisible">placeholder</span>
                       )}

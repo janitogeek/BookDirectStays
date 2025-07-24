@@ -285,7 +285,10 @@ export default function SubmissionProperty() {
               {/* Host's Stats */}
               {submission.topStats && (
                 <div>
-                  <TopStats topStats={submission.topStats} />
+                  <TopStats 
+                    topStats={submission.topStats} 
+                    brandName={submission.brandName}
+                  />
                 </div>
               )}
 
