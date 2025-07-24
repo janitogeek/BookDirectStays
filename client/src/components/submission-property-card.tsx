@@ -175,16 +175,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             )}
           </div>
 
-          {/* Top Stats Component */}
-          {submission.topStats && (
-            <div className="mb-4">
-              <TopStats 
-                topStats={submission.topStats} 
-                brandName={submission.brandName}
-              />
-            </div>
-          )}
-
           {/* Types of Stays */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -193,6 +183,16 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                   {type.trim()}
                 </Badge>
               ))}
+            </div>
+          )}
+
+          {/* Top Stats Component */}
+          {submission.topStats && (
+            <div className="mb-4">
+              <TopStats 
+                topStats={submission.topStats} 
+                brandName={submission.brandName}
+              />
             </div>
           )}
 
