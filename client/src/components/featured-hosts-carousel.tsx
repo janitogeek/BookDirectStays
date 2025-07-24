@@ -176,7 +176,6 @@ export default function FeaturedHostsCarousel() {
                         <TopStats 
                           topStats={host.topStats} 
                           brandName={host.brandName}
-                          showIcon={false}
                           onOpenChange={handlePopoverChange}
                         />
                       ) : (

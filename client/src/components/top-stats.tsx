@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { BarChart3 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 
 interface TopStatsProps {
   topStats: string;
   brandName: string;
-  showIcon?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
-export default function TopStats({ topStats, brandName, showIcon = true, onOpenChange }: TopStatsProps) {
+export default function TopStats({ topStats, brandName, onOpenChange }: TopStatsProps) {
   // Don't render if no stats provided
   if (!topStats || !topStats.trim()) {
     return null;
@@ -33,7 +31,6 @@ export default function TopStats({ topStats, brandName, showIcon = true, onOpenC
               size="sm" 
               className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
             >
-              {showIcon && <BarChart3 className="w-3 h-3 mr-1" />}
               View
             </Button>
           </PopoverTrigger>
