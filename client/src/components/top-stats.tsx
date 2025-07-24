@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { BarChart3 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface TopStatsProps {
   topStats: string;
@@ -7,57 +9,48 @@ interface TopStatsProps {
 }
 
 export default function TopStats({ topStats, maxLength = 180 }: TopStatsProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   // Don't render if no stats provided
   if (!topStats || !topStats.trim()) {
     return null;
   }
 
   const stats = topStats.trim();
-  const shouldTruncate = stats.length > maxLength;
-  const displayText = shouldTruncate && !isExpanded 
-    ? stats.slice(0, maxLength).trim() + "..."
-    : stats;
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-      {/* Header - Always visible */}
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+    <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+      {/* Header with Click to Expand Button */}
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
           📊 Stats Provided by the Host
         </h4>
-        <span className="text-xs text-gray-500">(Click to expand)</span>
-      </div>
-
-      {/* Stats Content */}
-      <div className="text-sm text-gray-700 leading-relaxed mb-3">
-        {displayText}
-      </div>
-
-      {/* Toggle Button - Only show if content is long enough to truncate */}
-      {shouldTruncate && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-700 transition-colors font-medium"
-        >
-          {isExpanded ? (
-            <>
-              <ChevronUp className="w-3 h-3" />
-              Show less
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-3 h-3" />
-              View more
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Disclaimer */}
-      <div className="text-xs text-gray-500 mt-3 pt-2 border-t border-gray-200 italic">
-        This information was provided by the host and is not verified by BookDirectStays.
+        
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            >
+              <BarChart3 className="w-3 h-3 mr-1" />
+              View
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                📊 Host Stats
+              </DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {stats}
+              </div>
+              <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-200 italic">
+                This information was provided by the host and is not verified by BookDirectStays.
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
