@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import { Badge } from "./ui/badge";
 import { generateSlug } from "@/lib/utils";
+import TopStats from "@/components/top-stats";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -153,11 +154,9 @@ export default function FeaturedHostsCarousel() {
                     </div>
                     
                     {/* Stats - always reserve space for consistent card height */}
-                    <div className="text-sm text-gray-600 mb-4 min-h-[20px]">
+                    <div className="mb-4 min-h-[20px]">
                       {host.topStats && host.topStats.trim() ? (
-                        <>
-                          <span className="font-medium">Stats:</span> {host.topStats}
-                        </>
+                        <TopStats topStats={host.topStats} maxLength={120} />
                       ) : (
                         <span className="invisible">placeholder</span>
                       )}

@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
 import { generateSlug } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
+import TopStats from "@/components/top-stats";
 
 interface SubmissionPropertyCardProps {
   submission: Submission;
@@ -173,6 +174,13 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               </div>
             )}
           </div>
+
+          {/* Top Stats Component */}
+          {submission.topStats && (
+            <div className="mb-4">
+              <TopStats topStats={submission.topStats} />
+            </div>
+          )}
 
           {/* Types of Stays */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (

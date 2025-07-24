@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
 import { isAirtableId } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
+import TopStats from "@/components/top-stats";
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
@@ -283,19 +284,9 @@ export default function SubmissionProperty() {
 
               {/* Host's Stats */}
               {submission.topStats && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-600" />
-                      Host's Stats
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 text-lg font-medium">
-                      {submission.topStats}
-                    </p>
-                  </CardContent>
-                </Card>
+                <div>
+                  <TopStats topStats={submission.topStats} />
+                </div>
               )}
 
               {/* Ideal For */}
