@@ -335,6 +335,30 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
+              {/* Guest Reviews & Ratings - Right after stats */}
+              {submission.ratingScreenshot && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-500" />
+                      Guest Reviews & Ratings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
+                      <img
+                        src={submission.ratingScreenshot}
+                        alt={`${submission.brandName} ratings and reviews`}
+                        className="w-full h-auto object-contain mx-auto max-w-lg"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3 text-center italic">
+                      Real guest ratings and reviews from booking platforms
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Ideal For */}
               {submission.idealFor && submission.idealFor.length > 0 && (
                 <Card>
@@ -404,29 +428,7 @@ export default function SubmissionProperty() {
             {/* Sidebar */}
             <div className="space-y-6">
               
-              {/* Rating Screenshot */}
-              {submission.ratingScreenshot && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
-                      Guest Reviews & Ratings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="rounded-lg overflow-hidden">
-                      <img
-                        src={submission.ratingScreenshot}
-                        alt={`${submission.brandName} ratings and reviews`}
-                        className="w-full h-auto object-contain"
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2 text-center">
-                      Real guest ratings and reviews from booking platforms
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+
 
               {/* Property Types */}
               {submission.typesOfStays && submission.typesOfStays.length > 0 && (
