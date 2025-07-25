@@ -101,11 +101,13 @@ export default function Property() {
         {/* Right Column - Sidebar */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
           <div className="flex items-center mb-6">
-            <img 
-              src={listing.logo} 
-              alt={`${listing.name} logo`}
-              className="w-16 h-16 rounded-full mr-4 object-cover border border-gray-200"
-            />
+            <div className="w-20 max-h-16 rounded-lg overflow-hidden mr-4 bg-gray-50 flex items-center justify-center p-2 border border-gray-200">
+              <img 
+                src={listing.logo} 
+                alt={`${listing.name} logo`}
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
             <h2 className="text-xl font-semibold">{listing.name}</h2>
           </div>
           

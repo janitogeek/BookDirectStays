@@ -155,11 +155,11 @@ export default function SubmissionProperty() {
             {/* Brand Header Section */}
             <div className="flex items-start gap-4 mb-6">
               {submission.logo && (
-                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white">
+                <div className="w-20 max-h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white flex items-center justify-center p-2">
                   <img
                     src={submission.logo}
                     alt={`${submission.brandName} logo`}
-                    className="w-full h-full object-cover"
+                    className="max-w-full max-h-full object-contain"
                   />
                 </div>
               )}

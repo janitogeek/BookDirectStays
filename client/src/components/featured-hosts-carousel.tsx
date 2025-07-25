@@ -171,11 +171,11 @@ export default function FeaturedHostsCarousel() {
                 {/* Logo */}
                 <div className="mb-6">
                   {host.logo ? (
-                    <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-gray-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="w-24 max-h-16 mx-auto rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center group-hover:scale-105 transition-transform p-2">
                       <img
                         src={host.logo}
                         alt={`${host.brandName} logo`}
-                        className="w-full h-full object-cover"
+                        className="max-w-full max-h-full object-contain"
                       />
                     </div>
                   ) : (
