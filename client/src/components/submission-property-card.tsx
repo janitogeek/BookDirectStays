@@ -145,11 +145,13 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               </h3>
               
               {/* One-line Description in Italic */}
-              {submission.oneLineDescription && (
-                <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
-                  {submission.oneLineDescription}
-                </p>
-              )}
+              <div className="min-h-[3rem]">
+                {submission.oneLineDescription && (
+                  <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
+                    {submission.oneLineDescription}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
