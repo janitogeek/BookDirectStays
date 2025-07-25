@@ -177,31 +177,17 @@ export default function SubmissionProperty() {
                   </p>
                 )}
 
-                {/* Property Count - Moved above countries for consistency */}
+                                {/* Property Count - Standardized with property cards */}
                 {submission.numberOfListings && (
-                  <div className="flex items-center gap-2 text-gray-700 mb-3">
-                    <Building2 className="w-5 h-5" />
-                    <span className="font-medium">{submission.numberOfListings} Properties</span>
+                  <div className="flex items-center gap-1 mb-3 text-sm text-gray-600">
+                    <Building2 className="w-4 h-4" />
+                    <span>{submission.numberOfListings} properties</span>
                   </div>
                 )}
 
-                {/* Property Types - Added between Properties and Countries */}
-                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-                  <div className="flex items-center gap-2 text-gray-700 mb-3">
-                                         <Building2 className="w-5 h-5" />
-                    <div className="flex flex-wrap gap-2">
-                      {submission.typesOfStays.map((type, index) => (
-                        <Badge key={index} variant="secondary" className="text-sm">
-                          {type}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Countries */}
-                <div className="flex items-center gap-2 text-gray-900 mb-3">
-                  <MapPin className="w-5 h-5 flex-shrink-0" />
+                {/* Countries - Standardized with property cards */}
+                <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+                  <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
                     {submission.countries.map((country, index) => (
                       <span key={country}>
@@ -211,6 +197,17 @@ export default function SubmissionProperty() {
                     ))}
                   </span>
                 </div>
+
+                {/* Property Types - Standardized with property cards */}
+                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {submission.typesOfStays.map((type, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {type.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
 
                 {/* Cities/Regions */}
                 {submission.citiesRegions && submission.citiesRegions.length > 0 && (
