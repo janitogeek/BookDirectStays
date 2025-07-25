@@ -300,64 +300,87 @@ export default function SubmissionProperty() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               
-              {/* Host's Stats - First Thing Guests See */}
-              {submission.topStats && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      📊 {submission.brandName} Stats
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                      {submission.topStats}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100 italic">
-                      This information was provided by the host and is not verified by BookDirectStays.
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Responsive Layout: Mobile (stack) vs Desktop (side-by-side) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Left Column: Why Book With (Mobile: 1st, Desktop: Left) */}
+                {submission.whyBookWithYou && (
+                  <div className="order-1">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="prose prose-gray max-w-none">
+                          <p className="text-gray-700 whitespace-pre-line">
+                            {submission.whyBookWithYou}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
 
-              {/* Guest Reviews & Ratings - Second Priority */}
-              {submission.ratingScreenshot && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
-                      Guest Reviews & Ratings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
-                      <img
-                        src={submission.ratingScreenshot}
-                        alt={`${submission.brandName} ratings and reviews`}
-                        className="w-full h-auto object-contain mx-auto max-w-lg"
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3 text-center italic">
-                      Real guest ratings and reviews from booking platforms
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+                {/* Right Column: Stats + Reviews (Mobile: 2nd & 3rd, Desktop: Right stacked) */}
+                <div className="order-2 space-y-6">
+                  
+                  {/* Host's Stats (Mobile: 2nd, Desktop: Right top) */}
+                  {submission.topStats && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          📊 {submission.brandName} Stats
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                          {submission.topStats}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100 italic">
+                          This information was provided by the host and can be verified in{" "}
+                          {submission.website ? (
+                            <a 
+                              href={submission.website} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              their own website
+                            </a>
+                          ) : (
+                            "their own website"
+                          )}.
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
-              {/* Why Book With */}
-              {submission.whyBookWithYou && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-gray max-w-none">
-                      <p className="text-gray-700 whitespace-pre-line">
-                        {submission.whyBookWithYou}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+                  {/* Guest Reviews & Ratings (Mobile: 3rd, Desktop: Right bottom) */}
+                  {submission.ratingScreenshot && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Star className="w-5 h-5 text-yellow-500" />
+                          Guest Reviews & Ratings
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
+                          <img
+                            src={submission.ratingScreenshot}
+                            alt={`${submission.brandName} ratings and reviews`}
+                            className="w-full h-auto object-contain mx-auto max-w-lg"
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500 mt-3 text-center italic">
+                          Real guest ratings and reviews from booking platforms
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                </div>
+              </div>
 
               {/* Ideal For */}
               {submission.idealFor && submission.idealFor.length > 0 && (

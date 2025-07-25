@@ -195,6 +195,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               <TopStats 
                 topStats={submission.topStats} 
                 brandName={submission.brandName}
+                hostWebsite={submission.website}
               />
             </div>
           )}

@@ -254,6 +254,7 @@ export default function FeaturedHostsCarousel() {
                     <TopStats 
                       topStats={host.topStats} 
                       brandName={host.brandName}
+                      hostWebsite={host.website}
                       onOpenChange={handlePopoverChange}
                     />
                   </div>

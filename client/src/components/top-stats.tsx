@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 interface TopStatsProps {
   topStats: string;
   brandName: string;
+  hostWebsite?: string;
   onOpenChange?: (open: boolean) => void;
 }
 
-export default function TopStats({ topStats, brandName, onOpenChange }: TopStatsProps) {
+export default function TopStats({ topStats, brandName, hostWebsite, onOpenChange }: TopStatsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Don't render if no stats provided
@@ -70,7 +71,19 @@ export default function TopStats({ topStats, brandName, onOpenChange }: TopStats
                 
                 {/* Disclaimer */}
                 <div className="text-xs text-gray-500 mt-3 pt-2 border-t border-gray-100 italic">
-                  This information was provided by the host and is not verified by BookDirectStays.
+                  This information was provided by the host and can be verified in{" "}
+                  {hostWebsite ? (
+                    <a 
+                      href={hostWebsite} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      their own website
+                    </a>
+                  ) : (
+                    "their own website"
+                  )}.
                 </div>
               </div>
             </div>
