@@ -185,6 +185,20 @@ export default function SubmissionProperty() {
                   </div>
                 )}
 
+                {/* Property Types - Added between Properties and Countries */}
+                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+                  <div className="flex items-center gap-2 text-gray-700 mb-3">
+                                         <Building2 className="w-5 h-5" />
+                    <div className="flex flex-wrap gap-2">
+                      {submission.typesOfStays.map((type, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm">
+                          {type}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Countries */}
                 <div className="flex items-center gap-2 text-gray-900 mb-3">
                   <MapPin className="w-5 h-5 flex-shrink-0" />
@@ -295,92 +309,26 @@ export default function SubmissionProperty() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Column: Company Content */}
+            <div className="space-y-8">
               
-              {/* Responsive Layout: Mobile (stack) vs Desktop (side-by-side) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                
-                {/* Left Column: Why Book With (Mobile: 1st, Desktop: Left) */}
-                {submission.whyBookWithYou && (
-                  <div className="order-1">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="prose prose-gray max-w-none">
-                          <p className="text-gray-700 whitespace-pre-line">
-                            {submission.whyBookWithYou}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-
-                {/* Right Column: Stats + Reviews (Mobile: 2nd & 3rd, Desktop: Right stacked) */}
-                <div className="order-2 space-y-6">
-                  
-                  {/* Host's Stats (Mobile: 2nd, Desktop: Right top) */}
-                  {submission.topStats && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          📊 {submission.brandName} Stats
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-                          {submission.topStats}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100 italic">
-                          This information was provided by the host and can be verified in{" "}
-                          {submission.website ? (
-                            <a 
-                              href={submission.website} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline"
-                            >
-                              their own website
-                            </a>
-                          ) : (
-                            "their own website"
-                          )}.
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* Guest Reviews & Ratings (Mobile: 3rd, Desktop: Right bottom) */}
-                  {submission.ratingScreenshot && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Star className="w-5 h-5 text-yellow-500" />
-                          Guest Reviews & Ratings
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
-                          <img
-                            src={submission.ratingScreenshot}
-                            alt={`${submission.brandName} ratings and reviews`}
-                            className="w-full h-auto object-contain mx-auto max-w-lg"
-                          />
-                        </div>
-                        <p className="text-xs text-gray-500 mt-3 text-center italic">
-                          Real guest ratings and reviews from booking platforms
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                </div>
-              </div>
+              {/* Why Book With */}
+              {submission.whyBookWithYou && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {submission.whyBookWithYou}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Ideal For */}
               {submission.idealFor && submission.idealFor.length > 0 && (
@@ -448,61 +396,65 @@ export default function SubmissionProperty() {
               
             </div>
 
-            {/* Sidebar */}
+            {/* Right Column: Trust Signals & Contact */}
             <div className="space-y-6">
               
-
-
-              {/* Property Types */}
-              {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+              {/* Host's Stats */}
+              {submission.topStats && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Property Types</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      📊 {submission.brandName} Stats
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {submission.typesOfStays.map((type, index) => (
-                        <Badge key={index} variant="secondary">
-                          {type}
-                        </Badge>
-                      ))}
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {submission.topStats}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100 italic">
+                      This information was provided by the host and can be verified in{" "}
+                      {submission.website ? (
+                        <a 
+                          href={submission.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline"
+                        >
+                          their own website
+                        </a>
+                      ) : (
+                        "their own website"
+                      )}.
                     </div>
                   </CardContent>
                 </Card>
               )}
 
-              {/* Locations */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Locations</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {submission.countries.map((country, index) => (
-                      <div key={country} className="flex items-center gap-2">
-                        <span className="text-xl">{getFlagEmoji(country)}</span>
-                        <span className="font-medium">{country}</span>
-                      </div>
-                    ))}
-                    
-                    {/* Cities/Regions in Sidebar */}
-                    {submission.citiesRegions && submission.citiesRegions.length > 0 && (
-                      <div className="pt-2 border-t border-gray-200">
-                        <h4 className="text-sm font-medium text-gray-600 mb-2">Cities & Regions:</h4>
-                        <div className="flex flex-wrap gap-1">
-                          {submission.citiesRegions.map((city, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {city.trim()}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Guest Reviews & Ratings */}
+              {submission.ratingScreenshot && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-500" />
+                      Guest Reviews & Ratings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
+                      <img
+                        src={submission.ratingScreenshot}
+                        alt={`${submission.brandName} ratings and reviews`}
+                        className="w-full h-auto object-contain mx-auto max-w-lg"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3 text-center italic">
+                      Real guest ratings and reviews from booking platforms
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
-              {/* Contact */}
+              {/* Get in Touch */}
               <Card>
                 <CardHeader>
                   <CardTitle>Get in Touch</CardTitle>
