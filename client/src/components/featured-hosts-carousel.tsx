@@ -268,7 +268,7 @@ export default function FeaturedHostsCarousel() {
                     className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
                   >
                     <Link 
-                      to={`/submission-property/${generateSlug(host.brandName)}`}
+                      to={`/property/${generateSlug(host.brandName)}`}
                     >
                       Why book with {host.brandName}?
                     </Link>
