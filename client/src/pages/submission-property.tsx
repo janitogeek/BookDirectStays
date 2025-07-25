@@ -137,7 +137,7 @@ export default function SubmissionProperty() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Image */}
+      {/* Hero Section with Image and Logo Overlay */}
       {submission.highlightImage && (
         <div className="relative h-96">
           <img
@@ -145,6 +145,19 @@ export default function SubmissionProperty() {
             alt={submission.brandName}
             className="w-full h-full object-cover"
           />
+          
+          {/* Logo Overlay */}
+          {submission.logo && (
+            <div className="absolute top-6 left-6 right-6 flex justify-center">
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4 max-w-[60%]">
+                <img
+                  src={submission.logo}
+                  alt={`${submission.brandName} logo`}
+                  className="max-w-full max-h-16 object-contain"
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -153,17 +166,8 @@ export default function SubmissionProperty() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             {/* Brand Header Section */}
-            <div className="flex items-start gap-4 mb-6">
-              {submission.logo && (
-                <div className="w-20 max-h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white flex items-center justify-center p-2">
-                  <img
-                    src={submission.logo}
-                    alt={`${submission.brandName} logo`}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-              )}
-              <div className="flex-1">
+            <div className="mb-6">
+              <div>
                 <h1 className="text-4xl font-bold text-gray-900 mb-3">{submission.brandName}</h1>
                 
                 {/* One-line Description */}
