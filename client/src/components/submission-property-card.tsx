@@ -146,29 +146,31 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               
               {/* One-line Description in Italic */}
               {submission.oneLineDescription && (
-                <p className="text-sm italic text-gray-600 mb-2 leading-relaxed line-clamp-2">
+                <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
                   {submission.oneLineDescription}
                 </p>
               )}
-              
-              <div className="flex items-center gap-2 text-sm text-gray-900">
-                <MapPin className="w-4 h-4 flex-shrink-0" />
-                <span className="flex items-center gap-1">
-                  {submission.countries.map((country, index) => (
-                    <span key={country}>
-                      {getFlagEmoji(country)} {country}
-                      {index < submission.countries.length - 1 && ", "}
-                    </span>
-                  ))}
-                </span>
-              </div>
             </div>
           </div>
 
-          {/* Property Count */}
-          <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+          {/* Country and Property Count */}
+          <div className="flex items-center justify-between mb-3 text-sm">
+            {/* Country - Left */}
+            <div className="flex items-center gap-2 text-gray-900">
+              <MapPin className="w-4 h-4 flex-shrink-0" />
+              <span className="flex items-center gap-1">
+                {submission.countries.map((country, index) => (
+                  <span key={country}>
+                    {getFlagEmoji(country)} {country}
+                    {index < submission.countries.length - 1 && ", "}
+                  </span>
+                ))}
+              </span>
+            </div>
+            
+            {/* Property Count - Right */}
             {submission.numberOfListings && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 text-gray-600">
                 <Building2 className="w-4 h-4" />
                 <span>{submission.numberOfListings} properties</span>
               </div>
@@ -186,7 +188,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
-          {/* Top Stats Component */}
+          {/* Top Stats Component - Moved down */}
           {submission.topStats && (
             <div className="mb-4">
               <TopStats 
