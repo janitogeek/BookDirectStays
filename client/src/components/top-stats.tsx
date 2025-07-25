@@ -9,6 +9,8 @@ interface TopStatsProps {
 }
 
 export default function TopStats({ topStats, brandName, onOpenChange }: TopStatsProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   // Don't render if no stats provided
   if (!topStats || !topStats.trim()) {
     return null;
@@ -16,22 +18,28 @@ export default function TopStats({ topStats, brandName, onOpenChange }: TopStats
 
   const stats = topStats.trim();
 
+  // Handle popover open/close state changes
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  };
+
   return (
     <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-      {/* Header with Click to Expand Button */}
+      {/* Header with Toggle Button */}
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
           📊 Stats Provided by the Host
         </h4>
         
-        <Popover onOpenChange={onOpenChange}>
+        <Popover open={isOpen} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-all duration-200"
             >
-              View
+              {isOpen ? "Hide" : "Show"}
             </Button>
           </PopoverTrigger>
           <PopoverContent 
