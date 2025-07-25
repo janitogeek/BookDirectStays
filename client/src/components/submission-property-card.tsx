@@ -117,7 +117,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
         )}
 
         <CardContent className="p-6 flex flex-col h-full">
-          {/* Header Image */}
+          {/* Header Image with Logo Overlay */}
           {submission.highlightImage && (
             <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
               <img
@@ -125,33 +125,35 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                 alt={submission.brandName}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
               />
+              
+              {/* Logo Overlay */}
+              {submission.logo && (
+                <div className="absolute top-3 left-3 right-3 flex justify-center">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
+                    <img
+                      src={submission.logo}
+                      alt={`${submission.brandName} logo`}
+                      className="max-w-full max-h-12 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Brand Header */}
-          <div className="flex items-start gap-3 mb-4">
-            {submission.logo && (
-              <div className="w-16 max-h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center p-1">
-                <img
-                  src={submission.logo}
-                  alt={`${submission.brandName} logo`}
-                  className="max-w-full max-h-full object-contain"
-                />
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
-                {submission.brandName}
-              </h3>
-              
-              {/* One-line Description in Italic */}
-              <div className="min-h-[3rem]">
-                {submission.oneLineDescription && (
-                  <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
-                    {submission.oneLineDescription}
-                  </p>
-                )}
-              </div>
+          {/* Brand Header - No Logo */}
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
+              {submission.brandName}
+            </h3>
+            
+            {/* One-line Description in Italic */}
+            <div className="min-h-[3rem]">
+              {submission.oneLineDescription && (
+                <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
+                  {submission.oneLineDescription}
+                </p>
+              )}
             </div>
           </div>
 

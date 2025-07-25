@@ -166,26 +166,23 @@ export default function FeaturedHostsCarousel() {
       >
         {featuredHosts.map((host) => (
           <SwiperSlide key={host.id}>
-            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-[450px]">
-              <CardContent className="p-8 text-center h-full flex flex-col">
-                {/* Logo */}
-                <div className="mb-6">
-                  {host.logo ? (
-                    <div className="w-24 max-h-16 mx-auto rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center group-hover:scale-105 transition-transform p-2">
+            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-[450px] relative overflow-hidden">
+              <CardContent className="p-8 text-center h-full flex flex-col relative">
+                {/* Logo Overlay on Card Background */}
+                {host.logo && (
+                  <div className="absolute top-4 left-4 right-4 flex justify-center z-10">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[70%] group-hover:scale-105 transition-transform">
                       <img
                         src={host.logo}
                         alt={`${host.brandName} logo`}
-                        className="max-w-full max-h-full object-contain"
+                        className="max-w-full max-h-12 object-contain"
                       />
                     </div>
-                  ) : (
-                    <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center">
-                      <span className="text-blue-600 font-bold text-xl">
-                        {host.brandName.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
+                
+                {/* Content Spacer for Logo */}
+                <div className="h-16 mb-2"></div>
 
                 {/* Content - fills available space */}
                 <div className="flex-1 flex flex-col">
