@@ -177,14 +177,25 @@ export default function SubmissionProperty() {
                   </p>
                 )}
 
+                {/* Property Count - Moved above countries for consistency */}
+                {submission.numberOfListings && (
+                  <div className="flex items-center gap-2 text-gray-700 mb-3">
+                    <Building2 className="w-5 h-5" />
+                    <span className="font-medium">{submission.numberOfListings} Properties</span>
+                  </div>
+                )}
+
                 {/* Countries */}
-                <div className="flex items-center gap-2 text-gray-900 mb-2">
-                  {submission.countries.map((country, index) => (
-                    <span key={country} className="flex items-center gap-1">
-                      {getFlagEmoji(country)} {country}
-                      {index < submission.countries.length - 1 && ", "}
-                    </span>
-                  ))}
+                <div className="flex items-center gap-2 text-gray-900 mb-3">
+                  <MapPin className="w-5 h-5 flex-shrink-0" />
+                  <span className="flex items-center gap-1 flex-wrap">
+                    {submission.countries.map((country, index) => (
+                      <span key={country}>
+                        {getFlagEmoji(country)} {country}
+                        {index < submission.countries.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </span>
                 </div>
 
                 {/* Cities/Regions */}
@@ -194,16 +205,73 @@ export default function SubmissionProperty() {
                   </div>
                 )}
 
-                {/* Property Count */}
-                {submission.numberOfListings && (
-                  <div className="flex items-center gap-2 text-gray-700 mb-4">
-                    <Building2 className="w-5 h-5" />
-                    <span className="font-medium">{submission.numberOfListings} Properties</span>
+                {/* Bottom Section: Social Links Left, Book Direct Right - Standardized Layout */}
+                <div className="flex items-center justify-between pt-4">
+                  {/* Social Links - Left */}
+                  <div className="flex items-center gap-3">
+                    {submission.instagram && (
+                      <a
+                        href={submission.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-pink-600 hover:scale-110 transition-transform"
+                        title="Instagram"
+                        onClick={() => clickTracking?.trackInstagram()}
+                      >
+                        <SiInstagram className="w-6 h-6" />
+                      </a>
+                    )}
+                    {submission.facebook && (
+                      <a
+                        href={submission.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:scale-110 transition-transform"
+                        title="Facebook"
+                        onClick={() => clickTracking?.trackFacebook()}
+                      >
+                        <SiFacebook className="w-6 h-6" />
+                      </a>
+                    )}
+                    {submission.linkedin && (
+                      <a
+                        href={submission.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-700 hover:scale-110 transition-transform"
+                        title="LinkedIn"
+                        onClick={() => clickTracking?.trackLinkedIn()}
+                      >
+                        <SiLinkedin className="w-6 h-6" />
+                      </a>
+                    )}
+                    {submission.tiktok && (
+                      <a
+                        href={submission.tiktok}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-black hover:scale-110 transition-transform"
+                        title="TikTok"
+                        onClick={() => clickTracking?.trackTikTok()}
+                      >
+                        <SiTiktok className="w-6 h-6" />
+                      </a>
+                    )}
+                    {submission.youtubeVideoTour && (
+                      <a
+                        href={submission.youtubeVideoTour}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-red-600 hover:scale-110 transition-transform"
+                        title="YouTube"
+                        onClick={() => clickTracking?.trackYouTube()}
+                      >
+                        <SiYoutube className="w-6 h-6" />
+                      </a>
+                    )}
                   </div>
-                )}
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-4">
+                  {/* Book Direct - Right */}
                   {submission.website && (
                     <Button size="lg" asChild>
                       <a 
@@ -217,44 +285,6 @@ export default function SubmissionProperty() {
                         Book Direct
                       </a>
                     </Button>
-                  )}
-                  
-                  {socialLinks.length > 0 && (
-                    <div className="flex items-center gap-3">
-                      {socialLinks.map((social, index) => (
-                        <a
-                          key={index}
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:scale-110 transition-transform"
-                          title={social.platform}
-                          onClick={() => {
-                            switch (social.platform.toLowerCase()) {
-                              case 'instagram':
-                                clickTracking?.trackInstagram();
-                                break;
-                              case 'facebook':
-                                clickTracking?.trackFacebook();
-                                break;
-                              case 'linkedin':
-                                clickTracking?.trackLinkedIn();
-                                break;
-                              case 'tiktok':
-                                clickTracking?.trackTikTok();
-                                break;
-                              case 'youtube':
-                                clickTracking?.trackYouTube();
-                                break;
-                              default:
-                                clickTracking?.track('website');
-                            }
-                          }}
-                        >
-                          {getSocialIcon(social.platform)}
-                        </a>
-                      ))}
-                    </div>
                   )}
                 </div>
               </div>
