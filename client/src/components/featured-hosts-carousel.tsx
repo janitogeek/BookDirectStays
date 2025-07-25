@@ -224,7 +224,18 @@ export default function FeaturedHostsCarousel() {
                   </div>
                 )}
 
-                {/* Countries - Full Row */}
+                {/* Types of Stays - Moved before Countries */}
+                {host.typesOfStays && host.typesOfStays.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {host.typesOfStays.map((type, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {type.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Countries - Moved after Types of Stays */}
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
@@ -236,17 +247,6 @@ export default function FeaturedHostsCarousel() {
                     ))}
                   </span>
                 </div>
-
-                {/* Types of Stays - Full Row */}
-                {host.typesOfStays && host.typesOfStays.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {host.typesOfStays.map((type, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {type.trim()}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
 
                 {/* Top Stats Component */}
                 {host.topStats && (

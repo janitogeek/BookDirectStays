@@ -185,7 +185,18 @@ export default function SubmissionProperty() {
                   </div>
                 )}
 
-                {/* Countries - Standardized with property cards */}
+                {/* Property Types - Moved before Countries */}
+                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {submission.typesOfStays.map((type, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {type.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Countries - Moved after Property Types */}
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
@@ -197,17 +208,6 @@ export default function SubmissionProperty() {
                     ))}
                   </span>
                 </div>
-
-                {/* Property Types - Standardized with property cards */}
-                {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {submission.typesOfStays.map((type, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {type.trim()}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
 
                 {/* Cities/Regions */}
                 {submission.citiesRegions && submission.citiesRegions.length > 0 && (
@@ -308,12 +308,12 @@ export default function SubmissionProperty() {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column: Company Content */}
+            {/* Left Column: Company Content - Mobile order controlled by CSS order classes */}
             <div className="space-y-8">
               
-              {/* Why Book With */}
+              {/* Why Book With - Mobile: 1st, Desktop: 1st */}
               {submission.whyBookWithYou && (
-                <Card>
+                <Card className="order-1">
                   <CardHeader>
                     <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
                   </CardHeader>
@@ -327,9 +327,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Ideal For */}
+              {/* Ideal For - Mobile: 4th, Desktop: 2nd */}
               {submission.idealFor && submission.idealFor.length > 0 && (
-                <Card>
+                <Card className="order-4 lg:order-2">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-blue-600" />
@@ -348,9 +348,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Perks & Amenities */}
+              {/* Perks & Amenities - Mobile: 5th, Desktop: 3rd */}
               {submission.perksAmenities && submission.perksAmenities.length > 0 && (
-                <Card>
+                <Card className="order-5 lg:order-3">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Star className="w-5 h-5 text-green-600" />
@@ -370,9 +370,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Vibe & Aesthetic */}
+              {/* Vibe & Aesthetic - Mobile: 6th, Desktop: 4th */}
               {submission.vibeAesthetic && submission.vibeAesthetic.length > 0 && (
-                <Card>
+                <Card className="order-6 lg:order-4">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-purple-600" />
@@ -393,12 +393,12 @@ export default function SubmissionProperty() {
               
             </div>
 
-            {/* Right Column: Trust Signals & Contact */}
+            {/* Right Column: Trust Signals & Contact - Mobile order controlled by CSS order classes */}
             <div className="space-y-6">
               
-              {/* Host's Stats */}
+              {/* Host's Stats - Mobile: 2nd, Desktop: 1st in right column */}
               {submission.topStats && (
-                <Card>
+                <Card className="order-2 lg:order-1">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       📊 {submission.brandName} Stats
@@ -427,9 +427,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Guest Reviews & Ratings */}
+              {/* Guest Reviews & Ratings - Mobile: 3rd, Desktop: 2nd in right column */}
               {submission.ratingScreenshot && (
-                <Card>
+                <Card className="order-3 lg:order-2">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Star className="w-5 h-5 text-yellow-500" />
@@ -451,8 +451,8 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Get in Touch */}
-              <Card>
+              {/* Get in Touch - Mobile: 7th (last), Desktop: 3rd in right column */}
+              <Card className="order-7 lg:order-3">
                 <CardHeader>
                   <CardTitle>Get in Touch</CardTitle>
                 </CardHeader>

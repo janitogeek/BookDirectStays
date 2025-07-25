@@ -165,7 +165,18 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
-          {/* Countries - Full Row */}
+          {/* Types of Stays - Moved before Countries */}
+          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {submission.typesOfStays.map((type, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {type.trim()}
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Countries - Moved after Types of Stays */}
           <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
             <MapPin className="w-4 h-4 flex-shrink-0" />
             <span className="flex items-center gap-1 flex-wrap">
@@ -177,17 +188,6 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               ))}
             </span>
           </div>
-
-          {/* Types of Stays - Full Row */}
-          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {submission.typesOfStays.map((type, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
-                  {type.trim()}
-                </Badge>
-              ))}
-            </div>
-          )}
 
           {/* Top Stats Component - Moved down */}
           {submission.topStats && (
