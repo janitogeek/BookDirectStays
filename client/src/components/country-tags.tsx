@@ -7,6 +7,39 @@ interface CountryTagsProps {
   activeCountry?: string;
 }
 
+// Get flag emoji for country name
+const getFlagEmoji = (countryName: string) => {
+  const countryMap: { [key: string]: string } = {
+    'United States': '🇺🇸',
+    'Spain': '🇪🇸',
+    'United Kingdom': '🇬🇧',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Australia': '🇦🇺',
+    'Canada': '🇨🇦',
+    'Italy': '🇮🇹',
+    'Portugal': '🇵🇹',
+    'Thailand': '🇹🇭',
+    'Greece': '🇬🇷',
+    'Netherlands': '🇳🇱',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Croatia': '🇭🇷',
+    'Czech Republic': '🇨🇿',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Hungary': '🇭🇺',
+    'Ireland': '🇮🇪',
+    'Norway': '🇳🇴',
+    'Poland': '🇵🇱',
+    'Sweden': '🇸🇪',
+    'Turkey': '🇹🇷',
+    'Albania': '🇦🇱'
+  };
+  return countryMap[countryName] || '🌍';
+};
+
 export default function CountryTags({ countries, isLoading, activeCountry }: CountryTagsProps) {
   return (
     <section className="py-6 bg-white shadow">
@@ -22,12 +55,13 @@ export default function CountryTags({ countries, isLoading, activeCountry }: Cou
               <Link 
                 key={country.id} 
                 href={`/country/${country.slug}`}
-                className={`inline-block px-4 py-2 rounded-full whitespace-nowrap transition ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition ${
                   activeCountry === country.slug
                     ? 'bg-primary text-white'
                     : 'bg-gray-100 hover:bg-primary hover:text-white'
                 }`}
               >
+                <span className="text-lg">{getFlagEmoji(country.name)}</span>
                 {country.name}
               </Link>
             ))

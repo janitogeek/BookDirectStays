@@ -6,6 +6,8 @@ import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { airtableService } from "@/lib/airtable";
+import { getActiveCountries } from "@/lib/submission-processor";
+import { slugify } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -17,19 +19,21 @@ export default function Home() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // For now, we'll use a static list of countries since we don't have a countries service yet
-  const countries = [
-    { name: "Spain", slug: "spain", count: 150 },
-    { name: "United States", slug: "usa", count: 120 },
-    { name: "Germany", slug: "germany", count: 80 },
-    { name: "France", slug: "france", count: 75 },
-    { name: "United Kingdom", slug: "uk", count: 65 },
-    { name: "Australia", slug: "australia", count: 45 },
-    { name: "Canada", slug: "canada", count: 40 },
-    { name: "Italy", slug: "italy", count: 35 },
-    { name: "Portugal", slug: "portugal", count: 30 },
-    { name: "Thailand", slug: "thailand", count: 25 },
-  ];
+  // Fetch active countries (dynamic from actual submissions)
+  const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
+    queryKey: ["/api/active-countries"],
+    queryFn: () => getActiveCountries(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Transform active country names into country objects with metadata
+  const countries = activeCountryNames.map((countryName, index) => ({
+    id: index + 1,
+    name: countryName,
+    slug: slugify(countryName),
+    // We'll get actual counts later, for now show placeholder
+    count: 0
+  }));
 
   return (
     <main className="min-h-screen">
@@ -205,7 +209,7 @@ export default function Home() {
           </div>
 
                      <div className="max-w-6xl mx-auto">
-             <CountryTags countries={countries} isLoading={false} />
+             <CountryTags countries={countries} isLoading={isCountriesLoading} />
            </div>
         </div>
       </section>

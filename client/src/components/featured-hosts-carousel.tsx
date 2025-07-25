@@ -40,6 +40,39 @@ export default function FeaturedHostsCarousel() {
     }
   };
 
+  // Get flag emoji for country name
+  const getFlagEmoji = (countryName: string) => {
+    const countryMap: { [key: string]: string } = {
+      'United States': '🇺🇸',
+      'Spain': '🇪🇸',
+      'United Kingdom': '🇬🇧',
+      'Germany': '🇩🇪',
+      'France': '🇫🇷',
+      'Australia': '🇦🇺',
+      'Canada': '🇨🇦',
+      'Italy': '🇮🇹',
+      'Portugal': '🇵🇹',
+      'Thailand': '🇹🇭',
+      'Greece': '🇬🇷',
+      'Netherlands': '🇳🇱',
+      'Switzerland': '🇨🇭',
+      'Austria': '🇦🇹',
+      'Belgium': '🇧🇪',
+      'Croatia': '🇭🇷',
+      'Czech Republic': '🇨🇿',
+      'Denmark': '🇩🇰',
+      'Finland': '🇫🇮',
+      'Hungary': '🇭🇺',
+      'Ireland': '🇮🇪',
+      'Norway': '🇳🇴',
+      'Poland': '🇵🇱',
+      'Sweden': '🇸🇪',
+      'Turkey': '🇹🇷',
+      'Albania': '🇦🇱'
+    };
+    return countryMap[countryName] || '🌍';
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto">
@@ -129,11 +162,11 @@ export default function FeaturedHostsCarousel() {
             slidesPerView: 3,
           },
         }}
-        className="featured-hosts-swiper [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold"
+        className="featured-hosts-swiper [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2"
       >
         {featuredHosts.map((host) => (
           <SwiperSlide key={host.id}>
-            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-full">
+            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-[450px]">
               <CardContent className="p-8 text-center h-full flex flex-col">
                 {/* Logo */}
                 <div className="mb-6">
@@ -164,14 +197,19 @@ export default function FeaturedHostsCarousel() {
                       </h3>
                     </div>
 
-                    {/* Countries */}
+                    {/* Countries with Flags */}
                     <div className="text-sm text-gray-700 mb-3">
-                      {host.countries.slice(0, 2).join(", ")}
+                      {host.countries.slice(0, 2).map((country, index) => (
+                        <span key={country}>
+                          {getFlagEmoji(country)} {country}
+                          {index < Math.min(host.countries.length, 2) - 1 && ", "}
+                        </span>
+                      ))}
                       {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
                     </div>
                     
-                    {/* Stats - always reserve space for consistent card height */}
-                    <div className="mb-4 min-h-[20px]">
+                    {/* Stats - standardized height for consistency */}
+                    <div className="mb-4 h-16 flex items-center">
                       {host.topStats && host.topStats.trim() ? (
                         <TopStats 
                           topStats={host.topStats} 
@@ -179,7 +217,9 @@ export default function FeaturedHostsCarousel() {
                           onOpenChange={handlePopoverChange}
                         />
                       ) : (
-                        <span className="invisible">placeholder</span>
+                        <div className="w-full border border-gray-200 rounded-lg p-3 bg-gray-50 h-full flex items-center justify-center">
+                          <span className="text-xs text-gray-400">No stats available</span>
+                        </div>
                       )}
                     </div>
                   </div>
