@@ -188,7 +188,8 @@ export default function FeaturedHostsCarousel() {
                 </div>
 
                 {/* Content - fills available space */}
-                <div className="flex-1 flex flex-col justify-between">
+                <div className="flex-1 flex flex-col">
+                  {/* Top Content */}
                   <div>
                     {/* Brand Name */}
                     <div className="mb-3">
@@ -198,7 +199,7 @@ export default function FeaturedHostsCarousel() {
                     </div>
 
                     {/* Countries with Flags */}
-                    <div className="text-sm text-gray-700 mb-3">
+                    <div className="text-sm text-gray-700 mb-4">
                       {host.countries.slice(0, 2).map((country, index) => (
                         <span key={country}>
                           {getFlagEmoji(country)} {country}
@@ -207,25 +208,26 @@ export default function FeaturedHostsCarousel() {
                       ))}
                       {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
                     </div>
-                    
-                    {/* Stats - standardized height for consistency */}
-                    <div className="mb-4 h-16 flex items-center">
-                      {host.topStats && host.topStats.trim() ? (
+                  </div>
+
+                  {/* Spacer to push bottom content down */}
+                  <div className="flex-1"></div>
+
+                  {/* Bottom Content */}
+                  <div>
+                    {/* Stats - only show when stats exist */}
+                    {host.topStats && host.topStats.trim() && (
+                      <div className="mb-4">
                         <TopStats 
                           topStats={host.topStats} 
                           brandName={host.brandName}
                           onOpenChange={handlePopoverChange}
                         />
-                      ) : (
-                        <div className="w-full border border-gray-200 rounded-lg p-3 bg-gray-50 h-full flex items-center justify-center">
-                          <span className="text-xs text-gray-400">No stats available</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                      </div>
+                    )}
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-2 mt-4">
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-2">
                     <Button 
                       asChild
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white"
@@ -255,6 +257,7 @@ export default function FeaturedHostsCarousel() {
                         View Details
                       </Link>
                     </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
