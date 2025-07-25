@@ -106,7 +106,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
 
   return (
     <>
-      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative">
+      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
         {/* Featured Badge */}
         {isPremium && (
           <div className="absolute top-3 right-3 z-10">
@@ -116,7 +116,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           </div>
         )}
 
-        <CardContent className="p-6">
+        <CardContent className="p-6 flex flex-col h-full">
           {/* Header Image */}
           {submission.highlightImage && (
             <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
@@ -197,7 +197,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           )}
 
           {/* Why Book With CTA */}
-          <div className="mb-4">
+          <div className="mb-6">
             <Button 
               asChild 
               variant="outline" 
@@ -214,7 +214,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           </div>
 
           {/* Bottom Section: Social Links Left, Book Direct Right */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-auto pt-4">
             {/* Social Links - Left */}
             <div className="flex items-center gap-3">
               {submission.instagram && (
