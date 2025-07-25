@@ -25,7 +25,7 @@ export default function TopStats({ topStats, brandName, onOpenChange }: TopStats
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+    <div className="border border-gray-200 rounded-lg p-3 bg-white">
       {/* Header with Toggle Button */}
       <div className="flex items-center justify-between">
         <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -35,9 +35,9 @@ export default function TopStats({ topStats, brandName, onOpenChange }: TopStats
         <Popover open={isOpen} onOpenChange={handleOpenChange}>
           <PopoverTrigger asChild>
             <Button 
-              variant="ghost" 
+              variant="outline" 
               size="sm" 
-              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-all duration-200"
+              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-600 transition-all duration-200"
             >
               {isOpen ? "Hide" : "Show"}
             </Button>

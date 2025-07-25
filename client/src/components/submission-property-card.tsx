@@ -153,31 +153,28 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           </div>
 
-          {/* Country and Property Count */}
-          <div className="flex items-center justify-between mb-3 text-sm">
-            {/* Country - Left */}
-            <div className="flex items-center gap-2 text-gray-900">
-              <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span className="flex items-center gap-1">
-                {submission.countries.map((country, index) => (
-                  <span key={country}>
-                    {getFlagEmoji(country)} {country}
-                    {index < submission.countries.length - 1 && ", "}
-                  </span>
-                ))}
-              </span>
+          {/* Property Count */}
+          {submission.numberOfListings && (
+            <div className="flex items-center gap-1 mb-3 text-sm text-gray-600">
+              <Building2 className="w-4 h-4" />
+              <span>{submission.numberOfListings} properties</span>
             </div>
-            
-            {/* Property Count - Right */}
-            {submission.numberOfListings && (
-              <div className="flex items-center gap-1 text-gray-600">
-                <Building2 className="w-4 h-4" />
-                <span>{submission.numberOfListings} properties</span>
-              </div>
-            )}
+          )}
+
+          {/* Countries - Full Row */}
+          <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <span className="flex items-center gap-1 flex-wrap">
+              {submission.countries.map((country, index) => (
+                <span key={country}>
+                  {getFlagEmoji(country)} {country}
+                  {index < submission.countries.length - 1 && ", "}
+                </span>
+              ))}
+            </span>
           </div>
 
-          {/* Types of Stays */}
+          {/* Types of Stays - Full Row */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {submission.typesOfStays.map((type, index) => (
@@ -204,7 +201,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               asChild 
               variant="outline" 
               size="sm"
-              className="w-full flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
             >
               <Link 
                 href={`/property/${slug}`}
