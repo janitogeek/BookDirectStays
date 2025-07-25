@@ -131,11 +131,11 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           {/* Brand Header */}
           <div className="flex items-start gap-3 mb-4">
             {submission.logo && (
-              <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+              <div className="w-16 max-h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center p-1">
                 <img
                   src={submission.logo}
                   alt={`${submission.brandName} logo`}
-                  className="w-full h-full object-cover"
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
             )}
