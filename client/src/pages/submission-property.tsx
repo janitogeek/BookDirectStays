@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
 import { isAirtableId } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
-import TopStats from "@/components/top-stats";
+
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
@@ -316,14 +316,23 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Host's Stats */}
+              {/* Host's Stats - Direct Display */}
               {submission.topStats && (
-                <div>
-                  <TopStats 
-                    topStats={submission.topStats} 
-                    brandName={submission.brandName}
-                  />
-                </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      📊 {submission.brandName} Stats
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      {submission.topStats}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-4 pt-3 border-t border-gray-100 italic">
+                      This information was provided by the host and is not verified by BookDirectStays.
+                    </div>
+                  </CardContent>
+                </Card>
               )}
 
               {/* Ideal For */}
