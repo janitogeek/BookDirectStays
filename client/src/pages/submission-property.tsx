@@ -300,23 +300,7 @@ export default function SubmissionProperty() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               
-              {/* Why Book With */}
-              {submission.whyBookWithYou && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-gray max-w-none">
-                      <p className="text-gray-700 whitespace-pre-line">
-                        {submission.whyBookWithYou}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Host's Stats - Direct Display */}
+              {/* Host's Stats - First Thing Guests See */}
               {submission.topStats && (
                 <Card>
                   <CardHeader>
@@ -335,7 +319,7 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Guest Reviews & Ratings - Right after stats */}
+              {/* Guest Reviews & Ratings - Second Priority */}
               {submission.ratingScreenshot && (
                 <Card>
                   <CardHeader>
@@ -355,6 +339,22 @@ export default function SubmissionProperty() {
                     <p className="text-xs text-gray-500 mt-3 text-center italic">
                       Real guest ratings and reviews from booking platforms
                     </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Why Book With */}
+              {submission.whyBookWithYou && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {submission.whyBookWithYou}
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               )}
