@@ -43,7 +43,7 @@ const formSchema = z.object({
     url: z.string().url(),
     name: z.string()
   }),
-  "One-line Description": z.string().min(5),
+  "One-line Description": z.string().min(5).max(70),
   "Why Book With You?": z.string().min(10),
   "Top Stats": z.string().optional().or(z.literal("")),
   "Types of Stays": z.array(z.string()).optional(),
@@ -630,8 +630,27 @@ export default function Submit() {
               <h2 className="text-xl font-semibold mb-4">💬 Brand Story & Guest Value</h2>
               <FormField control={form.control} name="One-line Description" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>One-line Description<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. Boutique apartments in Latin America" /></FormControl>
+                  <FormLabel>
+                    One-line Description (70 characters limit)<RequiredAsterisk />
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input 
+                        {...field} 
+                        placeholder="e.g. Boutique apartments in Latin America" 
+                        maxLength={70}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value.length <= 70) {
+                            field.onChange(e);
+                          }
+                        }}
+                      />
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">
+                        {field.value?.length || 0}/70
+                      </div>
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
