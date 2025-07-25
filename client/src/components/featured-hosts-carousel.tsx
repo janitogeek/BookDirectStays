@@ -3,7 +3,8 @@ import { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from "wouter";
-import { ExternalLink, Eye, MapPin } from "lucide-react";
+import { ExternalLink, MapPin, Building2 } from "lucide-react";
+import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 import { airtableService, Submission } from "@/lib/airtable";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
@@ -162,72 +163,185 @@ export default function FeaturedHostsCarousel() {
             slidesPerView: 3,
           },
         }}
-        className="featured-hosts-swiper [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2"
+        className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2"
       >
         {featuredHosts.map((host) => (
           <SwiperSlide key={host.id}>
-            <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 bg-white h-[450px] relative overflow-hidden">
-              <CardContent className="p-8 text-center h-full flex flex-col relative">
-                {/* Logo Overlay on Card Background */}
-                {host.logo && (
-                  <div className="absolute top-4 left-4 right-4 flex justify-center z-10">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[70%] group-hover:scale-105 transition-transform">
-                      <img
-                        src={host.logo}
-                        alt={`${host.brandName} logo`}
-                        className="max-w-full max-h-12 object-contain"
-                      />
-                    </div>
-                  </div>
-                )}
-                
-                {/* Content Spacer for Logo */}
-                <div className="h-16 mb-2"></div>
+            <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
+              {/* Featured Badge */}
+              <div className="absolute top-3 right-3 z-10">
+                <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
+                  Featured
+                </Badge>
+              </div>
 
-                {/* Content - fills available space */}
-                <div className="flex-1 flex flex-col">
-                  {/* Top Content */}
-                  <div>
-                    {/* Brand Name */}
-                    <div className="mb-3">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                        {host.brandName}
-                      </h3>
-                    </div>
-
-                    {/* Countries with Flags */}
-                    <div className="text-sm text-gray-700 mb-4">
-                      {host.countries.slice(0, 2).map((country, index) => (
-                        <span key={country}>
-                          {getFlagEmoji(country)} {country}
-                          {index < Math.min(host.countries.length, 2) - 1 && ", "}
-                        </span>
-                      ))}
-                      {host.countries.length > 2 && ` +${host.countries.length - 2} more`}
-                    </div>
-                  </div>
-
-                  {/* Spacer to push bottom content down */}
-                  <div className="flex-1"></div>
-
-                  {/* Bottom Content */}
-                  <div>
-                    {/* Stats - only show when stats exist */}
-                    {host.topStats && host.topStats.trim() && (
-                      <div className="mb-4">
-                        <TopStats 
-                          topStats={host.topStats} 
-                          brandName={host.brandName}
-                          onOpenChange={handlePopoverChange}
-                        />
+              <CardContent className="p-6 flex flex-col h-full">
+                {/* Header Image with Logo Overlay */}
+                {host.highlightImage && (
+                  <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+                    <img
+                      src={host.highlightImage}
+                      alt={host.brandName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+                    
+                    {/* Logo Overlay */}
+                    {host.logo && (
+                      <div className="absolute top-3 left-3 right-3 flex justify-center">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
+                          <img
+                            src={host.logo}
+                            alt={`${host.brandName} logo`}
+                            className="max-w-full max-h-12 object-contain"
+                          />
+                        </div>
                       </div>
                     )}
+                  </div>
+                )}
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-2">
+                {/* Brand Header */}
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
+                    {host.brandName}
+                  </h3>
+                  
+                  {/* One-line Description */}
+                  <div className="min-h-[3rem]">
+                    {host.oneLineDescription && (
+                      <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
+                        {host.oneLineDescription}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Property Count */}
+                {host.numberOfListings && (
+                  <div className="flex items-center gap-1 mb-3 text-sm text-gray-600">
+                    <Building2 className="w-4 h-4" />
+                    <span>{host.numberOfListings} properties</span>
+                  </div>
+                )}
+
+                {/* Countries - Full Row */}
+                <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+                  <MapPin className="w-4 h-4 flex-shrink-0" />
+                  <span className="flex items-center gap-1 flex-wrap">
+                    {host.countries.map((country, index) => (
+                      <span key={country}>
+                        {getFlagEmoji(country)} {country}
+                        {index < host.countries.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+
+                {/* Types of Stays - Full Row */}
+                {host.typesOfStays && host.typesOfStays.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {host.typesOfStays.map((type, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {type.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Top Stats Component */}
+                {host.topStats && (
+                  <div className="mb-4">
+                    <TopStats 
+                      topStats={host.topStats} 
+                      brandName={host.brandName}
+                      onOpenChange={handlePopoverChange}
+                    />
+                  </div>
+                )}
+
+                {/* Why Book With CTA */}
+                <div className="mb-6">
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
+                  >
+                    <Link 
+                      to={`/submission-property/${generateSlug(host.brandName)}`}
+                    >
+                      Why book with {host.brandName}?
+                    </Link>
+                  </Button>
+                </div>
+
+                {/* Bottom Section: Social Links Left, Book Direct Right */}
+                <div className="flex items-center justify-between mt-auto pt-4">
+                  {/* Social Links - Left */}
+                  <div className="flex items-center gap-3">
+                    {host.instagram && (
+                      <a
+                        href={host.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-pink-600 hover:scale-110 transition-transform"
+                        title="Instagram"
+                      >
+                        <SiInstagram className="w-5 h-5" />
+                      </a>
+                    )}
+                    {host.facebook && (
+                      <a
+                        href={host.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:scale-110 transition-transform"
+                        title="Facebook"
+                      >
+                        <SiFacebook className="w-5 h-5" />
+                      </a>
+                    )}
+                    {host.linkedin && (
+                      <a
+                        href={host.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-700 hover:scale-110 transition-transform"
+                        title="LinkedIn"
+                      >
+                        <SiLinkedin className="w-5 h-5" />
+                      </a>
+                    )}
+                    {host.tiktok && (
+                      <a
+                        href={host.tiktok}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-black hover:scale-110 transition-transform"
+                        title="TikTok"
+                      >
+                        <SiTiktok className="w-5 h-5" />
+                      </a>
+                    )}
+                    {host.youtubeVideoTour && (
+                      <a
+                        href={host.youtubeVideoTour}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-red-600 hover:scale-110 transition-transform"
+                        title="YouTube"
+                      >
+                        <SiYoutube className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Book Direct - Right */}
+                  {host.website && (
                     <Button 
-                      asChild
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      asChild 
+                      variant="default" 
+                      size="sm"
                     >
                       <a 
                         href={host.website} 
@@ -239,23 +353,7 @@ export default function FeaturedHostsCarousel() {
                         Book Direct
                       </a>
                     </Button>
-                    
-                    <Button 
-                      asChild
-                      variant="outline" 
-                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
-                    >
-                      <Link 
-                        to={`/property/${generateSlug(host.brandName)}`} 
-                        className="flex items-center justify-center gap-2"
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Details
-                      </Link>
-                    </Button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
