@@ -13,7 +13,8 @@ import { slugify } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
-  const [showScreenshots, setShowScreenshots] = useState(false);
+  const [showAirbnbScreenshot, setShowAirbnbScreenshot] = useState(false);
+  const [showDirectScreenshot, setShowDirectScreenshot] = useState(false);
 
 
 
@@ -172,7 +173,7 @@ export default function Home() {
                     <span className="text-red-700 font-semibold">❌ Airbnb (OTA)</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Same listing via Airbnb</p>
+                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025 • Same listing via Airbnb</p>
                 </div>
                 
                 <div className="space-y-3 mb-6">
@@ -183,14 +184,24 @@ export default function Home() {
                   <hr className="border-gray-300" />
                   <div className="text-sm text-gray-600 space-y-2">
                     <div className="flex justify-between">
-                      <span>Host receives (after 15% OTA fees)</span>
-                      <span className="font-semibold text-red-600">€1,434</span>
-                    </div>
-                    <div className="flex justify-between">
                       <span>OTA commission (15%)</span>
                       <span className="font-semibold text-red-600">€253</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span>Host receives (after 15% OTA fees)</span>
+                      <span className="font-semibold text-red-600">€1,434</span>
+                    </div>
                   </div>
+                </div>
+                
+                <div className="text-center">
+                  <Button 
+                    onClick={() => setShowAirbnbScreenshot(true)}
+                    variant="outline"
+                    className="border-red-300 text-red-700 hover:bg-red-100 text-sm px-4 py-2"
+                  >
+                    📸 View Proof
+                  </Button>
                 </div>
               </div>
 
@@ -201,7 +212,7 @@ export default function Home() {
                     <span className="text-green-700 font-semibold">✅ Book Direct</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Same listing via Skol direct website</p>
+                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025 • Same listing via Skol direct website</p>
                 </div>
                 
                 <div className="space-y-3 mb-6">
@@ -212,14 +223,24 @@ export default function Home() {
                   <hr className="border-gray-300" />
                   <div className="text-sm text-gray-600 space-y-2">
                     <div className="flex justify-between">
-                      <span>Host receives (0% fees)</span>
-                      <span className="font-semibold text-green-600">€1,287.5</span>
-                    </div>
-                    <div className="flex justify-between">
                       <span>Commission fees</span>
                       <span className="font-semibold text-green-600">€0</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span>Host receives (0% fees)</span>
+                      <span className="font-semibold text-green-600">€1,287.5</span>
+                    </div>
                   </div>
+                </div>
+                
+                <div className="text-center">
+                  <Button 
+                    onClick={() => setShowDirectScreenshot(true)}
+                    variant="outline"
+                    className="border-green-300 text-green-700 hover:bg-green-100 text-sm px-4 py-2"
+                  >
+                    📸 View Proof
+                  </Button>
                 </div>
               </div>
             </div>
@@ -229,9 +250,9 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 {/* Guest Savings */}
                 <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
-                  <div className="text-4xl font-bold text-blue-600 mb-2">€399.5</div>
-                  <div className="text-lg font-semibold text-gray-900 mb-1">Guests Save 24%</div>
-                  <div className="text-blue-600 font-medium">Booking Direct vs Airbnb</div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">€399.5 - 24%</div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">Guest's Savings</div>
+                  <div className="text-blue-600 font-medium">Sep 3rd to Sep 8th 2025</div>
                 </div>
                 
                 {/* Host Benefits */}
@@ -240,15 +261,6 @@ export default function Home() {
                   <div className="text-lg font-semibold text-gray-900 mb-1">Host Fees Direct</div>
                   <div className="text-green-600 font-medium">vs 15%+ via OTA</div>
                 </div>
-              </div>
-              
-              <div className="mt-8">
-                <Button 
-                  onClick={() => setShowScreenshots(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
-                >
-                  📸 View Proof Screenshots
-                </Button>
               </div>
               
               <p className="text-sm text-gray-600 mt-6 max-w-2xl mx-auto">
@@ -370,35 +382,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Screenshot Dialog */}
-      <Dialog open={showScreenshots} onOpenChange={setShowScreenshots}>
+      {/* Airbnb Screenshot Dialog */}
+      <Dialog open={showAirbnbScreenshot} onOpenChange={setShowAirbnbScreenshot}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-900">Real Pricing Screenshots</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-red-600">Airbnb Pricing Screenshot</DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div>
-              <h4 className="text-lg font-semibold mb-3 text-red-600">Airbnb: €1,687.00 Total</h4>
-              <img 
-                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFpcmJuYiBTY3JlZW5zaG90IC0gRXVybyAxLDY4Ny4wMDwvdGV4dD48L3N2Zz4="
-                alt="Airbnb booking screenshot showing €1,687 total for Skol 927A" 
-                className="w-full rounded-lg border shadow-lg"
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                Screenshot will show the actual Airbnb booking page for Skol 927A with €1,687.00 total price
-              </p>
+          <div className="space-y-4">
+            <div className="text-center">
+              <h4 className="text-lg font-semibold mb-3 text-gray-900">Skol 927A - Sep 3rd to Sep 8th 2025</h4>
+              <p className="text-red-600 font-bold text-xl mb-4">Total: €1,687.00</p>
             </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-3 text-green-600">Direct Booking: €1,287.50 Total</h4>
-              <img 
-                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlNrb2wgRGlyZWN0IFNjcmVlbnNob3QgLSBFdXJvIDEsMjg3LjUwPC90ZXh0Pjwvc3ZnPg=="
-                alt="Skol direct website screenshot showing €1,287.50 total for same listing" 
-                className="w-full rounded-lg border shadow-lg"
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                Screenshot will show the Skol direct booking website for the same property with €1,287.50 total price
-              </p>
+            <img 
+              src="/uploaded-screenshots/airbnb-skol-927a-screenshot.png"
+              alt="Airbnb booking screenshot showing €1,687 total for Skol 927A Sep 3-8 2025" 
+              className="w-full rounded-lg border shadow-lg"
+              onError={(e) => {
+                e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmYyIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNkYzI2MjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BaXJibmIgU2NyZWVuc2hvdDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSIjNzQ3NDc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RXVybyAxLDY4Ny4wMCBUb3RhbDwvdGV4dD48L3N2Zz4=";
+              }}
+            />
+            <p className="text-sm text-gray-600 text-center">
+              Real Airbnb booking page showing €1,687.00 total for Skol 927A
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Direct Booking Screenshot Dialog */}
+      <Dialog open={showDirectScreenshot} onOpenChange={setShowDirectScreenshot}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-green-600">Skol Direct Booking Screenshot</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="text-center">
+              <h4 className="text-lg font-semibold mb-3 text-gray-900">Skol 927A - Sep 3rd to Sep 8th 2025</h4>
+              <p className="text-green-600 font-bold text-xl mb-4">Total: €1,287.50</p>
             </div>
+            <img 
+              src="/uploaded-screenshots/skol-direct-927a-screenshot.png"
+              alt="Skol direct website screenshot showing €1,287.50 total for same listing Sep 3-8 2025" 
+              className="w-full rounded-lg border shadow-lg"
+              onError={(e) => {
+                e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IjsxNjEwMWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Ta29sIERpcmVjdCBTY3JlZW5zaG90PC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM3NDc0NzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5FdXJvIDEsMjg3LjUwIFRvdGFsPC90ZXh0Pjwvc3ZnPg==";
+              }}
+            />
+            <p className="text-sm text-gray-600 text-center">
+              Real Skol direct booking website showing €1,287.50 total for the same property
+            </p>
           </div>
         </DialogContent>
       </Dialog>
