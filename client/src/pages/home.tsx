@@ -399,9 +399,6 @@ export default function Home() {
               src="/uploads/airbnb-skol-927a-screenshot.png"
               alt="Airbnb booking screenshot showing €1,687 total for Skol 927A Sep 3-8 2025" 
               className="w-full rounded-lg border shadow-lg"
-              onError={(e) => {
-                e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmYyIi8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNkYzI2MjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BaXJibmIgU2NyZWVuc2hvdDwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjU1JSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSIjNzQ3NDc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RXVybyAxLDY4Ny4wMCBUb3RhbDwvdGV4dD48L3N2Zz4=";
-              }}
             />
             <p className="text-sm text-gray-600 text-center">
               Real Airbnb booking page showing €1,687.00 total for Skol 927A
@@ -425,9 +422,6 @@ export default function Home() {
               src="/uploads/skol-direct-927a-screenshot.png"
               alt="Skol direct website screenshot showing €1,287.50 total for same listing Sep 3-8 2025" 
               className="w-full rounded-lg border shadow-lg"
-              onError={(e) => {
-                e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI0NSUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IjsxNjEwMWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Ta29sIERpcmVjdCBTY3JlZW5zaG90PC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTUlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiM3NDc0NzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5FdXJvIDEsMjg3LjUwIFRvdGFsPC90ZXh0Pjwvc3ZnPg==";
-              }}
             />
             <p className="text-sm text-gray-600 text-center">
               Real Skol direct booking website showing €1,287.50 total for the same property
