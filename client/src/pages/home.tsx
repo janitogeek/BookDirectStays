@@ -396,7 +396,7 @@ export default function Home() {
               <p className="text-red-600 font-bold text-xl mb-4">Total: €1,687.00</p>
             </div>
             <img 
-              src="/uploaded-screenshots/airbnb-skol-927a-screenshot.png"
+              src="/uploads/airbnb-skol-927a-screenshot.png"
               alt="Airbnb booking screenshot showing €1,687 total for Skol 927A Sep 3-8 2025" 
               className="w-full rounded-lg border shadow-lg"
               onError={(e) => {
@@ -422,7 +422,7 @@ export default function Home() {
               <p className="text-green-600 font-bold text-xl mb-4">Total: €1,287.50</p>
             </div>
             <img 
-              src="/uploaded-screenshots/skol-direct-927a-screenshot.png"
+              src="/uploads/skol-direct-927a-screenshot.png"
               alt="Skol direct website screenshot showing €1,287.50 total for same listing Sep 3-8 2025" 
               className="w-full rounded-lg border shadow-lg"
               onError={(e) => {
