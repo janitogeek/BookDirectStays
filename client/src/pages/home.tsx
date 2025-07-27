@@ -173,7 +173,8 @@ export default function Home() {
                     <span className="text-red-700 font-semibold">❌ Airbnb (OTA)</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025 • Same listing via Airbnb</p>
+                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025</p>
+                  <p className="text-gray-600 text-sm">• Same listing via Airbnb</p>
                 </div>
                 
                 <div className="space-y-3 mb-6">
@@ -212,7 +213,8 @@ export default function Home() {
                     <span className="text-green-700 font-semibold">✅ Book Direct</span>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025 • Same listing via Skol direct website</p>
+                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025</p>
+                  <p className="text-gray-600 text-sm">• Same listing via Skol direct website</p>
                 </div>
                 
                 <div className="space-y-3 mb-6">
@@ -252,7 +254,7 @@ export default function Home() {
                 <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
                   <div className="text-4xl font-bold text-blue-600 mb-2">€399.5 - 24%</div>
                   <div className="text-lg font-semibold text-gray-900 mb-1">Guest's Savings</div>
-                  <div className="text-blue-600 font-medium">Sep 3rd to Sep 8th 2025</div>
+                  <div className="text-blue-600 font-medium">Booking Direct vs Airbnb (OTA)</div>
                 </div>
                 
                 {/* Host Benefits */}
