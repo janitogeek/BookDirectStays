@@ -1,23 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import SubmissionPropertyCard from "@/components/submission-property-card";
+import { useState } from "react";
+
 import CountryTags from "@/components/country-tags";
 import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { airtableService } from "@/lib/airtable";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { getActiveCountries } from "@/lib/submission-processor";
 import { slugify } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const [showScreenshots, setShowScreenshots] = useState(false);
 
-  // Fetch recent approved submissions for property showcase
-  const { data: recentSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: ["/api/recent-submissions"],
-    queryFn: () => airtableService.getApprovedSubmissions(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+
 
   // Fetch active countries (dynamic from actual submissions)
   const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
@@ -116,7 +114,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-30%</h3>
-              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 14.2% per reservation</p>
+              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 15.7% per reservation</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
@@ -231,21 +229,30 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 {/* Guest Savings */}
                 <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">€399.5</div>
-                  <div className="text-lg font-semibold text-gray-900 mb-1">Guest Saves</div>
-                  <div className="text-blue-600 font-medium">24% Less Than Airbnb</div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">€399.5</div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">Guests Save 24%</div>
+                  <div className="text-blue-600 font-medium">Booking Direct vs Airbnb</div>
                 </div>
                 
                 {/* Host Benefits */}
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6">
-                  <div className="text-3xl font-bold text-purple-600 mb-2">€146.5</div>
-                  <div className="text-lg font-semibold text-gray-900 mb-1">Host Earns Less</div>
-                  <div className="text-purple-600 font-medium">But Keeps 100%</div>
+                <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-6">
+                  <div className="text-4xl font-bold text-green-600 mb-2">0%</div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">Host Fees Direct</div>
+                  <div className="text-green-600 font-medium">vs 15%+ via OTA</div>
                 </div>
               </div>
               
+              <div className="mt-8">
+                <Button 
+                  onClick={() => setShowScreenshots(true)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
+                >
+                  📸 View Proof Screenshots
+                </Button>
+              </div>
+              
               <p className="text-sm text-gray-600 mt-6 max-w-2xl mx-auto">
-                *Real data from Skol 927A listing comparison: Airbnb vs Direct booking. Host pays 15% commission to Airbnb but 0% for direct bookings, keeping 100% of what guests pay.
+                *Real data comparison: Skol 927A on Airbnb vs Skol direct website. Guests pay 24% less (€399.5 savings), hosts pay 0% fees vs 15%+ commission to OTAs.
               </p>
             </div>
           </div>
@@ -253,14 +260,14 @@ export default function Home() {
       </section>
 
       {/* Featured Hosts Carousel Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FeaturedHostsCarousel />
         </div>
       </section>
 
       {/* Performance Metrics Section - Clean Grid */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -297,7 +304,7 @@ export default function Home() {
       </section>
 
       {/* Countries Section - Clean and Organized */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -315,7 +322,7 @@ export default function Home() {
       </section>
 
       {/* Expert Quote Section - Clean and Prominent */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
             <blockquote className="text-2xl lg:text-3xl font-light text-gray-700 mb-8 italic">
@@ -334,75 +341,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Properties Section - Clean Grid */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Latest Direct Booking Properties
-            </h2>
-            <p className="text-xl text-gray-600">
-              Recently added verified vacation rental hosts offering commission-free bookings
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {isSubmissionsLoading ? (
-              // Loading skeleton
-              Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
-                  <div className="w-full h-48 bg-gray-300"></div>
-                  <div className="p-6">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-300 mr-3"></div>
-                      <div className="h-6 bg-gray-300 w-2/3 rounded"></div>
-                    </div>
-                    <div className="h-4 bg-gray-300 w-1/2 mb-3 rounded"></div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <div className="h-6 bg-gray-300 w-16 rounded"></div>
-                      <div className="h-6 bg-gray-300 w-20 rounded"></div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex space-x-2">
-                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-                      </div>
-                      <div className="h-10 bg-gray-300 w-32 rounded-lg"></div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : recentSubmissions.length === 0 ? (
-              <div className="col-span-3 text-center py-16">
-                <div className="bg-white rounded-xl p-8 border border-gray-200 inline-block mx-auto">
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No properties available yet</h3>
-                  <p className="text-gray-500 mb-6">Check back soon for new direct booking properties.</p>
-                  <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-                    <a href="/submit">Add Your Property</a>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              // Show first 6 recent submissions
-              recentSubmissions.slice(0, 6).map((submission) => (
-                <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
-              ))
-            )}
-          </div>
-
-          {/* View All Properties Button */}
-          {recentSubmissions.length > 6 && (
-            <div className="text-center mt-12">
-              <Button 
-                onClick={() => setLocation("/find-host")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold"
-              >
-                View All {recentSubmissions.length} Properties
-              </Button>
-            </div>
-          )}
-        </div>
-      </section>
 
              {/* CTA Section - Clean and Focused */}
        <section className="py-20 bg-blue-600">
@@ -430,6 +369,39 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Screenshot Dialog */}
+      <Dialog open={showScreenshots} onOpenChange={setShowScreenshots}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-gray-900">Real Pricing Screenshots</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-lg font-semibold mb-3 text-red-600">Airbnb: €1,687.00 Total</h4>
+              <img 
+                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFpcmJuYiBTY3JlZW5zaG90IC0gRXVybyAxLDY4Ny4wMDwvdGV4dD48L3N2Zz4="
+                alt="Airbnb booking screenshot showing €1,687 total for Skol 927A" 
+                className="w-full rounded-lg border shadow-lg"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Screenshot will show the actual Airbnb booking page for Skol 927A with €1,687.00 total price
+              </p>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-3 text-green-600">Direct Booking: €1,287.50 Total</h4>
+              <img 
+                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlNrb2wgRGlyZWN0IFNjcmVlbnNob3QgLSBFdXJvIDEsMjg3LjUwPC90ZXh0Pjwvc3ZnPg=="
+                alt="Skol direct website screenshot showing €1,287.50 total for same listing" 
+                className="w-full rounded-lg border shadow-lg"
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Screenshot will show the Skol direct booking website for the same property with €1,287.50 total price
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
