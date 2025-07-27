@@ -55,7 +55,7 @@ export default function Home() {
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-bold">No fees,</span> 
               <span className="text-white"> just better stays</span> 
               <span className="text-white"> - </span>
-              <span className="text-white font-bold">Save 10-20%</span>
+              <span className="text-white font-bold">Save 10-30%</span>
             </p>
             <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto font-medium">
               World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
@@ -115,7 +115,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-20%</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-30%</h3>
               <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 14.2% per reservation</p>
             </div>
 
@@ -147,6 +147,106 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Hosts & Properties</h3>
               <p className="text-gray-600 text-sm">100% manually reviewed websites with authentic property photos</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Real Savings Section - Skol Example */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                💸 Real Savings, Real Listings
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                See actual savings from booking direct vs OTA platforms with real properties
+              </p>
+            </div>
+
+            {/* Side-by-side comparison */}
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* OTA Booking */}
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8">
+                <div className="text-center mb-6">
+                  <div className="inline-block bg-red-100 px-4 py-2 rounded-full mb-4">
+                    <span className="text-red-700 font-semibold">❌ Airbnb (OTA)</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
+                  <p className="text-gray-600 text-sm">Same listing via Airbnb</p>
+                </div>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total Guest Pays</span>
+                    <span className="text-red-600">€1,687</span>
+                  </div>
+                  <hr className="border-gray-300" />
+                  <div className="text-sm text-gray-600 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Host receives (after 15% OTA fees)</span>
+                      <span className="font-semibold text-red-600">€1,434</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>OTA commission (15%)</span>
+                      <span className="font-semibold text-red-600">€253</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Direct Booking */}
+              <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-8">
+                <div className="text-center mb-6">
+                  <div className="inline-block bg-green-100 px-4 py-2 rounded-full mb-4">
+                    <span className="text-green-700 font-semibold">✅ Book Direct</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
+                  <p className="text-gray-600 text-sm">Same listing via Skol direct website</p>
+                </div>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total Guest Pays</span>
+                    <span className="text-green-600">€1,287.5</span>
+                  </div>
+                  <hr className="border-gray-300" />
+                  <div className="text-sm text-gray-600 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Host receives (0% fees)</span>
+                      <span className="font-semibold text-green-600">€1,287.5</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Commission fees</span>
+                      <span className="font-semibold text-green-600">€0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Savings Summary */}
+            <div className="text-center mt-12">
+              <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                {/* Guest Savings */}
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">€399.5</div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">Guest Saves</div>
+                  <div className="text-blue-600 font-medium">24% Less Than Airbnb</div>
+                </div>
+                
+                {/* Host Benefits */}
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-2xl p-6">
+                  <div className="text-3xl font-bold text-purple-600 mb-2">€146.5</div>
+                  <div className="text-lg font-semibold text-gray-900 mb-1">Host Earns Less</div>
+                  <div className="text-purple-600 font-medium">But Keeps 100%</div>
+                </div>
+              </div>
+              
+              <p className="text-sm text-gray-600 mt-6 max-w-2xl mx-auto">
+                *Real data from Skol 927A listing comparison: Airbnb vs Direct booking. Host pays 15% commission to Airbnb but 0% for direct bookings, keeping 100% of what guests pay.
+              </p>
             </div>
           </div>
         </div>
