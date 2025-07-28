@@ -44,7 +44,7 @@ export default function Home() {
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-bold">No fees,</span> 
               <span className="text-white"> just better stays</span> 
               <span className="text-white"> - </span>
-              <span className="text-white font-bold">Save 10-20%</span>
+              <span className="text-white font-bold">Save 10-30%</span>
             </p>
             <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto font-medium">
               World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
@@ -104,8 +104,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-20%</h3>
-              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 14.2% per reservation</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-30%</h3>
+              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 15.7% per reservation</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
@@ -134,7 +134,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Hosts & Properties</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">100% verified professional hosts using a PMS</h3>
               <p className="text-gray-600 text-sm">100% manually reviewed websites with authentic property photos</p>
             </div>
           </div>
