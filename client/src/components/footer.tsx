@@ -100,7 +100,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">🏆 Top Countries</h3>
+            <h3 className="text-lg font-semibold mb-4">Top Countries</h3>
             <ul className="space-y-2">
               {topCountries.slice(0, 5).map((country) => (
                 <li key={country.name}>
@@ -116,7 +116,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">🏙️ Top Cities</h3>
+            <h3 className="text-lg font-semibold mb-4">Top Cities</h3>
             <ul className="space-y-2">
               {topCities.slice(0, 5).map((city) => (
                 <li key={`${city.name}-${city.country}`}>
@@ -137,11 +137,11 @@ export default function Footer() {
             <ul className="space-y-2">
               <li className="flex items-start">
                 <i className="fas fa-envelope mt-1 mr-2"></i>
-                <span>info@bookdirectstays.com</span>
+                <span>bookdirectstays@gmail.com</span>
               </li>
               <li className="flex items-start">
-                <i className="fas fa-phone mt-1 mr-2"></i>
-                <span>+1 (555) 123-4567</span>
+                <i className="fab fa-whatsapp mt-1 mr-2"></i>
+                <span>+33 7 69 15 74 21</span>
               </li>
             </ul>
             
