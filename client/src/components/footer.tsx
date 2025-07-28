@@ -136,12 +136,16 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2">
               <li className="flex items-start">
-                <i className="fas fa-envelope mt-1 mr-2"></i>
-                <span>bookdirectstays@gmail.com</span>
+                <a href="mailto:bookdirectstays@gmail.com" className="flex items-start text-gray-300 hover:text-white transition-colors">
+                  <i className="fas fa-envelope mt-1 mr-2"></i>
+                  <span>bookdirectstays@gmail.com</span>
+                </a>
               </li>
               <li className="flex items-start">
-                <i className="fab fa-whatsapp mt-1 mr-2"></i>
-                <span>+33 7 69 15 74 21</span>
+                <a href="https://wa.me/33769157421" target="_blank" rel="noopener noreferrer" className="flex items-start text-gray-300 hover:text-white transition-colors">
+                  <i className="fab fa-whatsapp mt-1 mr-2"></i>
+                  <span>+33 7 69 15 74 21</span>
+                </a>
               </li>
             </ul>
             
@@ -172,7 +176,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400">
-            &copy; 2023 BookDirectStays.com. All rights reserved.
+            &copy; 2025 BookDirectStays.com. All rights reserved.
           </p>
           <div className="mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white mr-4">Privacy Policy</a>
