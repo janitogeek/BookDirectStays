@@ -23,10 +23,39 @@ export default function City() {
     vibeAesthetic: []
   });
   
-  // Convert slug back to readable city name
-  const cityName = citySlug?.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
+  // Convert slug back to readable city name with proper accents
+  const getCityNameFromSlug = (slug: string) => {
+    // Map of common city slugs to their proper names with accents
+    const cityNameMap: { [key: string]: string } = {
+      'durres': 'Durrës',
+      'nice': 'Nice',
+      'malaga': 'Málaga',
+      'cordoba': 'Córdoba',
+      'leon': 'León',
+      'caceres': 'Cáceres',
+      'alicante': 'Alicante',
+      'santander': 'Santander',
+      'san-sebastian': 'San Sebastián',
+      'a-coruna': 'A Coruña',
+      'monte-carlo': 'Monte-Carlo',
+      'zurich': 'Zürich',
+      'dusseldorf': 'Düsseldorf',
+      'cologne': 'Köln',
+      'munich': 'München',
+      'montreal': 'Montréal',
+      'quebec': 'Québec',
+      'sao-paulo': 'São Paulo',
+      'brasilia': 'Brasília',
+      'rio-de-janeiro': 'Rio de Janeiro'
+    };
+    
+    // Return mapped name if exists, otherwise capitalize normally
+    return cityNameMap[slug] || slug.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+  
+  const cityName = getCityNameFromSlug(citySlug || '');
   
   // Get country name from slug
   const getCountryName = (slug: string) => {
