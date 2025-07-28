@@ -100,7 +100,7 @@ export default function Partnerships() {
 
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Property Managers */}
-            <Card className="border-2 border-blue-200 hover:border-blue-400 transition-colors">
+            <Card className="border-2 border-blue-200 hover:border-blue-400 transition-colors flex flex-col h-full">
               <CardHeader className="bg-blue-50">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,12 +109,12 @@ export default function Partnerships() {
                 </div>
                 <CardTitle className="text-xl text-blue-900">Property Managers</CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col flex-grow">
                 <p className="text-gray-600 mb-6">
                   Maximize your visibility and drive more direct bookings through our verified direct booking directory and our tailored consulting and content creation services.
                 </p>
                 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-4 mb-6 flex-grow">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                     <div>
@@ -140,14 +140,14 @@ export default function Partnerships() {
                   </div>
                 </div>
 
-                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-auto" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                   Partner as Property Manager
                 </Button>
               </CardContent>
             </Card>
 
             {/* Vendors & Tech Providers */}
-            <Card className="border-2 border-purple-200 hover:border-purple-400 transition-colors">
+            <Card className="border-2 border-purple-200 hover:border-purple-400 transition-colors flex flex-col h-full">
               <CardHeader className="bg-purple-50">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,12 +156,12 @@ export default function Partnerships() {
                 </div>
                 <CardTitle className="text-xl text-purple-900">Vendors & Tech Providers</CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col flex-grow">
                 <p className="text-gray-600 mb-6">
                   Connect with our curated network of property management companies seeking innovative solutions and services.
                 </p>
                 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-4 mb-6 flex-grow">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
                     <div>
@@ -187,14 +187,14 @@ export default function Partnerships() {
                   </div>
                 </div>
 
-                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+                <Button className="w-full bg-purple-600 hover:bg-purple-700 mt-auto" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                   Partner as Tech Provider
                 </Button>
               </CardContent>
             </Card>
 
             {/* Investors */}
-            <Card className="border-2 border-green-200 hover:border-green-400 transition-colors">
+            <Card className="border-2 border-green-200 hover:border-green-400 transition-colors flex flex-col h-full">
               <CardHeader className="bg-green-50">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,12 +203,12 @@ export default function Partnerships() {
                 </div>
                 <CardTitle className="text-xl text-green-900">Investors</CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col flex-grow">
                 <p className="text-gray-600 mb-6">
                   Access comprehensive market intelligence and exclusive opportunities in the rapidly growing direct booking sector.
                 </p>
                 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-4 mb-6 flex-grow">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
                     <div>
@@ -234,7 +234,7 @@ export default function Partnerships() {
                   </div>
                 </div>
 
-                <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+                <Button className="w-full bg-green-600 hover:bg-green-700 mt-auto" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                   Partner as Investor
                 </Button>
               </CardContent>
