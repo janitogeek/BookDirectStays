@@ -808,7 +808,7 @@ export default function Submit() {
                   aria-pressed={form.watch("Choose Your Listing Type") === "Premium (€499.99/year)"}
                 >
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
+                    <span className="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
                     <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</span>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
