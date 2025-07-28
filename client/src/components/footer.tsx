@@ -105,22 +105,6 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">Top Countries</h3>
-            <ul className="space-y-2">
-              {topCountries.slice(0, 5).map((country) => (
-                <li key={country.name}>
-                  <Link 
-                    href={`/country/${slugify(country.name)}`} 
-                    className="text-gray-300 hover:text-white"
-                  >
-                    {country.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
             <h3 className="text-lg font-semibold mb-4">Top Cities</h3>
             <ul className="space-y-2">
               {topCities.slice(0, 5).map((city) => (
@@ -131,6 +115,22 @@ export default function Footer() {
                   >
                     <div className="text-sm">{city.name}</div>
                     <div className="text-xs text-gray-400">{city.country}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Top Countries</h3>
+            <ul className="space-y-2">
+              {topCountries.slice(0, 5).map((country) => (
+                <li key={country.name}>
+                  <Link 
+                    href={`/country/${slugify(country.name)}`} 
+                    className="text-gray-300 hover:text-white"
+                  >
+                    {country.name}
                   </Link>
                 </li>
               ))}
