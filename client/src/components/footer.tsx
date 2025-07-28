@@ -2,11 +2,27 @@ import { Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { getTopCountriesWithCounts, getTopCitiesWithCounts } from "@/lib/submission-processor";
+import { slugify } from "@/lib/utils";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Fetch top destinations data
+  const { data: topCountries = [] } = useQuery({
+    queryKey: ["/api/top-countries"],
+    queryFn: () => getTopCountriesWithCounts(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+
+  const { data: topCities = [] } = useQuery({
+    queryKey: ["/api/top-cities"],
+    queryFn: () => getTopCitiesWithCounts(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +51,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">BookDirectStays.com</h3>
             <p className="text-gray-300 mb-4">
@@ -84,33 +100,43 @@ export default function Footer() {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">Top Destinations</h3>
+            <h3 className="text-lg font-semibold mb-4">🏆 Top Countries</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/country/spain" className="text-gray-300 hover:text-white">
-                  Spain
-                </Link>
-              </li>
-              <li>
-                <Link href="/country/italy" className="text-gray-300 hover:text-white">
-                  Italy
-                </Link>
-              </li>
-              <li>
-                <Link href="/country/france" className="text-gray-300 hover:text-white">
-                  France
-                </Link>
-              </li>
-              <li>
-                <Link href="/country/united-states" className="text-gray-300 hover:text-white">
-                  United States
-                </Link>
-              </li>
-              <li>
-                <Link href="/country/thailand" className="text-gray-300 hover:text-white">
-                  Thailand
-                </Link>
-              </li>
+              {topCountries.slice(0, 5).map((country) => (
+                <li key={country.name}>
+                  <Link 
+                    href={`/country/${slugify(country.name)}`} 
+                    className="text-gray-300 hover:text-white flex items-center justify-between group"
+                  >
+                    <span>{country.name}</span>
+                    <span className="text-xs text-gray-400 group-hover:text-gray-300">
+                      {country.count}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold mb-4">🏙️ Top Cities</h3>
+            <ul className="space-y-2">
+              {topCities.slice(0, 5).map((city) => (
+                <li key={`${city.name}-${city.country}`}>
+                  <Link 
+                    href={`/country/${slugify(city.country)}/${slugify(city.name)}`} 
+                    className="text-gray-300 hover:text-white flex items-center justify-between group"
+                  >
+                    <div>
+                      <div className="text-sm">{city.name}</div>
+                      <div className="text-xs text-gray-400">{city.country}</div>
+                    </div>
+                    <span className="text-xs text-gray-400 group-hover:text-gray-300">
+                      {city.count}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
