@@ -45,7 +45,7 @@ export default function Testimonials() {
     airbnbTotal: "€726",
     directTotal: "€616",
     nights: 2,
-    review: "I discovered Le Diderot through BookDirectStays directory and booked directly with Zenica's website. The process was seamless and I saved €110 compared to Airbnb! The apartment was exactly as described - beautifully furnished, centrally located in Dijon, perfect for our 2-night stay. Booking direct not only saved us money but also gave us direct contact with the host for any questions. Highly recommend using BookDirectStays to find these hidden gems!",
+    review: "I discovered Le Diderot through BookDirectStays directory and booked directly with Zenica's website. The process was seamless and I saved €110 compared to Airbnb! The apartment was exactly as described - beautifully furnished, centrally located in Dijon, perfect for our 2-night stay. Booking direct not only saved us money but also gave us direct contact with Domenico for any questions. Highly recommend using BookDirectStays to find these hidden gems!",
     rating: 5
   };
 
