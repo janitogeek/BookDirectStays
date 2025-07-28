@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { airtableService } from "@/lib/airtable";
-import { getTopCountriesWithCounts, getTopCitiesWithCounts } from "@/lib/submission-processor";
-import { slugify, getFlagByCountryName } from "@/lib/utils";
+import { slugify } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -23,27 +22,7 @@ export default function Home() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Fetch top countries with submission counts
-  const { data: topCountries = [], isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/top-countries"],
-    queryFn: () => getTopCountriesWithCounts(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
 
-  // Fetch top cities with submission counts
-  const { data: topCities = [], isLoading: isCitiesLoading } = useQuery({
-    queryKey: ["/api/top-cities"],
-    queryFn: () => getTopCitiesWithCounts(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  // Transform top countries into country objects with metadata
-  const countries = topCountries.map((country, index) => ({
-    id: index + 1,
-    name: country.name,
-    slug: slugify(country.name),
-    count: country.count
-  }));
 
   return (
     <main className="min-h-screen">
@@ -332,112 +311,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Top Destinations Section - Countries and Cities */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                Top Destinations
-              </h2>
-              <p className="text-xl text-gray-600">
-                Most popular countries and cities for direct booking vacation rentals
-              </p>
-            </div>
 
-            {/* Two-column layout: Top Countries | Top Cities */}
-            <div className="grid md:grid-cols-2 gap-12">
-              {/* Top Countries - First in DOM order */}
-              <div className="order-1 md:order-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏆 Top 5 Countries</h3>
-                <div className="space-y-4">
-                  {isCountriesLoading ? (
-                    Array.from({ length: 5 }).map((_, i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="bg-gray-200 rounded-lg h-16 w-full"></div>
-                      </div>
-                    ))
-                  ) : (
-                    countries.map((country) => (
-                      <div 
-                        key={country.id} 
-                        onClick={() => setLocation(`/country/${country.slug}`)}
-                        className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg p-4 transition-all cursor-pointer group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-2xl">{getFlagByCountryName(country.name)}</span>
-                              <span className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
-                                {country.name}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                            {country.count} hosts
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Top Cities - Second in DOM order */}
-              <div className="order-2 md:order-2">
-                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏙️ Top 5 Cities</h3>
-                <div className="space-y-4">
-                  {isCitiesLoading ? (
-                    Array.from({ length: 5 }).map((_, i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="bg-gray-200 rounded-lg h-16 w-full"></div>
-                      </div>
-                    ))
-                  ) : (
-                    topCities.map((city, index) => (
-                      <div 
-                        key={index} 
-                        onClick={() => setLocation(`/country/${slugify(city.country)}/${slugify(city.name)}`)}
-                        className="bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-300 rounded-lg p-4 transition-all cursor-pointer group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xl">📍</span>
-                              <div>
-                                <span className="text-lg font-semibold text-gray-900 group-hover:text-green-600">
-                                  {city.name}
-                                </span>
-                                <div className="flex items-center gap-1 text-sm text-gray-600">
-                                  <span className="text-lg">{getFlagByCountryName(city.country)}</span>
-                                  {city.country}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                            {city.count} hosts
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            {/* Browse All Countries Button */}
-            <div className="text-center mt-16">
-              <Button 
-                onClick={() => setLocation("/find-host")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold"
-              >
-                Browse All Countries & Cities
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Expert Quote Section - Clean and Prominent */}
       <section className="py-20 bg-gray-50">
@@ -539,8 +413,11 @@ export default function Home() {
              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
                Join thousands of travelers who save 15.7% on average by booking directly with property managers.
              </p>
-             <Button className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold">
-               Start Searching Properties
+             <Button 
+               onClick={() => setLocation("/find-host")}
+               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold"
+             >
+               Start Searching Stays
              </Button>
            </div>
          </div>
