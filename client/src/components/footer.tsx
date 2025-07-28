@@ -106,12 +106,9 @@ export default function Footer() {
                 <li key={country.name}>
                   <Link 
                     href={`/country/${slugify(country.name)}`} 
-                    className="text-gray-300 hover:text-white flex items-center justify-between group"
+                    className="text-gray-300 hover:text-white"
                   >
-                    <span>{country.name}</span>
-                    <span className="text-xs text-gray-400 group-hover:text-gray-300">
-                      {country.count}
-                    </span>
+                    {country.name}
                   </Link>
                 </li>
               ))}
@@ -125,15 +122,10 @@ export default function Footer() {
                 <li key={`${city.name}-${city.country}`}>
                   <Link 
                     href={`/country/${slugify(city.country)}/${slugify(city.name)}`} 
-                    className="text-gray-300 hover:text-white flex items-center justify-between group"
+                    className="text-gray-300 hover:text-white"
                   >
-                    <div>
-                      <div className="text-sm">{city.name}</div>
-                      <div className="text-xs text-gray-400">{city.country}</div>
-                    </div>
-                    <span className="text-xs text-gray-400 group-hover:text-gray-300">
-                      {city.count}
-                    </span>
+                    <div className="text-sm">{city.name}</div>
+                    <div className="text-xs text-gray-400">{city.country}</div>
                   </Link>
                 </li>
               ))}
