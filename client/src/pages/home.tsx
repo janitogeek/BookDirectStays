@@ -347,8 +347,8 @@ export default function Home() {
 
             {/* Two-column layout: Top Countries | Top Cities */}
             <div className="grid md:grid-cols-2 gap-12">
-              {/* Top Countries */}
-              <div>
+              {/* Top Countries - First in DOM order */}
+              <div className="order-1 md:order-1">
                 <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏆 Top 5 Countries</h3>
                 <div className="space-y-4">
                   {isCountriesLoading ? (
@@ -383,8 +383,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Top Cities */}
-              <div>
+              {/* Top Cities - Second in DOM order */}
+              <div className="order-2 md:order-2">
                 <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏙️ Top 5 Cities</h3>
                 <div className="space-y-4">
                   {isCitiesLoading ? (

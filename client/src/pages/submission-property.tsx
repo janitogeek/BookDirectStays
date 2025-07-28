@@ -196,16 +196,6 @@ export default function SubmissionProperty() {
                   </div>
                 )}
 
-                {/* Cities - Same styling as countries, positioned above */}
-                {submission.citiesRegions && submission.citiesRegions.length > 0 && (
-                  <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
-                    <span className="flex items-center gap-1 flex-wrap">
-                      Cities: {submission.citiesRegions.join(", ")}
-                    </span>
-                  </div>
-                )}
-
                 {/* Countries - Moved after Property Types */}
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
@@ -219,10 +209,13 @@ export default function SubmissionProperty() {
                   </span>
                 </div>
 
-                {/* Cities/Regions */}
+                {/* Cities - Same styling as countries, positioned after countries */}
                 {submission.citiesRegions && submission.citiesRegions.length > 0 && (
-                  <div className="text-gray-700 mb-4">
-                    <span className="font-medium">Cities:</span> {submission.citiesRegions.join(", ")}
+                  <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <span className="flex items-center gap-1 flex-wrap">
+                      Cities: {submission.citiesRegions.join(", ")}
+                    </span>
                   </div>
                 )}
 
