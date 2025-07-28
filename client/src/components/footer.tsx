@@ -147,7 +147,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-start">
-                <a href="https://wa.me/33769157421" target="_blank" rel="noopener noreferrer" className="flex items-start text-gray-300 hover:text-white transition-colors">
+                <a href="https://api.whatsapp.com/send/?phone=33769157421&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="flex items-start text-gray-300 hover:text-white transition-colors">
                   <i className="fab fa-whatsapp mt-1 mr-2"></i>
                   <span>+33 7 69 15 74 21</span>
                 </a>
