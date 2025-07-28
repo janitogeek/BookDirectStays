@@ -39,6 +39,12 @@ export default function Header() {
               Add Your Direct Booking Site
             </Link>
             <Link 
+              href="/partnerships" 
+              className={`font-medium ${location === '/partnerships' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              Partnerships
+            </Link>
+            <Link 
               href="/faq" 
               className={`font-medium ${location === '/faq' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
             >
@@ -82,6 +88,13 @@ export default function Header() {
                 onClick={closeMenu}
               >
                 Add Your Direct Booking Site
+              </Link>
+              <Link 
+                href="/partnerships"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/partnerships' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                Partnerships
               </Link>
               <Link 
                 href="/faq"

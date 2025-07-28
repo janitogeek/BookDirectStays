@@ -9,6 +9,7 @@ import FindHost from "@/pages/find-host";
 import Country from "@/pages/country";
 import City from "@/pages/city";
 import Submit from "@/pages/submit";
+import Partnerships from "@/pages/partnerships";
 import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
 import Property from "@/pages/property";
@@ -39,6 +40,7 @@ function Router() {
           <Route path="/country/:country/:city" component={City} />
           <Route path="/country/:country" component={Country} />
           <Route path="/submit" component={Submit} />
+          <Route path="/partnerships" component={Partnerships} />
           <Route path="/faq" component={FAQ} />
           <Route path="/testimonials" component={Testimonials} />
           <Route path="/property/:id" component={SubmissionProperty} />
