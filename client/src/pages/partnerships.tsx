@@ -111,7 +111,7 @@ export default function Partnerships() {
               </CardHeader>
               <CardContent className="p-6 flex flex-col flex-grow">
                 <p className="text-gray-600 mb-6">
-                  Maximize your visibility and drive more direct bookings through our verified direct booking directory and our tailored consulting and content creation services.
+                  Maximize your visibility and drive more direct bookings with our tailored consulting and content creation services.
                 </p>
                 
                 <div className="space-y-4 mb-6 flex-grow">
@@ -119,7 +119,7 @@ export default function Partnerships() {
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                     <div>
                       <h4 className="font-semibold text-gray-900">Content Creation for Social Media</h4>
-                      <p className="text-sm text-gray-600">Engaging, high-conversion content designed for TikTok and Instagram to showcase your properties and attract guests where they are most active.</p>
+                      <p className="text-sm text-gray-600">Engaging, high-conversion content designed for your socials to showcase your properties and attract guests where they are most active.</p>
                     </div>
                   </div>
                   
