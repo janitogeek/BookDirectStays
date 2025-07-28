@@ -267,8 +267,7 @@ export default function Home() {
               <div className="text-center mt-8">
                 <Button 
                   onClick={() => setLocation("/testimonials")}
-                  variant="outline"
-                  className="border-green-500 text-green-600 hover:bg-green-50 px-6 py-3 text-sm font-semibold"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 text-sm font-semibold"
                 >
                   📊 See Other Examples
                 </Button>
