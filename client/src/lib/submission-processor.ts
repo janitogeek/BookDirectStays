@@ -287,3 +287,95 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     return {};
   }
 } 
+
+/**
+ * Get top countries with submission counts
+ */
+export async function getTopCountriesWithCounts(): Promise<Array<{name: string, count: number}>> {
+  try {
+    const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    const countryCounts: Record<string, number> = {};
+    
+    approvedSubmissions.forEach(submission => {
+      submission.countries.forEach(country => {
+        const capitalizedCountry = capitalizeCountryName(country);
+        countryCounts[capitalizedCountry] = (countryCounts[capitalizedCountry] || 0) + 1;
+      });
+    });
+    
+    // Sort by count descending and take top 5
+    const sortedCountries = Object.entries(countryCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    
+    console.log(`🏆 Top 5 countries:`, sortedCountries);
+    return sortedCountries;
+    
+  } catch (error) {
+    console.error(`❌ Error getting top countries:`, error);
+    return [];
+  }
+}
+
+/**
+ * Get top cities with submission counts (across all countries)
+ */
+export async function getTopCitiesWithCounts(): Promise<Array<{name: string, country: string, count: number}>> {
+  try {
+    const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    const cityCounts: Record<string, {country: string, count: number}> = {};
+    
+    for (const submission of approvedSubmissions) {
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        
+        // Process each country the submission operates in
+        for (const country of submission.countries) {
+          const capitalizedCountry = capitalizeCountryName(country);
+          
+          const cityObjects = submission.citiesRegions.map((city: any) => ({
+            name: typeof city === 'string' ? city : (city?.name || city),
+            geonameId: typeof city === 'object' && city?.geonameId ? city.geonameId : undefined
+          }));
+          
+          const validations = await validateCitiesForCountries(
+            cityObjects,
+            [country]
+          );
+          
+          validations
+            .filter(validation => validation.isValid)
+            .forEach(validation => {
+              const cityName = validation.validatedName || validation.cityName;
+              const cityKey = `${cityName}, ${capitalizedCountry}`;
+              
+              if (!cityCounts[cityKey]) {
+                cityCounts[cityKey] = { country: capitalizedCountry, count: 0 };
+              }
+              cityCounts[cityKey].count += 1;
+            });
+        }
+      }
+    }
+    
+    // Sort by count descending and take top 5
+    const sortedCities = Object.entries(cityCounts)
+      .map(([cityCountryKey, data]) => {
+        const cityName = cityCountryKey.split(', ')[0];
+        return {
+          name: cityName,
+          country: data.country,
+          count: data.count
+        };
+      })
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+    
+    console.log(`🏆 Top 5 cities:`, sortedCities);
+    return sortedCities;
+    
+  } catch (error) {
+    console.error(`❌ Error getting top cities:`, error);
+    return [];
+  }
+} 

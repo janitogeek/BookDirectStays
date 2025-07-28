@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { getActiveCountries } from "@/lib/submission-processor";
+import { getActiveCountries, getTopCountriesWithCounts, getTopCitiesWithCounts } from "@/lib/submission-processor";
 import { slugify } from "@/lib/utils";
 
 export default function Home() {
@@ -23,6 +23,19 @@ export default function Home() {
     queryKey: ["/api/active-countries"],
     queryFn: () => getActiveCountries(),
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Fetch top destinations data
+  const { data: topCountries = [], isLoading: isTopCountriesLoading } = useQuery({
+    queryKey: ["/api/top-countries"],
+    queryFn: () => getTopCountriesWithCounts(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+
+  const { data: topCities = [], isLoading: isTopCitiesLoading } = useQuery({
+    queryKey: ["/api/top-cities"],
+    queryFn: () => getTopCitiesWithCounts(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 
   // Transform active country names into country objects with metadata
@@ -306,6 +319,119 @@ export default function Home() {
               <div className="text-4xl font-bold text-orange-600 mb-2">98%</div>
               <div className="text-gray-600 text-sm font-medium">Host Response Rate</div>
               <div className="text-xs text-gray-500 mt-1">within 24 hours</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Destinations Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                🌟 Top Destinations
+              </h2>
+              <p className="text-xl text-gray-600">
+                Most popular countries and cities for direct booking vacation rentals
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+              {/* Top 5 Countries */}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                  🏆 Top 5 Countries
+                </h3>
+                <div className="space-y-4">
+                  {isTopCountriesLoading ? (
+                    // Loading skeleton
+                    [...Array(5)].map((_, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl animate-pulse">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        </div>
+                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                      </div>
+                    ))
+                  ) : (
+                    topCountries.map((country, index) => (
+                      <div key={country.name} className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors cursor-pointer group">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">
+                            #{index + 1}
+                          </div>
+                          <span className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                            {country.name}
+                          </span>
+                        </div>
+                        <div className="text-blue-600 font-bold">
+                          {country.count} {country.count === 1 ? 'property' : 'properties'}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Top 5 Cities */}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                  🏙️ Top 5 Cities
+                </h3>
+                <div className="space-y-4">
+                  {isTopCitiesLoading ? (
+                    // Loading skeleton
+                    [...Array(5)].map((_, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl animate-pulse">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                          <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-24"></div>
+                            <div className="h-3 bg-gray-200 rounded w-16"></div>
+                          </div>
+                        </div>
+                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                      </div>
+                    ))
+                  ) : (
+                    topCities.map((city, index) => (
+                      <div key={`${city.name}-${city.country}`} className="flex items-center justify-between p-4 bg-green-50 hover:bg-green-100 rounded-xl transition-colors cursor-pointer group">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-sm">
+                            #{index + 1}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                              {city.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {city.country}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-green-600 font-bold">
+                          {city.count} {city.count === 1 ? 'property' : 'properties'}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-16">
+              <p className="text-gray-600 mb-6">
+                Want to explore properties in these destinations?
+              </p>
+              <Button 
+                onClick={() => setLocation("/find-host")}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+              >
+                Find Properties Now
+              </Button>
             </div>
           </div>
         </div>
