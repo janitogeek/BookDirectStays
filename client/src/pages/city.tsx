@@ -57,12 +57,21 @@ export default function City() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Filter submissions by city
+  // Filter submissions by city (handle accented characters)
+  const normalizeForComparison = (text: string) => {
+    return text
+      .toLowerCase()
+      .normalize('NFD') // Decompose accented characters
+      .replace(/[\u0300-\u036f]/g, ''); // Remove diacritics/accents
+  };
+
   const citySubmissions = allSubmissions.filter(submission => 
-    submission.citiesRegions.some(city => 
-      city.toLowerCase().includes(cityName?.toLowerCase() || '') ||
-      (cityName?.toLowerCase() || '').includes(city.toLowerCase())
-    )
+    submission.citiesRegions.some(city => {
+      const normalizedCity = normalizeForComparison(city);
+      const normalizedCityName = normalizeForComparison(cityName || '');
+      return normalizedCity.includes(normalizedCityName) ||
+             normalizedCityName.includes(normalizedCity);
+    })
   );
 
   // Filter submissions by all active filters
