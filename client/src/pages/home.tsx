@@ -262,6 +262,17 @@ export default function Home() {
               <p className="text-sm text-gray-600 mt-6 max-w-2xl mx-auto">
                 *Real data comparison: Skol 927A on Airbnb vs Skol direct website. Guests pay 24% less (€399.5 savings), hosts pay 0% fees vs 15%+ commission to OTAs.
               </p>
+              
+              {/* See Other Examples CTA */}
+              <div className="text-center mt-8">
+                <Button 
+                  onClick={() => setLocation("/testimonials")}
+                  variant="outline"
+                  className="border-green-500 text-green-600 hover:bg-green-50 px-6 py-3 text-sm font-semibold"
+                >
+                  📊 See Other Examples
+                </Button>
+              </div>
             </div>
           </div>
         </div>
