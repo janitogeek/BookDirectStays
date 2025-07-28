@@ -40,12 +40,12 @@ export default function Testimonials() {
     role: "guest",
     location: "Dijon, France",
     property: "Le Diderot - 2 bedrooms - central",
-    savings: "15%",
-    amountSaved: "€110",
-    airbnbTotal: "€726",
-    directTotal: "€616",
+    savings: "13%",
+    amountSaved: "€35.17",
+    airbnbTotal: "€261.17",
+    directTotal: "€226",
     nights: 2,
-    review: "I discovered Le Diderot through BookDirectStays directory and booked directly with Zenica's website. The process was seamless and I saved €110 compared to Airbnb! The apartment was exactly as described - beautifully furnished, centrally located in Dijon, perfect for our 2-night stay. Booking direct not only saved us money but also gave us direct contact with Domenico for any questions. Highly recommend using BookDirectStays to find these hidden gems!",
+    review: "I discovered Le Diderot through BookDirectStays directory and booked directly with Zenica's website. The process was seamless and I saved €35.17 compared to Airbnb! The apartment was exactly as described - beautifully furnished, centrally located in Dijon, perfect for our 2-night stay. Booking direct not only saved us money but also gave us direct contact with Domenico for any questions. Highly recommend using BookDirectStays to find these hidden gems!",
     rating: 5
   };
 
@@ -269,7 +269,7 @@ export default function Testimonials() {
             <div className="space-y-4">
               <div className="text-center">
                 <h4 className="text-lg font-semibold mb-3 text-gray-900">Le Diderot - 2 bedrooms - central</h4>
-                <p className="text-red-600 font-bold text-xl mb-4">Total: €726.00 for 2 nights</p>
+                <p className="text-red-600 font-bold text-xl mb-4">Total: €261.17 for 2 nights</p>
               </div>
               <img 
                 src="/uploads/airbnb-le-diderot-screenshot.png"
@@ -277,7 +277,7 @@ export default function Testimonials() {
                 className="w-full rounded-lg border shadow-lg"
               />
               <p className="text-sm text-gray-600 text-center">
-                Real Airbnb booking page showing €726.00 total for Le Diderot apartment
+                Real Airbnb booking page showing €261.17 total for Le Diderot apartment
               </p>
             </div>
           </DialogContent>
@@ -292,7 +292,7 @@ export default function Testimonials() {
             <div className="space-y-4">
               <div className="text-center">
                 <h4 className="text-lg font-semibold mb-3 text-gray-900">Le Diderot - 2 bedrooms - central</h4>
-                <p className="text-green-600 font-bold text-xl mb-4">Total: €616.00 for 2 nights (€80/night)</p>
+                <p className="text-green-600 font-bold text-xl mb-4">Total: €226.00 for 2 nights</p>
               </div>
               <img 
                 src="/uploads/zenica-direct-le-diderot-screenshot.png"
@@ -300,7 +300,7 @@ export default function Testimonials() {
                 className="w-full rounded-lg border shadow-lg"
               />
               <p className="text-sm text-gray-600 text-center">
-                Real Zenica direct booking website showing €80/night (€160 total) for the same property
+                Real Zenica direct booking website showing €226.00 total for the same property
               </p>
             </div>
           </DialogContent>
