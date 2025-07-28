@@ -801,7 +801,7 @@ export default function Submit() {
                   </div>
                 </div>
                 <div
-                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
+                  className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? "border-green-500 bg-green-50 shadow-lg" : "border-gray-200 bg-white"}`}
                   onClick={() => form.setValue("Choose Your Listing Type", "Premium (€499.99/year)")}
                   tabIndex={0}
                   role="button"
