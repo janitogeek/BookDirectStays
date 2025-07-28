@@ -272,8 +272,8 @@ export default function Testimonials() {
                 <p className="text-red-600 font-bold text-xl mb-4">Total: €261.17 for 2 nights</p>
               </div>
               <img 
-                src="/uploads/airbnb-le-diderot-screenshot.png"
-                alt="Airbnb booking screenshot showing €726 total for Le Diderot 2 nights" 
+                src="/uploads/zenica-direct-le-diderot-screenshot.png"
+                alt="Airbnb booking screenshot showing €261.17 total for Le Diderot 2 nights" 
                 className="w-full rounded-lg border shadow-lg"
               />
               <p className="text-sm text-gray-600 text-center">
@@ -295,8 +295,8 @@ export default function Testimonials() {
                 <p className="text-green-600 font-bold text-xl mb-4">Total: €226.00 for 2 nights</p>
               </div>
               <img 
-                src="/uploads/zenica-direct-le-diderot-screenshot.png"
-                alt="Zenica direct website screenshot showing €80 per night for Le Diderot" 
+                src="/uploads/airbnb-le-diderot-screenshot.png"
+                alt="Zenica direct website screenshot showing €226.00 for Le Diderot" 
                 className="w-full rounded-lg border shadow-lg"
               />
               <p className="text-sm text-gray-600 text-center">

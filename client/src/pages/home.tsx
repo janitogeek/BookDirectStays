@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { airtableService } from "@/lib/airtable";
-import { getActiveCountries } from "@/lib/submission-processor";
-import { slugify } from "@/lib/utils";
+import { getTopCountriesWithCounts, getTopCitiesWithCounts } from "@/lib/submission-processor";
+import { slugify, getFlagByCountryName } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -23,20 +23,26 @@ export default function Home() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Fetch active countries (dynamic from actual submissions)
-  const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/active-countries"],
-    queryFn: () => getActiveCountries(),
+  // Fetch top countries with submission counts
+  const { data: topCountries = [], isLoading: isCountriesLoading } = useQuery({
+    queryKey: ["/api/top-countries"],
+    queryFn: () => getTopCountriesWithCounts(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // Transform active country names into country objects with metadata
-  const countries = activeCountryNames.map((countryName, index) => ({
+  // Fetch top cities with submission counts
+  const { data: topCities = [], isLoading: isCitiesLoading } = useQuery({
+    queryKey: ["/api/top-cities"],
+    queryFn: () => getTopCitiesWithCounts(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // Transform top countries into country objects with metadata
+  const countries = topCountries.map((country, index) => ({
     id: index + 1,
-    name: countryName,
-    slug: slugify(countryName),
-    // We'll get actual counts later, for now show placeholder
-    count: 0
+    name: country.name,
+    slug: slugify(country.name),
+    count: country.count
   }));
 
   return (
@@ -326,21 +332,110 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Countries Section - Clean and Organized */}
+      {/* Top Destinations Section - Countries and Cities */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Explore Direct Booking Properties Worldwide
-            </h2>
-            <p className="text-xl text-gray-600">
-              Browse verified vacation rental websites by country
-            </p>
-          </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                Top Destinations
+              </h2>
+              <p className="text-xl text-gray-600">
+                Most popular countries and cities for direct booking vacation rentals
+              </p>
+            </div>
 
-                     <div className="max-w-6xl mx-auto">
-             <CountryTags countries={countries} isLoading={isCountriesLoading} />
-           </div>
+            {/* Two-column layout: Top Countries | Top Cities */}
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Top Countries */}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏆 Top 5 Countries</h3>
+                <div className="space-y-4">
+                  {isCountriesLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="bg-gray-200 rounded-lg h-16 w-full"></div>
+                      </div>
+                    ))
+                  ) : (
+                    countries.map((country) => (
+                      <div 
+                        key={country.id} 
+                        onClick={() => setLocation(`/country/${country.slug}`)}
+                        className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg p-4 transition-all cursor-pointer group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl">{getFlagByCountryName(country.name)}</span>
+                              <span className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                                {country.name}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                            {country.count} hosts
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Top Cities */}
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">🏙️ Top 5 Cities</h3>
+                <div className="space-y-4">
+                  {isCitiesLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="bg-gray-200 rounded-lg h-16 w-full"></div>
+                      </div>
+                    ))
+                  ) : (
+                    topCities.map((city, index) => (
+                      <div 
+                        key={index} 
+                        onClick={() => setLocation(`/country/${slugify(city.country)}/${slugify(city.name)}`)}
+                        className="bg-gray-50 hover:bg-green-50 border border-gray-200 hover:border-green-300 rounded-lg p-4 transition-all cursor-pointer group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">📍</span>
+                              <div>
+                                <span className="text-lg font-semibold text-gray-900 group-hover:text-green-600">
+                                  {city.name}
+                                </span>
+                                <div className="flex items-center gap-1 text-sm text-gray-600">
+                                  <span className="text-lg">{getFlagByCountryName(city.country)}</span>
+                                  {city.country}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            {city.count} hosts
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Browse All Countries Button */}
+            <div className="text-center mt-16">
+              <Button 
+                onClick={() => setLocation("/find-host")}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+              >
+                Browse All Countries & Cities
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

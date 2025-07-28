@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
-import CountryTags from "@/components/country-tags";
 import HostFilters, { FilterState } from "@/components/host-filters";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -482,10 +481,13 @@ export default function Country() {
                           href={`/country/${countrySlug}/${city.toLowerCase().replace(/\s+/g, '-')}`}
                           className="block text-center"
                         >
-                          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                            {city}
-                          </h3>
-                          <Badge variant="secondary" className="mt-2 bg-blue-100 text-blue-800">
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <span className="text-lg">📍</span>
+                            <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                              {city}
+                            </h3>
+                          </div>
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                             {getCitySubmissionCount(city)} hosts
                           </Badge>
                         </Link>
