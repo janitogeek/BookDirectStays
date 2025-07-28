@@ -18,19 +18,12 @@ export default function Partnerships() {
             <p className="text-xl lg:text-2xl mb-8 opacity-90">
               Join the movement transforming vacation rental bookings - empowering direct connections between guests and hosts worldwide
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button 
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Start Partnership
-              </Button>
-              <Button 
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
-                onClick={() => document.getElementById('why-partner')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Learn More
               </Button>
             </div>
           </div>
@@ -118,31 +111,31 @@ export default function Partnerships() {
               </CardHeader>
               <CardContent className="p-6">
                 <p className="text-gray-600 mb-6">
-                  Elevate your portfolio visibility and streamline guest acquisition through our verified direct booking platform.
+                  Maximize your visibility and drive more direct bookings through our verified direct booking directory and our tailored consulting and content creation services.
                 </p>
                 
                 <div className="space-y-4 mb-6">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Content Creation Services</h4>
-                      <p className="text-sm text-gray-600">Professional property descriptions, photography optimization, and listing enhancement</p>
+                      <h4 className="font-semibold text-gray-900">Content Creation for Social Media</h4>
+                      <p className="text-sm text-gray-600">Engaging, high-conversion content designed for TikTok and Instagram to showcase your properties and attract guests where they are most active.</p>
                     </div>
                   </div>
                   
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Premium Listing Features</h4>
-                      <p className="text-sm text-gray-600">Featured placement, enhanced analytics, and priority customer support</p>
+                      <h4 className="font-semibold text-gray-900">Consulting Services</h4>
+                      <p className="text-sm text-gray-600">Strategic guidance to increase your direct website's visibility, strengthen your brand, and turn traffic into direct bookings.</p>
                     </div>
                   </div>
                   
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">Performance Analytics</h4>
-                      <p className="text-sm text-gray-600">Detailed booking insights, market analysis, and revenue optimization recommendations</p>
+                      <h4 className="font-semibold text-gray-900">Traffic & Click Analytics</h4>
+                      <p className="text-sm text-gray-600">Transparent reporting with click and traffic insights so you can track the results of your listing and campaigns in real time.</p>
                     </div>
                   </div>
                 </div>
@@ -344,4 +337,4 @@ export default function Partnerships() {
       </section>
     </main>
   );
-}
+} 
