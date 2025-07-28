@@ -5,8 +5,21 @@ import { Link } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect, useState } from "react";
 
 export default function Testimonials() {
+  const [activeTab, setActiveTab] = useState("all");
+
+  // Check URL parameters to set initial tab
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab === 'travelers' || tab === 'guests') {
+      setActiveTab('guests');
+    } else if (tab === 'hosts') {
+      setActiveTab('hosts');
+    }
+  }, []);
   // Fetch testimonials
   const { data: testimonials, isLoading } = useQuery({
     queryKey: ["/api/testimonials"],
@@ -28,7 +41,7 @@ export default function Testimonials() {
           See what our community of travelers and hosts are saying about BookDirectStays.com
         </p>
 
-        <Tabs defaultValue="all" className="mb-12">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-12">
           <TabsList className="w-full mb-8 max-w-md mx-auto grid grid-cols-3">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="guests">Travelers</TabsTrigger>

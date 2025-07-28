@@ -266,7 +266,7 @@ export default function Home() {
               {/* See Other Examples CTA */}
               <div className="text-center mt-8">
                 <Button 
-                  onClick={() => setLocation("/testimonials")}
+                  onClick={() => setLocation("/testimonials?tab=travelers")}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 text-sm font-semibold"
                 >
                   📊 See Other Examples
