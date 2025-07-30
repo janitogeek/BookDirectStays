@@ -164,20 +164,23 @@ export default function SubmitSuccess() {
         // Try to upload rating screenshot with fallback field names
         const tryUploadRatingScreenshot = async () => {
           const possibleFieldNames = [
-            'Rating (X/5) & Reviews (#) Screenshot',
+            'Rating (X/5) & Reviews (#) Screenshot',  // Exact match first
             'Rating Screenshot', 
             'Reviews Screenshot',
             'Rating & Reviews Screenshot'
           ];
           
+          console.log('All possible field names to try:', possibleFieldNames);
+          
           for (const fieldName of possibleFieldNames) {
             try {
-              console.log(`Trying to upload rating screenshot to field: "${fieldName}"`);
+              console.log(`🔄 Attempting upload to field: "${fieldName}"`);
+              console.log(`📡 Upload URL will be: https://content.airtable.com/v0/.../${encodeURIComponent(fieldName)}/uploadAttachment`);
               await uploadAttachmentToAirtable(recordId, fieldName, ratingScreenshotData);
-              console.log(`Rating screenshot uploaded successfully to field: ${fieldName}`);
+              console.log(`✅ Rating screenshot uploaded successfully to field: "${fieldName}"`);
               return; // Success - exit the function
             } catch (error) {
-              console.error(`Rating screenshot upload failed for field "${fieldName}":`, error);
+              console.error(`❌ Rating screenshot upload failed for field "${fieldName}":`, error);
             }
           }
           
