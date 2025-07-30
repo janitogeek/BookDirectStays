@@ -5,10 +5,10 @@ export const stripePromise = loadStripe(
   (import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY || ''
 );
 
-// Stripe price IDs - configured with real price IDs from Stripe Dashboard
+// Stripe price IDs - configured with TEST MODE price IDs from Stripe Dashboard
 const PRICE_IDS = {
-  'Basic (€99.99/year)': 'price_1RqGFNAuRAOWZse80bVZnkJx',     // Basic Listing Plan - €99.99/year
-  'Premium (€499.99/year)': 'price_1RqGIAAuRAOWZse8t2w1xXcE', // Premium Listing Plan - €499.99/year
+  'Basic (€99.99/year)': 'price_1RqeHhAMrMcYfFXQ0KFK29FR',     // Basic Listing Plan (Test) - €99.99/year
+  'Premium (€499.99/year)': 'price_1RqeH2AMrMcYfFXQZos4UTzR', // Premium Listing Plan (Test) - €499.99/year
 };
 
 export const createCheckoutSession = async (formData: any, plan: string, email: string) => {
