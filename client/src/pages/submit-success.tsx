@@ -21,38 +21,9 @@ export default function SubmitSuccess() {
         throw new Error('No pending submission data found');
       }
 
-      const { formData, plan, email } = JSON.parse(pendingSubmissionData);
+      const { formData, processedFiles, plan, email } = JSON.parse(pendingSubmissionData);
 
-      // Helper function to get file from blob URL
-      const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {
-        const response = await fetch(blobUrl);
-        const blob = await response.blob();
-        return new File([blob], fileName, { type: blob.type });
-      };
-
-      // Helper function to process image file
-      const processImageFile = async (file: File): Promise<{ base64: string; contentType: string; filename: string }> => {
-        try {
-          const reader = new FileReader();
-          const base64Data = await new Promise<string>((resolve, reject) => {
-            reader.onload = () => {
-              const result = reader.result as string;
-              resolve(result.split(',')[1]); // Remove data:image/xxx;base64, prefix
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          });
-
-          return {
-            base64: base64Data,
-            contentType: file.type,
-            filename: file.name
-          };
-        } catch (error) {
-          console.error('Error converting file to base64:', error);
-          throw new Error('Failed to process image');
-        }
-      };
+      console.log('Processed files from localStorage:', processedFiles);
 
       // Upload attachment to Airtable using the upload API
       const uploadAttachmentToAirtable = async (recordId: string, fieldName: string, imageData: { base64: string; contentType: string; filename: string }) => {
@@ -91,42 +62,10 @@ export default function SubmitSuccess() {
         return result;
       };
 
-      // Process files
-      let logoData: { base64: string; contentType: string; filename: string } | null = null;
-      if (formData["Logo Upload"]?.url && formData["Logo Upload"]?.url.startsWith('blob:')) {
-        try {
-          console.log('Processing logo file...');
-          const logoFile = await getFileFromBlobUrl(formData["Logo Upload"].url, formData["Logo Upload"].name);
-          logoData = await processImageFile(logoFile);
-          console.log('Logo processed successfully');
-        } catch (error) {
-          console.error('Error processing logo:', error);
-        }
-      }
-
-      let highlightImageData: { base64: string; contentType: string; filename: string } | null = null;
-      if (formData["Highlight Image"]?.url && formData["Highlight Image"]?.url.startsWith('blob:')) {
-        try {
-          console.log('Processing highlight image...');
-          const imageFile = await getFileFromBlobUrl(formData["Highlight Image"].url, formData["Highlight Image"].name);
-          highlightImageData = await processImageFile(imageFile);
-          console.log('Highlight image processed successfully');
-        } catch (error) {
-          console.error('Error processing highlight image:', error);
-        }
-      }
-
-      let ratingScreenshotData: { base64: string; contentType: string; filename: string } | null = null;
-      if (formData["Rating (X/5) & Reviews (#) Screenshot"]?.url && formData["Rating (X/5) & Reviews (#) Screenshot"]?.url.startsWith('blob:')) {
-        try {
-          console.log('Processing rating screenshot...');
-          const screenshotFile = await getFileFromBlobUrl(formData["Rating (X/5) & Reviews (#) Screenshot"].url, formData["Rating (X/5) & Reviews (#) Screenshot"].name);
-          ratingScreenshotData = await processImageFile(screenshotFile);
-          console.log('Rating screenshot processed successfully');
-        } catch (error) {
-          console.error('Error processing rating screenshot:', error);
-        }
-      }
+      // Get processed files (already converted to base64 before Stripe redirect)
+      const logoData = processedFiles?.logo || null;
+      const highlightImageData = processedFiles?.highlightImage || null;
+      const ratingScreenshotData = processedFiles?.ratingScreenshot || null;
       
       // Create Airtable submission (similar to submit page logic)
       const submissionData: any = {

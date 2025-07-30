@@ -23,9 +23,77 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       throw new Error(`Invalid plan: ${plan}`);
     }
 
-    // Store form data in localStorage for processing after payment
+    // Process files before going to Stripe (since blob URLs expire after redirect)
+    console.log('Processing files before Stripe redirect...');
+    
+    // Helper functions
+    const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
+      return new File([blob], fileName, { type: blob.type });
+    };
+
+    const processImageFile = async (file: File): Promise<{ base64: string; contentType: string; filename: string }> => {
+      const reader = new FileReader();
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(',')[1]); // Remove data:image/xxx;base64, prefix
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      return {
+        base64: base64Data,
+        contentType: file.type,
+        filename: file.name
+      };
+    };
+
+    // Process each file if it exists
+    let processedFiles: any = {};
+
+    // Process logo
+    if (formData["Logo Upload"]?.url && formData["Logo Upload"]?.url.startsWith('blob:')) {
+      try {
+        console.log('Processing logo file...');
+        const logoFile = await getFileFromBlobUrl(formData["Logo Upload"].url, formData["Logo Upload"].name);
+        processedFiles.logo = await processImageFile(logoFile);
+        console.log('Logo processed successfully');
+      } catch (error) {
+        console.error('Error processing logo:', error);
+      }
+    }
+
+    // Process highlight image
+    if (formData["Highlight Image"]?.url && formData["Highlight Image"]?.url.startsWith('blob:')) {
+      try {
+        console.log('Processing highlight image...');
+        const imageFile = await getFileFromBlobUrl(formData["Highlight Image"].url, formData["Highlight Image"].name);
+        processedFiles.highlightImage = await processImageFile(imageFile);
+        console.log('Highlight image processed successfully');
+      } catch (error) {
+        console.error('Error processing highlight image:', error);
+      }
+    }
+
+    // Process rating screenshot
+    if (formData["Rating (X/5) & Reviews (#) Screenshot"]?.url && formData["Rating (X/5) & Reviews (#) Screenshot"]?.url.startsWith('blob:')) {
+      try {
+        console.log('Processing rating screenshot...');
+        const screenshotFile = await getFileFromBlobUrl(formData["Rating (X/5) & Reviews (#) Screenshot"].url, formData["Rating (X/5) & Reviews (#) Screenshot"].name);
+        processedFiles.ratingScreenshot = await processImageFile(screenshotFile);
+        console.log('Rating screenshot processed successfully');
+      } catch (error) {
+        console.error('Error processing rating screenshot:', error);
+      }
+    }
+
+    // Store form data with processed files in localStorage for processing after payment
     const submissionData = {
       formData,
+      processedFiles,
       plan,
       email,
       timestamp: Date.now(),
