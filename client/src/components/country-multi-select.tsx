@@ -49,15 +49,17 @@ export function CountryMultiSelect({ options, selected, onSelect }: CountryMulti
           <span className={selected.length === 0 ? "text-muted-foreground" : ""}>{display}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full min-w-[220px] max-h-60 overflow-y-auto p-1" align="start">
-        <Input
-          ref={inputRef}
-          placeholder="e.g. United States, France"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="mb-2"
-        />
-        <div className="max-h-40 overflow-y-auto">
+      <DropdownMenuContent className="w-full min-w-[220px] max-h-64 p-1 flex flex-col" align="start">
+        <div className="flex-shrink-0">
+          <Input
+            ref={inputRef}
+            placeholder="e.g. United States, France"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="mb-2"
+          />
+        </div>
+        <div className="flex-1 max-h-36 overflow-y-auto">
           {filtered.map(country => (
             <label key={country} className="flex items-center gap-2 cursor-pointer select-none px-2 py-1">
               <Checkbox
@@ -74,7 +76,7 @@ export function CountryMultiSelect({ options, selected, onSelect }: CountryMulti
             <div className="text-gray-400 text-sm px-2">No countries found</div>
           )}
         </div>
-        <div className="flex justify-end mt-2">
+        <div className="flex-shrink-0 flex justify-end mt-2 pt-2 border-t">
           <Button type="button" size="sm" onClick={() => setOpen(false)}>
             Done
           </Button>

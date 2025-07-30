@@ -76,15 +76,17 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
           <span className={selected.length === 0 ? "text-muted-foreground" : ""}>{display}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full min-w-[260px] max-h-72 overflow-y-auto p-1" align="start">
-        <Input
-          ref={inputRef}
-          placeholder={placeholder}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="mb-2"
-        />
-        <div className="max-h-48 overflow-y-auto">
+      <DropdownMenuContent className="w-full min-w-[260px] max-h-76 p-1 flex flex-col" align="start">
+        <div className="flex-shrink-0">
+          <Input
+            ref={inputRef}
+            placeholder={placeholder}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="mb-2"
+          />
+        </div>
+        <div className="flex-1 max-h-44 overflow-y-auto">
           {loading && <div className="text-sm text-muted-foreground px-2 py-1">Searching...</div>}
           {!loading && results.length === 0 && search.length >= 2 && (
             <div className="text-gray-400 text-sm px-2">No cities/regions found</div>
@@ -102,7 +104,7 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
             </label>
           ))}
         </div>
-        <div className="flex justify-end mt-2">
+        <div className="flex-shrink-0 flex justify-end mt-2 pt-2 border-t">
           <Button type="button" size="sm" onClick={() => setOpen(false)}>
             Done
           </Button>

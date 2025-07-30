@@ -46,7 +46,7 @@ const formSchema = z.object({
   }),
   "One-line Description": z.string().min(5).max(70),
   "Why Book With You?": z.string().min(10),
-  "Top Stats": z.string().optional().or(z.literal("")),
+  "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
@@ -687,7 +687,9 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Top Stats (list comma separated: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)</FormLabel>
+                  <FormLabel>
+                    Top Stats <RequiredAsterisk /> (list comma separated: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
                   </FormControl>
