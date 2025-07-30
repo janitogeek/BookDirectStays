@@ -45,8 +45,7 @@ export default function SubmitSuccess() {
         "YouTube / Video Tour": formData["YouTube / Video Tour"] || "",
         "Plan": plan === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : plan === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : plan,
         "Submission Date": new Date().toISOString().split('T')[0],
-        "Status": plan === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review",
-        "Payment Status": "Paid"
+        "Status": plan === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review"
       };
 
       // Submit to Airtable
