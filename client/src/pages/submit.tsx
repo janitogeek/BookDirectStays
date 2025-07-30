@@ -484,7 +484,7 @@ export default function Submit() {
       if (ratingScreenshotData) {
         console.log('Uploading rating screenshot attachment...');
         uploadPromises.push(
-          uploadAttachmentToAirtable(recordId, 'Rating (X/5) & Reviews (#) Screenshot', ratingScreenshotData)
+          uploadAttachmentToAirtable(recordId, 'Rating Screenshot', ratingScreenshotData)
             .then(() => console.log('Rating screenshot uploaded successfully'))
             .catch(error => {
               console.error('Rating screenshot upload failed:', error);

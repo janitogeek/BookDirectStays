@@ -40,7 +40,7 @@ export interface AirtableSubmission {
     'YouTube / Video Tour'?: string;
     'Logo'?: Array<{ url: string; filename: string }>;
     'Highlight Image'?: Array<{ url: string; filename: string }>;
-    'Rating (X/5) & Reviews (#) Screenshot'?: Array<{ url: string; filename: string }>;
+    'Rating Screenshot'?: Array<{ url: string; filename: string }>;
     'Status': string;
     'Submission Date': string;
   };
@@ -515,7 +515,7 @@ export const airtableService = {
     // Helper function to find rating screenshot field dynamically
     const findRatingScreenshotUrl = (): string | undefined => {
       // First try exact field name
-      const exactField = fields['Rating (X/5) & Reviews (#) Screenshot'];
+              const exactField = fields['Rating Screenshot'];
       if (exactField) {
         return getAttachmentUrl(exactField);
       }

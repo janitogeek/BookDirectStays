@@ -164,8 +164,8 @@ export default function SubmitSuccess() {
         // Try to upload rating screenshot with fallback field names
         const tryUploadRatingScreenshot = async () => {
           const possibleFieldNames = [
-            'Rating (X/5) & Reviews (#) Screenshot',  // Exact match first
-            'Rating Screenshot', 
+            'Rating Screenshot',  // New simplified field name (should work!)
+            'Rating (X/5) & Reviews (#) Screenshot',  // Old name as fallback
             'Reviews Screenshot',
             'Rating & Reviews Screenshot'
           ];
