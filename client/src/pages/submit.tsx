@@ -23,6 +23,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
 import { airtableService } from "@/lib/airtable";
+import { createCheckoutSession } from "@/lib/stripe";
 
 const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const formSchema = z.object({
@@ -128,6 +129,29 @@ export default function Submit() {
   });
 
   const onSubmit = async (values: FormValues) => {
+    try {
+      // Redirect to Stripe Checkout instead of directly submitting to Airtable
+      await createCheckoutSession(
+        values, // Pass entire form data
+        values["Choose Your Listing Type"], // Plan selection
+        values["Submitted By (Email)"] // Customer email
+      );
+      
+      // The user will be redirected to Stripe Checkout
+      // Form will be processed via webhook after successful payment
+      
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      toast({
+        title: "Payment Error",
+        description: "Failed to redirect to payment. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Keep the original submission logic for webhook processing
+  const processFormSubmission = async (values: FormValues) => {
     try {
       // Helper function to get file from blob URL
       const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {

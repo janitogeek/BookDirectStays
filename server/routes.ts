@@ -10,6 +10,14 @@ import { Router } from "express";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { listings, submissions } from "./schema";
+import { 
+  createCheckoutSession, 
+  handleWebhook, 
+  createPortalSession, 
+  getSubscription, 
+  getCustomerSubscriptions, 
+  getInvoice 
+} from "./stripe";
 
 const router = Router();
 
@@ -140,7 +148,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-
+  // Stripe routes
+  app.post("/api/stripe/create-checkout-session", createCheckoutSession);
+  app.post("/api/stripe/create-portal-session", createPortalSession);
+  app.get("/api/stripe/subscription/:subscriptionId", getSubscription);
+  app.get("/api/stripe/customer/:customerId/subscriptions", getCustomerSubscriptions);
+  app.get("/api/stripe/invoice/:invoiceId", getInvoice);
+  
+  // Stripe webhook - needs raw body for signature verification
+  app.post("/api/stripe/webhook", 
+    require('express').raw({ type: 'application/json' }), 
+    handleWebhook
+  );
 
   const httpServer = createServer(app);
 
