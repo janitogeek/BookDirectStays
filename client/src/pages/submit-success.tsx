@@ -22,6 +22,111 @@ export default function SubmitSuccess() {
       }
 
       const { formData, plan, email } = JSON.parse(pendingSubmissionData);
+
+      // Helper function to get file from blob URL
+      const getFileFromBlobUrl = async (blobUrl: string, fileName: string): Promise<File> => {
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
+        return new File([blob], fileName, { type: blob.type });
+      };
+
+      // Helper function to process image file
+      const processImageFile = async (file: File): Promise<{ base64: string; contentType: string; filename: string }> => {
+        try {
+          const reader = new FileReader();
+          const base64Data = await new Promise<string>((resolve, reject) => {
+            reader.onload = () => {
+              const result = reader.result as string;
+              resolve(result.split(',')[1]); // Remove data:image/xxx;base64, prefix
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          return {
+            base64: base64Data,
+            contentType: file.type,
+            filename: file.name
+          };
+        } catch (error) {
+          console.error('Error converting file to base64:', error);
+          throw new Error('Failed to process image');
+        }
+      };
+
+      // Upload attachment to Airtable using the upload API
+      const uploadAttachmentToAirtable = async (recordId: string, fieldName: string, imageData: { base64: string; contentType: string; filename: string }) => {
+        const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY;
+        const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID;
+
+        if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+          throw new Error('Airtable configuration missing');
+        }
+
+        const uploadUrl = `https://content.airtable.com/v0/${AIRTABLE_BASE_ID}/${recordId}/${encodeURIComponent(fieldName)}/uploadAttachment`;
+        
+        console.log(`Uploading ${imageData.filename} to field ${fieldName} for record ${recordId}`);
+        
+        const response = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contentType: imageData.contentType,
+            file: imageData.base64,
+            filename: imageData.filename
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Upload failed for ${fieldName}:`, response.status, errorText);
+          throw new Error(`Upload failed: ${response.status} ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log(`Successfully uploaded ${imageData.filename} to ${fieldName}:`, result);
+        return result;
+      };
+
+      // Process files
+      let logoData: { base64: string; contentType: string; filename: string } | null = null;
+      if (formData["Logo Upload"]?.url && formData["Logo Upload"]?.url.startsWith('blob:')) {
+        try {
+          console.log('Processing logo file...');
+          const logoFile = await getFileFromBlobUrl(formData["Logo Upload"].url, formData["Logo Upload"].name);
+          logoData = await processImageFile(logoFile);
+          console.log('Logo processed successfully');
+        } catch (error) {
+          console.error('Error processing logo:', error);
+        }
+      }
+
+      let highlightImageData: { base64: string; contentType: string; filename: string } | null = null;
+      if (formData["Highlight Image"]?.url && formData["Highlight Image"]?.url.startsWith('blob:')) {
+        try {
+          console.log('Processing highlight image...');
+          const imageFile = await getFileFromBlobUrl(formData["Highlight Image"].url, formData["Highlight Image"].name);
+          highlightImageData = await processImageFile(imageFile);
+          console.log('Highlight image processed successfully');
+        } catch (error) {
+          console.error('Error processing highlight image:', error);
+        }
+      }
+
+      let ratingScreenshotData: { base64: string; contentType: string; filename: string } | null = null;
+      if (formData["Rating (X/5) & Reviews (#) Screenshot"]?.url && formData["Rating (X/5) & Reviews (#) Screenshot"]?.url.startsWith('blob:')) {
+        try {
+          console.log('Processing rating screenshot...');
+          const screenshotFile = await getFileFromBlobUrl(formData["Rating (X/5) & Reviews (#) Screenshot"].url, formData["Rating (X/5) & Reviews (#) Screenshot"].name);
+          ratingScreenshotData = await processImageFile(screenshotFile);
+          console.log('Rating screenshot processed successfully');
+        } catch (error) {
+          console.error('Error processing rating screenshot:', error);
+        }
+      }
       
       // Create Airtable submission (similar to submit page logic)
       const submissionData: any = {
@@ -73,6 +178,68 @@ export default function SubmitSuccess() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`Airtable API error: ${errorData.error?.message || response.statusText}`);
+      }
+
+      const result = await response.json();
+      const recordId = result.id;
+      console.log('Record created with ID:', recordId);
+      
+      // STEP 2: Upload attachments to the created record
+      const uploadPromises = [];
+      
+      if (logoData) {
+        console.log('Uploading logo attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Logo', logoData)
+            .then(() => console.log('Logo uploaded successfully'))
+            .catch(error => {
+              console.error('Logo upload failed:', error);
+              toast({
+                title: "Logo upload failed",
+                description: "The submission was created but the logo couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      if (highlightImageData) {
+        console.log('Uploading highlight image attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Highlight Image', highlightImageData)
+            .then(() => console.log('Highlight image uploaded successfully'))
+            .catch(error => {
+              console.error('Highlight image upload failed:', error);
+              toast({
+                title: "Highlight image upload failed",
+                description: "The submission was created but the highlight image couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      if (ratingScreenshotData) {
+        console.log('Uploading rating screenshot attachment...');
+        uploadPromises.push(
+          uploadAttachmentToAirtable(recordId, 'Rating (X/5) & Reviews (#) Screenshot', ratingScreenshotData)
+            .then(() => console.log('Rating screenshot uploaded successfully'))
+            .catch(error => {
+              console.error('Rating screenshot upload failed:', error);
+              toast({
+                title: "Rating screenshot upload failed",
+                description: "The submission was created but the rating screenshot couldn't be uploaded. You can add it manually later.",
+                variant: "destructive",
+              });
+            })
+        );
+      }
+      
+      // Wait for all uploads to complete (but don't fail if some uploads fail)
+      if (uploadPromises.length > 0) {
+        console.log('Waiting for attachment uploads to complete...');
+        await Promise.allSettled(uploadPromises);
+        console.log('All attachment uploads completed');
       }
 
       // Clear localStorage after successful submission
