@@ -23,6 +23,15 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       throw new Error(`Invalid plan: ${plan}`);
     }
 
+    // Store form data in localStorage for processing after payment
+    const submissionData = {
+      formData,
+      plan,
+      email,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('pendingSubmission', JSON.stringify(submissionData));
+
     // Auto-detect the current site URL for success/cancel redirects
     const baseUrl = window.location.origin;
     
@@ -37,13 +46,9 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
         },
       ],
       mode: 'subscription',
-      successUrl: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}`,
+      successUrl: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}`,
       cancelUrl: `${baseUrl}/submit?canceled=true`,
       customerEmail: email,
-      metadata: {
-        submissionData: JSON.stringify(formData),
-        plan: plan,
-      },
     });
 
     if (error) {
