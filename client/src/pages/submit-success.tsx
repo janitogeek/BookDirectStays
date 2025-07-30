@@ -160,14 +160,38 @@ export default function SubmitSuccess() {
       
       if (ratingScreenshotData) {
         console.log('Uploading rating screenshot attachment...');
+        
+        // Try to upload rating screenshot with fallback field names
+        const tryUploadRatingScreenshot = async () => {
+          const possibleFieldNames = [
+            'Rating (X/5) & Reviews (#) Screenshot',
+            'Rating Screenshot', 
+            'Reviews Screenshot',
+            'Rating & Reviews Screenshot'
+          ];
+          
+          for (const fieldName of possibleFieldNames) {
+            try {
+              console.log(`Trying to upload rating screenshot to field: "${fieldName}"`);
+              await uploadAttachmentToAirtable(recordId, fieldName, ratingScreenshotData);
+              console.log(`Rating screenshot uploaded successfully to field: ${fieldName}`);
+              return; // Success - exit the function
+            } catch (error) {
+              console.error(`Rating screenshot upload failed for field "${fieldName}":`, error);
+            }
+          }
+          
+          // If we get here, all attempts failed
+          throw new Error('Failed to upload to any rating screenshot field');
+        };
+        
         uploadPromises.push(
-          uploadAttachmentToAirtable(recordId, 'Rating (X/5) & Reviews (#) Screenshot', ratingScreenshotData)
-            .then(() => console.log('Rating screenshot uploaded successfully'))
+          tryUploadRatingScreenshot()
             .catch(error => {
-              console.error('Rating screenshot upload failed:', error);
+              console.error('All rating screenshot upload attempts failed:', error);
               toast({
                 title: "Rating screenshot upload failed",
-                description: "The submission was created but the rating screenshot couldn't be uploaded. You can add it manually later.",
+                description: "The submission was created but the rating screenshot couldn't be uploaded. Please check the field exists and is an attachment type in Airtable.",
                 variant: "destructive",
               });
             })
