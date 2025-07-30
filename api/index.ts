@@ -11,7 +11,7 @@ import {
 const app = express();
 
 // Middleware for JSON parsing (except webhook which needs raw body)
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
 // CORS for development
@@ -27,21 +27,21 @@ app.use((req, res, next) => {
   }
 });
 
-// Stripe routes
-app.post("/api/stripe/create-checkout-session", createCheckoutSession);
-app.post("/api/stripe/create-portal-session", createPortalSession);
-app.get("/api/stripe/subscription/:subscriptionId", getSubscription);
-app.get("/api/stripe/customer/:customerId/subscriptions", getCustomerSubscriptions);
-app.get("/api/stripe/invoice/:invoiceId", getInvoice);
-app.post("/api/stripe/webhook", handleWebhook);
+// Stripe routes (without /api prefix - Vercel handles that)
+app.post("/stripe/create-checkout-session", createCheckoutSession);
+app.post("/stripe/create-portal-session", createPortalSession);
+app.get("/stripe/subscription/:subscriptionId", getSubscription);
+app.get("/stripe/customer/:customerId/subscriptions", getCustomerSubscriptions);
+app.get("/stripe/invoice/:invoiceId", getInvoice);
+app.post("/stripe/webhook", handleWebhook);
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 // Handle all other API routes
-app.all("/api/*", (req, res) => {
+app.all("/*", (req, res) => {
   res.status(404).json({ message: `Route ${req.path} not found` });
 });
 
