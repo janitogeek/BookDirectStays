@@ -285,32 +285,32 @@ export default function Home() {
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-              {/* Higher Profit Margins */}
-              <div className="text-center">
-                <div className="text-5xl lg:text-6xl font-bold text-blue-600 mb-4">23%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
-                <p className="text-gray-600 text-sm">vs OTA bookings</p>
-              </div>
-
-              {/* Better Guest Satisfaction */}
-              <div className="text-center">
-                <div className="text-5xl lg:text-6xl font-bold text-green-600 mb-4">40%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
-                <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
-              </div>
-
               {/* Average Guest Savings */}
               <div className="text-center">
-                <div className="text-5xl lg:text-6xl font-bold text-purple-600 mb-4">15.7%</div>
+                <div className="text-4xl lg:text-5xl font-bold text-purple-600 mb-4">15.7%</div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Guest Savings</h3>
                 <p className="text-gray-600 text-sm">booking direct</p>
               </div>
 
               {/* Host Response Rate */}
               <div className="text-center">
-                <div className="text-5xl lg:text-6xl font-bold text-orange-600 mb-4">98%</div>
+                <div className="text-4xl lg:text-5xl font-bold text-orange-600 mb-4">98%</div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Host Response Rate</h3>
                 <p className="text-gray-600 text-sm">within 24 hours</p>
+              </div>
+
+              {/* Better Guest Satisfaction */}
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-bold text-green-600 mb-4">40%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
+                <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
+              </div>
+
+              {/* Higher Profit Margins */}
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">23%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
+                <p className="text-gray-600 text-sm">vs OTA bookings</p>
               </div>
             </div>
 
