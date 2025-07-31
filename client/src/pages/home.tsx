@@ -272,65 +272,62 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Expert Quote Section - Clean and Prominent */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <blockquote className="text-2xl lg:text-3xl font-light text-gray-700 mb-8 italic">
-              "The vacation rental industry is experiencing a fundamental shift toward direct bookings. Properties that offer direct booking options see 23% higher profit margins and 40% better guest satisfaction scores compared to OTA-only listings."
-            </blockquote>
-            <div className="flex items-center justify-center space-x-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold text-lg">SM</span>
-              </div>
-              <div className="text-left">
-                <div className="font-semibold text-gray-900">Dr. Sarah Mitchell</div>
-                <div className="text-gray-600 text-sm">Vacation Rental Industry Research Institute (2024)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Performance Metrics Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
+          <div className="max-w-6xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
               BookDirectStays.com Performance Metrics
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 mb-16">
               Measurable results from our verified direct booking network
             </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {/* Higher Profit Margins */}
-            <div className="text-center">
-              <div className="text-5xl lg:text-6xl font-bold text-blue-600 mb-2">23%</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
-              <p className="text-gray-600 text-sm">vs OTA bookings</p>
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+              {/* Higher Profit Margins */}
+              <div className="text-center">
+                <div className="text-5xl lg:text-6xl font-bold text-blue-600 mb-4">23%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
+                <p className="text-gray-600 text-sm">vs OTA bookings</p>
+              </div>
+
+              {/* Better Guest Satisfaction */}
+              <div className="text-center">
+                <div className="text-5xl lg:text-6xl font-bold text-green-600 mb-4">40%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
+                <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
+              </div>
+
+              {/* Average Guest Savings */}
+              <div className="text-center">
+                <div className="text-5xl lg:text-6xl font-bold text-purple-600 mb-4">15.7%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Guest Savings</h3>
+                <p className="text-gray-600 text-sm">booking direct</p>
+              </div>
+
+              {/* Host Response Rate */}
+              <div className="text-center">
+                <div className="text-5xl lg:text-6xl font-bold text-orange-600 mb-4">98%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Host Response Rate</h3>
+                <p className="text-gray-600 text-sm">within 24 hours</p>
+              </div>
             </div>
 
-            {/* Better Guest Satisfaction */}
-            <div className="text-center">
-              <div className="text-5xl lg:text-6xl font-bold text-green-600 mb-2">40%</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
-              <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
-            </div>
-
-            {/* Average Guest Savings */}
-            <div className="text-center">
-              <div className="text-5xl lg:text-6xl font-bold text-purple-600 mb-2">15.7%</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Guest Savings</h3>
-              <p className="text-gray-600 text-sm">booking direct</p>
-            </div>
-
-            {/* Host Response Rate */}
-            <div className="text-center">
-              <div className="text-5xl lg:text-6xl font-bold text-orange-600 mb-2">98%</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Host Response Rate</h3>
-              <p className="text-gray-600 text-sm">within 24 hours</p>
+            {/* Expert Quote */}
+            <div className="max-w-4xl mx-auto">
+              <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
+                "The vacation rental industry is experiencing a fundamental shift toward direct bookings. Properties that offer direct booking options see 23% higher profit margins and 40% better guest satisfaction scores compared to OTA-only listings."
+              </blockquote>
+              <div className="flex items-center justify-center space-x-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold text-lg">SM</span>
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-gray-900">Dr. Sarah Mitchell</div>
+                  <div className="text-gray-600 text-sm">Vacation Rental Industry Research Institute (2024)</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
