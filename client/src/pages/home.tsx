@@ -272,45 +272,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Performance Metrics Section - Clean Grid */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              BookDirectStays.com Performance Metrics
-            </h2>
-            <p className="text-xl text-gray-600">
-              Measurable results from our verified direct booking network
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-blue-600 mb-2">23%</div>
-              <div className="text-gray-600 text-sm font-medium">Higher Profit Margins</div>
-              <div className="text-xs text-gray-500 mt-1">vs OTA bookings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">40%</div>
-              <div className="text-gray-600 text-sm font-medium">Better Guest Satisfaction</div>
-              <div className="text-xs text-gray-500 mt-1">direct vs OTA bookings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-purple-600 mb-2">15.7%</div>
-              <div className="text-gray-600 text-sm font-medium">Average Guest Savings</div>
-              <div className="text-xs text-gray-500 mt-1">booking direct</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-orange-600 mb-2">98%</div>
-              <div className="text-gray-600 text-sm font-medium">Host Response Rate</div>
-              <div className="text-xs text-gray-500 mt-1">within 24 hours</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
       {/* Expert Quote Section - Clean and Prominent */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
