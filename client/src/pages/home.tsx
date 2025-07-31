@@ -331,73 +331,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Properties Section - Clean Grid */}
-      <section className="py-20 bg-gray-50">
+      {/* Performance Metrics Section */}
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Latest Direct Booking Properties
+              BookDirectStays.com Performance Metrics
             </h2>
             <p className="text-xl text-gray-600">
-              Recently added verified vacation rental hosts offering commission-free bookings
+              Measurable results from our verified direct booking network
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {isSubmissionsLoading ? (
-              // Loading skeleton
-              Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
-                  <div className="w-full h-48 bg-gray-300"></div>
-                  <div className="p-6">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-300 mr-3"></div>
-                      <div className="h-6 bg-gray-300 w-2/3 rounded"></div>
-                    </div>
-                    <div className="h-4 bg-gray-300 w-1/2 mb-3 rounded"></div>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <div className="h-6 bg-gray-300 w-16 rounded"></div>
-                      <div className="h-6 bg-gray-300 w-20 rounded"></div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex space-x-2">
-                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-                        <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-                      </div>
-                      <div className="h-10 bg-gray-300 w-32 rounded-lg"></div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : recentSubmissions.length === 0 ? (
-              <div className="col-span-3 text-center py-16">
-                <div className="bg-white rounded-xl p-8 border border-gray-200 inline-block mx-auto">
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No properties available yet</h3>
-                  <p className="text-gray-500 mb-6">Check back soon for new direct booking properties.</p>
-                  <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-                    <a href="/submit">Add Your Property</a>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              // Show first 6 recent submissions
-              recentSubmissions.slice(0, 6).map((submission) => (
-                <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
-              ))
-            )}
-          </div>
-
-          {/* View All Properties Button */}
-          {recentSubmissions.length > 6 && (
-            <div className="text-center mt-12">
-              <Button 
-                onClick={() => setLocation("/find-host")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold"
-              >
-                View All {recentSubmissions.length} Properties
-              </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {/* Higher Profit Margins */}
+            <div className="text-center">
+              <div className="text-5xl lg:text-6xl font-bold text-blue-600 mb-2">23%</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
+              <p className="text-gray-600 text-sm">vs OTA bookings</p>
             </div>
-          )}
+
+            {/* Better Guest Satisfaction */}
+            <div className="text-center">
+              <div className="text-5xl lg:text-6xl font-bold text-green-600 mb-2">40%</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
+              <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
+            </div>
+
+            {/* Average Guest Savings */}
+            <div className="text-center">
+              <div className="text-5xl lg:text-6xl font-bold text-purple-600 mb-2">15.7%</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Guest Savings</h3>
+              <p className="text-gray-600 text-sm">booking direct</p>
+            </div>
+
+            {/* Host Response Rate */}
+            <div className="text-center">
+              <div className="text-5xl lg:text-6xl font-bold text-orange-600 mb-2">98%</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Host Response Rate</h3>
+              <p className="text-gray-600 text-sm">within 24 hours</p>
+            </div>
+          </div>
         </div>
       </section>
 
