@@ -207,8 +207,8 @@ export default function Home() {
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between">
-                      <span className="line-through text-gray-400">Host pays OTA commission fees</span>
-                      <span className="line-through text-gray-400 font-semibold">€253</span>
+                      <span className="line-through text-gray-400">Host pays OTA commission fees (15%)</span>
+                      <span className="line-through text-gray-400 font-semibold">€193</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-green-600 font-medium">Host does not pay any commission fees</span>
