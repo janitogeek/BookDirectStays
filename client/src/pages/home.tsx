@@ -173,12 +173,8 @@ export default function Home() {
                     <span className="text-red-600">€1,687</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>OTA Commission fees (15%)</span>
+                    <span>Host pays OTA commission fees (15%)</span>
                     <span className="font-semibold text-red-600">€253</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Host Receives</span>
-                    <span className="font-semibold text-red-600">€1,434</span>
                   </div>
                 </div>
                 
@@ -209,13 +205,15 @@ export default function Home() {
                     <span>Guest pays</span>
                     <span className="text-green-600">€1,287.5</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Commission fees (0%)</span>
-                    <span className="font-semibold text-green-600">€0</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Host Receives</span>
-                    <span className="font-semibold text-green-600">€1,287.5</span>
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="line-through text-gray-400">Host pays OTA commission fees</span>
+                      <span className="line-through text-gray-400 font-semibold">€253</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-green-600 font-medium">Host does not pay any commission fees</span>
+                      <span className="font-semibold text-green-600">€0</span>
+                    </div>
                   </div>
                 </div>
                 
