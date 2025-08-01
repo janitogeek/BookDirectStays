@@ -157,7 +157,7 @@ export default function Home() {
             {/* Side-by-side comparison */}
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* OTA Booking */}
-              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8">
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8 flex flex-col">
                 <div className="text-center mb-6">
                   <div className="inline-block bg-red-100 px-4 py-2 rounded-full mb-4">
                     <span className="text-red-700 font-semibold">❌ Airbnb (OTA)</span>
@@ -167,7 +167,7 @@ export default function Home() {
                   <p className="text-gray-600 text-sm">• Same listing via Airbnb</p>
                 </div>
                 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-6 flex-grow">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Guest pays</span>
                     <span className="text-red-600">€1,687</span>
@@ -178,7 +178,7 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <div className="text-center">
+                <div className="text-center mt-auto">
                   <Button 
                     onClick={() => setShowAirbnbScreenshot(true)}
                     variant="outline"
@@ -190,7 +190,7 @@ export default function Home() {
               </div>
 
               {/* Direct Booking */}
-              <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-8">
+              <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-8 flex flex-col">
                 <div className="text-center mb-6">
                   <div className="inline-block bg-green-100 px-4 py-2 rounded-full mb-4">
                     <span className="text-green-700 font-semibold">✅ Book Direct</span>
@@ -200,7 +200,7 @@ export default function Home() {
                   <p className="text-gray-600 text-sm">• Same listing via Skol direct website</p>
                 </div>
                 
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-6 flex-grow">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Guest pays</span>
                     <span className="text-green-600">€1,287.5</span>
@@ -217,7 +217,7 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <div className="text-center">
+                <div className="text-center mt-auto">
                   <Button 
                     onClick={() => setShowDirectScreenshot(true)}
                     variant="outline"
