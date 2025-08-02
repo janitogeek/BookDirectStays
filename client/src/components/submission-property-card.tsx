@@ -183,14 +183,36 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             )}
           </div>
 
-          {/* Types of Stays - Moved before Countries */}
+          {/* Types of Stays - Horizontal carousel when many, wrap when few */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {submission.typesOfStays.map((type, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
-                  {type.trim()}
-                </Badge>
-              ))}
+            <div className="mb-4">
+              {submission.typesOfStays.length > 4 ? (
+                // Carousel for many types (>4)
+                <div className="relative">
+                  <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                    {submission.typesOfStays.map((type, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        className="text-xs whitespace-nowrap flex-shrink-0"
+                      >
+                        {type.trim()}
+                      </Badge>
+                    ))}
+                  </div>
+                  {/* Fade effect on right edge to indicate scrollability */}
+                  <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+                </div>
+              ) : (
+                // Regular flex wrap for few types (≤4)
+                <div className="flex flex-wrap gap-2">
+                  {submission.typesOfStays.map((type, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {type.trim()}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
