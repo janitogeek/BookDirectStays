@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -29,6 +30,7 @@ const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const formSchema = z.object({
   "Brand Name": z.string().min(2),
   "Direct Booking Website": z.string().url(),
+  "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
   "Cities / Regions": z.array(z.object({ name: z.string(), displayName: z.string(), geonameId: z.number() })).min(1),
@@ -118,6 +120,19 @@ const SETTINGS_LOCATIONS = [
   "Mountain/Alpine", "Urban/City", "Wine Country"
 ];
 
+const PMS_OPTIONS = [
+  "365 Villas", "Apaleo", "Avantio", "Barefoot", "Beds24", "Bookingsync", "Ciirus", "Cloudbeds", 
+  "Escapia", "Guesty", "Hospiria", "Hospitable", "Hostaway", "Hostfully", "Hostify", "Icnea", 
+  "iGMS", "Iloca", "Kross Booking", "Liverez", "LMPM", "Lodgify", "Mews", "MyVR", "None", 
+  "Octorate", "Opera", "Other", "Own PMS", "OwnerRez", "Rentals United", "Smily", "Smoobu", 
+  "Streamline", "Supercontrol", "Tokeet", "Track", "Uplisting", "Lodgix", "Fantasticstay", 
+  "Zeevou", "Direct", "Avaibook", "RentalWise", "Your.rentals", "Hostex", "Elina", "Tempo", 
+  "mr.alfred", "resly", "Hosthub", "Jurny", "Eviivo", "cubilis", "mytourist", "ciaobooking", 
+  "newbook", "v-office", "amenitiz", "Superhote", "Pass pass", "RMS cloud", "Rental Ninja", 
+  "Septeo", "Arkane", "Barefoot", "Bookster", "Ynov", "Talkguest", "Beerent", "MyRent", 
+  "Rentlio", "Loggia", "Rentability", "Destination Solutions", "Fewo-Verwalter", "Secra", "Fewo One"
+];
+
 const CURRENCIES = [
   "AED – د.إ", "AFN – ؋", "ALL – Lek", "AMD – ֏", "AOA – Kz", "ARS – AR$", "AUD – AU$", "AWG – AWƒ", "AZN – ₼", "BAM – KM",
   "BBD – BB$", "BDT – ৳", "BGN – лв", "BHD – ب.د", "BIF – FBu", "BMD – BM$", "BND – BN$", "BOB – Bs", "BRL – R$", "BSD – BS$",
@@ -153,6 +168,7 @@ export default function Submit() {
     defaultValues: {
       "Brand Name": "",
       "Direct Booking Website": "",
+      "PMS/Channel Manager": "",
       "Number of Listings": "",
       "Countries": [],
       "Cities / Regions": [],
@@ -464,6 +480,7 @@ export default function Submit() {
         "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
         "Direct Booking Website": values["Direct Booking Website"],
+        "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "),
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
@@ -671,6 +688,26 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
                   <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="PMS/Channel Manager" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>PMS/Channel Manager<RequiredAsterisk /></FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger className={field.value ? 'border-blue-500 bg-blue-50' : ''}>
+                        <SelectValue placeholder="Select your PMS/Channel Manager" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PMS_OPTIONS.map((pms) => (
+                          <SelectItem key={pms} value={pms}>
+                            {pms}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
