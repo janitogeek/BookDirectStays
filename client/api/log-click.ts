@@ -81,7 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error(`Failed to update record: ${updateResponse.statusText}`);
     }
 
-    const updatedRecord = await updateResponse.json();
+    await updateResponse.json();
     
     console.log(`✅ Click tracked: ${type} for host ${hostId} (${currentCount} → ${currentCount + 1})`);
 

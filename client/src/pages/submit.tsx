@@ -48,8 +48,8 @@ const formSchema = z.object({
   "Why Book With You?": z.string().min(10),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
-  "Min Price (ADR)": z.coerce.number().min(1, "Please enter a minimum price"),
-  "Max Price (ADR)": z.coerce.number().min(1, "Please enter a maximum price"),
+  "Min Price (ADR)": z.string().min(1, "Please enter a minimum price"),
+  "Max Price (ADR)": z.string().min(1, "Please enter a maximum price"),
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
@@ -398,8 +398,8 @@ export default function Submit() {
         "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
-        "Min Price (ADR)": values["Min Price (ADR)"] ? parseInt(values["Min Price (ADR)"]) : null,
-        "Max Price (ADR)": values["Max Price (ADR)"] ? parseFloat(values["Max Price (ADR)"]) : null,
+        "Min Price (ADR)": values["Min Price (ADR)"] ? parseInt(values["Min Price (ADR)"]) : undefined,
+        "Max Price (ADR)": values["Max Price (ADR)"] ? parseFloat(values["Max Price (ADR)"]) : undefined,
         "Types of Stays": values["Types of Stays"] || [],
         "Ideal For": values["Ideal For"] || [],
         "Perks / Amenities": values["Perks / Amenities"] || [],
@@ -421,12 +421,6 @@ export default function Submit() {
 
       console.log("=== SUBMISSION DATA DEBUG ===");
       console.log("Plan selected:", values["Choose Your Listing Type"]);
-      console.log("=== PRICING DEBUG ===");
-      console.log("Currency:", values["Currency"]);
-      console.log("Min Price:", values["Min Price (ADR)"]);
-      console.log("Max Price:", values["Max Price (ADR)"]);
-      console.log("=== SUBMISSION DATA ===");
-      console.log("Full submission data:", submissionData);
       console.log("Initial status will be:", submissionData["Status"]);
       console.log("Logo data:", logoData ? `${logoData.filename} (${logoData.base64.length} chars)` : 'None');
       console.log("Highlight Image data:", highlightImageData ? `${highlightImageData.filename} (${highlightImageData.base64.length} chars)` : 'None');
@@ -757,9 +751,8 @@ export default function Submit() {
                       <Input 
                         type="number" 
                         min="1"
-                        value={field.value || ""}
+                        {...field}
                         placeholder="150" 
-                        onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -774,9 +767,8 @@ export default function Submit() {
                         type="number" 
                         step="0.01"
                         min="1"
-                        value={field.value || ""}
+                        {...field}
                         placeholder="300" 
-                        onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />

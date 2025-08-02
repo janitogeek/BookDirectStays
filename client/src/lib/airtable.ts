@@ -597,15 +597,7 @@ export const airtableService = {
       cancellationPolicy: fields['Cancellation Policy'] || undefined
     };
 
-    // DEBUG: Log pricing data
-    console.log(`🔧 DEBUG PRICING for ${transformed.brandName}:`, {
-      'Min Price (ADR)': fields['Min Price (ADR)'],
-      'Max Price (ADR)': fields['Max Price (ADR)'],
-      'Currency': fields['Currency'],
-      transformedMinPrice: transformed.minPrice,
-      transformedMaxPrice: transformed.maxPrice,
-      transformedCurrency: transformed.currency
-    });
+
 
     console.log('✅ Transformed:', transformed.brandName, '- Status:', transformed.status);
     
