@@ -58,9 +58,9 @@ const formSchema = z.object({
   "Lifestyle & Values": z.array(z.string()).optional(),
   "Eco-Conscious Stay?": z.boolean().optional(),
   "Remote-Work Friendly?": z.boolean().optional(),
-  "Design Style": z.array(z.string()).max(3, "Please select maximum 3 design styles").optional(),
-  "Atmospheres": z.array(z.string()).max(3, "Please select maximum 3 atmospheres").optional(),
-  "Settings/Locations": z.array(z.string()).max(3, "Please select maximum 3 settings/locations").optional(),
+  "Design Style": z.array(z.string()).optional(),
+  "Atmospheres": z.array(z.string()).optional(),
+  "Settings/Locations": z.array(z.string()).optional(),
   "Instagram": z.string().url().optional().or(z.literal("")),
   "Facebook": z.string().url().optional().or(z.literal("")),
   "LinkedIn": z.string().url().optional().or(z.literal("")),
@@ -102,7 +102,7 @@ const LIFESTYLE_VALUES = [
   "Luxury amenities", "Budget-friendly", "Sustainable practices", "Remote-work friendly"
 ];
 
-// Vibe/Aesthetic split into 3 groups (max 3 selections each)
+// Vibe/Aesthetic split into 3 groups
 const DESIGN_STYLE = [
   "Modern", "Minimalist", "Design-led/Contemporary", "Traditional/Classic", "Industrial", 
   "Scandinavian", "Mid-century Modern", "Art Deco"
@@ -947,11 +947,11 @@ export default function Submit() {
 
             {/* Section 4: Vibe & Style */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">🎨 Vibe & Style <span className='text-base font-normal text-blue-700'>(max 3 per category)</span></h2>
+              <h2 className="text-xl font-semibold mb-4">🎨 Vibe & Style</h2>
               
               <FormField control={form.control} name="Design Style" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>🏛️ Design Style <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormLabel>🏛️ Design Style</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
                       options={DESIGN_STYLE}
@@ -966,7 +966,7 @@ export default function Submit() {
               
               <FormField control={form.control} name="Atmospheres" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>🌿 Atmospheres <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormLabel>🌿 Atmospheres</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
                       options={ATMOSPHERES}
@@ -981,7 +981,7 @@ export default function Submit() {
               
               <FormField control={form.control} name="Settings/Locations" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>🏞️ Settings/Locations <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormLabel>🏞️ Settings/Locations</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
                       options={SETTINGS_LOCATIONS}
