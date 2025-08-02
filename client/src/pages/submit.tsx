@@ -48,8 +48,8 @@ const formSchema = z.object({
   "Why Book With You?": z.string().min(10),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
-  "Min Price (ADR)": z.string().min(1, "Please enter a minimum price"),
-  "Max Price (ADR)": z.string().min(1, "Please enter a maximum price"),
+  "Min Price": z.string().min(1, "Please enter a minimum price"),
+  "Max Price": z.string().min(1, "Please enter a maximum price"),
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
@@ -131,8 +131,8 @@ export default function Submit() {
       "Why Book With You?": "",
       "Top Stats": "",
       "Currency": "",
-      "Min Price (ADR)": "",
-      "Max Price (ADR)": "",
+      "Min Price": "",
+      "Max Price": "",
       "Types of Stays": [],
       "Ideal For": [],
       "Is your brand pet-friendly?": false,
@@ -398,8 +398,8 @@ export default function Submit() {
         "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
-        "Min Price (ADR)": values["Min Price (ADR)"] ? parseInt(values["Min Price (ADR)"]) : undefined,
-        "Max Price (ADR)": values["Max Price (ADR)"] ? parseFloat(values["Max Price (ADR)"]) : undefined,
+        "Min Price": values["Min Price"] ? parseInt(values["Min Price"]) : undefined,
+        "Max Price": values["Max Price"] ? parseFloat(values["Max Price"]) : undefined,
         "Types of Stays": values["Types of Stays"] || [],
         "Ideal For": values["Ideal For"] || [],
         "Perks / Amenities": values["Perks / Amenities"] || [],
@@ -744,9 +744,9 @@ export default function Submit() {
               )} />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="Min Price (ADR)" render={({ field }) => (
+                <FormField control={form.control} name="Min Price" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>From: Min Price (ADR) <RequiredAsterisk /></FormLabel>
+                    <FormLabel>From: Min Price <RequiredAsterisk /></FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -759,9 +759,9 @@ export default function Submit() {
                   </FormItem>
                 )} />
                 
-                <FormField control={form.control} name="Max Price (ADR)" render={({ field }) => (
+                <FormField control={form.control} name="Max Price" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>To: Max Price (ADR) <RequiredAsterisk /></FormLabel>
+                    <FormLabel>To: Max Price <RequiredAsterisk /></FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 

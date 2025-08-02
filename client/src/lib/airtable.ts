@@ -45,8 +45,8 @@ export interface AirtableSubmission {
     'Submission Date': string;
     // New fields
     'PMS Used'?: string;
-    'Min Price (ADR)'?: number;
-    'Max Price (ADR)'?: number;
+    'Min Price'?: number;
+    'Max Price'?: number;
     'Currency'?: string;
     'Google Reviews Link'?: string;
     'Cancellation Policy'?: string;
@@ -590,8 +590,8 @@ export const airtableService = {
       createdTime: record.createdTime,
       // New fields
       pmsUsed: fields['PMS Used'] || undefined,
-      minPrice: fields['Min Price (ADR)'] || undefined,
-      maxPrice: fields['Max Price (ADR)'] || undefined,
+      minPrice: fields['Min Price'] || undefined,
+      maxPrice: fields['Max Price'] || undefined,
       currency: fields['Currency'] || undefined,
       googleReviewsLink: fields['Google Reviews Link'] || undefined,
       cancellationPolicy: fields['Cancellation Policy'] || undefined
