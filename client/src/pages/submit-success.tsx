@@ -85,11 +85,17 @@ export default function SubmitSuccess() {
         "Max Price Type": typeof formData["Max Price"]
       });
 
+      console.log('🔍 PMS DEBUG - SUBMIT SUCCESS:', {
+        "PMS/Channel Manager from formData": formData["PMS/Channel Manager"],
+        "PMS being sent to Airtable": formData["PMS/Channel Manager"]
+      });
+
       // Create Airtable submission (similar to submit page logic)
       const submissionData: any = {
         "Email": email,
         "Brand Name": formData["Brand Name"],
         "Direct Booking Website": formData["Direct Booking Website"],
+        "PMS": formData["PMS/Channel Manager"],
         "Number of Listings": formData["Number of Listings"],
         "Countries": formData["Countries"].join(", "),
         "Cities / Regions": formData["Cities / Regions"].map((city: any) => city.name).join(", "),
