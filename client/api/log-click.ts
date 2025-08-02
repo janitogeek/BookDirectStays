@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
+const AIRTABLE_API_KEY = process.env.VITE_AIRTABLE_API_KEY || process.env.AIRTABLE_API_KEY;
 const AIRTABLE_BASE_ID = 'app0tFfsjLbI1qXq0';
 const AIRTABLE_TABLE_NAME = 'Directory Submissions';
 const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
@@ -28,10 +28,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!AIRTABLE_API_KEY) {
-    console.error('❌ Missing AIRTABLE_API_KEY environment variable');
+    console.error('❌ Missing AIRTABLE_API_KEY or VITE_AIRTABLE_API_KEY environment variable');
     return res.status(500).json({ 
       error: 'Server configuration error',
-      debug: 'Missing AIRTABLE_API_KEY environment variable',
+      debug: 'Missing AIRTABLE_API_KEY or VITE_AIRTABLE_API_KEY environment variable',
       availableEnvVars: Object.keys(process.env).filter(key => key.includes('AIRTABLE'))
     });
   }
