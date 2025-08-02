@@ -707,7 +707,6 @@ export default function Submit() {
                       }}
                       placeholder="Search and select your PMS/Channel Manager"
                       showSelectAll={false}
-                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
