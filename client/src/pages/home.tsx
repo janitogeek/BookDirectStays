@@ -115,7 +115,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Line to Your Host</h3>
-              <p className="text-gray-600 text-sm">Get real-time answers and personalized support without OTA delays.</p>
+              <p className="text-gray-600 text-sm">Get real-time answers and personalized support without OTA delays</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
@@ -125,7 +125,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Exclusive Deals</h3>
-              <p className="text-gray-600 text-sm">Access discounts and perks often unavailable on OTAs.</p>
+              <p className="text-gray-600 text-sm">Access discounts and perks often unavailable on OTAs</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
