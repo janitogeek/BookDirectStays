@@ -252,7 +252,7 @@ export default function FeaturedHostsCarousel() {
 
                 {/* Types of Stays - Horizontal carousel when many, wrap when few */}
                 {host.typesOfStays && host.typesOfStays.length > 0 && (
-                  <div className="mb-4">
+                  <div className="mb-4 min-h-[2.5rem]">
                     {host.typesOfStays.length > 4 ? (
                       // Carousel for many types (>4)
                       <div className="relative">
@@ -283,8 +283,13 @@ export default function FeaturedHostsCarousel() {
                   </div>
                 )}
 
+                {/* Spacer for cards without Types of Stays to maintain alignment */}
+                {(!host.typesOfStays || host.typesOfStays.length === 0) && (
+                  <div className="mb-4 min-h-[2.5rem]"></div>
+                )}
+
                 {/* Countries - Moved after Types of Stays */}
-                <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+                <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
                     {host.countries.map((country, index) => (
@@ -298,7 +303,7 @@ export default function FeaturedHostsCarousel() {
 
                 {/* Top Stats Component */}
                 {host.topStats && (
-                  <div className="mb-4">
+                  <div className="mb-4 min-h-[3rem]">
                     <TopStats 
                       topStats={host.topStats} 
                       brandName={host.brandName}
@@ -306,6 +311,11 @@ export default function FeaturedHostsCarousel() {
                       onOpenChange={handlePopoverChange}
                     />
                   </div>
+                )}
+
+                {/* Spacer for cards without Top Stats to maintain alignment */}
+                {!host.topStats && (
+                  <div className="mb-4 min-h-[3rem]"></div>
                 )}
 
                 {/* Why Book With CTA */}
@@ -318,6 +328,7 @@ export default function FeaturedHostsCarousel() {
                   >
                     <Link 
                       to={`/property/${generateSlug(host.brandName)}`}
+                      onClick={clickTracking.trackCompany}
                     >
                       Why book with {host.brandName}?
                     </Link>

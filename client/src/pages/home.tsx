@@ -149,12 +149,12 @@ export default function Home() {
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                 💸 Real Savings, Real Listings
               </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-4">
+                See actual savings from booking direct vs OTA platforms with real properties
+              </p>
               <div className="text-lg font-semibold text-gray-800 mb-4">
                 <span className="text-blue-600">Host:</span> Skol Apartments Marbella, <span className="text-blue-600">Country:</span> 🇪🇸 Spain | <span className="text-blue-600">Property:</span> Skol 927A, <span className="text-blue-600">Dates:</span> Sep 3rd to Sep 8th 2025
               </div>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                See actual savings from booking direct vs OTA platforms with real properties
-              </p>
             </div>
 
             {/* Side-by-side comparison */}

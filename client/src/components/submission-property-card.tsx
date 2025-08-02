@@ -185,7 +185,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
 
           {/* Types of Stays - Horizontal carousel when many, wrap when few */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-            <div className="mb-4">
+            <div className="mb-4 min-h-[2.5rem]">
               {submission.typesOfStays.length > 4 ? (
                 // Carousel for many types (>4)
                 <div className="relative">
@@ -216,8 +216,13 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
+          {/* Spacer for cards without Types of Stays to maintain alignment */}
+          {(!submission.typesOfStays || submission.typesOfStays.length === 0) && (
+            <div className="mb-4 min-h-[2.5rem]"></div>
+          )}
+
           {/* Countries - Moved after Types of Stays */}
-          <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+          <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
             <MapPin className="w-4 h-4 flex-shrink-0" />
             <span className="flex items-center gap-1 flex-wrap">
               {submission.countries.map((country, index) => (
@@ -231,13 +236,18 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
 
           {/* Top Stats Component - Moved down */}
           {submission.topStats && (
-            <div className="mb-4">
+            <div className="mb-4 min-h-[3rem]">
               <TopStats 
                 topStats={submission.topStats} 
                 brandName={submission.brandName}
                 hostWebsite={submission.website}
               />
             </div>
+          )}
+
+          {/* Spacer for cards without Top Stats to maintain alignment */}
+          {!submission.topStats && (
+            <div className="mb-4 min-h-[3rem]"></div>
           )}
 
           {/* Why Book With CTA */}
