@@ -151,8 +151,45 @@ export default function Submit() {
     mode: "onChange",
   });
 
+  // Add validation debugging
+  const onInvalid = (errors: any) => {
+    console.error("🚫🚫🚫 FORM VALIDATION FAILED 🚫🚫🚫");
+    console.error("❌ Validation errors:", errors);
+    console.log("💰 Current pricing field values:", {
+      Currency: form.getValues("Currency"),
+      "Min Price": form.getValues("Min Price"),
+      "Max Price": form.getValues("Max Price")
+    });
+    
+    // Show pricing field specific errors
+    if (errors["Currency"]) console.error("💱 Currency error:", errors["Currency"]);
+    if (errors["Min Price"]) console.error("💵 Min Price error:", errors["Min Price"]);
+    if (errors["Max Price"]) console.error("💶 Max Price error:", errors["Max Price"]);
+  };
+
   const onSubmit = async (values: FormValues) => {
     try {
+      console.log("🚀🚀🚀 FORM SUBMISSION STARTED 🚀🚀🚀");
+      console.log("🔍 ALL FORM VALUES:", values);
+      console.log("💰💰💰 PRICING VALUES SPECIFICALLY:", {
+        Currency: values["Currency"],
+        "Min Price": values["Min Price"], 
+        "Max Price": values["Max Price"]
+      });
+      console.log("📝 FORM VALUES TYPE CHECK:", {
+        CurrencyType: typeof values["Currency"],
+        MinPriceType: typeof values["Min Price"],
+        MaxPriceType: typeof values["Max Price"]
+      });
+      console.log("✅ PRICING VALIDATION:", {
+        CurrencyValid: !!values["Currency"],
+        MinPriceValid: !!values["Min Price"],
+        MaxPriceValid: !!values["Max Price"],
+        CurrencyLength: values["Currency"]?.length || 0,
+        MinPriceValue: values["Min Price"],
+        MaxPriceValue: values["Max Price"]
+      });
+      
       // Redirect to Stripe Checkout instead of directly submitting to Airtable
       await createCheckoutSession(
         values, // Pass entire form data
@@ -571,7 +608,7 @@ export default function Submit() {
         <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">🚀 Boost your Direct Bookings!</h1>
         <p className="text-gray-600 mb-8">Join our directory and connect with travelers looking to book directly.</p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                      <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
 
             {/* Section 1: Brand Info */}
             <div className="bg-white rounded-xl shadow-md p-6">
@@ -958,7 +995,21 @@ export default function Submit() {
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit" className="px-8 py-3" disabled={!form.formState.isValid}>
+              <Button 
+                type="submit" 
+                className="px-8 py-3" 
+                disabled={!form.formState.isValid}
+                onClick={() => {
+                  console.log("🖱️ SUBMIT BUTTON CLICKED");
+                  console.log("💰 Pricing values at click:", {
+                    Currency: form.getValues("Currency"),
+                    "Min Price": form.getValues("Min Price"),
+                    "Max Price": form.getValues("Max Price")
+                  });
+                  console.log("🔍 Form errors at click:", form.formState.errors);
+                  console.log("✅ Form valid at click:", form.formState.isValid);
+                }}
+              >
                 Submit Listing
               </Button>
             </div>

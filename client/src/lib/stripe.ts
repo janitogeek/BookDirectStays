@@ -13,6 +13,16 @@ const PRICE_IDS = {
 
 export const createCheckoutSession = async (formData: any, plan: string, email: string) => {
   try {
+    console.log("💳💳💳 STRIPE CHECKOUT SESSION STARTING 💳💳💳");
+    console.log("📋 Form data received in Stripe:", formData);
+    console.log("💰 PRICING IN STRIPE FUNCTION:", {
+      Currency: formData["Currency"],
+      "Min Price": formData["Min Price"],
+      "Max Price": formData["Max Price"]
+    });
+    console.log("📧 Email:", email);
+    console.log("📦 Plan:", plan);
+    
     const stripe = await stripePromise;
     if (!stripe) {
       throw new Error('Stripe failed to load');
@@ -124,7 +134,12 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
 
     try {
       const dataString = JSON.stringify(submissionData);
-      console.log('Attempting to store data of size:', (dataString.length / 1024 / 1024).toFixed(2), 'MB');
+      console.log('📦 Attempting to store data of size:', (dataString.length / 1024 / 1024).toFixed(2), 'MB');
+      console.log('💰 PRICING DATA BEING STORED:', {
+        Currency: submissionData.formData["Currency"],
+        "Min Price": submissionData.formData["Min Price"],
+        "Max Price": submissionData.formData["Max Price"]
+      });
       
       // Try to store with unique key in case multiple submissions happen
       const storageKey = `pendingSubmission_${Date.now()}`;
@@ -132,6 +147,8 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       
       // Also store the latest key reference
       localStorage.setItem('latestPendingSubmission', storageKey);
+      
+      console.log('✅ Data stored successfully with key:', storageKey);
       
     } catch (quotaError) {
       console.error('localStorage quota exceeded, trying to free space...');

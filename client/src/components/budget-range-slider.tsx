@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 interface BudgetRangeSliderProps {
-  minValue?: number;
-  maxValue?: number;
+  minValue?: number | null;
+  maxValue?: number | null;
   onRangeChange: (min: number | null, max: number | null) => void;
   className?: string;
 }
@@ -15,68 +15,109 @@ export default function BudgetRangeSlider({
 }: BudgetRangeSliderProps) {
   const [minPrice, setMinPrice] = useState(minValue || 20);
   const [maxPrice, setMaxPrice] = useState(maxValue || 300);
+  const [isDragging, setIsDragging] = useState<'min' | 'max' | null>(null);
   
-  const minSliderRef = useRef<HTMLInputElement>(null);
-  const maxSliderRef = useRef<HTMLInputElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
   
   const MIN_RANGE = 20;
   const MAX_RANGE = 300;
-  const GAP = 10; // Minimum gap between sliders
+  const GAP = 10;
 
-  // Histogram data (simulated distribution)
+  // Histogram data
   const histogramData = [
-    { range: 20, height: 15 },
-    { range: 30, height: 25 },
-    { range: 40, height: 35 },
-    { range: 50, height: 45 },
-    { range: 60, height: 55 },
-    { range: 70, height: 65 },
-    { range: 80, height: 70 },
-    { range: 90, height: 75 },
-    { range: 100, height: 80 },
-    { range: 110, height: 75 },
-    { range: 120, height: 70 },
-    { range: 130, height: 65 },
-    { range: 140, height: 60 },
-    { range: 150, height: 55 },
-    { range: 160, height: 50 },
-    { range: 170, height: 45 },
-    { range: 180, height: 40 },
-    { range: 190, height: 35 },
-    { range: 200, height: 30 },
-    { range: 220, height: 25 },
-    { range: 240, height: 20 },
-    { range: 260, height: 15 },
-    { range: 280, height: 10 },
-    { range: 300, height: 8 }
+    { range: 20, height: 15 }, { range: 30, height: 25 }, { range: 40, height: 35 },
+    { range: 50, height: 45 }, { range: 60, height: 55 }, { range: 70, height: 65 },
+    { range: 80, height: 70 }, { range: 90, height: 75 }, { range: 100, height: 80 },
+    { range: 110, height: 75 }, { range: 120, height: 70 }, { range: 130, height: 65 },
+    { range: 140, height: 60 }, { range: 150, height: 55 }, { range: 160, height: 50 },
+    { range: 170, height: 45 }, { range: 180, height: 40 }, { range: 190, height: 35 },
+    { range: 200, height: 30 }, { range: 220, height: 25 }, { range: 240, height: 20 },
+    { range: 260, height: 15 }, { range: 280, height: 10 }, { range: 300, height: 8 }
   ];
 
-  const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    // Ensure min doesn't exceed max minus gap
-    if (value <= maxPrice - GAP) {
-      setMinPrice(value);
-    } else {
-      setMinPrice(maxPrice - GAP);
-    }
-  };
+  // Convert mouse position to value
+  const getValueFromPosition = useCallback((clientX: number): number => {
+    if (!sliderRef.current) return MIN_RANGE;
+    
+    const rect = sliderRef.current.getBoundingClientRect();
+    const percentage = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round(MIN_RANGE + percentage * (MAX_RANGE - MIN_RANGE));
+  }, []);
 
-  const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    // Ensure max doesn't go below min plus gap
-    if (value >= minPrice + GAP) {
-      setMaxPrice(value);
-    } else {
-      setMaxPrice(minPrice + GAP);
-    }
-  };
+  // Handle mouse down on handles
+  const handleMouseDown = useCallback((handle: 'min' | 'max') => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(handle);
+  }, []);
 
-  // Update parent component when values change
+  // Handle mouse move during drag
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    const newValue = getValueFromPosition(e.clientX);
+    
+    if (isDragging === 'min') {
+      const constrainedValue = Math.min(newValue, maxPrice - GAP);
+      const finalValue = Math.max(MIN_RANGE, constrainedValue);
+      if (finalValue !== minPrice) {
+        setMinPrice(finalValue);
+      }
+    } else if (isDragging === 'max') {
+      const constrainedValue = Math.max(newValue, minPrice + GAP);
+      const finalValue = Math.min(MAX_RANGE, constrainedValue);
+      if (finalValue !== maxPrice) {
+        setMaxPrice(finalValue);
+      }
+    }
+  }, [isDragging, minPrice, maxPrice, getValueFromPosition]);
+
+  // Handle mouse up
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(null);
+  }, []);
+
+  // Handle click on track
+  const handleTrackClick = useCallback((e: React.MouseEvent) => {
+    if (isDragging) return;
+    
+    const newValue = getValueFromPosition(e.clientX);
+    const distanceToMin = Math.abs(newValue - minPrice);
+    const distanceToMax = Math.abs(newValue - maxPrice);
+    
+    if (distanceToMin < distanceToMax) {
+      const constrainedValue = Math.min(newValue, maxPrice - GAP);
+      const finalValue = Math.max(MIN_RANGE, constrainedValue);
+      setMinPrice(finalValue);
+    } else {
+      const constrainedValue = Math.max(newValue, minPrice + GAP);
+      const finalValue = Math.min(MAX_RANGE, constrainedValue);
+      setMaxPrice(finalValue);
+    }
+  }, [minPrice, maxPrice, isDragging, getValueFromPosition]);
+
+  // Add global event listeners
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'grabbing';
+      document.body.style.userSelect = 'none';
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  // Update parent component
   useEffect(() => {
     onRangeChange(minPrice, maxPrice >= MAX_RANGE ? null : maxPrice);
   }, [minPrice, maxPrice, onRangeChange]);
 
-  // Calculate positions for the range track
+  // Calculate positions
   const minPercent = ((minPrice - MIN_RANGE) / (MAX_RANGE - MIN_RANGE)) * 100;
   const maxPercent = ((maxPrice - MIN_RANGE) / (MAX_RANGE - MIN_RANGE)) * 100;
 
@@ -99,105 +140,53 @@ export default function BudgetRangeSlider({
           {histogramData.map((bar, index) => (
             <div
               key={index}
-              className="bg-gray-300 w-2 transition-all duration-200"
+              className="bg-gray-300 transition-all duration-200"
               style={{ 
                 height: `${(bar.height / 80) * 100}%`,
-                marginRight: index < histogramData.length - 1 ? '2px' : '0'
+                width: `${100 / histogramData.length}%`,
+                marginRight: index < histogramData.length - 1 ? '1px' : '0'
               }}
             />
           ))}
         </div>
 
-        {/* Slider Track Container */}
-        <div className="absolute bottom-2 w-full h-6">
-          {/* Track Background */}
+        {/* Slider Track */}
+        <div 
+          ref={sliderRef}
+          className="absolute bottom-2 w-full h-6 cursor-pointer"
+          onClick={handleTrackClick}
+        >
+          {/* Background Track */}
           <div className="absolute top-1/2 w-full h-2 bg-gray-200 rounded-full transform -translate-y-1/2" />
           
           {/* Active Track */}
           <div 
-            className="absolute top-1/2 h-2 bg-blue-500 rounded-full transform -translate-y-1/2"
+            className="absolute top-1/2 h-2 bg-blue-500 rounded-full transform -translate-y-1/2 transition-all duration-100"
             style={{
               left: `${minPercent}%`,
               width: `${maxPercent - minPercent}%`
             }}
           />
 
-          {/* Min Range Slider */}
-          <input
-            ref={minSliderRef}
-            type="range"
-            min={MIN_RANGE}
-            max={MAX_RANGE}
-            value={minPrice}
-            onChange={handleMinChange}
-            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb min-slider"
-            style={{ zIndex: minPrice > maxPrice - 50 ? 3 : 1 }}
+          {/* Min Handle */}
+          <div
+            className={`absolute top-1/2 w-5 h-5 bg-blue-500 border-2 border-white rounded-full shadow-lg transform -translate-y-1/2 -translate-x-1/2 cursor-grab transition-all duration-100 ${
+              isDragging === 'min' ? 'scale-110 cursor-grabbing' : 'hover:scale-105'
+            }`}
+            style={{ left: `${minPercent}%`, zIndex: isDragging === 'min' ? 10 : 5 }}
+            onMouseDown={handleMouseDown('min')}
           />
 
-          {/* Max Range Slider */}
-          <input
-            ref={maxSliderRef}
-            type="range"
-            min={MIN_RANGE}
-            max={MAX_RANGE}
-            value={maxPrice}
-            onChange={handleMaxChange}
-            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb max-slider"
-            style={{ zIndex: minPrice > maxPrice - 50 ? 1 : 3 }}
+          {/* Max Handle */}
+          <div
+            className={`absolute top-1/2 w-5 h-5 bg-blue-500 border-2 border-white rounded-full shadow-lg transform -translate-y-1/2 -translate-x-1/2 cursor-grab transition-all duration-100 ${
+              isDragging === 'max' ? 'scale-110 cursor-grabbing' : 'hover:scale-105'
+            }`}
+            style={{ left: `${maxPercent}%`, zIndex: isDragging === 'max' ? 10 : 5 }}
+            onMouseDown={handleMouseDown('max')}
           />
         </div>
       </div>
-
-      {/* Custom CSS for slider thumbs */}
-      <style jsx>{`
-        .slider-thumb::-webkit-slider-thumb {
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #3b82f6;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-          position: relative;
-          z-index: 10;
-          pointer-events: auto;
-        }
-
-        .slider-thumb::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: #3b82f6;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-          cursor: pointer;
-          border: none;
-          pointer-events: auto;
-        }
-
-        .slider-thumb::-webkit-slider-track {
-          background: transparent;
-          pointer-events: none;
-        }
-
-        .slider-thumb::-moz-range-track {
-          background: transparent;
-          pointer-events: none;
-        }
-
-        .slider-thumb {
-          pointer-events: auto;
-        }
-
-        .min-slider::-webkit-slider-thumb {
-          background: #3b82f6;
-        }
-
-        .max-slider::-webkit-slider-thumb {
-          background: #3b82f6;
-        }
-      `}</style>
     </div>
   );
 }
