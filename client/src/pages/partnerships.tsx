@@ -60,7 +60,7 @@ export default function Partnerships() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Quality Focus</h3>
-              <p className="text-gray-600 text-sm">100% manually reviewed properties ensuring authentic, verified listings</p>
+              <p className="text-gray-600 text-sm">100% manually reviewed companies using a PMS ensuring authentic, verified listings</p>
             </div>
 
             <div className="text-center">
@@ -80,7 +80,7 @@ export default function Partnerships() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Proven ROI</h3>
-              <p className="text-gray-600 text-sm">Partners see 23% higher profit margins and measurable growth</p>
+              <p className="text-gray-600 text-sm">Partners see 6.7% higher profit margins and measurable growth</p>
             </div>
           </div>
         </div>

@@ -308,7 +308,7 @@ export default function Home() {
 
               {/* Higher Profit Margins */}
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">23%</div>
+                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">6.7%</div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
                 <p className="text-gray-600 text-sm">vs OTA bookings</p>
               </div>
@@ -317,7 +317,7 @@ export default function Home() {
             {/* Expert Quote */}
             <div className="max-w-4xl mx-auto">
               <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
-                "The vacation rental industry is experiencing a fundamental shift toward direct bookings. Properties that offer direct booking options see 23% higher profit margins and 40% better guest satisfaction scores compared to OTA-only listings."
+                "The vacation rental industry is experiencing a fundamental shift toward direct bookings. Properties that offer direct booking options see 6.7% higher profit margins and 40% better guest satisfaction scores compared to OTA-only listings."
               </blockquote>
               <div className="flex items-center justify-center space-x-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
