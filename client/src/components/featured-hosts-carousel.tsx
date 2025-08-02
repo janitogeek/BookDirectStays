@@ -147,30 +147,31 @@ export default function FeaturedHostsCarousel() {
         </p>
       </div>
 
-      <Swiper
-        ref={swiperRef}
-        modules={[Autoplay, Navigation, Pagination]}
-        spaceBetween={30}
-        slidesPerView={1}
-        autoplay={{
-          delay: 4000,
-          disableOnInteraction: false,
-        }}
-        navigation={true}
-        pagination={{
-          clickable: true,
-          dynamicBullets: true,
-        }}
-        breakpoints={{
-          640: {
-            slidesPerView: 2,
-          },
-          1024: {
-            slidesPerView: 3,
-          },
-        }}
-        className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2"
-      >
+      <div className="relative px-4 md:px-16">
+        <Swiper
+          ref={swiperRef}
+          modules={[Autoplay, Navigation, Pagination]}
+          spaceBetween={30}
+          slidesPerView={1}
+          autoplay={{
+            delay: 4000,
+            disableOnInteraction: false,
+          }}
+          navigation={true}
+          pagination={{
+            clickable: true,
+            dynamicBullets: true,
+          }}
+          breakpoints={{
+            640: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: 3,
+            },
+          }}
+          className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-12 [&_.swiper-button-prev]:w-12 [&_.swiper-button-next]:h-12 [&_.swiper-button-prev]:h-12 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-lg [&_.swiper-button-prev:after]:text-lg [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2 [&_.swiper-button-next]:md:-right-16 [&_.swiper-button-prev]:md:-left-16 [&_.swiper-button-next]:-right-4 [&_.swiper-button-prev]:-left-4 [&_.swiper-button-next]:hover:bg-blue-50 [&_.swiper-button-prev]:hover:bg-blue-50"
+        >
         {featuredHosts.map((host) => {
           const clickTracking = useClickTracking(host.id);
           
@@ -427,6 +428,7 @@ export default function FeaturedHostsCarousel() {
           );
         })}
       </Swiper>
+      </div>
     </div>
   );
 } 
