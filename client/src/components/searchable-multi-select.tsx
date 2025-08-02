@@ -31,7 +31,7 @@ export function SearchableMultiSelect({ options, selected, onSelect, placeholder
     option.toLowerCase().includes(search.toLowerCase())
   );
 
-  const display = selected.length > 0 ? selected.join(", ") : placeholder;
+  const display = selected.length > 0 ? `${placeholder} (${selected.length})` : placeholder;
 
   // Select All logic
   const allFilteredSelected = filtered.length > 0 && filtered.every(option => selected.includes(option));
@@ -54,7 +54,7 @@ export function SearchableMultiSelect({ options, selected, onSelect, placeholder
         <Button
           type="button"
           variant="outline"
-          className="w-full justify-between text-left"
+          className={`w-full justify-between text-left ${selected.length > 0 ? 'border-blue-500 bg-blue-50' : ''}`}
           aria-haspopup="listbox"
           aria-expanded={open}
         >

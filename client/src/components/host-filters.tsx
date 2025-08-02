@@ -153,8 +153,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     options: string[],
     category: keyof FilterState
   ) => (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-700">{title}</label>
+    <div className="space-y-1">
       <SearchableMultiSelect
         options={options}
         selected={filters[category] as string[]}
@@ -163,7 +162,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
           setFilters(newFilters);
           onFiltersChange(newFilters);
         }}
-        placeholder={`Select ${title.toLowerCase()}...`}
+        placeholder={title}
         showSelectAll={true}
       />
     </div>
@@ -225,7 +224,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
         />
 
         {/* Filter Dropdowns with Search */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {renderFilterDropdown("Property Types", PROPERTY_TYPES, "propertyTypes")}
           {renderFilterDropdown("Ideal For", IDEAL_FOR, "idealFor")}
           {renderFilterDropdown("Properties Features", PROPERTIES_FEATURES, "propertiesFeatures")}
