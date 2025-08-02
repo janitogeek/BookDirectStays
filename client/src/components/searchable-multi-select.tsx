@@ -13,9 +13,10 @@ interface SearchableMultiSelectProps {
   selected: string[];
   onSelect: (values: string[]) => void;
   placeholder?: string;
+  showSelectAll?: boolean;
 }
 
-export function SearchableMultiSelect({ options, selected, onSelect, placeholder = "Select..." }: SearchableMultiSelectProps) {
+export function SearchableMultiSelect({ options, selected, onSelect, placeholder = "Select...", showSelectAll = true }: SearchableMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +32,21 @@ export function SearchableMultiSelect({ options, selected, onSelect, placeholder
   );
 
   const display = selected.length > 0 ? selected.join(", ") : placeholder;
+
+  // Select All logic
+  const allFilteredSelected = filtered.length > 0 && filtered.every(option => selected.includes(option));
+  const someFilteredSelected = filtered.some(option => selected.includes(option));
+
+  const handleSelectAll = () => {
+    if (allFilteredSelected) {
+      // Deselect all filtered options
+      onSelect(selected.filter(item => !filtered.includes(item)));
+    } else {
+      // Select all filtered options
+      const newSelected = [...new Set([...selected, ...filtered])];
+      onSelect(newSelected);
+    }
+  };
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -53,6 +69,25 @@ export function SearchableMultiSelect({ options, selected, onSelect, placeholder
           onChange={e => setSearch(e.target.value)}
           className="mb-2 flex-shrink-0"
         />
+        
+        {/* Select All option */}
+        {showSelectAll && filtered.length > 0 && (
+          <>
+            <label className="flex items-center gap-2 cursor-pointer select-none px-2 py-1 hover:bg-blue-50 border-b border-gray-100 mb-1 font-medium text-blue-700">
+              <Checkbox
+                checked={allFilteredSelected}
+                ref={(ref) => {
+                  if (ref) {
+                    ref.indeterminate = someFilteredSelected && !allFilteredSelected;
+                  }
+                }}
+                onCheckedChange={handleSelectAll}
+              />
+              Select All {search ? '(filtered)' : `(${filtered.length})`}
+            </label>
+          </>
+        )}
+        
         <div className="flex-1 overflow-y-auto max-h-48 min-h-0">
           {filtered.map(option => (
             <label key={option} className="flex items-center gap-2 cursor-pointer select-none px-2 py-1 hover:bg-gray-50">

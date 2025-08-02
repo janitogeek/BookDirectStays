@@ -785,6 +785,7 @@ export default function Submit() {
                         field.onChange(latestSelection || "");
                       }}
                       placeholder="Search and select currency (e.g. USD – US$, EUR – €)"
+                      showSelectAll={false}
                     />
                   </FormControl>
                   <FormMessage />
