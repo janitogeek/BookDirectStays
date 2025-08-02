@@ -78,10 +78,10 @@ const CITIES = [
   "New York", "Paris", "Bali", "Lisbon", "Dolomites", "Rome", "Bangkok", "Athens"
 ];
 const TYPES_OF_STAYS = [
-  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
+  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Houses", "Guesthouses", "Hostels", "Tents", "Rooms", "Bungalows", "Hotels", "Condos", "Campervans"
 ];
 const IDEAL_FOR = [
-  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers"
+  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers", "Seniors/Elderly"
 ];
 // Perks/Amenities split into 3 groups
 const PROPERTIES_FEATURES = [
@@ -99,7 +99,7 @@ const SERVICES_CONVENIENCE = [
 const LIFESTYLE_VALUES = [
   "Pet-friendly", "Eco-friendly", "Smoking friendly", "Family-friendly", "Adults only", 
   "LGBTQ+ friendly", "Wheelchair accessible", "Quiet/Peaceful", "Party-friendly", 
-  "Luxury amenities", "Budget-friendly", "Sustainable practices"
+  "Luxury amenities", "Budget-friendly", "Sustainable practices", "Remote-work friendly"
 ];
 
 // Vibe/Aesthetic split into 3 groups (max 3 selections each)
