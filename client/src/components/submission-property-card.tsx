@@ -166,6 +166,11 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               </div>
             )}
             
+            {/* DEBUG: Always show pricing data for debugging */}
+            <div className="flex items-center gap-1 font-medium text-red-600 text-xs">
+              <span>DEBUG: Min:{submission.minPrice} Max:{submission.maxPrice} Currency:{submission.currency}</span>
+            </div>
+            
             {(submission.minPrice || submission.maxPrice) && submission.currency && (
               <div className="flex items-center gap-1 font-medium text-blue-600">
                 <span className="text-gray-500">💰</span>
