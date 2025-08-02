@@ -514,6 +514,9 @@ export default function Submit() {
 
       console.log("=== SUBMISSION DATA DEBUG ===");
       console.log("Plan selected:", values["Choose Your Listing Type"]);
+      console.log("=== PMS DEBUG ===");
+      console.log("PMS/Channel Manager raw value:", values["PMS/Channel Manager"]);
+      console.log("PMS being sent to Airtable:", submissionData["PMS"]);
       console.log("=== PRICING DEBUG ===");
       console.log("Raw form values:", {
         "Currency": values["Currency"],
