@@ -2,17 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import BudgetRangeSlider from "@/components/budget-range-slider";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Popover, 
-  PopoverContent, 
-  PopoverTrigger 
-} from "@/components/ui/popover";
-import { ChevronDown, Filter, X, Info, Search } from "lucide-react";
+import { SearchableMultiSelect } from "@/components/searchable-multi-select";
+import { Filter, X, Info, Search } from "lucide-react";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
@@ -89,7 +83,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     maxPrice: null
   });
 
-  const [openFilter, setOpenFilter] = useState<string | null>(null);
+
 
   const updateFilter = (category: keyof FilterState, value: string, checked: boolean) => {
     const newFilters = { ...filters };
@@ -133,7 +127,6 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     };
     setFilters(emptyFilters);
     onFiltersChange(emptyFilters);
-    setOpenFilter(null);
   };
 
   const removeFilter = (category: keyof FilterState, value: string) => {
@@ -155,75 +148,25 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     filters.settingsLocations.length + 
     (filters.search ? 1 : 0);
 
-  const renderFilterPopover = (
+  const renderFilterDropdown = (
     title: string,
     options: string[],
-    category: keyof FilterState,
-    isOpen: boolean
+    category: keyof FilterState
   ) => (
-    <Popover 
-      open={isOpen} 
-      onOpenChange={(open) => setOpenFilter(open ? category : null)}
-    >
-      <PopoverTrigger asChild>
-        <Button 
-          variant="outline" 
-          className={`justify-between ${filters[category].length > 0 ? 'border-blue-500 bg-blue-50' : ''}`}
-        >
-          <span className="flex items-center gap-2">
-            {title}
-            {filters[category].length > 0 && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                {filters[category].length}
-              </Badge>
-            )}
-          </span>
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80" align="start">
-        <div className="space-y-4">
-          <div className="font-medium">{title}</div>
-          <ScrollArea className="h-60">
-            <div className="space-y-2">
-              {options.map(option => (
-                <label 
-                  key={option} 
-                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                >
-                  <Checkbox
-                    checked={filters[category].includes(option)}
-                    onCheckedChange={(checked) => 
-                      updateFilter(category, option, checked as boolean)
-                    }
-                  />
-                  <span className="text-sm">{option}</span>
-                </label>
-              ))}
-            </div>
-          </ScrollArea>
-          <div className="flex justify-between pt-2 border-t">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const emptyCategory = { ...filters, [category]: [] };
-                setFilters(emptyCategory);
-                onFiltersChange(emptyCategory);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setOpenFilter(null)}
-            >
-              Done
-            </Button>
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-gray-700">{title}</label>
+      <SearchableMultiSelect
+        options={options}
+        selected={filters[category] as string[]}
+        onSelect={(values) => {
+          const newFilters = { ...filters, [category]: values };
+          setFilters(newFilters);
+          onFiltersChange(newFilters);
+        }}
+        placeholder={`Select ${title.toLowerCase()}...`}
+        showSelectAll={true}
+      />
+    </div>
   );
 
   return (
@@ -281,56 +224,16 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
           className="px-2"
         />
 
-        {/* Filter Buttons */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {renderFilterPopover(
-            "Property Types", 
-            PROPERTY_TYPES, 
-            "propertyTypes", 
-            openFilter === "propertyTypes"
-          )}
-          {renderFilterPopover(
-            "Ideal For", 
-            IDEAL_FOR, 
-            "idealFor", 
-            openFilter === "idealFor"
-          )}
-          {renderFilterPopover(
-            "Properties Features", 
-            PROPERTIES_FEATURES, 
-            "propertiesFeatures", 
-            openFilter === "propertiesFeatures"
-          )}
-          {renderFilterPopover(
-            "Services & Convenience", 
-            SERVICES_CONVENIENCE, 
-            "servicesConvenience", 
-            openFilter === "servicesConvenience"
-          )}
-          {renderFilterPopover(
-            "Lifestyle & Values", 
-            LIFESTYLE_VALUES, 
-            "lifestyleValues", 
-            openFilter === "lifestyleValues"
-          )}
-          {renderFilterPopover(
-            "Design Style", 
-            DESIGN_STYLE, 
-            "designStyle", 
-            openFilter === "designStyle"
-          )}
-          {renderFilterPopover(
-            "Atmospheres", 
-            ATMOSPHERES, 
-            "atmospheres", 
-            openFilter === "atmospheres"
-          )}
-          {renderFilterPopover(
-            "Settings/Locations", 
-            SETTINGS_LOCATIONS, 
-            "settingsLocations", 
-            openFilter === "settingsLocations"
-          )}
+        {/* Filter Dropdowns with Search */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {renderFilterDropdown("Property Types", PROPERTY_TYPES, "propertyTypes")}
+          {renderFilterDropdown("Ideal For", IDEAL_FOR, "idealFor")}
+          {renderFilterDropdown("Properties Features", PROPERTIES_FEATURES, "propertiesFeatures")}
+          {renderFilterDropdown("Services & Convenience", SERVICES_CONVENIENCE, "servicesConvenience")}
+          {renderFilterDropdown("Lifestyle & Values", LIFESTYLE_VALUES, "lifestyleValues")}
+          {renderFilterDropdown("Design Style", DESIGN_STYLE, "designStyle")}
+          {renderFilterDropdown("Atmospheres", ATMOSPHERES, "atmospheres")}
+          {renderFilterDropdown("Settings/Locations", SETTINGS_LOCATIONS, "settingsLocations")}
         </div>
 
         {/* Active Filters */}
