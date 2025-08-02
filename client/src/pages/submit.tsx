@@ -677,7 +677,7 @@ export default function Submit() {
               <FormField control={form.control} name="Number of Listings" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Listings<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="number" min="1" {...field} placeholder="12" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
+                  <FormControl><Input type="number" min="1" {...field} placeholder="0" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
