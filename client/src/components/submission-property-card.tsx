@@ -165,6 +165,22 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
           )}
 
+          {/* Pricing Display */}
+          {(submission.minPrice || submission.maxPrice) && submission.currency && (
+            <div className="flex items-center gap-1 mb-3 text-sm font-medium text-blue-600">
+              <span className="text-gray-500">💰</span>
+              <span>
+                {submission.minPrice && submission.maxPrice ? (
+                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]} to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                ) : submission.minPrice ? (
+                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]}`
+                ) : (
+                  `up to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                )}
+              </span>
+            </div>
+          )}
+
           {/* Types of Stays - Moved before Countries */}
           {submission.typesOfStays && submission.typesOfStays.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
