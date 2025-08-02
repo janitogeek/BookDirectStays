@@ -231,7 +231,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
           {renderFilterDropdown("Properties Features", PROPERTIES_FEATURES, "propertiesFeatures")}
           {renderFilterDropdown("Services & Convenience", SERVICES_CONVENIENCE, "servicesConvenience")}
           {renderFilterDropdown("Lifestyle & Values", LIFESTYLE_VALUES, "lifestyleValues")}
-          {renderFilterDropdown("Design Style", DESIGN_STYLE, "designStyle")}
+          {renderFilterDropdown("Design Styles", DESIGN_STYLE, "designStyle")}
           {renderFilterDropdown("Atmospheres", ATMOSPHERES, "atmospheres")}
           {renderFilterDropdown("Settings/Locations", SETTINGS_LOCATIONS, "settingsLocations")}
         </div>

@@ -586,7 +586,7 @@ export const airtableService = {
       propertiesFeatures: parseArray(fields['Properties Features']),
       servicesConvenience: parseArray(fields['Services & Convenience']),
       lifestyleValues: parseArray(fields['Lifestyle & Values']),
-      designStyle: parseArray(fields['Design Style']),
+      designStyle: parseArray(fields['Design Styles']),
       atmospheres: parseArray(fields['Atmospheres']),
       settingsLocations: parseArray(fields['Settings/Locations']),
       instagram: fields['Instagram'] || undefined,

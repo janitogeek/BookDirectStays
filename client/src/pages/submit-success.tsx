@@ -101,7 +101,7 @@ export default function SubmitSuccess() {
         "Properties Features": formData["Properties Features"] || [],
         "Services & Convenience": formData["Services & Convenience"] || [],
         "Lifestyle & Values": formData["Lifestyle & Values"] || [],
-        "Design Style": formData["Design Style"] || [],
+        "Design Styles": formData["Design Styles"] || [],
         "Atmospheres": formData["Atmospheres"] || [],
         "Settings/Locations": formData["Settings/Locations"] || [],
         "Instagram": formData["Instagram"] || "",

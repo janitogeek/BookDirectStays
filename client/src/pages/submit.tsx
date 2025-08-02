@@ -58,7 +58,7 @@ const formSchema = z.object({
   "Lifestyle & Values": z.array(z.string()).optional(),
   "Eco-Conscious Stay?": z.boolean().optional(),
   "Remote-Work Friendly?": z.boolean().optional(),
-  "Design Style": z.array(z.string()).optional(),
+  "Design Styles": z.array(z.string()).optional(),
   "Atmospheres": z.array(z.string()).optional(),
   "Settings/Locations": z.array(z.string()).optional(),
   "Instagram": z.string().url().optional().or(z.literal("")),
@@ -173,7 +173,7 @@ export default function Submit() {
       "Lifestyle & Values": [],
       "Eco-Conscious Stay?": false,
       "Remote-Work Friendly?": false,
-      "Design Style": [],
+      "Design Styles": [],
       "Atmospheres": [],
       "Settings/Locations": [],
       "Instagram": "",
@@ -478,7 +478,7 @@ export default function Submit() {
         "Properties Features": values["Properties Features"] || [],
         "Services & Convenience": values["Services & Convenience"] || [],
         "Lifestyle & Values": values["Lifestyle & Values"] || [],
-        "Design Style": values["Design Style"] || [],
+        "Design Styles": values["Design Styles"] || [],
         "Atmospheres": values["Atmospheres"] || [],
         "Settings/Locations": values["Settings/Locations"] || [],
         "Instagram": values["Instagram"] || "",
@@ -949,9 +949,9 @@ export default function Submit() {
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">🎨 Vibe & Style</h2>
               
-              <FormField control={form.control} name="Design Style" render={({ field }) => (
+                              <FormField control={form.control} name="Design Styles" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>🏛️ Design Style</FormLabel>
+                  <FormLabel>🏛️ Design Styles</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
                       options={DESIGN_STYLE}
