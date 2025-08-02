@@ -568,7 +568,7 @@ export default function Submit() {
               <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Your e-mail<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="email" {...field} placeholder="e.g. john@wynwood-house.com" /></FormControl>
+                  <FormControl><Input type="email" {...field} placeholder="e.g. john@yourdomain.com" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -582,7 +582,7 @@ export default function Submit() {
               <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://wynwood-house.com/" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -750,11 +750,10 @@ export default function Submit() {
                     <FormControl>
                       <Input 
                         type="number" 
-                        step="0.01"
                         min="1"
-                        {...field} 
-                        placeholder="e.g. 150" 
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        value={field.value || ""}
+                        placeholder="150" 
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -769,8 +768,8 @@ export default function Submit() {
                         type="number" 
                         step="0.01"
                         min="1"
-                        {...field} 
-                        placeholder="e.g. 300" 
+                        value={field.value || ""}
+                        placeholder="300" 
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
