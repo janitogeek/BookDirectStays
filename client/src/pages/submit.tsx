@@ -5,7 +5,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -695,18 +694,17 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>PMS/Channel Manager<RequiredAsterisk /></FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger className={field.value ? 'border-blue-500 bg-blue-50' : ''}>
-                        <SelectValue placeholder="Select your PMS/Channel Manager" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PMS_OPTIONS.map((pms) => (
-                          <SelectItem key={pms} value={pms}>
-                            {pms}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SearchableMultiSelect
+                      options={PMS_OPTIONS}
+                      selected={field.value ? [field.value] : []}
+                      onSelect={(values) => {
+                        // For PMS, we only want single selection
+                        const latestSelection = values[values.length - 1];
+                        field.onChange(latestSelection || "");
+                      }}
+                      placeholder="Search and select your PMS/Channel Manager"
+                      showSelectAll={false}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
