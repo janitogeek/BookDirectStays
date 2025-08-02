@@ -71,7 +71,7 @@ const COUNTRIES = [
   "USA", "Spain", "UK", "Germany", "France", "Australia", "Canada", "Italy", "Portugal", "Thailand", "Greece"
 ];
 const CITIES = [
-  "Bali", "Lisbon", "Dolomites", "Paris", "Rome", "Bangkok", "Athens"
+  "New York", "Paris", "Bali", "Lisbon", "Dolomites", "Rome", "Bangkok", "Athens"
 ];
 const TYPES_OF_STAYS = [
   "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
@@ -575,7 +575,7 @@ export default function Submit() {
               <FormField control={form.control} name="Brand Name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. Wynwood House" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. Vacasa" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -714,7 +714,7 @@ export default function Submit() {
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Top Stats <RequiredAsterisk /> (list comma separated: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)
+                    Top Stats <RequiredAsterisk /> (List comma separated. Ex: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)
                   </FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
@@ -847,28 +847,28 @@ export default function Submit() {
               <FormField control={form.control} name="Instagram" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Instagram</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://instagram.com/wynwoodhouse" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://instagram.com/yourcompanyname" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Facebook" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Facebook</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://facebook.com/wynwoodhouse" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://facebook.com/yourcompanyname" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="LinkedIn" render={({ field }) => (
                 <FormItem>
                   <FormLabel>LinkedIn</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://linkedin.com/company/wynwoodhouse" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://linkedin.com/company/yourcompanyname" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="TikTok" render={({ field }) => (
                 <FormItem>
                   <FormLabel>TikTok</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://tiktok.com/@wynwoodhouse" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://tiktok.com/@yourcompanyname" /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
