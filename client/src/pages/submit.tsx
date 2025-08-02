@@ -53,10 +53,14 @@ const formSchema = z.object({
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
-  "Perks / Amenities": z.array(z.string()).optional(),
+  "Properties Features": z.array(z.string()).optional(),
+  "Services & Convenience": z.array(z.string()).optional(),
+  "Lifestyle & Values": z.array(z.string()).optional(),
   "Eco-Conscious Stay?": z.boolean().optional(),
   "Remote-Work Friendly?": z.boolean().optional(),
-  "Vibe / Aesthetic": z.array(z.string()).optional(),
+  "Design Style": z.array(z.string()).max(3, "Please select maximum 3 design styles").optional(),
+  "Atmospheres": z.array(z.string()).max(3, "Please select maximum 3 atmospheres").optional(),
+  "Settings/Locations": z.array(z.string()).max(3, "Please select maximum 3 settings/locations").optional(),
   "Instagram": z.string().url().optional().or(z.literal("")),
   "Facebook": z.string().url().optional().or(z.literal("")),
   "LinkedIn": z.string().url().optional().or(z.literal("")),
@@ -79,11 +83,39 @@ const TYPES_OF_STAYS = [
 const IDEAL_FOR = [
   "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers"
 ];
-const PERKS = [
-  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly", "Eco-friendly", "Remote-work friendly", "Smoking friendly", "Concierge", "Early check-in", "Late check-out", "Mid-stay cleaning"
+// Perks/Amenities split into 3 groups
+const PROPERTIES_FEATURES = [
+  "Pool", "Hot Tub/Jacuzzi", "Garden/Outdoor Space", "Balcony/Terrace", "Fireplace", 
+  "Air Conditioning", "Heating", "Washer", "Dryer", "Kitchen/Kitchenette", "Dishwasher", 
+  "BBQ/Grill", "Parking", "Garage", "EV Charging", "Hair dryer", "Iron", "WiFi", "Dedicated workspace"
 ];
-const VIBES = [
-  "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
+
+const SERVICES_CONVENIENCE = [
+  "Self check-in", "Concierge", "Early check-in", "Late check-out", "Mid-stay cleaning", 
+  "Breakfast included", "Room service", "Luggage storage", "Airport transfer", "Car rental", 
+  "Bike rental", "Grocery delivery", "24/7 Support"
+];
+
+const LIFESTYLE_VALUES = [
+  "Pet-friendly", "Eco-friendly", "Smoking friendly", "Family-friendly", "Adults only", 
+  "LGBTQ+ friendly", "Wheelchair accessible", "Quiet/Peaceful", "Party-friendly", 
+  "Luxury amenities", "Budget-friendly", "Sustainable practices"
+];
+
+// Vibe/Aesthetic split into 3 groups (max 3 selections each)
+const DESIGN_STYLE = [
+  "Modern", "Minimalist", "Design-led/Contemporary", "Traditional/Classic", "Industrial", 
+  "Scandinavian", "Mid-century Modern", "Art Deco"
+];
+
+const ATMOSPHERES = [
+  "Boho/Bohemian", "Rustic/Countryside", "Luxury/Upscale", "Cozy/Intimate", "Bright/Airy", 
+  "Romantic", "Artistic/Creative", "Zen/Peaceful"
+];
+
+const SETTINGS_LOCATIONS = [
+  "Urban/City", "Beach/Coastal", "Mountain/Alpine", "Forest/Nature", "Historic/Heritage", 
+  "Countryside/Rural", "Wine Country", "Desert/Unique Landscape"
 ];
 
 const CURRENCIES = [
@@ -136,10 +168,14 @@ export default function Submit() {
       "Types of Stays": [],
       "Ideal For": [],
       "Is your brand pet-friendly?": false,
-      "Perks / Amenities": [],
+      "Properties Features": [],
+      "Services & Convenience": [],
+      "Lifestyle & Values": [],
       "Eco-Conscious Stay?": false,
       "Remote-Work Friendly?": false,
-      "Vibe / Aesthetic": [],
+      "Design Style": [],
+      "Atmospheres": [],
+      "Settings/Locations": [],
       "Instagram": "",
       "Facebook": "",
       "LinkedIn": "",
@@ -855,32 +891,49 @@ export default function Submit() {
               )} />
             </div>
 
-            {/* Section 3: Perks & Positioning */}
+            {/* Section 3: Properties & Amenities */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">🎁 Perks & Positioning <span className='text-base font-normal text-green-700'>(the more, the better)</span></h2>
-              <FormField control={form.control} name="Perks / Amenities" render={({ field }) => (
+              <h2 className="text-xl font-semibold mb-4">🎁 Properties & Amenities <span className='text-base font-normal text-green-700'>(the more, the better)</span></h2>
+              
+              <FormField control={form.control} name="Properties Features" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Perks / Amenities</FormLabel>
+                  <FormLabel>🏠 Properties Features</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
-                      options={PERKS}
+                      options={PROPERTIES_FEATURES}
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
-                      placeholder="e.g. Pool, WiFi"
+                      placeholder="e.g. Pool, WiFi, Hot Tub"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name="Vibe / Aesthetic" render={({ field }) => (
+              
+              <FormField control={form.control} name="Services & Convenience" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Vibe / Aesthetic</FormLabel>
+                  <FormLabel>💼 Services & Convenience</FormLabel>
                   <FormControl>
                     <SearchableMultiSelect
-                      options={VIBES}
+                      options={SERVICES_CONVENIENCE}
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
-                      placeholder="e.g. Boho, Minimalist"
+                      placeholder="e.g. Self check-in, Concierge"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="Lifestyle & Values" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>🌱 Lifestyle & Values</FormLabel>
+                  <FormControl>
+                    <SearchableMultiSelect
+                      options={LIFESTYLE_VALUES}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Pet-friendly, Eco-friendly"
                     />
                   </FormControl>
                   <FormMessage />
@@ -888,7 +941,57 @@ export default function Submit() {
               )} />
             </div>
 
-            {/* Section 4: Social Links */}
+            {/* Section 4: Vibe & Style */}
+            <div className="bg-white rounded-xl shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">🎨 Vibe & Style <span className='text-base font-normal text-blue-700'>(max 3 per category)</span></h2>
+              
+              <FormField control={form.control} name="Design Style" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>🏛️ Design Style <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormControl>
+                    <SearchableMultiSelect
+                      options={DESIGN_STYLE}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Modern, Minimalist"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="Atmospheres" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>🌿 Atmospheres <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormControl>
+                    <SearchableMultiSelect
+                      options={ATMOSPHERES}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Luxury/Upscale, Cozy/Intimate"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              
+              <FormField control={form.control} name="Settings/Locations" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>🏞️ Settings/Locations <span className="text-sm text-blue-600">(max 3)</span></FormLabel>
+                  <FormControl>
+                    <SearchableMultiSelect
+                      options={SETTINGS_LOCATIONS}
+                      selected={field.value || []}
+                      onSelect={values => field.onChange(values)}
+                      placeholder="e.g. Beach/Coastal, Urban/City"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+
+            {/* Section 5: Social Links */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">📲 Social Links <span className='text-base font-normal text-green-700'>(Recommended for higher conversion)</span></h2>
               <FormField control={form.control} name="Instagram" render={({ field }) => (

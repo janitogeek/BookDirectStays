@@ -31,8 +31,12 @@ export interface AirtableSubmission {
     'Cities / Regions': string | string[];
     'Types of Stays': string | string[];
     'Ideal For': string | string[];
-    'Perks / Amenities': string | string[];
-    'Vibe / Aesthetic': string | string[];
+    'Properties Features': string | string[];
+    'Services & Convenience': string | string[];
+    'Lifestyle & Values': string | string[];
+    'Design Style': string | string[];
+    'Atmospheres': string | string[];
+    'Settings/Locations': string | string[];
     'Instagram'?: string;
     'Facebook'?: string;
     'LinkedIn'?: string;
@@ -69,8 +73,12 @@ export interface Submission {
   citiesRegions: string[];
   typesOfStays: string[];
   idealFor: string[];
-  perksAmenities: string[];
-  vibeAesthetic: string[];
+  propertiesFeatures: string[];
+  servicesConvenience: string[];
+  lifestyleValues: string[];
+  designStyle: string[];
+  atmospheres: string[];
+  settingsLocations: string[];
   instagram?: string;
   facebook?: string;
   linkedin?: string;
@@ -575,8 +583,12 @@ export const airtableService = {
       citiesRegions: parseArray(fields['Cities / Regions']),
       typesOfStays: parseArray(fields['Types of Stays']),
       idealFor: parseArray(fields['Ideal For']),
-      perksAmenities: parseArray(fields['Perks / Amenities']),
-      vibeAesthetic: parseArray(fields['Vibe / Aesthetic']),
+      propertiesFeatures: parseArray(fields['Properties Features']),
+      servicesConvenience: parseArray(fields['Services & Convenience']),
+      lifestyleValues: parseArray(fields['Lifestyle & Values']),
+      designStyle: parseArray(fields['Design Style']),
+      atmospheres: parseArray(fields['Atmospheres']),
+      settingsLocations: parseArray(fields['Settings/Locations']),
       instagram: fields['Instagram'] || undefined,
       facebook: fields['Facebook'] || undefined,
       linkedin: fields['LinkedIn'] || undefined,
