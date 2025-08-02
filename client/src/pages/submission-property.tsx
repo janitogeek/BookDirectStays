@@ -177,13 +177,30 @@ export default function SubmissionProperty() {
                   </p>
                 )}
 
-                                {/* Property Count - Standardized with property cards */}
-                {submission.numberOfListings && (
-                  <div className="flex items-center gap-1 mb-3 text-sm text-gray-600">
-                    <Building2 className="w-4 h-4" />
-                    <span>{submission.numberOfListings} properties</span>
-                  </div>
-                )}
+                {/* Property Count & Pricing - Standardized with property cards */}
+                <div className="flex items-center justify-between mb-3 text-sm">
+                  {submission.numberOfListings && (
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <Building2 className="w-4 h-4" />
+                      <span>{submission.numberOfListings} properties</span>
+                    </div>
+                  )}
+                  
+                  {(submission.minPrice || submission.maxPrice) && submission.currency && (
+                    <div className="flex items-center gap-1 font-medium text-blue-600">
+                      <span className="text-gray-500">💰</span>
+                      <span>
+                        {submission.minPrice && submission.maxPrice ? (
+                          `from ${submission.minPrice} ${submission.currency.split(' – ')[1]} to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                        ) : submission.minPrice ? (
+                          `from ${submission.minPrice} ${submission.currency.split(' – ')[1]}`
+                        ) : (
+                          `up to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Property Types - Moved before Countries */}
                 {submission.typesOfStays && submission.typesOfStays.length > 0 && (

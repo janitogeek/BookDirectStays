@@ -20,7 +20,7 @@ interface CityRegionAsyncMultiSelectProps {
   placeholder?: string;
 }
 
-export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "e.g. Paris, New York" }: CityRegionAsyncMultiSelectProps) {
+export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "e.g. New York, Paris" }: CityRegionAsyncMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<CityRegion[]>([]);

@@ -131,8 +131,8 @@ export default function Submit() {
       "Why Book With You?": "",
       "Top Stats": "",
       "Currency": "",
-      "Min Price (ADR)": 0,
-      "Max Price (ADR)": 0,
+      "Min Price (ADR)": "",
+      "Max Price (ADR)": "",
       "Types of Stays": [],
       "Ideal For": [],
       "Is your brand pet-friendly?": false,
@@ -398,8 +398,8 @@ export default function Submit() {
         "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
-        "Min Price (ADR)": values["Min Price (ADR)"] || 0,
-        "Max Price (ADR)": values["Max Price (ADR)"] || 0,
+        "Min Price (ADR)": values["Min Price (ADR)"] ? parseInt(values["Min Price (ADR)"]) : null,
+        "Max Price (ADR)": values["Max Price (ADR)"] ? parseFloat(values["Max Price (ADR)"]) : null,
         "Types of Stays": values["Types of Stays"] || [],
         "Ideal For": values["Ideal For"] || [],
         "Perks / Amenities": values["Perks / Amenities"] || [],
@@ -612,7 +612,7 @@ export default function Submit() {
                     <CityRegionAsyncMultiSelect
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
-                      placeholder="e.g. Paris, New York"
+                                              placeholder="e.g. New York, Paris"
                     />
                   </FormControl>
                   <FormMessage />
@@ -714,10 +714,10 @@ export default function Submit() {
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Top Stats <RequiredAsterisk /> (List comma separated. Ex: Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability)
+                    Top Stats <RequiredAsterisk /> (List comma separated)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
+                    <Input {...field} placeholder="e.g. Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -753,7 +753,7 @@ export default function Submit() {
                         min="1"
                         value={field.value || ""}
                         placeholder="150" 
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                        onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -770,7 +770,7 @@ export default function Submit() {
                         min="1"
                         value={field.value || ""}
                         placeholder="300" 
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => field.onChange(e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />
