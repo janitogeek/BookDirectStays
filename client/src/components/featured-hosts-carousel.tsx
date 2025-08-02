@@ -12,6 +12,7 @@ import { Skeleton } from "./ui/skeleton";
 import { Badge } from "./ui/badge";
 import { generateSlug } from "@/lib/utils";
 import TopStats from "@/components/top-stats";
+import { useClickTracking } from "@/lib/click-tracking";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -170,7 +171,10 @@ export default function FeaturedHostsCarousel() {
         }}
         className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-11 [&_.swiper-button-prev]:w-11 [&_.swiper-button-next]:h-11 [&_.swiper-button-prev]:h-11 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-base [&_.swiper-button-prev:after]:text-base [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2"
       >
-        {featuredHosts.map((host) => (
+        {featuredHosts.map((host) => {
+          const clickTracking = useClickTracking(host.id);
+          
+          return (
           <SwiperSlide key={host.id}>
             <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
               {/* Featured Badge */}
@@ -331,6 +335,7 @@ export default function FeaturedHostsCarousel() {
                         rel="noopener noreferrer"
                         className="text-pink-600 hover:scale-110 transition-transform"
                         title="Instagram"
+                        onClick={clickTracking.trackInstagram}
                       >
                         <SiInstagram className="w-5 h-5" />
                       </a>
@@ -342,6 +347,7 @@ export default function FeaturedHostsCarousel() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:scale-110 transition-transform"
                         title="Facebook"
+                        onClick={clickTracking.trackFacebook}
                       >
                         <SiFacebook className="w-5 h-5" />
                       </a>
@@ -353,6 +359,7 @@ export default function FeaturedHostsCarousel() {
                         rel="noopener noreferrer"
                         className="text-blue-700 hover:scale-110 transition-transform"
                         title="LinkedIn"
+                        onClick={clickTracking.trackLinkedIn}
                       >
                         <SiLinkedin className="w-5 h-5" />
                       </a>
@@ -364,6 +371,7 @@ export default function FeaturedHostsCarousel() {
                         rel="noopener noreferrer"
                         className="text-black hover:scale-110 transition-transform"
                         title="TikTok"
+                        onClick={clickTracking.trackTikTok}
                       >
                         <SiTiktok className="w-5 h-5" />
                       </a>
@@ -375,6 +383,7 @@ export default function FeaturedHostsCarousel() {
                         rel="noopener noreferrer"
                         className="text-red-600 hover:scale-110 transition-transform"
                         title="YouTube"
+                        onClick={clickTracking.trackYouTube}
                       >
                         <SiYoutube className="w-5 h-5" />
                       </a>
@@ -393,6 +402,7 @@ export default function FeaturedHostsCarousel() {
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2"
+                        onClick={clickTracking.trackWebsite}
                       >
                         <ExternalLink className="w-4 h-4" />
                         Book Direct
@@ -403,7 +413,8 @@ export default function FeaturedHostsCarousel() {
               </CardContent>
             </Card>
           </SwiperSlide>
-        ))}
+          );
+        })}
       </Swiper>
     </div>
   );
