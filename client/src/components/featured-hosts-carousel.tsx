@@ -137,7 +137,7 @@ export default function FeaturedHostsCarousel() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-16">
+    <div className="max-w-6xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
           Our Featured Hosts
@@ -147,7 +147,7 @@ export default function FeaturedHostsCarousel() {
         </p>
       </div>
 
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative px-4 sm:px-8 lg:px-12">
         <Swiper
           ref={swiperRef}
           modules={[Autoplay, Navigation, Pagination]}
@@ -170,7 +170,7 @@ export default function FeaturedHostsCarousel() {
               slidesPerView: 3,
             },
           }}
-          className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-12 [&_.swiper-button-prev]:w-12 [&_.swiper-button-next]:h-12 [&_.swiper-button-prev]:h-12 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-lg [&_.swiper-button-prev:after]:text-lg [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2 [&_.swiper-button-next]:-right-8 [&_.swiper-button-prev]:-left-8 [&_.swiper-button-next]:hover:bg-blue-50 [&_.swiper-button-prev]:hover:bg-blue-50"
+          className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-12 [&_.swiper-button-prev]:w-12 [&_.swiper-button-next]:h-12 [&_.swiper-button-prev]:h-12 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next:after]:text-lg [&_.swiper-button-prev:after]:text-lg [&_.swiper-button-next:after]:font-bold [&_.swiper-button-prev:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2 [&_.swiper-button-next]:right-2 [&_.swiper-button-prev]:left-2 [&_.swiper-button-next]:hover:bg-blue-50 [&_.swiper-button-prev]:hover:bg-blue-50 [&_.swiper-button-next]:z-10 [&_.swiper-button-prev]:z-10"
         >
         {featuredHosts.map((host) => {
           const clickTracking = useClickTracking(host.id);
