@@ -5,8 +5,9 @@ const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY || '';
 const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID || '';
 const AIRTABLE_TABLE_NAME = 'Directory Submissions'; // Your actual table name
 
-// Airtable API endpoint
+// Airtable API endpoints
 const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
+const AIRTABLE_META_URL = `https://api.airtable.com/v0/meta/bases/${AIRTABLE_BASE_ID}/tables`;
 
 // Debug: Log configuration (remove in production)
 console.log('Airtable Config:', {
@@ -43,6 +44,13 @@ export interface AirtableSubmission {
     'Rating Screenshot'?: Array<{ url: string; filename: string }>;
     'Status': string;
     'Submission Date': string;
+    // New fields
+    'PMS Used'?: string;
+    'Min Price (ADR)'?: number;
+    'Max Price (ADR)'?: number;
+    'Currency'?: string;
+    'Google Reviews Link'?: string;
+    'Cancellation Policy'?: string;
   };
   createdTime: string;
 }
@@ -75,6 +83,13 @@ export interface Submission {
   status: string;
   submissionDate: string;
   createdTime: string;
+  // New fields
+  pmsUsed?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  currency?: string;
+  googleReviewsLink?: string;
+  cancellationPolicy?: string;
 }
 
 // Airtable service
@@ -452,6 +467,228 @@ export const airtableService = {
     await this.updateSubmissionStatus(id, 'Published');
   },
 
+  // =============================================================================
+  // SCHEMA MODIFICATION FUNCTIONS (Airtable Meta API)
+  // =============================================================================
+
+  /**
+   * Get table schema to check existing fields
+   */
+  async getTableSchema(): Promise<any> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    const response = await fetch(AIRTABLE_META_URL, {
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Airtable Meta API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const directoryTable = data.tables.find((table: any) => table.name === AIRTABLE_TABLE_NAME);
+    
+    if (!directoryTable) {
+      throw new Error(`Table "${AIRTABLE_TABLE_NAME}" not found`);
+    }
+
+    return directoryTable;
+  },
+
+  /**
+   * Create new fields in Airtable
+   */
+  async createFields(fields: Array<{
+    name: string;
+    type: string;
+    options?: any;
+  }>): Promise<any> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    // First get the table ID
+    const schema = await this.getTableSchema();
+    const tableId = schema.id;
+
+    const response = await fetch(`${AIRTABLE_META_URL}/${tableId}/fields`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fields: fields
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Airtable field creation error: ${response.statusText} - ${JSON.stringify(errorData)}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ Created fields:', fields.map(f => f.name).join(', '));
+    return result;
+  },
+
+  /**
+   * Add the new fields needed for BookDirectStays
+   */
+  async addNewFields(): Promise<void> {
+    console.log('🔧 Adding new fields to Airtable...');
+
+    // Define the new fields
+    const newFields = [
+      {
+        name: 'PMS Used',
+        type: 'singleSelect',
+        options: {
+          choices: [
+            { name: 'Hostfully' },
+            { name: 'Guesty' },
+            { name: 'Lodgify' },
+            { name: 'BookingSync' },
+            { name: 'OwnerRez' },
+            { name: 'Streamline' },
+            { name: 'Hostaway' },
+            { name: 'YourPorter' },
+            { name: 'Avantio' },
+            { name: 'RentalNinja' },
+            { name: 'Kigo' },
+            { name: 'RemoteLock' },
+            { name: 'Tokeet' },
+            { name: 'Bookerville' },
+            { name: 'LiveRez' },
+            { name: 'iGMS' },
+            { name: 'Mynd' },
+            { name: 'RedAwning' },
+            { name: 'Rental United' },
+            { name: 'CiiRUS' },
+            { name: 'Track' },
+            { name: 'RMS Cloud' },
+            { name: 'Cloudbeds' },
+            { name: 'BookingBoss' },
+            { name: 'VRScheduler' },
+            { name: 'Smartbnb' },
+            { name: 'Hostfully' },
+            { name: 'PriceLabs' },
+            { name: 'Beyond Pricing' },
+            { name: 'Wheelhouse' },
+            { name: 'AirDNA' },
+            { name: 'Key Data Dashboard' },
+            { name: 'Transparent' },
+            { name: 'Rented' },
+            { name: 'Property Meld' },
+            { name: 'Breezeway' },
+            { name: 'TurnoverBnB' },
+            { name: 'Properly' },
+            { name: 'TIDY' },
+            { name: 'Jetstream' },
+            { name: 'FantasticStay' },
+            { name: 'Red' },
+            { name: 'Guest' },
+            { name: 'TouchStay' },
+            { name: 'Hostco' },
+            { name: 'DPGO' },
+            { name: 'StayFi' },
+            { name: 'GuestTek' },
+            { name: 'NoiseAware' },
+            { name: 'Minut' },
+            { name: 'Party Squasher' },
+            { name: 'Alertify' },
+            { name: 'August' },
+            { name: 'Schlage' },
+            { name: 'Yale' },
+            { name: 'Lynx' },
+            { name: 'PointCentral' },
+            { name: 'SALTO' },
+            { name: 'Nest' },
+            { name: 'Ecobee' },
+            { name: 'Honeywell' },
+            { name: 'Ring' },
+            { name: 'SimpliSafe' },
+            { name: 'ADT' },
+            { name: 'Kangaroo' },
+            { name: 'Airbnb' },
+            { name: 'VRBO' },
+            { name: 'Booking.com' },
+            { name: 'Expedia' },
+            { name: 'HomeAway' },
+            { name: 'TripAdvisor' },
+            { name: 'FlipKey' },
+            { name: 'RedWeek' },
+            { name: 'Other' },
+            { name: 'Custom Solution' },
+            { name: 'No PMS' }
+          ]
+        }
+      },
+      {
+        name: 'Min Price (ADR)',
+        type: 'number',
+        options: {
+          precision: 2
+        }
+      },
+      {
+        name: 'Max Price (ADR)', 
+        type: 'number',
+        options: {
+          precision: 2
+        }
+      },
+      {
+        name: 'Currency',
+        type: 'singleSelect',
+        options: {
+          choices: [
+            { name: 'EUR (€)' },
+            { name: 'USD ($)' },
+            { name: 'GBP (£)' },
+            { name: 'CAD ($)' },
+            { name: 'AUD ($)' },
+            { name: 'JPY (¥)' },
+            { name: 'CHF' },
+            { name: 'SEK' },
+            { name: 'NOK' },
+            { name: 'DKK' },
+            { name: 'BRL (R$)' },
+            { name: 'MXN ($)' },
+            { name: 'ZAR (R)' },
+            { name: 'AED' },
+            { name: 'THB (฿)' },
+            { name: 'Local Currency' }
+          ]
+        }
+      },
+      {
+        name: 'Google Reviews Link',
+        type: 'url'
+      },
+      {
+        name: 'Cancellation Policy',
+        type: 'singleSelect',
+        options: {
+          choices: [
+            { name: 'Flexible - Free cancellation up to 24 hours before check-in' },
+            { name: 'Moderate - Free cancellation up to 5 days before check-in' },
+            { name: 'Strict - Free cancellation up to 14 days before check-in' },
+            { name: 'Super Strict - 50% refund up to 30 days before check-in' },
+            { name: 'Non-refundable - No refunds allowed' }
+          ]
+        }
+      }
+    ];
+
+    await this.createFields(newFields);
+    console.log('✅ All new fields added successfully!');
+  },
+
   async getPublishedSubmissions(): Promise<Submission[]> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
@@ -573,7 +810,14 @@ export const airtableService = {
       ratingScreenshot: findRatingScreenshotUrl(),
       status: fields['Status'] || '',
       submissionDate: fields['Submission Date'] || '',
-      createdTime: record.createdTime
+      createdTime: record.createdTime,
+      // New fields
+      pmsUsed: fields['PMS Used'] || undefined,
+      minPrice: fields['Min Price (ADR)'] || undefined,
+      maxPrice: fields['Max Price (ADR)'] || undefined,
+      currency: fields['Currency'] || undefined,
+      googleReviewsLink: fields['Google Reviews Link'] || undefined,
+      cancellationPolicy: fields['Cancellation Policy'] || undefined
     };
 
     console.log('✅ Transformed:', transformed.brandName, '- Status:', transformed.status);
