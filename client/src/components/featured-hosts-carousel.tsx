@@ -109,7 +109,7 @@ export default function FeaturedHostsCarousel() {
   }
 
     // Filter for featured hosts (Premium plans that are approved/published)
-  // Shows ALL featured companies with consistent card heights
+  // Shows ALL featured companies with consistent card heights, sorted by newest first
   const featuredHosts = submissions?.filter(submission => {
     const isPremium = submission.plan?.includes('Premium') || 
                      submission.plan?.includes('€499.99') || 
@@ -117,6 +117,11 @@ export default function FeaturedHostsCarousel() {
     const isApproved = submission.status === 'Approved – Published';
     
     return isPremium && isApproved;
+  }).sort((a, b) => {
+    // Sort by submission date, newest first
+    const dateA = new Date(a.submissionDate || '1970-01-01');
+    const dateB = new Date(b.submissionDate || '1970-01-01');
+    return dateB.getTime() - dateA.getTime();
   }) || [];
 
   if (featuredHosts.length === 0) {
@@ -241,14 +246,36 @@ export default function FeaturedHostsCarousel() {
                   )}
                 </div>
 
-                {/* Types of Stays - Moved before Countries */}
+                {/* Types of Stays - Horizontal carousel when many, wrap when few */}
                 {host.typesOfStays && host.typesOfStays.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {host.typesOfStays.map((type, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {type.trim()}
-                      </Badge>
-                    ))}
+                  <div className="mb-4">
+                    {host.typesOfStays.length > 4 ? (
+                      // Carousel for many types (>4)
+                      <div className="relative">
+                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                          {[...host.typesOfStays].sort().map((type, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="secondary" 
+                              className="text-xs whitespace-nowrap flex-shrink-0"
+                            >
+                              {type.trim()}
+                            </Badge>
+                          ))}
+                        </div>
+                        {/* Fade effect on right edge to indicate scrollability */}
+                        <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+                      </div>
+                    ) : (
+                      // Regular flex wrap for few types (≤4)
+                      <div className="flex flex-wrap gap-2">
+                        {[...host.typesOfStays].sort().map((type, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {type.trim()}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 

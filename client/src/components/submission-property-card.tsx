@@ -190,7 +190,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
                 // Carousel for many types (>4)
                 <div className="relative">
                   <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                    {submission.typesOfStays.map((type, index) => (
+                    {[...submission.typesOfStays].sort().map((type, index) => (
                       <Badge 
                         key={index} 
                         variant="secondary" 
@@ -206,7 +206,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
               ) : (
                 // Regular flex wrap for few types (≤4)
                 <div className="flex flex-wrap gap-2">
-                  {submission.typesOfStays.map((type, index) => (
+                  {[...submission.typesOfStays].sort().map((type, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
                       {type.trim()}
                     </Badge>
