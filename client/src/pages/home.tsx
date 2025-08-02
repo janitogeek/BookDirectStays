@@ -93,7 +93,7 @@ export default function Home() {
               Why Book Direct?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              According to industry research, travelers save an average of 15.7% when booking directly versus using OTAs.
+              According to industry research, travelers save on average 10% to 30% when booking directly versus using OTAs.
             </p>
           </div>
 
@@ -105,7 +105,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Save 10-30%</h3>
-              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 15.7% per reservation</p>
+              <p className="text-gray-600 text-sm">Eliminate OTA booking fees averaging 10-20% per reservation</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
@@ -114,8 +114,8 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save Time</h3>
-              <p className="text-gray-600 text-sm">Direct communication with property managers (98% response rate)</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Line to Your Host</h3>
+              <p className="text-gray-600 text-sm">Get real-time answers and personalized support without OTA delays.</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
@@ -125,7 +125,7 @@ export default function Home() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Exclusive Deals</h3>
-              <p className="text-gray-600 text-sm">Access to 30% more promotional offers unavailable on OTAs</p>
+              <p className="text-gray-600 text-sm">Access discounts and perks often unavailable on OTAs.</p>
             </div>
 
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
