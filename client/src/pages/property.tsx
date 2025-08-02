@@ -9,11 +9,13 @@ import WhyBookWith from "@/components/why-book-with";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { apiRequest } from "@/lib/queryClient";
 import { getFlagEmoji } from "@/lib/utils";
+import { useClickTracking } from "@/lib/click-tracking";
 import { Listing } from "@/lib/data";
 
 export default function Property() {
   const { id } = useParams<{ id: string }>();
   const isMobile = useIsMobile();
+  const clickTracking = useClickTracking(id || 'unknown');
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["/api/property", id],
@@ -120,6 +122,7 @@ export default function Property() {
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2"
+              onClick={clickTracking.trackWebsite}
             >
               <span className="font-semibold">Visit Direct Booking Site</span>
               <ExternalLink className="h-4 w-4" />
@@ -138,6 +141,7 @@ export default function Property() {
                     rel="noopener noreferrer"
                     aria-label="Facebook"
                     className="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-all"
+                    onClick={clickTracking.trackFacebook}
                   >
                     <SiFacebook className="h-5 w-5" />
                   </a>
@@ -149,6 +153,7 @@ export default function Property() {
                     rel="noopener noreferrer"
                     aria-label="Instagram"
                     className="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-pink-100 hover:text-pink-700 transition-all"
+                    onClick={clickTracking.trackInstagram}
                   >
                     <SiInstagram className="h-5 w-5" />
                   </a>
@@ -160,6 +165,7 @@ export default function Property() {
                     rel="noopener noreferrer"
                     aria-label="LinkedIn"
                     className="bg-gray-100 p-3 rounded-full text-gray-700 hover:bg-blue-100 hover:text-blue-800 transition-all"
+                    onClick={clickTracking.trackLinkedIn}
                   >
                     <SiLinkedin className="h-5 w-5" />
                   </a>
