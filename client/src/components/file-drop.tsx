@@ -28,7 +28,7 @@ export function FileDrop({ onFileDrop, className }: FileDropProps) {
 
   return (
     <div
-      className={`border-2 border-dashed rounded p-6 flex flex-col items-center justify-center cursor-pointer bg-white ${className || ''}`}
+      className={`border-2 border-dashed rounded p-6 flex flex-col items-center justify-center cursor-pointer bg-white ${preview ? 'border-blue-500 bg-blue-50' : 'border-gray-300'} ${className || ''}`}
       onClick={() => inputRef.current?.click()}
       onDrop={handleDrop}
       onDragOver={e => e.preventDefault()}

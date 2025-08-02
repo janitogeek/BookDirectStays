@@ -719,7 +719,6 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
-                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -739,7 +738,6 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
-                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -760,7 +758,6 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
-                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
