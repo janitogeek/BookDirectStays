@@ -60,7 +60,7 @@ export default function Partnerships() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Quality Focus</h3>
-              <p className="text-gray-600 text-sm">100% manually reviewed companies (using a PMS) ensuring authentic, verified listings</p>
+              <p className="text-gray-600 text-sm">100% manually reviewed companies (using a PMS) ensuring authentic and verified listings</p>
             </div>
 
             <div className="text-center">
