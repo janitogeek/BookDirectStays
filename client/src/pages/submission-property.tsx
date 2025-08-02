@@ -1,7 +1,7 @@
 import React from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles } from "lucide-react";
+import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 
 import { Button } from "@/components/ui/button";
@@ -371,21 +371,21 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Perks & Amenities - Mobile: 5th, Desktop: Left column 3rd */}
-              {submission.perksAmenities && submission.perksAmenities.length > 0 && (
+              {/* Properties Features - Mobile: 5th, Desktop: Left column 3rd */}
+              {submission.propertiesFeatures && submission.propertiesFeatures.length > 0 && (
                 <Card className="order-5 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-green-600" />
-                      Perks & Amenities
+                      <Home className="w-5 h-5 text-blue-600" />
+                      Properties Features
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {submission.perksAmenities.map((perk, index) => (
+                      {submission.propertiesFeatures.map((feature, index) => (
                         <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
-                          <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                          {perk.trim()}
+                          <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                          {feature.trim()}
                         </div>
                       ))}
                     </div>
@@ -393,20 +393,105 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Vibe & Aesthetic - Mobile: 6th, Desktop: Left column 4th */}
-              {submission.vibeAesthetic && submission.vibeAesthetic.length > 0 && (
+              {/* Services & Convenience - Mobile: 6th, Desktop: Left column 4th */}
+              {submission.servicesConvenience && submission.servicesConvenience.length > 0 && (
                 <Card className="order-6 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-purple-600" />
-                      Vibe & Aesthetic
+                      <Wrench className="w-5 h-5 text-green-600" />
+                      Services & Convenience
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {submission.servicesConvenience.map((service, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                          {service.trim()}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Lifestyle & Values - Mobile: 7th, Desktop: Left column 5th */}
+              {submission.lifestyleValues && submission.lifestyleValues.length > 0 && (
+                <Card className="order-7 lg:order-none">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-purple-600" />
+                      Lifestyle & Values
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
-                      {submission.vibeAesthetic.map((vibe, index) => (
+                      {submission.lifestyleValues.map((value, index) => (
                         <Badge key={index} variant="secondary" className="text-sm bg-purple-50 text-purple-700">
-                          {vibe.trim()}
+                          {value.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Design Style - Mobile: 8th, Desktop: Left column 6th */}
+              {submission.designStyle && submission.designStyle.length > 0 && (
+                <Card className="order-8 lg:order-none">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Palette className="w-5 h-5 text-indigo-600" />
+                      Design Style
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.designStyle.map((style, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm bg-indigo-50 text-indigo-700">
+                          {style.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Atmospheres - Mobile: 9th, Desktop: Left column 7th */}
+              {submission.atmospheres && submission.atmospheres.length > 0 && (
+                <Card className="order-9 lg:order-none">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Coffee className="w-5 h-5 text-amber-600" />
+                      Atmospheres
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.atmospheres.map((atmosphere, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm bg-amber-50 text-amber-700">
+                          {atmosphere.trim()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Settings/Locations - Mobile: 10th, Desktop: Left column 8th */}
+              {submission.settingsLocations && submission.settingsLocations.length > 0 && (
+                <Card className="order-10 lg:order-none">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TreePine className="w-5 h-5 text-emerald-600" />
+                      Settings/Locations
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {submission.settingsLocations.map((setting, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm bg-emerald-50 text-emerald-700">
+                          {setting.trim()}
                         </Badge>
                       ))}
                     </div>
