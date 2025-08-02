@@ -47,6 +47,9 @@ const formSchema = z.object({
   "One-line Description": z.string().min(5).max(70),
   "Why Book With You?": z.string().min(10),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
+  "Currency": z.string().min(1, "Please select a currency"),
+  "Min Price (ADR)": z.coerce.number().min(1, "Please enter a minimum price"),
+  "Max Price (ADR)": z.coerce.number().min(1, "Please enter a maximum price"),
   "Types of Stays": z.array(z.string()).optional(),
   "Ideal For": z.array(z.string()).optional(),
   "Is your brand pet-friendly?": z.boolean().optional(),
@@ -83,6 +86,23 @@ const VIBES = [
   "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
 ];
 
+const CURRENCIES = [
+  "AED – د.إ", "AFN – ؋", "ALL – Lek", "AMD – ֏", "AOA – Kz", "ARS – AR$", "AUD – AU$", "AWG – AWƒ", "AZN – ₼", "BAM – KM",
+  "BBD – BB$", "BDT – ৳", "BGN – лв", "BHD – ب.د", "BIF – FBu", "BMD – BM$", "BND – BN$", "BOB – Bs", "BRL – R$", "BSD – BS$",
+  "BTN – Nu", "BYN – Br", "CAD – CA$", "CDF – FCF", "CHF – CHFr", "CLP – CL$", "CNY – CN¥", "COP – CO$", "CRC – ₡", "CUP – CU$",
+  "CZK – Kč", "DJF – Fdj", "DKK – kr", "DOP – RD$", "DZD – د.ج", "EGP – LE", "ERN – Nkf", "ETB – Br", "EUR – €", "FJD – FJ$",
+  "GBP – £", "GEL – ₾", "GHS – ₵", "GIP – GI£", "GMD – D", "GNF – FG", "GTQ – Q", "HKD – HK$", "HNL – L", "HRK – kn",
+  "HUF – Ft", "IDR – Rp", "ILS – ₪", "INR – ₹", "IQD – ع.د", "IRR – ﷼", "ISK – kr", "JMD – JM$", "JOD – د.ا", "JPY – JP¥",
+  "KES – KSh", "KGS – с", "KHR – ៛", "KMF – FC", "KRW – ₩", "KWD – ك", "KYD – KY$", "KZT – ₸", "LAK – ₭", "LBP – ل.ل",
+  "LKR – රු", "LSL – L", "MAD – د.م", "MDL – L", "MGA – Ar", "MKD – ден", "MMK – K", "MNT – ₮", "MOP – MOP$", "MRU – UM",
+  "MUR – MURs", "MVR – Rf", "MWK – MK", "MXN – MX$", "MYR – RM", "MZN – MT", "NAD – NA$", "NGN – ₦", "NIO – NI$", "NOK – kr",
+  "NPR – ₨", "NZD – NZ$", "OMR – ر.ع", "PAB – B/.", "PEN – S/.", "PGK – K", "PHP – ₱", "PKR – ₨", "PLN – zł", "PYG – ₲",
+  "QAR – ر.ق", "RON – lei", "RSD – RSD", "RUB – ₽", "RWF – FRw", "SAR – ﷼", "SCR – SCRs", "SDG – ج.س", "SEK – kr", "SGD – SG$",
+  "SHP – SH£", "SLE – Le", "SRD – SR$", "STN – Db", "SVC – ₡", "SYP – SY£", "THB – ฿", "TJS – ЅМ", "TMT – T", "TND – د.ت",
+  "TOP – T$", "TRY – ₺", "TTD – TT$", "TWD – NT$", "TZS – TSh", "UAH – ₴", "UGX – USh", "USD – US$", "UYU – UY$", "UZS – soʻm",
+  "VES – Bs.S", "VND – ₫", "XAF – FCFA", "XCD – EC$", "XOF – CFA", "XPF – CFP₣", "YER – ﷼", "ZAR – R", "ZMW – ZK"
+];
+
 // Helper for required asterisk with tooltip
 const RequiredAsterisk = () => (
   <span
@@ -110,6 +130,9 @@ export default function Submit() {
       "One-line Description": "",
       "Why Book With You?": "",
       "Top Stats": "",
+      "Currency": "",
+      "Min Price (ADR)": 0,
+      "Max Price (ADR)": 0,
       "Types of Stays": [],
       "Ideal For": [],
       "Is your brand pet-friendly?": false,
@@ -374,6 +397,9 @@ export default function Submit() {
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
+        "Currency": values["Currency"] || "",
+        "Min Price (ADR)": values["Min Price (ADR)"] || 0,
+        "Max Price (ADR)": values["Max Price (ADR)"] || 0,
         "Types of Stays": values["Types of Stays"] || [],
         "Ideal For": values["Ideal For"] || [],
         "Perks / Amenities": values["Perks / Amenities"] || [],
@@ -696,6 +722,63 @@ export default function Submit() {
                   <FormMessage />
                 </FormItem>
               )} />
+
+              {/* Pricing Section */}
+              <FormField control={form.control} name="Currency" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency <RequiredAsterisk /></FormLabel>
+                  <FormControl>
+                    <SearchableMultiSelect
+                      options={CURRENCIES}
+                      selected={field.value ? [field.value] : []}
+                      onSelect={(values) => {
+                        // For currency, we only want single selection
+                        const latestSelection = values[values.length - 1];
+                        field.onChange(latestSelection || "");
+                      }}
+                      placeholder="Search and select currency (e.g. USD – US$, EUR – €)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField control={form.control} name="Min Price (ADR)" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>From: Min Price (ADR) <RequiredAsterisk /></FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="0.01"
+                        min="1"
+                        {...field} 
+                        placeholder="e.g. 150" 
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                
+                <FormField control={form.control} name="Max Price (ADR)" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>To: Max Price (ADR) <RequiredAsterisk /></FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        step="0.01"
+                        min="1"
+                        {...field} 
+                        placeholder="e.g. 300" 
+                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+
               <FormField control={form.control} name="Types of Stays" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Types of Stays</FormLabel>
