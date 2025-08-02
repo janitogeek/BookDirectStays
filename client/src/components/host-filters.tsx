@@ -10,44 +10,44 @@ import { Filter, X, Info, Search } from "lucide-react";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
-  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Houses", "Guesthouses", "Hostels", "Tents", "Rooms", "Bungalows", "Hotels", "Condos", "Campervans"
+  "Apartments", "Bungalows", "Cabins", "Campervans", "Chalets", "Condos", "Domes", "Guesthouses", "Hostels", "Hotels", "Houses", "Rooms", "Tents", "Villas"
 ];
 
 const IDEAL_FOR = [
-  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers", "Seniors/Elderly"
+  "Companies", "Couples", "Digital Nomads", "Families", "Groups", "Retreats", "Seniors/Elderly", "Solo travelers"
 ];
 
 const PROPERTIES_FEATURES = [
-  "Pool", "Hot Tub/Jacuzzi", "Garden/Outdoor Space", "Balcony/Terrace", "Fireplace", 
-  "Air Conditioning", "Heating", "Washer", "Dryer", "Kitchen/Kitchenette", "Dishwasher", 
-  "BBQ/Grill", "Parking", "Garage", "EV Charging", "Hair dryer", "Iron", "WiFi", "Dedicated workspace"
+  "Air Conditioning", "Balcony/Terrace", "BBQ/Grill", "Dedicated workspace", "Dishwasher", 
+  "Dryer", "EV Charging", "Fireplace", "Garage", "Garden/Outdoor Space", "Hair dryer", "Heating", 
+  "Hot Tub/Jacuzzi", "Iron", "Kitchen/Kitchenette", "Parking", "Pool", "Washer", "WiFi"
 ];
 
 const SERVICES_CONVENIENCE = [
-  "Self check-in", "Concierge", "Early check-in", "Late check-out", "Mid-stay cleaning", 
-  "Breakfast included", "Room service", "Luggage storage", "Airport transfer", "Car rental", 
-  "Bike rental", "Grocery delivery", "24/7 Support"
+  "24/7 Support", "Airport transfer", "Bike rental", "Breakfast included", "Car rental", "Concierge", 
+  "Early check-in", "Grocery delivery", "Late check-out", "Luggage storage", "Mid-stay cleaning", 
+  "Room service", "Self check-in"
 ];
 
 const LIFESTYLE_VALUES = [
-  "Pet-friendly", "Eco-friendly", "Smoking friendly", "Family-friendly", "Adults only", 
-  "LGBTQ+ friendly", "Wheelchair accessible", "Quiet/Peaceful", "Party-friendly", 
-  "Luxury amenities", "Budget-friendly", "Sustainable practices", "Remote-work friendly"
+  "Adults only", "Budget-friendly", "Eco-friendly", "Family-friendly", "LGBTQ+ friendly", "Luxury amenities", 
+  "Party-friendly", "Pet-friendly", "Quiet/Peaceful", "Remote-work friendly", "Smoking friendly", 
+  "Sustainable practices", "Wheelchair accessible"
 ];
 
 const DESIGN_STYLE = [
-  "Modern", "Minimalist", "Design-led/Contemporary", "Traditional/Classic", "Industrial", 
-  "Scandinavian", "Mid-century Modern", "Art Deco"
+  "Art Deco", "Design-led/Contemporary", "Industrial", "Mid-century Modern", "Minimalist", "Modern", 
+  "Scandinavian", "Traditional/Classic"
 ];
 
 const ATMOSPHERES = [
-  "Boho/Bohemian", "Rustic/Countryside", "Luxury/Upscale", "Cozy/Intimate", "Bright/Airy", 
-  "Romantic", "Artistic/Creative", "Zen/Peaceful"
+  "Artistic/Creative", "Boho/Bohemian", "Bright/Airy", "Cozy/Intimate", "Luxury/Upscale", "Romantic", 
+  "Rustic/Countryside", "Zen/Peaceful"
 ];
 
 const SETTINGS_LOCATIONS = [
-  "Urban/City", "Beach/Coastal", "Mountain/Alpine", "Forest/Nature", "Historic/Heritage", 
-  "Countryside/Rural", "Wine Country", "Desert/Unique Landscape"
+  "Beach/Coastal", "Countryside/Rural", "Desert/Unique Landscape", "Forest/Nature", "Historic/Heritage", 
+  "Mountain/Alpine", "Urban/City", "Wine Country"
 ];
 
 interface HostFiltersProps {
