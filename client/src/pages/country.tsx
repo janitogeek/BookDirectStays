@@ -23,8 +23,12 @@ export default function Country() {
     search: "",
     propertyTypes: [],
     idealFor: [],
-    perksAmenities: [],
-    vibeAesthetic: [],
+    propertiesFeatures: [],
+    servicesConvenience: [],
+    lifestyleValues: [],
+    designStyle: [],
+    atmospheres: [],
+    settingsLocations: [],
     minPrice: null,
     maxPrice: null
   });
@@ -167,8 +171,12 @@ export default function Country() {
           submission.topStats,
           ...(submission.typesOfStays || []),
           ...(submission.idealFor || []),
-          ...(submission.perksAmenities || []),
-          ...(submission.vibeAesthetic || [])
+          ...(submission.propertiesFeatures || []),
+          ...(submission.servicesConvenience || []),
+          ...(submission.lifestyleValues || []),
+          ...(submission.designStyle || []),
+          ...(submission.atmospheres || []),
+          ...(submission.settingsLocations || [])
         ].join(' ').toLowerCase();
         
         if (!searchableContent.includes(searchTerm)) return false;
@@ -190,20 +198,52 @@ export default function Country() {
         if (!hasMatchingIdealFor) return false;
       }
 
-      // Check perks & amenities
-      if (filters.perksAmenities.length > 0) {
-        const hasMatchingPerks = submission.perksAmenities?.some(perk =>
-          filters.perksAmenities.includes(perk)
+      // Check properties features
+      if (filters.propertiesFeatures.length > 0) {
+        const hasMatchingFeatures = submission.propertiesFeatures?.some(feature =>
+          filters.propertiesFeatures.includes(feature)
         );
-        if (!hasMatchingPerks) return false;
+        if (!hasMatchingFeatures) return false;
       }
 
-      // Check vibe & aesthetic
-      if (filters.vibeAesthetic.length > 0) {
-        const hasMatchingVibe = submission.vibeAesthetic?.some(vibe =>
-          filters.vibeAesthetic.includes(vibe)
+      // Check services & convenience
+      if (filters.servicesConvenience.length > 0) {
+        const hasMatchingServices = submission.servicesConvenience?.some(service =>
+          filters.servicesConvenience.includes(service)
         );
-        if (!hasMatchingVibe) return false;
+        if (!hasMatchingServices) return false;
+      }
+
+      // Check lifestyle & values
+      if (filters.lifestyleValues.length > 0) {
+        const hasMatchingValues = submission.lifestyleValues?.some(value =>
+          filters.lifestyleValues.includes(value)
+        );
+        if (!hasMatchingValues) return false;
+      }
+
+      // Check design style
+      if (filters.designStyle.length > 0) {
+        const hasMatchingStyle = submission.designStyle?.some(style =>
+          filters.designStyle.includes(style)
+        );
+        if (!hasMatchingStyle) return false;
+      }
+
+      // Check atmospheres
+      if (filters.atmospheres.length > 0) {
+        const hasMatchingAtmosphere = submission.atmospheres?.some(atmosphere =>
+          filters.atmospheres.includes(atmosphere)
+        );
+        if (!hasMatchingAtmosphere) return false;
+      }
+
+      // Check settings/locations
+      if (filters.settingsLocations.length > 0) {
+        const hasMatchingLocation = submission.settingsLocations?.some(location =>
+          filters.settingsLocations.includes(location)
+        );
+        if (!hasMatchingLocation) return false;
       }
 
       // Check price range filters

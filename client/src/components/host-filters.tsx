@@ -16,21 +16,44 @@ import { ChevronDown, Filter, X, Info, Search } from "lucide-react";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
-  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Beach Houses"
+  "Villas", "Cabins", "Apartments", "Domes", "Chalets", "Houses", "Guesthouses", "Hostels", "Tents", "Rooms", "Bungalows", "Hotels", "Condos", "Campervans"
 ];
 
 const IDEAL_FOR = [
-  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers"
+  "Families", "Digital Nomads", "Retreats", "Couples", "Groups", "Companies", "Solo travelers", "Seniors/Elderly"
 ];
 
-const PERKS_AMENITIES = [
-  "Pool", "Breakfast", "Self check-in", "WiFi", "Parking", "Pet-friendly", 
-  "Eco-friendly", "Remote-work friendly", "Smoking friendly", "Concierge", 
-  "Early check-in", "Late check-out", "Mid-stay cleaning"
+const PROPERTIES_FEATURES = [
+  "Pool", "Hot Tub/Jacuzzi", "Garden/Outdoor Space", "Balcony/Terrace", "Fireplace", 
+  "Air Conditioning", "Heating", "Washer", "Dryer", "Kitchen/Kitchenette", "Dishwasher", 
+  "BBQ/Grill", "Parking", "Garage", "EV Charging", "Hair dryer", "Iron", "WiFi", "Dedicated workspace"
 ];
 
-const VIBE_AESTHETIC = [
-  "Boho", "Minimalist", "Design-led", "Rustic", "Modern"
+const SERVICES_CONVENIENCE = [
+  "Self check-in", "Concierge", "Early check-in", "Late check-out", "Mid-stay cleaning", 
+  "Breakfast included", "Room service", "Luggage storage", "Airport transfer", "Car rental", 
+  "Bike rental", "Grocery delivery", "24/7 Support"
+];
+
+const LIFESTYLE_VALUES = [
+  "Pet-friendly", "Eco-friendly", "Smoking friendly", "Family-friendly", "Adults only", 
+  "LGBTQ+ friendly", "Wheelchair accessible", "Quiet/Peaceful", "Party-friendly", 
+  "Luxury amenities", "Budget-friendly", "Sustainable practices", "Remote-work friendly"
+];
+
+const DESIGN_STYLE = [
+  "Modern", "Minimalist", "Design-led/Contemporary", "Traditional/Classic", "Industrial", 
+  "Scandinavian", "Mid-century Modern", "Art Deco"
+];
+
+const ATMOSPHERES = [
+  "Boho/Bohemian", "Rustic/Countryside", "Luxury/Upscale", "Cozy/Intimate", "Bright/Airy", 
+  "Romantic", "Artistic/Creative", "Zen/Peaceful"
+];
+
+const SETTINGS_LOCATIONS = [
+  "Urban/City", "Beach/Coastal", "Mountain/Alpine", "Forest/Nature", "Historic/Heritage", 
+  "Countryside/Rural", "Wine Country", "Desert/Unique Landscape"
 ];
 
 interface HostFiltersProps {
@@ -41,8 +64,12 @@ export interface FilterState {
   search: string;
   propertyTypes: string[];
   idealFor: string[];
-  perksAmenities: string[];
-  vibeAesthetic: string[];
+  propertiesFeatures: string[];
+  servicesConvenience: string[];
+  lifestyleValues: string[];
+  designStyle: string[];
+  atmospheres: string[];
+  settingsLocations: string[];
   minPrice: number | null;
   maxPrice: number | null;
 }
@@ -52,8 +79,12 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     search: "",
     propertyTypes: [],
     idealFor: [],
-    perksAmenities: [],
-    vibeAesthetic: [],
+    propertiesFeatures: [],
+    servicesConvenience: [],
+    lifestyleValues: [],
+    designStyle: [],
+    atmospheres: [],
+    settingsLocations: [],
     minPrice: null,
     maxPrice: null
   });
@@ -91,8 +122,12 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
       search: "",
       propertyTypes: [],
       idealFor: [],
-      perksAmenities: [],
-      vibeAesthetic: [],
+      propertiesFeatures: [],
+      servicesConvenience: [],
+      lifestyleValues: [],
+      designStyle: [],
+      atmospheres: [],
+      settingsLocations: [],
       minPrice: null,
       maxPrice: null
     };
@@ -112,8 +147,12 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
   const totalActiveFilters = 
     filters.propertyTypes.length + 
     filters.idealFor.length + 
-    filters.perksAmenities.length + 
-    filters.vibeAesthetic.length + 
+    filters.propertiesFeatures.length + 
+    filters.servicesConvenience.length + 
+    filters.lifestyleValues.length + 
+    filters.designStyle.length + 
+    filters.atmospheres.length + 
+    filters.settingsLocations.length + 
     (filters.search ? 1 : 0);
 
   const renderFilterPopover = (
@@ -243,7 +282,7 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
         />
 
         {/* Filter Buttons */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {renderFilterPopover(
             "Property Types", 
             PROPERTY_TYPES, 
@@ -257,16 +296,40 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
             openFilter === "idealFor"
           )}
           {renderFilterPopover(
-            "Perks & Amenities", 
-            PERKS_AMENITIES, 
-            "perksAmenities", 
-            openFilter === "perksAmenities"
+            "Properties Features", 
+            PROPERTIES_FEATURES, 
+            "propertiesFeatures", 
+            openFilter === "propertiesFeatures"
           )}
           {renderFilterPopover(
-            "Vibe & Aesthetic", 
-            VIBE_AESTHETIC, 
-            "vibeAesthetic", 
-            openFilter === "vibeAesthetic"
+            "Services & Convenience", 
+            SERVICES_CONVENIENCE, 
+            "servicesConvenience", 
+            openFilter === "servicesConvenience"
+          )}
+          {renderFilterPopover(
+            "Lifestyle & Values", 
+            LIFESTYLE_VALUES, 
+            "lifestyleValues", 
+            openFilter === "lifestyleValues"
+          )}
+          {renderFilterPopover(
+            "Design Style", 
+            DESIGN_STYLE, 
+            "designStyle", 
+            openFilter === "designStyle"
+          )}
+          {renderFilterPopover(
+            "Atmospheres", 
+            ATMOSPHERES, 
+            "atmospheres", 
+            openFilter === "atmospheres"
+          )}
+          {renderFilterPopover(
+            "Settings/Locations", 
+            SETTINGS_LOCATIONS, 
+            "settingsLocations", 
+            openFilter === "settingsLocations"
           )}
         </div>
 
