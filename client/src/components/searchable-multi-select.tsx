@@ -31,7 +31,11 @@ export function SearchableMultiSelect({ options, selected, onSelect, placeholder
     option.toLowerCase().includes(search.toLowerCase())
   );
 
-  const display = selected.length > 0 ? `${placeholder} (${selected.length})` : placeholder;
+  const display = selected.length > 0 
+    ? selected.length <= 2 
+      ? selected.join(", ")
+      : `${selected.slice(0, 2).join(", ")} (+${selected.length - 2} more)`
+    : placeholder;
 
   // Select All logic
   const allFilteredSelected = filtered.length > 0 && filtered.every(option => selected.includes(option));

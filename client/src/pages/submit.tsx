@@ -656,28 +656,28 @@ export default function Submit() {
               <FormField control={form.control} name="Submitted By (Email)" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Your e-mail<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="email" {...field} placeholder="e.g. john@yourdomain.com" /></FormControl>
+                  <FormControl><Input type="email" {...field} placeholder="e.g. john@yourdomain.com" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Brand Name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand Name<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. Vacasa" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. Vacasa" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Number of Listings" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Number of Listings<RequiredAsterisk /></FormLabel>
-                  <FormControl><Input type="number" min="1" {...field} placeholder="e.g. 12" /></FormControl>
+                  <FormControl><Input type="number" min="1" {...field} placeholder="e.g. 12" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -777,6 +777,7 @@ export default function Submit() {
                         {...field} 
                         placeholder="e.g. Boutique apartments in Latin America" 
                         maxLength={70}
+                        className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                         onChange={(e) => {
                           const value = e.target.value;
                           if (value.length <= 70) {
@@ -795,7 +796,7 @@ export default function Submit() {
               <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Why Book With You?<RequiredAsterisk /></FormLabel>
-                  <FormControl><Textarea rows={4} {...field} placeholder="e.g. Direct rates, local experiences, flexible stays (tell guests what makes you special, why should they book with you direct and not through an OTA)" /></FormControl>
+                  <FormControl><Textarea rows={4} {...field} placeholder="e.g. Direct rates, local experiences, flexible stays (tell guests what makes you special, why should they book with you direct and not through an OTA)" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -805,7 +806,7 @@ export default function Submit() {
                     Top Stats <RequiredAsterisk /> (List comma separated)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g. Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" />
+                    <Input {...field} placeholder="e.g. Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" className={field.value ? 'border-blue-500 bg-blue-50' : ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -841,7 +842,8 @@ export default function Submit() {
                         type="number" 
                         min="1"
                         {...field}
-                        placeholder="150" 
+                        placeholder="150"
+                        className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -857,7 +859,8 @@ export default function Submit() {
                         step="0.01"
                         min="1"
                         {...field}
-                        placeholder="300" 
+                        placeholder="300"
+                        className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -1001,35 +1004,35 @@ export default function Submit() {
               <FormField control={form.control} name="Instagram" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Instagram</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://instagram.com/yourcompanyname" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://instagram.com/yourcompanyname" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="Facebook" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Facebook</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://facebook.com/yourcompanyname" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://facebook.com/yourcompanyname" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="LinkedIn" render={({ field }) => (
                 <FormItem>
                   <FormLabel>LinkedIn</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://linkedin.com/company/yourcompanyname" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://linkedin.com/company/yourcompanyname" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="TikTok" render={({ field }) => (
                 <FormItem>
                   <FormLabel>TikTok</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://tiktok.com/@yourcompanyname" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://tiktok.com/@yourcompanyname" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="YouTube / Video Tour" render={({ field }) => (
                 <FormItem>
                   <FormLabel>YouTube / Video Tour</FormLabel>
-                  <FormControl><Input {...field} placeholder="e.g. https://youtube.com/watch?v=xxxx" /></FormControl>
+                  <FormControl><Input {...field} placeholder="e.g. https://youtube.com/watch?v=xxxx" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
