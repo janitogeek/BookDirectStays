@@ -805,10 +805,10 @@ export default function Submit() {
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Top Stats <RequiredAsterisk /> (List comma separated)
+                    Top Stats <RequiredAsterisk /> (List semicolon ";" separated)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g. Airbnb SuperHost Badge, 4.8 stars on Airbnb, Over 1000 reviews across platforms, The Shortyz Award for Sustainability" className={field.value ? 'border-blue-500 bg-blue-50' : ''} />
+                    <Input {...field} placeholder="e.g. Airbnb SuperHost Badge; 4.8 stars on Airbnb; Over 1000 reviews across platforms; The Shortyz Award for Sustainability" className={field.value ? 'border-blue-500 bg-blue-50' : ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

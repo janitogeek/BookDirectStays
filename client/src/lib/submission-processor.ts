@@ -303,10 +303,17 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
       });
     });
     
-    // Sort by count descending and take top 5
+    // Sort by count descending, then alphabetically and take top 5
     const sortedCountries = Object.entries(countryCounts)
       .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
+      .sort((a, b) => {
+        // Primary sort: by count descending
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        // Secondary sort: alphabetically by name
+        return a.name.localeCompare(b.name);
+      })
       .slice(0, 5);
     
     console.log(`🏆 Top 5 countries:`, sortedCountries);
@@ -358,7 +365,7 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
       }
     }
     
-    // Sort by count descending and take top 5
+    // Sort by count descending, then alphabetically and take top 5
     const sortedCities = Object.entries(cityCounts)
       .map(([cityCountryKey, data]) => {
         const cityName = cityCountryKey.split(', ')[0];
@@ -368,7 +375,14 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
           count: data.count
         };
       })
-      .sort((a, b) => b.count - a.count)
+      .sort((a, b) => {
+        // Primary sort: by count descending
+        if (b.count !== a.count) {
+          return b.count - a.count;
+        }
+        // Secondary sort: alphabetically by name
+        return a.name.localeCompare(b.name);
+      })
       .slice(0, 5);
     
     console.log(`🏆 Top 5 cities:`, sortedCities);

@@ -28,8 +28,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!AIRTABLE_API_KEY) {
-    console.error('Missing Airtable API key');
-    return res.status(500).json({ error: 'Server configuration error' });
+    console.error('❌ Missing AIRTABLE_API_KEY environment variable');
+    return res.status(500).json({ 
+      error: 'Server configuration error',
+      debug: 'Missing AIRTABLE_API_KEY environment variable',
+      availableEnvVars: Object.keys(process.env).filter(key => key.includes('AIRTABLE'))
+    });
   }
 
   try {
