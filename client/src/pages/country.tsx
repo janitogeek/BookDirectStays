@@ -355,11 +355,12 @@ export default function Country() {
       {/* Hero Section */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+          {/* Centered Title */}
+          <div className="text-center mb-6">
             {isCountryLoading ? (
-              <div className="h-8 bg-gray-300 w-64 mb-4 md:mb-0 rounded animate-pulse"></div>
+              <div className="h-8 bg-gray-300 w-64 mx-auto rounded animate-pulse"></div>
             ) : (
-              <h1 className="text-3xl font-bold mb-4 md:mb-0 flex items-center gap-3">
+              <h1 className="text-3xl font-bold flex items-center gap-3 justify-center">
                 <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
                 <span>
                   {country?.name || countryName} Direct Booking Sites
@@ -367,9 +368,11 @@ export default function Country() {
                 </span>
               </h1>
             )}
-            
-            {/* City Navigation Button */}
-            {cities.length > 0 && (
+          </div>
+          
+          {/* City Navigation Button - Centered under title */}
+          {cities.length > 0 && (
+            <div className="text-center mb-8">
               <Button 
                 onClick={() => {
                   const element = document.getElementById('city-navigation');
@@ -385,8 +388,8 @@ export default function Country() {
               >
                 Find Hosts by City
               </Button>
-            )}
-          </div>
+            </div>
+          )}
           
           {/* Host Filters */}
           <HostFilters onFiltersChange={setFilters} />

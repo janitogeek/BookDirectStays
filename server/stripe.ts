@@ -112,7 +112,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
     "Properties Features": Array.isArray(formData["Properties Features"]) ? formData["Properties Features"] : [],
     "Services & Convenience": Array.isArray(formData["Services & Convenience"]) ? formData["Services & Convenience"] : [],
     "Lifestyle & Values": Array.isArray(formData["Lifestyle & Values"]) ? formData["Lifestyle & Values"] : [],
-    "Design Style": Array.isArray(formData["Design Style"]) ? formData["Design Style"] : [],
+    "Design Styles": Array.isArray(formData["Design Styles"]) ? formData["Design Styles"] : [],
     "Atmospheres": Array.isArray(formData["Atmospheres"]) ? formData["Atmospheres"] : [],
     "Settings/Locations": Array.isArray(formData["Settings/Locations"]) ? formData["Settings/Locations"] : [],
     "Instagram": formData["Instagram"] || "",

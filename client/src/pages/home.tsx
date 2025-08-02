@@ -114,7 +114,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Superior Support</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Save Time</h3>
               <p className="text-gray-600 text-sm">Direct communication with property managers (98% response rate)</p>
             </div>
 
@@ -149,6 +149,9 @@ export default function Home() {
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                 💸 Real Savings, Real Listings
               </h2>
+              <div className="text-lg font-semibold text-gray-800 mb-4">
+                Host: Skol Apartments Marbella, Country: 🇪🇸 Spain | Property: Skol 927A, Dates: Sep 3rd to Sep 8th 2025
+              </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                 See actual savings from booking direct vs OTA platforms with real properties
               </p>
@@ -162,9 +165,6 @@ export default function Home() {
                   <div className="inline-block bg-red-100 px-4 py-2 rounded-full mb-4">
                     <span className="text-red-700 font-semibold">❌ Airbnb (OTA)</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025</p>
-                  <p className="text-gray-600 text-sm">• Same listing via Airbnb</p>
                 </div>
                 
                 <div className="space-y-3 mb-6 flex-grow">
@@ -195,9 +195,6 @@ export default function Home() {
                   <div className="inline-block bg-green-100 px-4 py-2 rounded-full mb-4">
                     <span className="text-green-700 font-semibold">✅ Book Direct</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Skol 927A</h3>
-                  <p className="text-gray-600 text-sm">Sep 3rd to Sep 8th 2025</p>
-                  <p className="text-gray-600 text-sm">• Same listing via Skol direct website</p>
                 </div>
                 
                 <div className="space-y-3 mb-6 flex-grow">

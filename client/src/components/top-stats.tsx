@@ -18,6 +18,23 @@ export default function TopStats({ topStats, brandName, hostWebsite, onOpenChang
   }
 
   const stats = topStats.trim();
+  
+  // Process stats: add bullet points for comma-separated items and replace "stars" with emoji
+  const processStats = (text: string) => {
+    // Replace the word "stars" with star emoji (case insensitive)
+    let processed = text.replace(/\bstars?\b/gi, '⭐');
+    
+    // Split by commas and add bullet points if there are multiple items
+    const items = processed.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    
+    if (items.length > 1) {
+      return items.map(item => `• ${item}`).join('\n');
+    }
+    
+    return processed;
+  };
+
+  const formattedStats = processStats(stats);
 
   // Handle popover open/close state changes
   const handleOpenChange = (open: boolean) => {
@@ -66,7 +83,7 @@ export default function TopStats({ topStats, brandName, hostWebsite, onOpenChang
                 
                 {/* Stats content */}
                 <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line max-h-48 sm:max-h-64 overflow-y-auto">
-                  {stats}
+                  {formattedStats}
                 </div>
                 
                 {/* Disclaimer */}
