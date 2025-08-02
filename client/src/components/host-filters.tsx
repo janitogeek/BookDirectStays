@@ -42,6 +42,8 @@ export interface FilterState {
   idealFor: string[];
   perksAmenities: string[];
   vibeAesthetic: string[];
+  minPrice: number | null;
+  maxPrice: number | null;
 }
 
 export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
@@ -50,7 +52,9 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     propertyTypes: [],
     idealFor: [],
     perksAmenities: [],
-    vibeAesthetic: []
+    vibeAesthetic: [],
+    minPrice: null,
+    maxPrice: null
   });
 
   const [openFilter, setOpenFilter] = useState<string | null>(null);
@@ -72,13 +76,24 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     onFiltersChange(newFilters);
   };
 
+  const updatePriceFilter = (type: 'minPrice' | 'maxPrice', value: string) => {
+    const newFilters = { ...filters };
+    const numValue = value ? parseInt(value) : null;
+    newFilters[type] = numValue;
+    
+    setFilters(newFilters);
+    onFiltersChange(newFilters);
+  };
+
   const clearAllFilters = () => {
     const emptyFilters = {
       search: "",
       propertyTypes: [],
       idealFor: [],
       perksAmenities: [],
-      vibeAesthetic: []
+      vibeAesthetic: [],
+      minPrice: null,
+      maxPrice: null
     };
     setFilters(emptyFilters);
     onFiltersChange(emptyFilters);
@@ -216,6 +231,32 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
               <X className="h-4 w-4" />
             </button>
           )}
+        </div>
+
+        {/* Price Range Filters */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Min Price</label>
+            <Input
+              type="number"
+              placeholder="0"
+              value={filters.minPrice || ""}
+              onChange={(e) => updatePriceFilter('minPrice', e.target.value)}
+              className="w-full"
+              min="0"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
+            <Input
+              type="number" 
+              placeholder="999+"
+              value={filters.maxPrice || ""}
+              onChange={(e) => updatePriceFilter('maxPrice', e.target.value)}
+              className="w-full"
+              min="0"
+            />
+          </div>
         </div>
 
         {/* Filter Buttons */}

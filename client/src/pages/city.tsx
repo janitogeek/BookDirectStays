@@ -20,7 +20,9 @@ export default function City() {
     propertyTypes: [],
     idealFor: [],
     perksAmenities: [],
-    vibeAesthetic: []
+    vibeAesthetic: [],
+    minPrice: null,
+    maxPrice: null
   });
   
   // Convert slug back to readable city name with proper accents
@@ -158,6 +160,36 @@ export default function City() {
           filters.vibeAesthetic.includes(vibe)
         );
         if (!hasMatchingVibe) return false;
+      }
+
+      // Check price range filters
+      if (filters.minPrice !== null || filters.maxPrice !== null) {
+        // Only apply price filters if submission has pricing data
+        if (submission.minPrice && submission.maxPrice && submission.currency) {
+          const companyMin = submission.minPrice;
+          const companyMax = submission.maxPrice;
+          
+          // If user sets only min price, show companies where max price >= user min
+          if (filters.minPrice !== null && filters.maxPrice === null) {
+            if (companyMax < filters.minPrice) return false;
+          }
+          
+          // If user sets only max price, show companies where min price <= user max
+          if (filters.maxPrice !== null && filters.minPrice === null) {
+            if (companyMin > filters.maxPrice) return false;
+          }
+          
+          // If user sets both min and max, check for range overlap
+          if (filters.minPrice !== null && filters.maxPrice !== null) {
+            // No overlap if company max < user min OR company min > user max
+            if (companyMax < filters.minPrice || companyMin > filters.maxPrice) {
+              return false;
+            }
+          }
+        } else {
+          // If submission doesn't have pricing data, exclude it when price filters are active
+          return false;
+        }
       }
 
       return true;

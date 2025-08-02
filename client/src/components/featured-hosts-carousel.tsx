@@ -216,13 +216,30 @@ export default function FeaturedHostsCarousel() {
                   </div>
                 </div>
 
-                {/* Property Count */}
-                {host.numberOfListings && (
-                  <div className="flex items-center gap-1 mb-3 text-sm text-gray-600">
-                    <Building2 className="w-4 h-4" />
-                    <span>{host.numberOfListings} properties</span>
-                  </div>
-                )}
+                {/* Property Count & Pricing */}
+                <div className="flex items-center justify-between mb-3 text-sm">
+                  {host.numberOfListings && (
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <Building2 className="w-4 h-4" />
+                      <span>{host.numberOfListings} properties</span>
+                    </div>
+                  )}
+                  
+                  {(host.minPrice || host.maxPrice) && host.currency && (
+                    <div className="flex items-center gap-1 font-medium text-blue-600">
+                      <span className="text-gray-500">💰</span>
+                      <span>
+                        {host.minPrice && host.maxPrice ? (
+                          `from ${host.minPrice} ${host.currency.split(' – ')[1]} to ${host.maxPrice} ${host.currency.split(' – ')[1]}`
+                        ) : host.minPrice ? (
+                          `from ${host.minPrice} ${host.currency.split(' – ')[1]}`
+                        ) : (
+                          `up to ${host.maxPrice} ${host.currency.split(' – ')[1]}`
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Types of Stays - Moved before Countries */}
                 {host.typesOfStays && host.typesOfStays.length > 0 && (

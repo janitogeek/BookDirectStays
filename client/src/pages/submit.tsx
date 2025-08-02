@@ -421,6 +421,17 @@ export default function Submit() {
 
       console.log("=== SUBMISSION DATA DEBUG ===");
       console.log("Plan selected:", values["Choose Your Listing Type"]);
+      console.log("=== PRICING DEBUG ===");
+      console.log("Raw form values:", {
+        "Currency": values["Currency"],
+        "Min Price": values["Min Price"],
+        "Max Price": values["Max Price"]
+      });
+      console.log("Processed submission data:", {
+        "Currency": submissionData["Currency"],
+        "Min Price": submissionData["Min Price"],
+        "Max Price": submissionData["Max Price"]
+      });
       console.log("Initial status will be:", submissionData["Status"]);
       console.log("Logo data:", logoData ? `${logoData.filename} (${logoData.base64.length} chars)` : 'None');
       console.log("Highlight Image data:", highlightImageData ? `${highlightImageData.filename} (${highlightImageData.base64.length} chars)` : 'None');
