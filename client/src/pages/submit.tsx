@@ -697,17 +697,18 @@ export default function Submit() {
                 <FormItem>
                   <FormLabel>PMS/Channel Manager<RequiredAsterisk /></FormLabel>
                   <FormControl>
-                    <SearchableMultiSelect
-                      options={PMS_OPTIONS}
-                      selected={field.value ? [field.value] : []}
-                      onSelect={(values) => {
-                        // For PMS, we only want single selection
-                        const latestSelection = values[values.length - 1];
-                        field.onChange(latestSelection || "");
-                      }}
-                      placeholder="Search and select your PMS/Channel Manager"
-                      showSelectAll={false}
-                    />
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger className={field.value ? 'border-blue-500 bg-blue-50' : ''}>
+                        <SelectValue placeholder="Select your PMS/Channel Manager" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        {PMS_OPTIONS.map((pms) => (
+                          <SelectItem key={pms} value={pms}>
+                            {pms}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
