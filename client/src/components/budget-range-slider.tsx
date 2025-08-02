@@ -53,15 +53,21 @@ export default function BudgetRangeSlider({
 
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (maxPrice - value >= GAP) {
+    // Ensure min doesn't exceed max minus gap
+    if (value <= maxPrice - GAP) {
       setMinPrice(value);
+    } else {
+      setMinPrice(maxPrice - GAP);
     }
   };
 
   const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (value - minPrice >= GAP) {
+    // Ensure max doesn't go below min plus gap
+    if (value >= minPrice + GAP) {
       setMaxPrice(value);
+    } else {
+      setMaxPrice(minPrice + GAP);
     }
   };
 
@@ -78,12 +84,12 @@ export default function BudgetRangeSlider({
     <div className={`w-full ${className}`}>
       {/* Title */}
       <h3 className="text-lg font-semibold text-gray-900 mb-2">
-        Votre budget (par nuit)
+        Your budget (per night)
       </h3>
       
       {/* Selected Range Display */}
       <div className="text-sm text-gray-600 mb-4">
-        De € {minPrice} à € {maxPrice >= MAX_RANGE ? `${maxPrice}+` : maxPrice}
+        From € {minPrice} to € {maxPrice >= MAX_RANGE ? `${maxPrice}+` : maxPrice}
       </div>
 
       {/* Slider Container */}
@@ -124,8 +130,8 @@ export default function BudgetRangeSlider({
             max={MAX_RANGE}
             value={minPrice}
             onChange={handleMinChange}
-            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb"
-            style={{ zIndex: 1 }}
+            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb min-slider"
+            style={{ zIndex: minPrice > maxPrice - 50 ? 3 : 1 }}
           />
 
           {/* Max Range Slider */}
@@ -136,8 +142,8 @@ export default function BudgetRangeSlider({
             max={MAX_RANGE}
             value={maxPrice}
             onChange={handleMaxChange}
-            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb"
-            style={{ zIndex: 2 }}
+            className="absolute w-full h-6 bg-transparent appearance-none cursor-pointer slider-thumb max-slider"
+            style={{ zIndex: minPrice > maxPrice - 50 ? 1 : 3 }}
           />
         </div>
       </div>
@@ -154,7 +160,8 @@ export default function BudgetRangeSlider({
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           cursor: pointer;
           position: relative;
-          z-index: 3;
+          z-index: 10;
+          pointer-events: auto;
         }
 
         .slider-thumb::-moz-range-thumb {
@@ -166,14 +173,29 @@ export default function BudgetRangeSlider({
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           cursor: pointer;
           border: none;
+          pointer-events: auto;
         }
 
         .slider-thumb::-webkit-slider-track {
           background: transparent;
+          pointer-events: none;
         }
 
         .slider-thumb::-moz-range-track {
           background: transparent;
+          pointer-events: none;
+        }
+
+        .slider-thumb {
+          pointer-events: auto;
+        }
+
+        .min-slider::-webkit-slider-thumb {
+          background: #3b82f6;
+        }
+
+        .max-slider::-webkit-slider-thumb {
+          background: #3b82f6;
         }
       `}</style>
     </div>

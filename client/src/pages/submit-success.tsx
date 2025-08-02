@@ -16,7 +16,16 @@ export default function SubmitSuccess() {
   const processSubmissionAfterPayment = async () => {
     try {
       // Get form data from localStorage
-      const pendingSubmissionData = localStorage.getItem('pendingSubmission');
+      let pendingSubmissionData = localStorage.getItem('pendingSubmission');
+      
+      // If not found, try the new key-based approach
+      if (!pendingSubmissionData) {
+        const latestKey = localStorage.getItem('latestPendingSubmission');
+        if (latestKey) {
+          pendingSubmissionData = localStorage.getItem(latestKey);
+        }
+      }
+      
       if (!pendingSubmissionData) {
         throw new Error('No pending submission data found');
       }
@@ -222,6 +231,23 @@ export default function SubmitSuccess() {
 
       // Clear localStorage after successful submission
       localStorage.removeItem('pendingSubmission');
+      const latestKey = localStorage.getItem('latestPendingSubmission');
+      if (latestKey) {
+        localStorage.removeItem(latestKey);
+        localStorage.removeItem('latestPendingSubmission');
+      }
+      
+      // Additional cleanup - remove any orphaned pendingSubmission keys
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('pendingSubmission_')) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      console.log('localStorage cleaned up after successful submission');
       setSubmissionStatus('success');
       
     } catch (error) {

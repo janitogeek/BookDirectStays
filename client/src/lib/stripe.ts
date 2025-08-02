@@ -90,6 +90,29 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       }
     }
 
+    // Clear any old localStorage data to free up space
+    try {
+      // Remove old pending submissions (older than 1 hour)
+      const currentTime = Date.now();
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('pendingSubmission')) {
+          try {
+            const data = JSON.parse(localStorage.getItem(key) || '{}');
+            if (data.timestamp && currentTime - data.timestamp > 3600000) { // 1 hour
+              localStorage.removeItem(key);
+              console.log('Removed old pending submission:', key);
+            }
+          } catch (e) {
+            // Invalid data, remove it
+            localStorage.removeItem(key);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Error cleaning localStorage:', error);
+    }
+
     // Store form data with processed files in localStorage for processing after payment
     const submissionData = {
       formData,
@@ -98,7 +121,46 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       email,
       timestamp: Date.now(),
     };
-    localStorage.setItem('pendingSubmission', JSON.stringify(submissionData));
+
+    try {
+      const dataString = JSON.stringify(submissionData);
+      console.log('Attempting to store data of size:', (dataString.length / 1024 / 1024).toFixed(2), 'MB');
+      
+      // Try to store with unique key in case multiple submissions happen
+      const storageKey = `pendingSubmission_${Date.now()}`;
+      localStorage.setItem(storageKey, dataString);
+      
+      // Also store the latest key reference
+      localStorage.setItem('latestPendingSubmission', storageKey);
+      
+    } catch (quotaError) {
+      console.error('localStorage quota exceeded, trying to free space...');
+      
+      // Emergency cleanup - remove ALL localStorage data except essential
+      try {
+        const keysToKeep = ['latestPendingSubmission'];
+        const toRemove = [];
+        
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && !keysToKeep.includes(key)) {
+            toRemove.push(key);
+          }
+        }
+        
+        toRemove.forEach(key => localStorage.removeItem(key));
+        console.log('Removed', toRemove.length, 'localStorage items');
+        
+        // Try storing again with unique key
+        const storageKey = `pendingSubmission_${Date.now()}`;
+        localStorage.setItem(storageKey, JSON.stringify(submissionData));
+        localStorage.setItem('latestPendingSubmission', storageKey);
+        
+      } catch (finalError) {
+        console.error('Failed to store even after cleanup:', finalError);
+        throw new Error('Unable to process submission due to storage limitations. Please try refreshing the page and submitting again.');
+      }
+    }
 
     // Auto-detect the current site URL for success/cancel redirects
     const baseUrl = window.location.origin;
