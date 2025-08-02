@@ -67,6 +67,15 @@ export default function SubmitSuccess() {
       const highlightImageData = processedFiles?.highlightImage || null;
       const ratingScreenshotData = processedFiles?.ratingScreenshot || null;
       
+      // Debug pricing data specifically
+      console.log('🔍 PRICING DATA FROM FORM:', {
+        Currency: formData["Currency"],
+        "Min Price": formData["Min Price"], 
+        "Max Price": formData["Max Price"],
+        "Min Price Type": typeof formData["Min Price"],
+        "Max Price Type": typeof formData["Max Price"]
+      });
+
       // Create Airtable submission (similar to submit page logic)
       const submissionData: any = {
         "Email": email,
@@ -87,6 +96,9 @@ export default function SubmitSuccess() {
         "LinkedIn": formData["LinkedIn"] || "",
         "TikTok": formData["TikTok"] || "",
         "YouTube / Video Tour": formData["YouTube / Video Tour"] || "",
+        "Currency": formData["Currency"] || "",
+        "Min Price": formData["Min Price"] ? parseInt(formData["Min Price"]) : undefined,
+        "Max Price": formData["Max Price"] ? parseFloat(formData["Max Price"]) : undefined,
         "Plan": plan === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : plan === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : plan,
         "Submission Date": new Date().toISOString().split('T')[0],
         "Status": plan === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review"

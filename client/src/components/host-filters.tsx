@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import BudgetRangeSlider from "@/components/budget-range-slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -76,10 +77,10 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
     onFiltersChange(newFilters);
   };
 
-  const updatePriceFilter = (type: 'minPrice' | 'maxPrice', value: string) => {
+  const updatePriceRange = (min: number | null, max: number | null) => {
     const newFilters = { ...filters };
-    const numValue = value ? parseInt(value) : null;
-    newFilters[type] = numValue;
+    newFilters.minPrice = min;
+    newFilters.maxPrice = max;
     
     setFilters(newFilters);
     onFiltersChange(newFilters);
@@ -233,31 +234,13 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
           )}
         </div>
 
-        {/* Price Range Filters */}
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Min Price</label>
-            <Input
-              type="number"
-              placeholder="0"
-              value={filters.minPrice || ""}
-              onChange={(e) => updatePriceFilter('minPrice', e.target.value)}
-              className="w-full"
-              min="0"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Max Price</label>
-            <Input
-              type="number" 
-              placeholder="999+"
-              value={filters.maxPrice || ""}
-              onChange={(e) => updatePriceFilter('maxPrice', e.target.value)}
-              className="w-full"
-              min="0"
-            />
-          </div>
-        </div>
+        {/* Budget Range Slider */}
+        <BudgetRangeSlider
+          minValue={filters.minPrice}
+          maxValue={filters.maxPrice}
+          onRangeChange={updatePriceRange}
+          className="px-2"
+        />
 
         {/* Filter Buttons */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
