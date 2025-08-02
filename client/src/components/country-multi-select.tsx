@@ -17,9 +17,10 @@ interface CountryMultiSelectProps {
   options?: string[];
   selected: string[];
   onSelect: (values: string[]) => void;
+  className?: string;
 }
 
-export function CountryMultiSelect({ options, selected, onSelect }: CountryMultiSelectProps) {
+export function CountryMultiSelect({ options, selected, onSelect, className }: CountryMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,7 +43,7 @@ export function CountryMultiSelect({ options, selected, onSelect }: CountryMulti
         <Button
           type="button"
           variant="outline"
-          className="w-full justify-between text-left"
+          className={`w-full justify-between text-left ${className || ''}`}
           aria-haspopup="listbox"
           aria-expanded={open}
         >

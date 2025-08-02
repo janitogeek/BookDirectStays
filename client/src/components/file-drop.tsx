@@ -2,9 +2,10 @@ import { useRef, useState } from "react";
 
 interface FileDropProps {
   onFileDrop: (file: File) => void;
+  className?: string;
 }
 
-export function FileDrop({ onFileDrop }: FileDropProps) {
+export function FileDrop({ onFileDrop, className }: FileDropProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,7 +28,7 @@ export function FileDrop({ onFileDrop }: FileDropProps) {
 
   return (
     <div
-      className="border-2 border-dashed rounded p-6 flex flex-col items-center justify-center cursor-pointer bg-white"
+      className={`border-2 border-dashed rounded p-6 flex flex-col items-center justify-center cursor-pointer bg-white ${className || ''}`}
       onClick={() => inputRef.current?.click()}
       onDrop={handleDrop}
       onDragOver={e => e.preventDefault()}

@@ -688,6 +688,7 @@ export default function Submit() {
                     <CountryMultiSelect
                       selected={field.value || []}
                       onSelect={(values: string[]) => field.onChange(values)}
+                      className={field.value && field.value.length > 0 ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -700,7 +701,8 @@ export default function Submit() {
                     <CityRegionAsyncMultiSelect
                       selected={field.value || []}
                       onSelect={values => field.onChange(values)}
-                                              placeholder="e.g. New York, Paris"
+                      placeholder="e.g. New York, Paris"
+                      className={field.value && field.value.length > 0 ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -717,6 +719,7 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
+                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -736,6 +739,7 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
+                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -756,6 +760,7 @@ export default function Submit() {
                           name: file.name
                         });
                       }}
+                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
                     />
                   </FormControl>
                   <FormMessage />

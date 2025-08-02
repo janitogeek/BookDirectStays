@@ -18,9 +18,10 @@ interface CityRegionAsyncMultiSelectProps {
   selected: CityRegion[];
   onSelect: (values: CityRegion[]) => void;
   placeholder?: string;
+  className?: string;
 }
 
-export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "e.g. New York, Paris" }: CityRegionAsyncMultiSelectProps) {
+export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "e.g. New York, Paris", className }: CityRegionAsyncMultiSelectProps) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<CityRegion[]>([]);
@@ -69,7 +70,7 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
         <Button
           type="button"
           variant="outline"
-          className="w-full justify-between text-left"
+          className={`w-full justify-between text-left ${className || ''}`}
           aria-haspopup="listbox"
           aria-expanded={open}
         >
