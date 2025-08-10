@@ -1,26 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useState } from "react";
-import SubmissionPropertyCard from "@/components/submission-property-card";
-import CountryTags from "@/components/country-tags";
 import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { airtableService } from "@/lib/airtable";
-import { slugify } from "@/lib/utils";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const [showAirbnbScreenshot, setShowAirbnbScreenshot] = useState(false);
   const [showDirectScreenshot, setShowDirectScreenshot] = useState(false);
- 
-  // Fetch recent approved submissions for property showcase
-  const { data: recentSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: ["/api/recent-submissions"],
-    queryFn: () => airtableService.getApprovedSubmissions(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
 
 
 
@@ -44,40 +32,34 @@ export default function Home() {
               <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-bold">No fees,</span> 
               <span className="text-white"> just better stays</span> 
               <span className="text-white"> - </span>
-              <span className="text-white font-bold">Save 10-30%</span>
+              <span className="text-white font-bold underline">Save 10-30%</span>
             </p>
             <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto font-medium">
-              World's most comprehensive directory of 1000+ verified direct booking vacation rental websites across 50+ countries.
+              Connect directly with hosts worldwide for better rates, more flexibility, and personalized service (—without the middleman markup.)
             </p>
             
-            {/* Find a Host Button */}
-            <div className="relative max-w-2xl mx-auto mb-16">
+            {/* Find a Host Button - Smaller */}
+            <div className="relative max-w-md mx-auto mb-16">
               <Button 
                 onClick={() => setLocation("/find-host")}
-                className="w-full py-6 px-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-lg font-semibold"
+                className="w-full py-4 px-6 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-base font-semibold"
               >
                 Find a Host Now!
               </Button>
             </div>
 
-            {/* Key Benefits - Clean Cards */}
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-2">15.7%</div>
-                  <div className="text-sm font-medium">Average Savings</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-2">98%</div>
-                  <div className="text-sm font-medium">Response Rate</div>
-                </CardContent>
-              </Card>
+            {/* Key Benefits - Clean Cards - Updated */}
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-bold text-blue-200 mb-2">1000+</div>
                   <div className="text-sm font-medium">Verified Hosts</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-blue-200 mb-2">50+</div>
+                  <div className="text-sm font-medium">Countries</div>
                 </CardContent>
               </Card>
             </div>
@@ -93,7 +75,7 @@ export default function Home() {
               Why Book Direct?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              According to industry research, travelers save on average 10% to 30% when booking directly versus using OTAs.
+              According to industry studies, travelers save on average between 10% and 30% when booking directly with hosts versus OTAs (Airbnb, Booking, etc.).
             </p>
           </div>
 
@@ -111,7 +93,7 @@ export default function Home() {
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-105 transition-transform">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Line to Your Host</h3>
@@ -141,7 +123,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Real Savings Section - Skol Example */}
+      {/* Real Savings Section - Skol Example - Updated */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
@@ -152,6 +134,9 @@ export default function Home() {
               <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-4">
                 See actual savings from booking direct vs OTA platforms with real properties
               </p>
+              <div className="text-lg font-semibold text-gray-800 mb-2 underline">
+                Real Use Case:
+              </div>
               <div className="text-lg font-semibold text-gray-800 mb-4">
                 <span className="text-blue-600">Host:</span> Skol Apartments Marbella, <span className="text-blue-600">Country:</span> 🇪🇸 Spain | <span className="text-blue-600">Property:</span> Skol 927A, <span className="text-blue-600">Dates:</span> Sep 3rd to Sep 8th 2025
               </div>
@@ -269,7 +254,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Performance Metrics Section */}
+      {/* Performance Metrics Section - Updated */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto text-center mb-16">
@@ -280,8 +265,8 @@ export default function Home() {
               Measurable results from our verified direct booking network
             </p>
 
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            {/* Metrics Grid - Updated */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
               {/* Average Guest Savings */}
               <div className="text-center">
                 <div className="text-4xl lg:text-5xl font-bold text-purple-600 mb-4">15.7%</div>
@@ -289,40 +274,33 @@ export default function Home() {
                 <p className="text-gray-600 text-sm">booking direct</p>
               </div>
 
-              {/* Host Response Rate */}
+              {/* Cancellation Rates */}
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-orange-600 mb-4">98%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Host Response Rate</h3>
-                <p className="text-gray-600 text-sm">within 24 hours</p>
+                <div className="text-4xl lg:text-5xl font-bold text-orange-600 mb-4">31.8%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cancellation Rates</h3>
+                <p className="text-gray-600 text-sm">compared to OTAs</p>
               </div>
 
-              {/* Better Guest Satisfaction */}
+              {/* Higher Revenue per Booking */}
               <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-green-600 mb-4">40%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Better Guest Satisfaction</h3>
-                <p className="text-gray-600 text-sm">direct vs OTA bookings</p>
-              </div>
-
-              {/* Higher Profit Margins */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">6.7%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Higher Profit Margins</h3>
-                <p className="text-gray-600 text-sm">vs OTA bookings</p>
+                <div className="text-4xl lg:text-5xl font-bold text-green-600 mb-4">15-20%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">More Revenue per Booking</h3>
+                <p className="text-gray-600 text-sm">by going direct vs OTA</p>
               </div>
             </div>
 
-            {/* Expert Quote */}
+            {/* Expert Quote - Updated */}
             <div className="max-w-4xl mx-auto">
               <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
-                "The vacation rental industry is experiencing a fundamental shift toward direct bookings. Properties that offer direct booking options see 6.7% higher profit margins and 40% better guest satisfaction scores compared to OTA-only listings."
+                "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
               </blockquote>
               <div className="flex items-center justify-center space-x-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-semibold text-lg">SM</span>
+                  <span className="text-blue-600 font-semibold text-lg">IP</span>
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-gray-900">Dr. Sarah Mitchell</div>
-                  <div className="text-gray-600 text-sm">Vacation Rental Industry Research Institute (2024)</div>
+                  <div className="font-semibold text-gray-900">iPropertyManagement</div>
+                  <div className="text-gray-600 text-sm">Survey Results (2024)</div>
                 </div>
               </div>
             </div>
@@ -330,7 +308,7 @@ export default function Home() {
         </div>
       </section>
 
-             {/* CTA Section - Clean and Focused */}
+      {/* CTA Section - Clean and Focused */}
        <section className="py-20 bg-blue-600">
          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
            <div className="max-w-4xl mx-auto text-center">
