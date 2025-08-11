@@ -57,7 +57,7 @@ export interface AirtableSubmission {
     'Cancellation Policy'?: string;
     // Verification fields
     'Verification Purchased'?: string; // "Yes" or "No"
-    'Verification Status'?: string; // "N/A", "Yes", "No"
+    'Verification Status'?: string; // "N/A", "Pending", "Done"
   };
   createdTime: string;
 }
