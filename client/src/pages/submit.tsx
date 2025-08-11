@@ -26,6 +26,7 @@ import { airtableService } from "@/lib/airtable";
 import { createCheckoutSession } from "@/lib/stripe";
 
 const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
+const verificationEnum = z.enum(["No Verification", "Verification (€100 one-time)"]);
 const formSchema = z.object({
   "Brand Name": z.string().min(2),
   "PMC General Website": z.string().url(),
@@ -69,6 +70,7 @@ const formSchema = z.object({
   "TikTok": z.string().url().optional().or(z.literal("")),
   "YouTube / Video Tour": z.string().url().optional().or(z.literal("")),
   "Choose Your Listing Type": planEnum,
+  "Verification Option": verificationEnum,
   "Submitted By (Email)": z.string().email(),
 });
 type FormValues = z.infer<typeof formSchema>;
@@ -203,6 +205,7 @@ export default function Submit() {
       "TikTok": "",
       "YouTube / Video Tour": "",
       "Choose Your Listing Type": "Basic (€99.99/year)",
+      "Verification Option": "No Verification",
       "Submitted By (Email)": "",
     },
   });
@@ -509,6 +512,9 @@ export default function Submit() {
         "TikTok": values["TikTok"] || "",
         "YouTube / Video Tour": values["YouTube / Video Tour"] || "",
         "Plan": values["Choose Your Listing Type"] === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : values["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : values["Choose Your Listing Type"],
+        "Verification Option": values["Verification Option"] || "No Verification",
+        "Verification Purchased": values["Verification Option"] === "Verification (€100 one-time)" ? "Yes" : "No",
+        "Verification Status": values["Verification Option"] === "Verification (€100 one-time)" ? "Pending" : "N/A",
         "Submission Date": new Date().toISOString().split('T')[0],
         // Status workflow:
         // - Standard plans: start as "Pending Review" (manual approval required)
@@ -1104,9 +1110,13 @@ export default function Submit() {
                 >
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <div />
-                    <span className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€99.99/year</span>
+                    <div className="text-right">
+                      <span className="line-through text-gray-500 text-sm">€199.99/year</span>
+                      <div className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€99.99/year</div>
+                    </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Basic Listing</h2>
+                  <p className="text-green-600 font-medium mb-2">🎯 Early bird promotion for the first 2000, get listed now and save 50%!</p>
                   <p className="text-gray-500 mb-4">Standard listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
@@ -1127,9 +1137,13 @@ export default function Submit() {
                 >
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <span className="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
-                    <span className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</span>
+                    <div className="text-right">
+                      <span className="line-through text-gray-500 text-sm">€999.99/year</span>
+                      <div className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</div>
+                    </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
+                  <p className="text-green-600 font-medium mb-2">🎯 Early bird promotion for the first 2000, get listed now and save 50%!</p>
                   <p className="text-gray-500 mb-4">Priority placement with marketing support</p>
                   <div className="mb-2 font-medium text-gray-700">Same as Basic Listing + :</div>
                   <ul className="space-y-2 mb-6">
@@ -1144,15 +1158,50 @@ export default function Submit() {
                   </div>
                 </div>
               </div>
+              
+              {/* Verification Option */}
+              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold mb-4 text-blue-900">🔒 Verification Option</h3>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div
+                    className={`flex-1 border rounded-lg p-4 cursor-pointer transition-all ${form.watch("Verification Option") === "No Verification" ? "border-blue-500 bg-blue-100" : "border-gray-200 bg-white"}`}
+                    onClick={() => form.setValue("Verification Option", "No Verification")}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">No Verification</h4>
+                      <span className="text-gray-500">€0</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Standard listing without verification badge</p>
+                  </div>
+                  <div
+                    className={`flex-1 border rounded-lg p-4 cursor-pointer transition-all ${form.watch("Verification Option") === "Verification (€100 one-time)" ? "border-blue-500 bg-blue-100" : "border-gray-200 bg-white"}`}
+                    onClick={() => form.setValue("Verification Option", "Verification (€100 one-time)")}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium">Verification Badge</h4>
+                      <span className="text-blue-600 font-semibold">€100 one-time</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Get a blue verification tick and build trust with guests</p>
+                    <p className="text-xs text-blue-600 mt-2">✓ One-time payment, no recurring fees</p>
+                  </div>
+                </div>
+              </div>
+              
               {/* Dynamic summary now directly below the plan boxes */}
               <div className="flex justify-end mt-4">
                 {form.watch("Choose Your Listing Type") === "Premium (€499.99/year)" ? (
                   <div className="text-green-800 bg-green-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
                     Premium Listing — Total: €499.99/year
+                    {form.watch("Verification Option") === "Verification (€100 one-time)" && " + €100 verification"}
                   </div>
                 ) : (
                   <div className="text-blue-800 bg-blue-100 text-base font-semibold px-4 py-2 rounded-full inline-block">
                     Basic Listing — Total: €99.99/year
+                    {form.watch("Verification Option") === "Verification (€100 one-time)" && " + €100 verification"}
                   </div>
                 )}
               </div>
