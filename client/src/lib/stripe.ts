@@ -9,6 +9,7 @@ export const stripePromise = loadStripe(
 const PRICE_IDS = {
   'Basic (€99.99/year)': 'price_1RqeHhAMrMcYfFXQ0KFK29FR',     // Basic Listing Plan (Test) - €99.99/year
   'Premium (€499.99/year)': 'price_1RqeH2AMrMcYfFXQZos4UTzR', // Premium Listing Plan (Test) - €499.99/year
+  'Verification (€100 one-time)': 'price_VERIFICATION_ID_HERE', // Verification Badge (Test) - €100 one-time
 };
 
 export const createCheckoutSession = async (formData: any, plan: string, email: string) => {
@@ -184,16 +185,33 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
     
     console.log('Creating Stripe checkout with:', { priceId, email, baseUrl });
 
+    // Prepare line items for checkout
+    const lineItems = [
+      {
+        price: priceId,
+        quantity: 1,
+      }
+    ];
+
+    // Add verification fee if selected
+    if (formData["Verification Option"] === "Verification (€100 one-time)") {
+      const verificationPriceId = PRICE_IDS['Verification (€100 one-time)'];
+      if (verificationPriceId && verificationPriceId !== 'price_VERIFICATION_ID_HERE') {
+        lineItems.push({
+          price: verificationPriceId,
+          quantity: 1,
+        });
+        console.log('✅ Added verification fee to checkout');
+      } else {
+        console.warn('⚠️ Verification price ID not configured, skipping verification fee');
+      }
+    }
+
     // Create checkout session directly with Stripe.js
     const { error } = await stripe.redirectToCheckout({
-      lineItems: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      successUrl: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}`,
+      lineItems,
+      mode: 'subscription', // Keep as subscription for the listing plan
+      successUrl: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}&verification=${encodeURIComponent(formData["Verification Option"] || "No Verification")}`,
       cancelUrl: `${baseUrl}/submit?canceled=true`,
       customerEmail: email,
     });

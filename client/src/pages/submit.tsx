@@ -1117,6 +1117,14 @@ export default function Submit() {
             {/* Plan selection now at the bottom */}
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4">Choose your plan</h2>
+              
+              {/* Early Bird Promotion - Above Plans */}
+              <div className="text-center mb-6">
+                <p className="text-red-600 font-bold text-lg">
+                  🎯 Early bird promotion for the first 2000, get listed now and save 50%!
+                </p>
+              </div>
+              
               <div className="flex flex-col md:flex-row gap-6">
                 <div
                   className={`flex-1 border rounded-xl p-6 cursor-pointer transition-all relative flex flex-col ${form.watch("Choose Your Listing Type") === "Basic (€99.99/year)" ? "border-primary bg-primary/5 shadow-lg" : "border-gray-200 bg-white"}`}
@@ -1133,7 +1141,6 @@ export default function Submit() {
                     </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Basic Listing</h2>
-                  <p className="text-green-600 font-medium mb-2">🎯 Early bird promotion for the first 2000, get listed now and save 50%!</p>
                   <p className="text-gray-500 mb-4">Standard listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
@@ -1160,7 +1167,6 @@ export default function Submit() {
                     </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
-                  <p className="text-green-600 font-medium mb-2">🎯 Early bird promotion for the first 2000, get listed now and save 50%!</p>
                   <p className="text-gray-500 mb-4">Priority placement with marketing support</p>
                   <div className="mb-2 font-medium text-gray-700">Same as Basic Listing + :</div>
                   <ul className="space-y-2 mb-6">
