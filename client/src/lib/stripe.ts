@@ -142,7 +142,7 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
     console.log('💾 Stored submission data in localStorage:', pendingSubmissionKey);
 
     // Create checkout session with server-side handling for mixed payments
-    const response = await fetch('/api/stripe/create-checkout-session', {
+    const response = await fetch('http://localhost:5000/api/stripe/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
 // Create customer portal session for subscription management
 export const createPortalSession = async (customerId: string, returnUrl?: string) => {
   try {
-    const response = await fetch('/api/stripe/create-portal-session', {
+    const response = await fetch('http://localhost:5000/api/stripe/create-portal-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ export const createPortalSession = async (customerId: string, returnUrl?: string
 // Get subscription details
 export const getSubscription = async (subscriptionId: string) => {
   try {
-    const response = await fetch(`/api/stripe/subscription/${subscriptionId}`);
+    const response = await fetch(`http://localhost:5000/api/stripe/subscription/${subscriptionId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch subscription');
@@ -229,7 +229,7 @@ export const getSubscription = async (subscriptionId: string) => {
 // Get customer subscriptions
 export const getCustomerSubscriptions = async (customerId: string) => {
   try {
-    const response = await fetch(`/api/stripe/customer/${customerId}/subscriptions`);
+    const response = await fetch(`http://localhost:5000/api/stripe/customer/${customerId}/subscriptions`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch customer subscriptions');
@@ -245,7 +245,7 @@ export const getCustomerSubscriptions = async (customerId: string) => {
 // Get invoice details
 export const getInvoice = async (invoiceId: string) => {
   try {
-    const response = await fetch(`/api/stripe/invoice/${invoiceId}`);
+    const response = await fetch(`http://localhost:5000/api/stripe/invoice/${invoiceId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch invoice');
