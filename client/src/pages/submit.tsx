@@ -1208,7 +1208,7 @@ export default function Submit() {
                       <h4 className="font-medium">Verification Badge</h4>
                       <span className="text-blue-600 font-semibold">€100 one-time</span>
                     </div>
-                    <p className="text-sm text-gray-600">Complete the verification process with us and get a blue verification tick and build trust with guests</p>
+                    <p className="text-sm text-gray-600">Complete the verification process with us and get a blue verification tick to build trust with guests</p>
                     <p className="text-xs text-blue-600 mt-2">✓ One-time payment, no recurring fees</p>
                   </div>
                 </div>
@@ -1249,61 +1249,6 @@ export default function Submit() {
               >
                 Submit Listing
               </Button>
-            </div>
-            
-            {/* Enhanced Debug Panel */}
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <h4 className="font-semibold text-yellow-800 mb-2">🔍 Form Validation Debug</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <p><strong>Form Valid:</strong> <span className={form.formState.isValid ? 'text-green-600' : 'text-red-600'}>{form.formState.isValid ? '✅ Yes' : '❌ No'}</span></p>
-                  <p><strong>Form Dirty:</strong> {form.formState.isDirty ? '✅ Yes' : '❌ No'}</p>
-                  <p><strong>Form Submitting:</strong> {form.formState.isSubmitting ? '✅ Yes' : '❌ No'}</p>
-                  <p><strong>Form Submitted:</strong> {form.formState.isSubmitted ? '✅ Yes' : '❌ No'}</p>
-                </div>
-                <div>
-                  <p><strong>Total Errors:</strong> <span className="text-red-600">{Object.keys(form.formState.errors).length}</span></p>
-                  <p><strong>Dirty Fields:</strong> {Object.keys(form.formState.dirtyFields).join(', ') || 'None'}</p>
-                </div>
-              </div>
-              
-              {/* Show specific field errors */}
-              {Object.keys(form.formState.errors).length > 0 && (
-                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded">
-                  <p className="font-semibold text-red-800 mb-2">❌ Validation Errors:</p>
-                  {Object.entries(form.formState.errors).map(([fieldName, error]: [string, any]) => (
-                    <div key={fieldName} className="text-red-700">
-                      <strong>{fieldName}:</strong> {error?.message || 'Invalid'}
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              {/* Show current form values */}
-              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
-                <p className="font-semibold text-blue-800 mb-2">📝 Current Form Values:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                  <div><strong>Brand Name:</strong> {form.watch("Brand Name") || 'Empty'}</div>
-                  <div><strong>PMC General Website:</strong> {form.watch("PMC General Website") || 'Empty'}</div>
-                  <div><strong>Direct Booking Engine URL:</strong> {form.watch("Direct Booking Engine URL") || 'Empty'}</div>
-                  <div><strong>PMS/Channel Manager:</strong> {form.watch("PMS/Channel Manager") || 'Empty'}</div>
-                  <div><strong>Number of Listings:</strong> {form.watch("Number of Listings") || 'Empty'}</div>
-                  <div><strong>Countries:</strong> {form.watch("Countries")?.length || 0} selected</div>
-                  <div><strong>Cities/Regions:</strong> {form.watch("Cities / Regions")?.length || 0} selected</div>
-                  <div><strong>Logo Upload:</strong> {form.watch("Logo Upload")?.url ? '✅ Uploaded' : '❌ Missing'}</div>
-                  <div><strong>Highlight Image:</strong> {form.watch("Highlight Image")?.url ? '✅ Uploaded' : '❌ Missing'}</div>
-                  <div><strong>Rating Screenshot:</strong> {form.watch("Rating (X/5) & Reviews (#) Screenshot")?.url ? '✅ Uploaded' : '❌ Missing'}</div>
-                  <div><strong>One-line Description:</strong> {form.watch("One-line Description")?.length || 0}/70 chars</div>
-                  <div><strong>Why Book With You:</strong> {form.watch("Why Book With You?")?.length || 0}/50 chars</div>
-                  <div><strong>Top Stats:</strong> {form.watch("Top Stats") || 'Empty'}</div>
-                  <div><strong>Currency:</strong> {form.watch("Currency") || 'Empty'}</div>
-                  <div><strong>Min Price:</strong> {form.watch("Min Price") || 'Empty'}</div>
-                  <div><strong>Max Price:</strong> {form.watch("Max Price") || 'Empty'}</div>
-                  <div><strong>Choose Your Listing Type:</strong> {form.watch("Choose Your Listing Type") || 'Empty'}</div>
-                  <div><strong>Verification Option:</strong> {form.watch("Verification Option") || 'Empty'}</div>
-                  <div><strong>Submitted By (Email):</strong> {form.watch("Submitted By (Email)") || 'Empty'}</div>
-                </div>
-              </div>
             </div>
           </form>
         </Form>
