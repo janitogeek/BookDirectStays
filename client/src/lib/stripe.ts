@@ -9,7 +9,7 @@ export const stripePromise = loadStripe(
 const PRICE_IDS = {
   'Basic (€99.99/year)': 'price_1RqeHhAMrMcYfFXQ0KFK29FR',     // Basic Listing Plan (Test) - €99.99/year
   'Premium (€499.99/year)': 'price_1RqeH2AMrMcYfFXQZos4UTzR', // Premium Listing Plan (Test) - €499.99/year
-  'Verification (€100 one-time)': 'price_VERIFICATION_ID_HERE', // Verification Badge (Test) - €100 one-time
+  'Verification (€100 one-time)': 'price_1RuzlhAMrMcYfFXQ0MSwIy5Y', // Verification Badge (Test) - €100 one-time
 };
 
 export const createCheckoutSession = async (formData: any, plan: string, email: string) => {
