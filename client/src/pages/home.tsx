@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FeaturedHostsCarousel from "@/components/featured-hosts-carousel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,6 +10,105 @@ export default function Home() {
   const [showAirbnbScreenshot, setShowAirbnbScreenshot] = useState(false);
   const [showDirectScreenshot, setShowDirectScreenshot] = useState(false);
 
+  // Quotes carousel state
+  const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
+  
+  // All expert quotes in the specified order
+  const expertQuotes = [
+    {
+      quote: "OTAs are great for browsing options, but once you've found a place you love, consider contacting the host or hotel directly – your wallet and your travel experience will likely benefit.",
+      source: "Travel Weekly",
+      description: "Guest advocacy article on #BookDirect benefits",
+      initials: "TW",
+      color: "blue"
+    },
+    {
+      quote: "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA.",
+      source: "iPropertyManagement",
+      description: "Vacation Rental Statistics",
+      initials: "IP",
+      color: "green"
+    },
+    {
+      quote: "Hosts and property managers are under pressure from many angles… Increasing direct bookings offers them one way to ease some of these challenges, while delivering better value to guests.",
+      source: "Alex Vuilleumier, COO of Lodgify",
+      description: "Lodgify 2024 Industry Report",
+      initials: "AV",
+      color: "purple"
+    },
+    {
+      quote: "All bookings are valuable, but all are not equally valuable.",
+      source: "Amy Hinote",
+      description: "VRM Intel – Direct Booking Value Analysis",
+      initials: "AH",
+      color: "orange"
+    },
+    {
+      quote: "By cutting out the OTA, the guest saved £300 and the owner earned £210 more. Direct guests are typically more loyal and likely to return.",
+      source: "Zeevou Case Study",
+      description: "Lovelady Shield Cottage",
+      initials: "Z",
+      color: "red"
+    },
+    {
+      quote: "By tapping into a broader range of booking platforms, [hosts] are positioning themselves to adapt to evolving traveler preferences and drive more bookings – a trend we expect will continue….",
+      source: "Lodgify 2024 Industry Report",
+      description: "Industry Trends Analysis",
+      initials: "L",
+      color: "indigo"
+    },
+    {
+      quote: "Guests and hosts alike are seeking out better value and customer service.",
+      source: "Lodgify 2024 Industry Report",
+      description: "Market Analysis",
+      initials: "L",
+      color: "teal"
+    },
+    {
+      quote: "Direct bookings help hosts regain control over the guest experience and deliver better value.",
+      source: "Lodgify Industry Insights",
+      description: "Strategic Recommendations",
+      initials: "L",
+      color: "cyan"
+    }
+  ];
+
+  // Auto-advance carousel every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentQuoteIndex((prev) => (prev + 1) % expertQuotes.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [expertQuotes.length]);
+
+  // Navigation functions
+  const goToNextQuote = () => {
+    setCurrentQuoteIndex((prev) => (prev + 1) % expertQuotes.length);
+  };
+
+  const goToPreviousQuote = () => {
+    setCurrentQuoteIndex((prev) => (prev - 1 + expertQuotes.length) % expertQuotes.length);
+  };
+
+  const goToQuote = (index: number) => {
+    setCurrentQuoteIndex(index);
+  };
+
+  // Color mapping function for Tailwind CSS
+  const getColorClasses = (color: string) => {
+    const colorMap: { [key: string]: { bg: string; text: string } } = {
+      blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
+      green: { bg: 'bg-green-100', text: 'text-green-600' },
+      purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
+      orange: { bg: 'bg-orange-100', text: 'text-orange-600' },
+      red: { bg: 'bg-red-100', text: 'text-red-600' },
+      indigo: { bg: 'bg-indigo-100', text: 'text-indigo-600' },
+      teal: { bg: 'bg-teal-100', text: 'text-teal-600' },
+      cyan: { bg: 'bg-cyan-100', text: 'text-cyan-600' }
+    };
+    return colorMap[color] || colorMap.blue;
+  };
 
 
   return (
@@ -254,28 +353,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Expert Quote Section - Simplified */}
+      {/* What the Experts Say Section - Carousel */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
-              "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
-            </blockquote>
-            <div className="flex items-center justify-center space-x-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-semibold text-lg">IP</span>
-              </div>
-              <div className="text-left">
-                <div className="font-semibold text-gray-900">iPropertyManagement</div>
-                <div className="text-gray-600 text-sm">Survey Results (2024)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What the Experts Say Section - New */}
-      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -286,154 +365,62 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-              <div className="text-center mb-8">
-                <div className="text-4xl mb-4">💬</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Guest-Facing Insights</h3>
-              </div>
-              
-              <div className="space-y-8 mb-12">
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "OTAs are great for browsing options, but once you've found a place you love, consider contacting the host or hotel directly – your wallet and your travel experience will likely benefit."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">TW</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Travel Weekly</div>
-                      <div className="text-gray-600 text-sm">Guest advocacy article on #BookDirect benefits</div>
-                      <a href="https://www.travelweekly.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">travelweekly.com</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-semibold text-sm">IP</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">iPropertyManagement</div>
-                      <div className="text-gray-600 text-sm">Vacation Rental Statistics</div>
-                      <a href="https://ipropertymanagement.com/research/vacation-rental-statistics" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">ipropertymanagement.com</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center mb-8">
-                <div className="text-4xl mb-4">🏠</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Host-Facing Insights</h3>
-              </div>
-              
-              <div className="space-y-8 mb-12">
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "Hosts and property managers are under pressure from many angles… Increasing direct bookings offers them one way to ease some of these challenges, while delivering better value to guests."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                      <span className="text-purple-600 font-semibold text-sm">AV</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Alex Vuilleumier, COO of Lodgify</div>
-                      <div className="text-gray-600 text-sm">Lodgify 2024 Industry Report</div>
-                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "All bookings are valuable, but all are not equally valuable."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                      <span className="text-orange-600 font-semibold text-sm">AH</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Amy Hinote</div>
-                      <div className="text-gray-600 text-sm">VRM Intel – Direct Booking Value Analysis</div>
-                      <a href="https://vrmintel.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">vrmintel.com</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "By cutting out the OTA, the guest saved £300 and the owner earned £210 more. Direct guests are typically more loyal and likely to return."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-red-600 font-semibold text-sm">Z</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Zeevou Case Study</div>
-                      <div className="text-gray-600 text-sm">Lovelady Shield Cottage</div>
-                      <a href="https://zeevou.com/blog/case-studies/lovelady-shield-country-house/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">zeevou.com</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "By tapping into a broader range of booking platforms, [hosts] are positioning themselves to adapt to evolving traveler preferences and drive more bookings – a trend we expect will continue…."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <span className="text-indigo-600 font-semibold text-sm">L</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Lodgify 2024 Industry Report</div>
-                      <div className="text-gray-600 text-sm">Industry Trends Analysis</div>
-                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 relative">
+              {/* Quote Carousel */}
               <div className="text-center">
-                <div className="text-4xl mb-4">📊</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Market & Trend Insights</h3>
-              </div>
-              
-              <div className="space-y-8">
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "Guests and hosts alike are seeking out better value and customer service."
+                <div className="text-4xl mb-6">💬</div>
+                
+                {/* Quote Content */}
+                <div className="min-h-[200px] flex items-center justify-center mb-8">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 italic leading-relaxed max-w-3xl">
+                    {expertQuotes[currentQuoteIndex].quote}
                   </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-                      <span className="text-teal-600 font-semibold text-sm">L</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Lodgify 2024 Industry Report</div>
-                      <div className="text-gray-600 text-sm">Market Analysis</div>
-                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
-                    </div>
+                </div>
+                
+                {/* Source */}
+                <div className="flex items-center justify-center space-x-3 mb-6">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${getColorClasses(expertQuotes[currentQuoteIndex].color).bg}`}>
+                    <span className={`font-semibold text-sm ${getColorClasses(expertQuotes[currentQuoteIndex].color).text}`}>
+                      {expertQuotes[currentQuoteIndex].initials}
+                    </span>
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900">{expertQuotes[currentQuoteIndex].source}</div>
+                    <div className="text-gray-600 text-sm">{expertQuotes[currentQuoteIndex].description}</div>
                   </div>
                 </div>
-
-                <div className="text-center">
-                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
-                    "Direct bookings help hosts regain control over the guest experience and deliver better value."
-                  </blockquote>
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
-                      <span className="text-cyan-600 font-semibold text-sm">L</span>
-                    </div>
-                    <div className="text-left">
-                      <div className="font-semibold text-gray-900">Lodgify Industry Insights</div>
-                      <div className="text-gray-600 text-sm">Strategic Recommendations</div>
-                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
-                    </div>
-                  </div>
+                
+                {/* Quote Counter */}
+                <div className="text-sm text-gray-500 mb-4">
+                  Quote {currentQuoteIndex + 1} of {expertQuotes.length}
+                </div>
+                
+                {/* Navigation Dots */}
+                <div className="flex justify-center space-x-2 mb-6">
+                  {[...Array(expertQuotes.length)].map((_, i) => (
+                    <button
+                      key={i}
+                      className={`w-3 h-3 rounded-full transition-colors ${
+                        i === currentQuoteIndex ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                      onClick={() => goToQuote(i)}
+                    />
+                  ))}
+                </div>
+                
+                {/* Navigation Arrows */}
+                <div className="flex justify-center space-x-4">
+                  <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" onClick={goToPreviousQuote}>
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors" onClick={goToNextQuote}>
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
