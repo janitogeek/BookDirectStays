@@ -126,6 +126,9 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
       : formData["Choose Your Listing Type"] === "Premium (€499.99/year)" 
         ? "Premium Listing - €499.99/year" 
         : formData["Choose Your Listing Type"],
+    "Verification Option": formData["Verification Option"] || "No Verification",
+    "Verification Purchased": formData["Verification Option"] === "Verification (€100 one-time)" ? "Yes" : "No",
+    "Verification Status": formData["Verification Option"] === "Verification (€100 one-time)" ? "Pending" : "N/A",
     "Submission Date": new Date().toISOString().split('T')[0],
     "Status": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" 
       ? "Approved – Published" 

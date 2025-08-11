@@ -109,6 +109,9 @@ export const submissions = pgTable("submissions", {
   listingType: text("listing_type").notNull(), // "free" or "featured"
   status: text("status").notNull().default("pending"), // "pending", "approved", "rejected"
   createdAt: text("created_at").notNull(),
+  // Verification fields
+  verificationPurchased: text("verification_purchased").default("No"), // "Yes" or "No"
+  verificationStatus: text("verification_status").default("N/A"), // "N/A", "Yes", "No"
 });
 
 export const insertSubmissionSchema = createInsertSchema(submissions).omit({
