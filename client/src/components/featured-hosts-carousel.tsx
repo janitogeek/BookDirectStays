@@ -178,6 +178,7 @@ export default function FeaturedHostsCarousel() {
           modules={[Autoplay, Navigation, Pagination]}
           spaceBetween={30}
           slidesPerView={1}
+          loop={true}
           autoplay={{
             delay: 4000,
             disableOnInteraction: false,
