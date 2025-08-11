@@ -1130,8 +1130,8 @@ export default function Submit() {
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <div />
                     <div className="text-right">
-                      <span className="line-through text-gray-500 text-sm">€199.99/year</span>
-                      <div className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€99.99/year</div>
+                      <div className="line-through text-gray-500 text-sm mb-1">€199.99/year</div>
+                      <div className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">€99.99/year</div>
                     </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Basic Listing</h2>
@@ -1156,8 +1156,8 @@ export default function Submit() {
                   <div className="flex items-start justify-between mb-2 min-h-[40px]">
                     <span className="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
                     <div className="text-right">
-                      <span className="line-through text-gray-500 text-sm">€999.99/year</span>
-                      <div className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</div>
+                      <div className="line-through text-gray-500 text-sm mb-1">€999.99/year</div>
+                      <div className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">€499.99/year</div>
                     </div>
                   </div>
                   <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
