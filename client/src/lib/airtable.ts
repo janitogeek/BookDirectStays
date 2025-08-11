@@ -20,7 +20,8 @@ export interface AirtableSubmission {
   id: string;
   fields: {
     'Brand Name': string;
-    'Direct Booking Website': string;
+    'PMC General Website': string;
+    'Direct Booking Engine URL': string;
     'Number of Listings': number;
     'Email': string;
     'One-line Description': string;
@@ -62,6 +63,7 @@ export interface AirtableSubmission {
 export interface Submission {
   id: string;
   brandName: string;
+  pmcGeneralWebsite: string;
   website: string;
   numberOfListings: number;
   email: string;
@@ -117,7 +119,8 @@ export const airtableService = {
           {
             fields: {
               'Brand Name': submissionData.Brand_name,
-              'Direct Booking Website': submissionData.Direct_Booking_Website,
+              'PMC General Website': submissionData.PMC_General_Website,
+              'Direct Booking Engine URL': submissionData.Direct_Booking_Engine_URL,
               'Number of Listings': submissionData.Number_of_Listings,
               'Email': submissionData.E_mail,
               'One-line Description': submissionData.field9,
@@ -572,7 +575,8 @@ export const airtableService = {
     const transformed = {
       id: record.id,
       brandName: fields['Brand Name'] || '',
-      website: fields['Direct Booking Website'] || '',
+      pmcGeneralWebsite: fields['PMC General Website'] || '',
+      website: fields['Direct Booking Engine URL'] || '',
       numberOfListings: fields['Number of Listings'] || 0,
       email: fields['Email'] || '',
       oneLineDescription: fields['One-line Description'] || '',
@@ -586,7 +590,7 @@ export const airtableService = {
       propertiesFeatures: parseArray(fields['Properties Features']),
       servicesConvenience: parseArray(fields['Services & Convenience']),
       lifestyleValues: parseArray(fields['Lifestyle & Values']),
-      designStyle: parseArray(fields['Design Styles']),
+      designStyle: parseArray(fields['Design Style']),
       atmospheres: parseArray(fields['Atmospheres']),
       settingsLocations: parseArray(fields['Settings/Locations']),
       instagram: fields['Instagram'] || undefined,

@@ -1,7 +1,7 @@
 import React from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine } from "lucide-react";
+import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine, Globe } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 
 import { Button } from "@/components/ui/button";
@@ -565,6 +565,23 @@ export default function SubmissionProperty() {
                   <CardTitle>Get in Touch</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* PMC General Website Link */}
+                  {submission.pmcGeneralWebsite && (
+                    <Button asChild variant="outline" className="w-full">
+                      <a 
+                        href={submission.pmcGeneralWebsite} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2"
+                        onClick={() => clickTracking?.trackCompany()}
+                      >
+                        <Globe className="w-4 h-4" />
+                        Visit Company Website
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {/* Direct Booking Website Link */}
                   {submission.website && (
                     <Button asChild className="w-full">
                       <a 
@@ -575,7 +592,7 @@ export default function SubmissionProperty() {
                         onClick={() => clickTracking?.trackWebsite()}
                       >
                         <ExternalLink className="w-4 h-4" />
-                        Visit Website
+                        Book Direct
                       </a>
                     </Button>
                   )}

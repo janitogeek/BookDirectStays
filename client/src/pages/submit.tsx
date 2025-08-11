@@ -28,7 +28,8 @@ import { createCheckoutSession } from "@/lib/stripe";
 const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const formSchema = z.object({
   "Brand Name": z.string().min(2),
-  "Direct Booking Website": z.string().url(),
+  "PMC General Website": z.string().url(),
+  "Direct Booking Engine URL": z.string().url(),
   "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
@@ -162,13 +163,18 @@ const RequiredAsterisk = () => (
 
 export default function Submit() {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showStripeCheckout, setShowStripeCheckout] = useState(false);
+  const [formData, setFormData] = useState<FormValues | null>(null);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       "Brand Name": "",
-      "Direct Booking Website": "",
+      "PMC General Website": "",
+      "Direct Booking Engine URL": "",
       "PMS/Channel Manager": "",
-      "Number of Listings": "",
+      "Number of Listings": 1,
       "Countries": [],
       "Cities / Regions": [],
       "Logo Upload": { url: "", name: "" },
@@ -199,7 +205,6 @@ export default function Submit() {
       "Choose Your Listing Type": "Basic (€99.99/year)",
       "Submitted By (Email)": "",
     },
-    mode: "onChange",
   });
 
   // Add validation debugging
@@ -478,7 +483,8 @@ export default function Submit() {
       const submissionData: any = {
         "Email": values["Submitted By (Email)"],
         "Brand Name": values["Brand Name"],
-        "Direct Booking Website": values["Direct Booking Website"],
+        "PMC General Website": values["PMC General Website"],
+        "Direct Booking Engine URL": values["Direct Booking Engine URL"],
         "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
         "Countries": values["Countries"].join(", "),
@@ -686,10 +692,17 @@ export default function Submit() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name="Direct Booking Website" render={({ field }) => (
+              <FormField control={form.control} name="PMC General Website" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Direct Booking Website<RequiredAsterisk /></FormLabel>
+                  <FormLabel>PMC General Website</FormLabel>
                   <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="Direct Booking Engine URL" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Direct Booking Engine URL<RequiredAsterisk /></FormLabel>
+                  <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/book" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />

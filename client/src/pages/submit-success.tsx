@@ -94,7 +94,8 @@ export default function SubmitSuccess() {
       const submissionData: any = {
         "Email": email,
         "Brand Name": formData["Brand Name"],
-        "Direct Booking Website": formData["Direct Booking Website"],
+        "PMC General Website": formData["PMC General Website"],
+        "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
         "PMS": formData["PMS/Channel Manager"],
         "Number of Listings": formData["Number of Listings"],
         "Countries": formData["Countries"].join(", "),

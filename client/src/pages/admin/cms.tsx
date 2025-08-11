@@ -166,7 +166,8 @@ export default function CMSAdmin() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p><strong>Website:</strong> <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{submission.website}</a></p>
+                  <p><strong>PMC General Website:</strong> {submission.pmcGeneralWebsite ? <a href={submission.pmcGeneralWebsite} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{submission.pmcGeneralWebsite}</a> : 'Not provided'}</p>
+                  <p><strong>Direct Booking Engine URL:</strong> <a href={submission.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{submission.website}</a></p>
                   <p><strong>Listings:</strong> {submission.listingCount}</p>
                   <p><strong>Countries:</strong> {submission.countries.join(', ')}</p>
                 </div>

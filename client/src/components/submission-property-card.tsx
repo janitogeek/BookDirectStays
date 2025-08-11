@@ -334,24 +334,47 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             </div>
 
             {/* Book Direct - Right */}
-            {submission.website && (
-              <Button 
-                asChild 
-                variant="default" 
-                size="sm"
-              >
-                <a 
-                  href={submission.website} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2"
-                  onClick={() => trackWebsite()}
+            <div className="flex items-center gap-2">
+              {/* PMC General Website Link */}
+              {submission.pmcGeneralWebsite && (
+                <Button 
+                  asChild 
+                  variant="outline" 
+                  size="sm"
                 >
-                  <ExternalLink className="w-4 h-4" />
-                  Book Direct
-                </a>
-              </Button>
-            )}
+                  <a 
+                    href={submission.pmcGeneralWebsite} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                    onClick={() => trackCompany()}
+                  >
+                    <Globe className="w-4 h-4" />
+                    Company
+                  </a>
+                </Button>
+              )}
+              
+              {/* Direct Booking Engine */}
+              {submission.website && (
+                <Button 
+                  asChild 
+                  variant="default" 
+                  size="sm"
+                >
+                  <a 
+                    href={submission.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                    onClick={() => trackWebsite()}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Book Direct
+                  </a>
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
