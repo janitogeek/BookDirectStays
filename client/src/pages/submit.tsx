@@ -1127,15 +1127,12 @@ export default function Submit() {
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Basic (€99.99/year)"}
                 >
-                  <div className="flex items-start justify-between mb-2 min-h-[40px]">
-                    <div />
-                    <div className="text-right">
-                      <span className="line-through text-gray-500 text-sm">€199.99/year</span>
-                      <div className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€99.99/year</div>
-                    </div>
+                  <div className="text-center mb-4">
+                    <div className="line-through text-gray-500 text-lg mb-1">€199.99/year</div>
+                    <div className="inline-block bg-blue-100 text-blue-800 text-xl font-bold px-4 py-2 rounded-full">€99.99/year</div>
                   </div>
-                  <h2 className="text-2xl font-bold mb-1">Basic Listing</h2>
-                  <p className="text-gray-500 mb-4">Standard listing in our directory</p>
+                  <h2 className="text-2xl font-bold mb-1 text-center">Basic Listing</h2>
+                  <p className="text-gray-500 mb-4 text-center">Standard listing in our directory</p>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Standard placement in search results</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Detailed stays info</li>
@@ -1153,16 +1150,16 @@ export default function Submit() {
                   role="button"
                   aria-pressed={form.watch("Choose Your Listing Type") === "Premium (€499.99/year)"}
                 >
-                  <div className="flex items-start justify-between mb-2 min-h-[40px]">
-                    <span className="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
-                    <div className="text-right">
-                      <span className="line-through text-gray-500 text-sm">€999.99/year</span>
-                      <div className="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full ml-2">€499.99/year</div>
-                    </div>
+                  <div className="text-center mb-4">
+                    <div className="line-through text-gray-500 text-lg mb-1">€999.99/year</div>
+                    <div className="inline-block bg-green-100 text-green-800 text-xl font-bold px-4 py-2 rounded-full">€499.99/year</div>
                   </div>
-                  <h2 className="text-2xl font-bold mb-1">Premium Listing</h2>
-                  <p className="text-gray-500 mb-4">Priority placement with marketing support</p>
-                  <div className="mb-2 font-medium text-gray-700">Same as Basic Listing + :</div>
+                  <div className="text-center mb-2">
+                    <span className="bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-xs font-medium">Recommended</span>
+                  </div>
+                  <h2 className="text-2xl font-bold mb-1 text-center">Premium Listing</h2>
+                  <p className="text-gray-500 mb-4 text-center">Priority placement with marketing support</p>
+                  <div className="mb-2 font-medium text-gray-700 text-center">Same as Basic Listing + :</div>
                   <ul className="space-y-2 mb-6">
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Priority placement in search results</li>
                     <li className="flex items-center text-green-600"><span className="mr-2">✔️</span> Featured badge for increased visibility</li>
