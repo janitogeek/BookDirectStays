@@ -462,7 +462,7 @@ export default function Home() {
                Ready to Save on Your Next Vacation?
              </h2>
              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-               Join thousands of travelers who save 15.7% on average by booking directly with property managers.
+               Join thousands of travelers who save between 10% and 30% on average by booking directly with property managers.
              </p>
              <Button 
                onClick={() => setLocation("/find-host")}
