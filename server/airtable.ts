@@ -37,19 +37,20 @@ export async function submitPropertyToAirtable(submission: InsertSubmission & { 
   try {
     const tableName = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
     const result = await airtableBase(tableName).create({
-      Name: submission.name,
-      Website: submission.website,
+      'Brand Name': submission.name,
+      'PMC General Website': submission.pmcGeneralWebsite || '',
+      'Direct Booking Engine URL': submission.website,
       'Number of Listings': submission.listingCount,
-      Countries: submission.countries,
-      Description: submission.description,
-      Logo: submission.logo,
-      Email: submission.email,
-      Facebook: submission.facebook || '',
-      Instagram: submission.instagram || '',
-      LinkedIn: submission.linkedin || '',
-      'Listing Type': submission.listingType,
-      Status: submission.status,
-      'Created At': submission.createdAt
+      'Countries': submission.countries,
+      'One-line Description': submission.description,
+      'Logo': submission.logo,
+      'Email': submission.email,
+      'Facebook': submission.facebook || '',
+      'Instagram': submission.instagram || '',
+      'LinkedIn': submission.linkedin || '',
+      'Plan': submission.listingType,
+      'Status': submission.status,
+      'Submission Date': submission.createdAt
     });
     
     log(`Created new property submission in Airtable with ID: ${result.id}`, 'airtable');

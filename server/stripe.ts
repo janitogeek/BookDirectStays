@@ -98,7 +98,8 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
   const submissionData = {
     "Email": formData["Submitted By (Email)"],
     "Brand Name": formData["Brand Name"],
-    "Direct Booking Website": formData["Direct Booking Website"],
+    "PMC General Website": formData["PMC General Website"],
+    "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
     "Number of Listings": formData["Number of Listings"],
     "Countries": Array.isArray(formData["Countries"]) ? formData["Countries"].join(", ") : formData["Countries"],
     "Cities / Regions": Array.isArray(formData["Cities / Regions"]) 

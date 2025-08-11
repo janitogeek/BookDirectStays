@@ -95,6 +95,7 @@ export type Subscription = typeof subscriptions.$inferSelect;
 export const submissions = pgTable("submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  pmcGeneralWebsite: text("pmc_general_website"),
   website: text("website").notNull(),
   listingCount: integer("listing_count").notNull(),
   countries: text("countries").array().notNull(),
