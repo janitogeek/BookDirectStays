@@ -29,8 +29,8 @@ const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const verificationEnum = z.enum(["No Verification", "Verification (€100 one-time)"]);
 const formSchema = z.object({
   "Brand Name": z.string().min(2),
-  "PMC General Website": z.string().url(),
-  "Direct Booking Engine URL": z.string().url(),
+  "PMC General Website": z.string().url("Please enter a valid URL"),
+  "Direct Booking Engine URL": z.string().url("Please enter a valid URL"),
   "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
   "Countries": z.array(z.string()).min(1),
@@ -48,7 +48,7 @@ const formSchema = z.object({
     name: z.string()
   }),
   "One-line Description": z.string().min(5).max(70),
-  "Why Book With You?": z.string().min(10),
+  "Why Book With You?": z.string().min(50, "Please provide at least 50 characters explaining why guests should book with you"),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
   "Min Price": z.string().min(1, "Please enter a minimum price"),
@@ -171,6 +171,7 @@ export default function Submit() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
       "Brand Name": "",
       "PMC General Website": "",
@@ -218,6 +219,11 @@ export default function Submit() {
       Currency: form.getValues("Currency"),
       "Min Price": form.getValues("Min Price"),
       "Max Price": form.getValues("Max Price")
+    });
+    
+    // Show all field errors
+    Object.keys(errors).forEach(fieldName => {
+      console.error(`❌ ${fieldName} error:`, errors[fieldName]);
     });
     
     // Show pricing field specific errors
@@ -700,7 +706,7 @@ export default function Submit() {
               )} />
               <FormField control={form.control} name="PMC General Website" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>PMC General Website</FormLabel>
+                  <FormLabel>PMC General Website<RequiredAsterisk /></FormLabel>
                   <FormControl><Input {...field} placeholder="e.g. https://yourdomain.com/" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
                   <FormMessage />
                 </FormItem>
@@ -855,8 +861,19 @@ export default function Submit() {
               <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Why Book With You?<RequiredAsterisk /></FormLabel>
-                  <FormControl><Textarea rows={4} {...field} placeholder="e.g. Direct rates, local experiences, flexible stays (tell guests what makes you special, why should they book with you direct and not through an OTA)" className={field.value ? 'border-blue-500 bg-blue-50' : ''} /></FormControl>
-                  <FormMessage />
+                  <FormControl>
+                    <Textarea 
+                      {...field} 
+                      placeholder="Tell potential guests why they should choose your properties over others. Include unique features, exceptional service, special amenities, or any other compelling reasons. Minimum 50 characters."
+                      className={`min-h-[120px] ${field.value ? 'border-blue-500 bg-blue-50' : ''}`}
+                    />
+                  </FormControl>
+                  <div className="flex justify-between items-center">
+                    <FormMessage />
+                    <span className={`text-xs ${field.value && field.value.length < 50 ? 'text-red-500' : 'text-gray-500'}`}>
+                      {field.value?.length || 0}/50 characters minimum
+                    </span>
+                  </div>
                 </FormItem>
               )} />
               <FormField control={form.control} name="Top Stats" render={({ field }) => (
@@ -1221,11 +1238,21 @@ export default function Submit() {
                   });
                   console.log("🔍 Form errors at click:", form.formState.errors);
                   console.log("✅ Form valid at click:", form.formState.isValid);
+                  console.log("📝 Form values:", form.getValues());
                 }}
               >
                 Submit Listing
               </Button>
             </div>
+            
+            {/* Debug information */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs">
+                <p><strong>Form Validation Status:</strong> {form.formState.isValid ? '✅ Valid' : '❌ Invalid'}</p>
+                <p><strong>Form Errors:</strong> {Object.keys(form.formState.errors).length > 0 ? Object.keys(form.formState.errors).join(', ') : 'None'}</p>
+                <p><strong>Dirty Fields:</strong> {Object.keys(form.formState.dirtyFields).join(', ')}</p>
+              </div>
+            )}
           </form>
         </Form>
       </div>
