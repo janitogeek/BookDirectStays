@@ -73,11 +73,11 @@ export default function Home() {
     }
   ];
 
-  // Auto-advance carousel every 5 seconds
+  // Auto-advance carousel every 8 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentQuoteIndex((prev) => (prev + 1) % expertQuotes.length);
-    }, 5000);
+    }, 8000);
     
     return () => clearInterval(interval);
   }, [expertQuotes.length]);
@@ -389,11 +389,6 @@ export default function Home() {
                     <div className="font-semibold text-gray-900">{expertQuotes[currentQuoteIndex].source}</div>
                     <div className="text-gray-600 text-sm">{expertQuotes[currentQuoteIndex].description}</div>
                   </div>
-                </div>
-                
-                {/* Quote Counter */}
-                <div className="text-sm text-gray-500 mb-4">
-                  Quote {currentQuoteIndex + 1} of {expertQuotes.length}
                 </div>
                 
                 {/* Navigation Dots */}
