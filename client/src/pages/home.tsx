@@ -39,27 +39,27 @@ export default function Home() {
             </p>
             
             {/* Find a Host Button - Smaller */}
-            <div className="relative max-w-md mx-auto mb-16">
+            <div className="relative max-w-sm mx-auto mb-12">
               <Button 
                 onClick={() => setLocation("/find-host")}
-                className="w-full py-4 px-6 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-base font-semibold"
+                className="w-full py-3 px-5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold"
               >
                 Find a Host Now!
               </Button>
             </div>
 
             {/* Key Benefits - Clean Cards - Updated */}
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-2">1000+</div>
-                  <div className="text-sm font-medium">Verified Hosts</div>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-blue-200 mb-1">1000+</div>
+                  <div className="text-xs font-medium">Verified Hosts</div>
                 </CardContent>
               </Card>
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-6 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-2">50+</div>
-                  <div className="text-sm font-medium">Countries</div>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-blue-200 mb-1">50+</div>
+                  <div className="text-xs font-medium">Countries</div>
                 </CardContent>
               </Card>
             </div>
@@ -93,7 +93,7 @@ export default function Home() {
             <div className="text-center group hover:bg-white p-8 rounded-2xl transition-colors">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-105 transition-transform">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 9h8M8 13h6" />
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Line to Your Host</h3>
@@ -143,7 +143,7 @@ export default function Home() {
             </div>
 
             {/* Side-by-side comparison */}
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
               {/* OTA Booking */}
               <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8 flex flex-col">
                 <div className="text-center mb-6">
@@ -286,6 +286,30 @@ export default function Home() {
                 <div className="text-4xl lg:text-5xl font-bold text-green-600 mb-4">15-20%</div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">More Revenue per Booking</h3>
                 <p className="text-gray-600 text-sm">by going direct vs OTA</p>
+              </div>
+            </div>
+
+            {/* Qualitative Metrics Grid - Added */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+              {/* Guest Satisfaction */}
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">98%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Guest Satisfaction Rate</h3>
+                <p className="text-gray-600 text-sm">direct booking experiences</p>
+              </div>
+
+              {/* Host Quality */}
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-bold text-indigo-600 mb-4">100%</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Host Quality</h3>
+                <p className="text-gray-600 text-sm">professional management only</p>
+              </div>
+
+              {/* Response Time */}
+              <div className="text-center">
+                <div className="text-4xl lg:text-5xl font-bold text-teal-600 mb-4">24h</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Response Time</h3>
+                <p className="text-gray-600 text-sm">vs 72h on OTAs</p>
               </div>
             </div>
 
