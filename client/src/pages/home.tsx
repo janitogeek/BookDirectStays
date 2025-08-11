@@ -35,30 +35,30 @@ export default function Home() {
               <span className="text-white font-bold underline">Save 10-30%</span>
             </p>
             <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto font-medium">
-              Connect directly with hosts worldwide for better rates, more flexibility, and personalized service (—without the middleman markup.)
+              Connect directly with professional hosts worldwide for better rates, more flexibility, and personalized service (—without the middleman markup.)
             </p>
             
             {/* Find a Host Button - Smaller */}
-            <div className="relative max-w-sm mx-auto mb-12">
+            <div className="relative max-w-xs mx-auto mb-8">
               <Button 
                 onClick={() => setLocation("/find-host")}
-                className="w-full py-3 px-5 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold"
+                className="w-full py-2 px-4 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold"
               >
                 Find a Host Now!
               </Button>
             </div>
 
             {/* Key Benefits - Clean Cards - Updated */}
-            <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-3 max-w-2xl mx-auto">
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-200 mb-1">1000+</div>
-                  <div className="text-xs font-medium">Verified Hosts</div>
+                <CardContent className="p-3 text-center">
+                  <div className="text-xl font-bold text-blue-200 mb-1">1000+</div>
+                  <div className="text-xs font-medium">Verified Professional Hosts</div>
                 </CardContent>
               </Card>
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-200 mb-1">50+</div>
+                <CardContent className="p-3 text-center">
+                  <div className="text-xl font-bold text-blue-200 mb-1">50+</div>
                   <div className="text-xs font-medium">Countries</div>
                 </CardContent>
               </Card>
@@ -127,7 +127,7 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
+            <div className="text-center mb-8">
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                 💸 Real Savings, Real Listings
               </h2>
@@ -137,7 +137,7 @@ export default function Home() {
               <div className="text-lg font-semibold text-gray-800 mb-2 underline">
                 Real Use Case:
               </div>
-              <div className="text-lg font-semibold text-gray-800 mb-4">
+              <div className="text-lg font-semibold text-gray-800 mb-2">
                 <span className="text-blue-600">Host:</span> Skol Apartments Marbella, <span className="text-blue-600">Country:</span> 🇪🇸 Spain | <span className="text-blue-600">Property:</span> Skol 927A, <span className="text-blue-600">Dates:</span> Sep 3rd to Sep 8th 2025
               </div>
             </div>
@@ -254,77 +254,186 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Performance Metrics Section - Updated */}
+      {/* Expert Quote Section - Simplified */}
       <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
+              "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
+            </blockquote>
+            <div className="flex items-center justify-center space-x-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-semibold text-lg">IP</span>
+              </div>
+              <div className="text-left">
+                <div className="font-semibold text-gray-900">iPropertyManagement</div>
+                <div className="text-gray-600 text-sm">Survey Results (2024)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What the Experts Say Section - New */}
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              BookDirectStays.com Performance Metrics
+              What the Experts Say
             </h2>
-            <p className="text-xl text-gray-600 mb-16">
-              Measurable results from our verified direct booking network
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Industry insights and research on the benefits of direct booking
             </p>
+          </div>
 
-            {/* Metrics Grid - Updated */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-              {/* Average Guest Savings */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-purple-600 mb-4">15.7%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Guest Savings</h3>
-                <p className="text-gray-600 text-sm">booking direct</p>
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+              <div className="text-center mb-8">
+                <div className="text-4xl mb-4">💬</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Guest-Facing Insights</h3>
               </div>
-
-              {/* Cancellation Rates */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-orange-600 mb-4">31.8%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Cancellation Rates</h3>
-                <p className="text-gray-600 text-sm">compared to OTAs</p>
-              </div>
-
-              {/* Higher Revenue per Booking */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-green-600 mb-4">15-20%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">More Revenue per Booking</h3>
-                <p className="text-gray-600 text-sm">by going direct vs OTA</p>
-              </div>
-            </div>
-
-            {/* Qualitative Metrics Grid - Added */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-              {/* Guest Satisfaction */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-blue-600 mb-4">98%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Guest Satisfaction Rate</h3>
-                <p className="text-gray-600 text-sm">direct booking experiences</p>
-              </div>
-
-              {/* Host Quality */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-indigo-600 mb-4">100%</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Verified Host Quality</h3>
-                <p className="text-gray-600 text-sm">professional management only</p>
-              </div>
-
-              {/* Response Time */}
-              <div className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-teal-600 mb-4">24h</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Response Time</h3>
-                <p className="text-gray-600 text-sm">vs 72h on OTAs</p>
-              </div>
-            </div>
-
-            {/* Expert Quote - Updated */}
-            <div className="max-w-4xl mx-auto">
-              <blockquote className="text-xl lg:text-2xl font-light text-gray-700 mb-8 italic leading-relaxed">
-                "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
-              </blockquote>
-              <div className="flex items-center justify-center space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-semibold text-lg">IP</span>
+              
+              <div className="space-y-8 mb-12">
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "OTAs are great for browsing options, but once you've found a place you love, consider contacting the host or hotel directly – your wallet and your travel experience will likely benefit."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-semibold text-sm">TW</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Travel Weekly</div>
+                      <div className="text-gray-600 text-sm">Guest advocacy article on #BookDirect benefits</div>
+                      <a href="https://www.travelweekly.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">travelweekly.com</a>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-900">iPropertyManagement</div>
-                  <div className="text-gray-600 text-sm">Survey Results (2024)</div>
+
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "67% of travelers say they find it cheaper and easier to book on a brand's own site than through an OTA."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 font-semibold text-sm">IP</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">iPropertyManagement</div>
+                      <div className="text-gray-600 text-sm">Vacation Rental Statistics</div>
+                      <a href="https://ipropertymanagement.com/research/vacation-rental-statistics" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">ipropertymanagement.com</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center mb-8">
+                <div className="text-4xl mb-4">🏠</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Host-Facing Insights</h3>
+              </div>
+              
+              <div className="space-y-8 mb-12">
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "Hosts and property managers are under pressure from many angles… Increasing direct bookings offers them one way to ease some of these challenges, while delivering better value to guests."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-purple-600 font-semibold text-sm">AV</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Alex Vuilleumier, COO of Lodgify</div>
+                      <div className="text-gray-600 text-sm">Lodgify 2024 Industry Report</div>
+                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "All bookings are valuable, but all are not equally valuable."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span className="text-orange-600 font-semibold text-sm">AH</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Amy Hinote</div>
+                      <div className="text-gray-600 text-sm">VRM Intel – Direct Booking Value Analysis</div>
+                      <a href="https://vrmintel.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">vrmintel.com</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "By cutting out the OTA, the guest saved £300 and the owner earned £210 more. Direct guests are typically more loyal and likely to return."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                      <span className="text-red-600 font-semibold text-sm">Z</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Zeevou Case Study</div>
+                      <div className="text-gray-600 text-sm">Lovelady Shield Cottage</div>
+                      <a href="https://zeevou.com/blog/case-studies/lovelady-shield-country-house/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">zeevou.com</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "By tapping into a broader range of booking platforms, [hosts] are positioning themselves to adapt to evolving traveler preferences and drive more bookings – a trend we expect will continue…."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <span className="text-indigo-600 font-semibold text-sm">L</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Lodgify 2024 Industry Report</div>
+                      <div className="text-gray-600 text-sm">Industry Trends Analysis</div>
+                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="text-4xl mb-4">📊</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Market & Trend Insights</h3>
+              </div>
+              
+              <div className="space-y-8">
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "Guests and hosts alike are seeking out better value and customer service."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                      <span className="text-teal-600 font-semibold text-sm">L</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Lodgify 2024 Industry Report</div>
+                      <div className="text-gray-600 text-sm">Market Analysis</div>
+                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <blockquote className="text-lg lg:text-xl font-light text-gray-700 mb-4 italic leading-relaxed">
+                    "Direct bookings help hosts regain control over the guest experience and deliver better value."
+                  </blockquote>
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+                      <span className="text-cyan-600 font-semibold text-sm">L</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-gray-900">Lodgify Industry Insights</div>
+                      <div className="text-gray-600 text-sm">Strategic Recommendations</div>
+                      <a href="https://www.lodgify.com/blog/industry-report/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm underline">lodgify.com</a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
