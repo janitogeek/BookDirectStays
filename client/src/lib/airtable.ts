@@ -55,9 +55,6 @@ export interface AirtableSubmission {
     'Currency'?: string;
     'Google Reviews Link'?: string;
     'Cancellation Policy'?: string;
-    // Verification fields
-    'Verification Purchased'?: string; // "Yes" or "No"
-    'Verification Status'?: string; // "N/A", "Pending", "Done"
   };
   createdTime: string;
 }
@@ -102,9 +99,6 @@ export interface Submission {
   currency?: string;
   googleReviewsLink?: string;
   cancellationPolicy?: string;
-  // Verification fields
-  verificationPurchased?: string;
-  verificationStatus?: string;
 }
 
 // Airtable service
@@ -617,9 +611,6 @@ export const airtableService = {
       currency: fields['Currency'] || undefined,
       googleReviewsLink: fields['Google Reviews Link'] || undefined,
       cancellationPolicy: fields['Cancellation Policy'] || undefined,
-      // Verification fields
-      verificationPurchased: fields['Verification Purchased'] || 'No',
-      verificationStatus: fields['Verification Status'] || 'N/A'
     };
 
 

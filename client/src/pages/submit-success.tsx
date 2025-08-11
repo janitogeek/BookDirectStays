@@ -120,10 +120,10 @@ export default function SubmitSuccess() {
         "Min Price": formData["Min Price"] ? parseInt(formData["Min Price"]) : undefined,
         "Max Price": formData["Max Price"] ? parseFloat(formData["Max Price"]) : undefined,
         "Plan": plan === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : plan === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : plan,
-        "Verification Purchased": formData["Verification Option"] === "Verification (€100 one-time)" ? "Yes" : "No",
-        "Verification Status": formData["Verification Option"] === "Verification (€100 one-time)" ? "Pending" : "N/A",
+        "Verification Purchased": "No", // All PMCs are verified by default
+        "Verification Status": "N/A", // All PMCs are verified by default
         "Submission Date": new Date().toISOString().split('T')[0],
-        "Status": plan === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review"
+        "Status": "Approved – Published" // All PMCs are verified by default
       };
 
       // Submit to Airtable

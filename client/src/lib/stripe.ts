@@ -10,7 +10,6 @@ export const stripePromise = loadStripe(
 const PRICE_IDS = {
   'Basic (€99.99/year)': 'price_1RqeHhAMrMcYfFXQ0KFK29FR',     // Basic Listing Plan (Test) - €99.99/year
   'Premium (€499.99/year)': 'price_1RqeH2AMrMcYfFXQZos4UTzR', // Premium Listing Plan (Test) - €499.99/year
-  'Verification (€100 one-time)': 'price_1RuzlhAMrMcYfFXQ0MSwIy5Y', // Verification Badge (Test) - €100 one-time
 };
 
 export const createCheckoutSession = async (formData: any, plan: string, email: string) => {
@@ -34,10 +33,6 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
     if (!priceId) {
       throw new Error(`Invalid plan: ${plan}`);
     }
-
-    // Check if verification is selected
-    const verificationSelected = formData["Verification Option"] === "Verification (€100 one-time)";
-    console.log('🔒 Verification selected:', verificationSelected);
 
     // Process files before going to Stripe (since blob URLs expire after redirect)
     console.log('Processing files before Stripe redirect...');
@@ -134,15 +129,14 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       formData,
       processedFiles,
       timestamp: Date.now(),
-      plan,
-      verificationSelected
+      plan
     };
     
     localStorage.setItem(pendingSubmissionKey, JSON.stringify(submissionData));
     console.log('💾 Stored submission data in localStorage:', pendingSubmissionKey);
 
-    // Create checkout session with server-side handling for mixed payments
-    const response = await fetch('http://localhost:5000/api/stripe/create-checkout-session', {
+    // Create checkout session with server-side handling
+    const response = await fetch('/api/stripe/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +144,6 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
       body: JSON.stringify({
         plan,
         email,
-        verificationSelected,
         pendingSubmissionKey
       }),
     });
@@ -185,7 +178,7 @@ export const createCheckoutSession = async (formData: any, plan: string, email: 
 // Create customer portal session for subscription management
 export const createPortalSession = async (customerId: string, returnUrl?: string) => {
   try {
-    const response = await fetch('http://localhost:5000/api/stripe/create-portal-session', {
+    const response = await fetch('/api/stripe/create-portal-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -213,7 +206,7 @@ export const createPortalSession = async (customerId: string, returnUrl?: string
 // Get subscription details
 export const getSubscription = async (subscriptionId: string) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/stripe/subscription/${subscriptionId}`);
+    const response = await fetch(`/api/stripe/subscription/${subscriptionId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch subscription');
@@ -229,7 +222,7 @@ export const getSubscription = async (subscriptionId: string) => {
 // Get customer subscriptions
 export const getCustomerSubscriptions = async (customerId: string) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/stripe/customer/${customerId}/subscriptions`);
+    const response = await fetch(`/api/stripe/customer/${customerId}/subscriptions`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch customer subscriptions');
@@ -245,7 +238,7 @@ export const getCustomerSubscriptions = async (customerId: string) => {
 // Get invoice details
 export const getInvoice = async (invoiceId: string) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/stripe/invoice/${invoiceId}`);
+    const response = await fetch(`/api/stripe/invoice/${invoiceId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch invoice');
