@@ -350,6 +350,51 @@ export default function Home() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FeaturedHostsCarousel />
+          
+          {/* Custom Navigation Controls - Added Below Carousel */}
+          <div className="max-w-4xl mx-auto mt-8">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="text-center">
+                <div className="text-2xl mb-4">🏠</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Navigate Featured Hosts</h3>
+                
+                {/* Navigation Controls */}
+                <div className="flex justify-center space-x-4">
+                  <button 
+                    onClick={() => {
+                      // Use the exposed carousel navigation method
+                      if ((window as any).featuredHostsCarousel) {
+                        (window as any).featuredHostsCarousel.goToPrevious();
+                      }
+                    }}
+                    className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  >
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      // Use the exposed carousel navigation method
+                      if ((window as any).featuredHostsCarousel) {
+                        (window as any).featuredHostsCarousel.goToNext();
+                      }
+                    }}
+                    className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  >
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <p className="text-sm text-gray-600 mt-3">
+                  Use the buttons above or swipe to explore more featured hosts
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Link } from "wouter";
@@ -22,6 +22,31 @@ import 'swiper/css/pagination';
 export default function FeaturedHostsCarousel() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const swiperRef = useRef<any>(null);
+
+  // Expose navigation methods for parent component
+  const goToNext = () => {
+    if (swiperRef.current?.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
+
+  const goToPrevious = () => {
+    if (swiperRef.current?.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
+
+  // Expose methods globally for parent component access
+  useEffect(() => {
+    (window as any).featuredHostsCarousel = {
+      goToNext,
+      goToPrevious
+    };
+    
+    return () => {
+      delete (window as any).featuredHostsCarousel;
+    };
+  }, []);
 
   // Fetch all approved submissions and filter for featured ones
   const { data: submissions, isLoading, error } = useQuery({
@@ -147,7 +172,7 @@ export default function FeaturedHostsCarousel() {
         </p>
       </div>
 
-      <div className="relative px-8 sm:px-12 lg:px-16">
+      <div className="relative px-4 sm:px-6 lg:px-8">
         <Swiper
           ref={swiperRef}
           modules={[Autoplay, Navigation, Pagination]}
@@ -157,7 +182,7 @@ export default function FeaturedHostsCarousel() {
             delay: 4000,
             disableOnInteraction: false,
           }}
-          navigation={true}
+          navigation={false}
           pagination={{
             clickable: true,
             dynamicBullets: true,
@@ -170,7 +195,7 @@ export default function FeaturedHostsCarousel() {
               slidesPerView: 3,
             },
           }}
-          className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600 [&_.swiper-button-next]:text-blue-600 [&_.swiper-button-prev]:text-blue-600 [&_.swiper-button-next]:bg-white [&_.swiper-button-prev]:bg-white [&_.swiper-button-next]:rounded-full [&_.swiper-button-prev]:rounded-full [&_.swiper-button-next]:w-12 [&_.swiper-button-prev]:w-12 [&_.swiper-button-next]:h-12 [&_.swiper-button-prev]:h-12 [&_.swiper-button-next]:shadow-lg [&_.swiper-button-prev]:shadow-lg [&_.swiper-button-next]:after]:text-lg [&_.swiper-button-prev]:after]:text-lg [&_.swiper-button-next]:after]:font-bold [&_.swiper-button-prev]:after]:font-bold [&_.swiper-button-next]:top-1/2 [&_.swiper-button-prev]:top-1/2 [&_.swiper-button-next]:-translate-y-1/2 [&_.swiper-button-prev]:-translate-y-1/2 [&_.swiper-button-next]:-right-6 [&_.swiper-button-prev]:-left-6 [&_.swiper-button-next]:hover:bg-blue-50 [&_.swiper-button-prev]:hover:bg-blue-50 [&_.swiper-button-next]:z-30 [&_.swiper-button-prev]:z-30 [&_.swiper-button-next]:hidden [&_.swiper-button-prev]:hidden sm:[&_.swiper-button-next]:block sm:[&_.swiper-button-prev]:block"
+          className="featured-hosts-swiper h-[600px] [&_.swiper-pagination]:relative [&_.swiper-pagination]:mt-8 [&_.swiper-pagination-bullet]:bg-gray-300 [&_.swiper-pagination-bullet]:opacity-100 [&_.swiper-pagination-bullet-active]:bg-blue-600"
         >
         {featuredHosts.map((host) => {
           const clickTracking = useClickTracking(host.id);
