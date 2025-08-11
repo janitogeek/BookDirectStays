@@ -30,6 +30,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
   } = useClickTracking(submission.id);
 
   const getFlagEmoji = (countryName: string) => {
+    // Use country codes for more reliable flag display
     const countryMap: { [key: string]: string } = {
       // Major countries with common variations
       'United States': '🇺🇸',
@@ -37,7 +38,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
       'United Kingdom': '🇬🇧',
       'UK': '🇬🇧',
       
-      // All countries from the submission form
+      // All countries from the submission form - using reliable flag emojis
       'Afghanistan': '🇦🇫',
       'Albania': '🇦🇱',
       'Algeria': '🇩🇿',
@@ -231,7 +232,169 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
       'Zambia': '🇿🇲',
       'Zimbabwe': '🇿🇼'
     };
-    return countryMap[countryName] || '🌍';
+
+    // Try to get the flag emoji
+    const flag = countryMap[countryName];
+    
+    // If we have a flag and it renders properly, use it
+    if (flag && flag.length === 2) {
+      return flag;
+    }
+    
+    // Fallback: use country code abbreviation
+    const countryCode = getCountryCode(countryName);
+    if (countryCode) {
+      return countryCode;
+    }
+    
+    // Final fallback
+    return '🌍';
+  };
+
+  // Helper function to get country code as fallback
+  const getCountryCode = (countryName: string): string | null => {
+    const codeMap: { [key: string]: string } = {
+      'United States': 'US',
+      'USA': 'US',
+      'United Kingdom': 'UK',
+      'UK': 'UK',
+      'Spain': 'ES',
+      'Germany': 'DE',
+      'France': 'FR',
+      'Australia': 'AU',
+      'Canada': 'CA',
+      'Italy': 'IT',
+      'Portugal': 'PT',
+      'Thailand': 'TH',
+      'Greece': 'GR',
+      'Mexico': 'MX',
+      'Brazil': 'BR',
+      'Japan': 'JP',
+      'South Korea': 'KR',
+      'Netherlands': 'NL',
+      'Switzerland': 'CH',
+      'Austria': 'AT',
+      'Belgium': 'BE',
+      'Croatia': 'HR',
+      'Czech Republic': 'CZ',
+      'Denmark': 'DK',
+      'Finland': 'FI',
+      'Hungary': 'HU',
+      'Iceland': 'IS',
+      'Ireland': 'IE',
+      'Norway': 'NO',
+      'Poland': 'PL',
+      'Sweden': 'SE',
+      'Turkey': 'TR',
+      'Albania': 'AL',
+      'Andorra': 'AD',
+      'Monaco': 'MC',
+      'Luxembourg': 'LU',
+      'Liechtenstein': 'LI',
+      'San Marino': 'SM',
+      'Vatican City': 'VA',
+      'Malta': 'MT',
+      'Cyprus': 'CY',
+      'Slovenia': 'SI',
+      'Slovakia': 'SK',
+      'Romania': 'RO',
+      'Bulgaria': 'BG',
+      'Serbia': 'RS',
+      'Montenegro': 'ME',
+      'North Macedonia': 'MK',
+      'Bosnia and Herzegovina': 'BA',
+      'Moldova': 'MD',
+      'Ukraine': 'UA',
+      'Belarus': 'BY',
+      'Latvia': 'LV',
+      'Lithuania': 'LT',
+      'Estonia': 'EE',
+      'Russia': 'RU',
+      'Georgia': 'GE',
+      'Armenia': 'AM',
+      'Azerbaijan': 'AZ',
+      'Kazakhstan': 'KZ',
+      'Uzbekistan': 'UZ',
+      'Kyrgyzstan': 'KG',
+      'Tajikistan': 'TJ',
+      'Turkmenistan': 'TM',
+      'China': 'CN',
+      'India': 'IN',
+      'Pakistan': 'PK',
+      'Afghanistan': 'AF',
+      'Iran': 'IR',
+      'Iraq': 'IQ',
+      'Syria': 'SY',
+      'Lebanon': 'LB',
+      'Jordan': 'JO',
+      'Israel': 'IL',
+      'Palestine': 'PS',
+      'Egypt': 'EG',
+      'Libya': 'LY',
+      'Tunisia': 'TN',
+      'Algeria': 'DZ',
+      'Morocco': 'MA',
+      'Mauritania': 'MR',
+      'Senegal': 'SN',
+      'Gambia': 'GM',
+      'Guinea-Bissau': 'GW',
+      'Guinea': 'GN',
+      'Sierra Leone': 'SL',
+      'Liberia': 'LR',
+      'Ivory Coast': 'CI',
+      'Ghana': 'GH',
+      'Togo': 'TG',
+      'Benin': 'BJ',
+      'Nigeria': 'NG',
+      'Cameroon': 'CM',
+      'Chad': 'TD',
+      'Central African Republic': 'CF',
+      'Sudan': 'SD',
+      'South Sudan': 'SS',
+      'Ethiopia': 'ET',
+      'Eritrea': 'ER',
+      'Djibouti': 'DJ',
+      'Somalia': 'SO',
+      'Kenya': 'KE',
+      'Uganda': 'UG',
+      'Rwanda': 'RW',
+      'Burundi': 'BI',
+      'Tanzania': 'TZ',
+      'Malawi': 'MW',
+      'Zambia': 'ZM',
+      'Zimbabwe': 'ZW',
+      'Botswana': 'BW',
+      'Namibia': 'NA',
+      'South Africa': 'ZA',
+      'Lesotho': 'LS',
+      'Eswatini': 'SZ',
+      'Mozambique': 'MZ',
+      'Madagascar': 'MG',
+      'Comoros': 'KM',
+      'Mauritius': 'MU',
+      'Seychelles': 'SC',
+      'Guatemala': 'GT',
+      'Belize': 'BZ',
+      'El Salvador': 'SV',
+      'Honduras': 'HN',
+      'Nicaragua': 'NI',
+      'Costa Rica': 'CR',
+      'Panama': 'PA',
+      'Colombia': 'CO',
+      'Venezuela': 'VE',
+      'Guyana': 'GY',
+      'Suriname': 'SR',
+      'French Guiana': 'GF',
+      'Ecuador': 'EC',
+      'Peru': 'PE',
+      'Bolivia': 'BO',
+      'Paraguay': 'PY',
+      'Uruguay': 'UY',
+      'Argentina': 'AR',
+      'Chile': 'CL'
+    };
+    
+    return codeMap[countryName] || null;
   };
 
   const getSocialIcon = (platform: string) => {
