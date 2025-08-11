@@ -448,15 +448,7 @@ export default function Home() {
          </div>
        </section>
 
-      {/* Footer Citation */}
-      <section className="py-8 bg-gray-100">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-gray-600">
-            <p>*Statistics based on analysis of 10,000+ bookings across major vacation rental markets (2023-2024)</p>
-            <p className="mt-2">Sources: Vacation Rental Performance Analytics Report (2024), Tourism Research Institute (2024), STR Global Report (2024)</p>
-          </div>
-        </div>
-      </section>
+
 
       {/* Airbnb Screenshot Dialog */}
       <Dialog open={showAirbnbScreenshot} onOpenChange={setShowAirbnbScreenshot}>
