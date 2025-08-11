@@ -120,7 +120,6 @@ export default function SubmitSuccess() {
         "Min Price": formData["Min Price"] ? parseInt(formData["Min Price"]) : undefined,
         "Max Price": formData["Max Price"] ? parseFloat(formData["Max Price"]) : undefined,
         "Plan": plan === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : plan === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : plan,
-        "Verification Option": formData["Verification Option"] || "No Verification",
         "Verification Purchased": formData["Verification Option"] === "Verification (€100 one-time)" ? "Yes" : "No",
         "Verification Status": formData["Verification Option"] === "Verification (€100 one-time)" ? "Pending" : "N/A",
         "Submission Date": new Date().toISOString().split('T')[0],

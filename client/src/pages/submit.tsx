@@ -1208,7 +1208,7 @@ export default function Submit() {
                       <h4 className="font-medium">Verification Badge</h4>
                       <span className="text-blue-600 font-semibold">€100 one-time</span>
                     </div>
-                    <p className="text-sm text-gray-600">Get a blue verification tick and build trust with guests</p>
+                    <p className="text-sm text-gray-600">Complete the verification process with us and get a blue verification tick and build trust with guests</p>
                     <p className="text-xs text-blue-600 mt-2">✓ One-time payment, no recurring fees</p>
                   </div>
                 </div>
