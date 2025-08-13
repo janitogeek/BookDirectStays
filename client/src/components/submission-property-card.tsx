@@ -1,4 +1,4 @@
-import { ExternalLink, MapPin, Building2, Globe, Users, Heart } from "lucide-react";
+import { ExternalLink, MapPin, Building2 } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
@@ -30,685 +30,288 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
   } = useClickTracking(submission.id);
 
   const getFlagEmoji = (countryName: string) => {
-    // Use country codes for more reliable flag display
     const countryMap: { [key: string]: string } = {
-      // Major countries with common variations
       'United States': '🇺🇸',
-      'USA': '🇺🇸',
+      'Spain': '🇪🇸',
       'United Kingdom': '🇬🇧',
-      'UK': '🇬🇧',
-      
-      // All countries from the submission form - using reliable flag emojis
-      'Afghanistan': '🇦🇫',
-      'Albania': '🇦🇱',
-      'Algeria': '🇩🇿',
-      'Andorra': '🇦🇩',
-      'Angola': '🇦🇴',
-      'Antigua and Barbuda': '🇦🇬',
-      'Argentina': '🇦🇷',
-      'Armenia': '🇦🇲',
+      'Germany': '🇩🇪',
+      'France': '🇫🇷',
       'Australia': '🇦🇺',
-      'Austria': '🇦🇹',
-      'Azerbaijan': '🇦🇿',
-      'Bahamas': '🇧🇸',
-      'Bahrain': '🇧🇭',
-      'Bangladesh': '🇧🇩',
-      'Barbados': '🇧🇧',
-      'Belarus': '🇧🇾',
-      'Belgium': '🇧🇪',
-      'Belize': '🇧🇿',
-      'Benin': '🇧🇯',
-      'Bhutan': '🇧🇹',
-      'Bolivia': '🇧🇴',
-      'Bosnia and Herzegovina': '🇧🇦',
-      'Botswana': '🇧🇼',
-      'Brazil': '🇧🇷',
-      'Brunei': '🇧🇳',
-      'Bulgaria': '🇧🇬',
-      'Burkina Faso': '🇧🇫',
-      'Burundi': '🇧🇮',
-      'Cabo Verde': '🇨🇻',
-      'Cambodia': '🇰🇭',
-      'Cameroon': '🇨🇲',
       'Canada': '🇨🇦',
-      'Central African Republic': '🇨🇫',
-      'Chad': '🇹🇩',
-      'Chile': '🇨🇱',
-      'China': '🇨🇳',
-      'Colombia': '🇨🇴',
-      'Comoros': '🇰🇲',
-      'Congo': '🇨🇬',
-      'Costa Rica': '🇨🇷',
+      'Italy': '🇮🇹',
+      'Portugal': '🇵🇹',
+      'Thailand': '🇹🇭',
+      'Greece': '🇬🇷',
+      'Netherlands': '🇳🇱',
+      'Switzerland': '🇨🇭',
+      'Austria': '🇦🇹',
+      'Belgium': '🇧🇪',
       'Croatia': '🇭🇷',
-      'Cuba': '🇨🇺',
-      'Cyprus': '🇨🇾',
       'Czech Republic': '🇨🇿',
       'Denmark': '🇩🇰',
-      'Djibouti': '🇩🇯',
-      'Dominica': '🇩🇲',
-      'Dominican Republic': '🇩🇴',
-      'Ecuador': '🇪🇨',
-      'Egypt': '🇪🇬',
-      'El Salvador': '🇸🇻',
-      'Equatorial Guinea': '🇬🇶',
-      'Eritrea': '🇪🇷',
-      'Estonia': '🇪🇪',
-      'Eswatini': '🇸🇿',
-      'Ethiopia': '🇪🇹',
-      'Fiji': '🇫🇯',
       'Finland': '🇫🇮',
-      'France': '🇫🇷',
-      'Gabon': '🇬🇦',
-      'Gambia': '🇬🇲',
-      'Georgia': '🇬🇪',
-      'Germany': '🇩🇪',
-      'Ghana': '🇬🇭',
-      'Greece': '🇬🇷',
-      'Grenada': '🇬🇩',
-      'Guatemala': '🇬🇹',
-      'Guinea': '🇬🇳',
-      'Guinea-Bissau': '🇬🇼',
-      'Guyana': '🇬🇾',
-      'Haiti': '🇭🇹',
-      'Honduras': '🇭🇳',
       'Hungary': '🇭🇺',
-      'Iceland': '🇮🇸',
-      'India': '🇮🇳',
-      'Indonesia': '🇮🇩',
-      'Iran': '🇮🇷',
-      'Iraq': '🇮🇶',
       'Ireland': '🇮🇪',
-      'Israel': '🇮🇱',
-      'Italy': '🇮🇹',
-      'Jamaica': '🇯🇲',
-      'Japan': '🇯🇵',
-      'Jordan': '🇯🇴',
-      'Kazakhstan': '🇰🇿',
-      'Kenya': '🇰🇪',
-      'Kiribati': '🇰🇮',
-      'Kuwait': '🇰🇼',
-      'Kyrgyzstan': '🇰🇬',
-      'Laos': '🇱🇦',
-      'Latvia': '🇱🇻',
-      'Lebanon': '🇱🇧',
-      'Lesotho': '🇱🇸',
-      'Liberia': '🇱🇷',
-      'Libya': '🇱🇾',
-      'Liechtenstein': '🇱🇮',
-      'Lithuania': '🇱🇹',
-      'Luxembourg': '🇱🇺',
-      'Madagascar': '🇲🇬',
-      'Malawi': '🇲🇼',
-      'Malaysia': '🇲🇾',
-      'Maldives': '🇲🇻',
-      'Mali': '🇲🇱',
-      'Malta': '🇲🇹',
-      'Marshall Islands': '🇲🇭',
-      'Mauritania': '🇲🇷',
-      'Mauritius': '🇲🇺',
-      'Mexico': '🇲🇽',
-      'Micronesia': '🇫🇲',
-      'Moldova': '🇲🇩',
-      'Monaco': '🇲🇨',
-      'Mongolia': '🇲🇳',
-      'Montenegro': '🇲🇪',
-      'Morocco': '🇲🇦',
-      'Mozambique': '🇲🇿',
-      'Myanmar': '🇲🇲',
-      'Namibia': '🇳🇦',
-      'Nauru': '🇳🇷',
-      'Nepal': '🇳🇵',
-      'Netherlands': '🇳🇱',
-      'New Zealand': '🇳🇿',
-      'Nicaragua': '🇳🇮',
-      'Niger': '🇳🇪',
-      'Nigeria': '🇳🇬',
-      'North Korea': '🇰🇵',
-      'North Macedonia': '🇲🇰',
       'Norway': '🇳🇴',
-      'Oman': '🇴🇲',
-      'Pakistan': '🇵🇰',
-      'Palau': '🇵🇼',
-      'Palestine': '🇵🇸',
-      'Panama': '🇵🇦',
-      'Papua New Guinea': '🇵🇬',
-      'Paraguay': '🇵🇾',
-      'Peru': '🇵🇪',
-      'Philippines': '🇵🇭',
       'Poland': '🇵🇱',
-      'Portugal': '🇵🇹',
-      'Qatar': '🇶🇦',
-      'Romania': '🇷🇴',
-      'Russia': '🇷🇺',
-      'Rwanda': '🇷🇼',
-      'Saint Kitts and Nevis': '🇰🇳',
-      'Saint Lucia': '🇱🇨',
-      'Saint Vincent and the Grenadines': '🇻🇨',
-      'Samoa': '🇼🇸',
-      'San Marino': '🇸🇲',
-      'Sao Tome and Principe': '🇸🇹',
-      'Saudi Arabia': '🇸🇦',
-      'Senegal': '🇸🇳',
-      'Serbia': '🇷🇸',
-      'Seychelles': '🇸🇨',
-      'Sierra Leone': '🇸🇱',
-      'Singapore': '🇸🇬',
-      'Slovakia': '🇸🇰',
-      'Slovenia': '🇸🇮',
-      'Solomon Islands': '🇸🇧',
-      'Somalia': '🇸🇴',
-      'South Africa': '🇿🇦',
-      'South Korea': '🇰🇷',
-      'South Sudan': '🇸🇸',
-      'Spain': '🇪🇸',
-      'Sri Lanka': '🇱🇰',
-      'Sudan': '🇸🇩',
-      'Suriname': '🇸🇷',
       'Sweden': '🇸🇪',
-      'Switzerland': '🇨🇭',
-      'Syria': '🇸🇾',
-      'Taiwan': '🇹🇼',
-      'Tajikistan': '🇹🇯',
-      'Tanzania': '🇹🇿',
-      'Thailand': '🇹🇭',
-      'Timor-Leste': '🇹🇱',
-      'Togo': '🇹🇬',
-      'Tonga': '🇹🇴',
-      'Trinidad and Tobago': '🇹🇹',
-      'Tunisia': '🇹🇳',
       'Turkey': '🇹🇷',
-      'Turkmenistan': '🇹🇲',
-      'Tuvalu': '🇹🇻',
-      'Uganda': '🇺🇬',
-      'Ukraine': '🇺🇦',
-      'United Arab Emirates': '🇦🇪',
-      'Uruguay': '🇺🇾',
-      'Uzbekistan': '🇺🇿',
-      'Vanuatu': '🇻🇺',
-      'Vatican City': '🇻🇦',
-      'Venezuela': '🇻🇪',
-      'Vietnam': '🇻🇳',
-      'Yemen': '🇾🇪',
-      'Zambia': '🇿🇲',
-      'Zimbabwe': '🇿🇼'
+      'Albania': '🇦🇱'
     };
-
-    // Try to get the flag emoji
-    const flag = countryMap[countryName];
-    
-    // If we have a flag and it renders properly, use it
-    if (flag && flag.length === 2) {
-      return flag;
-    }
-    
-    // Fallback: use country code abbreviation
-    const countryCode = getCountryCode(countryName);
-    if (countryCode) {
-      return countryCode;
-    }
-    
-    // Final fallback
-    return '🌍';
+    return countryMap[countryName] || '🌍';
   };
-
-  // Helper function to get country code as fallback
-  const getCountryCode = (countryName: string): string | null => {
-    const codeMap: { [key: string]: string } = {
-      'United States': 'US',
-      'USA': 'US',
-      'United Kingdom': 'UK',
-      'UK': 'UK',
-      'Spain': 'ES',
-      'Germany': 'DE',
-      'France': 'FR',
-      'Australia': 'AU',
-      'Canada': 'CA',
-      'Italy': 'IT',
-      'Portugal': 'PT',
-      'Thailand': 'TH',
-      'Greece': 'GR',
-      'Mexico': 'MX',
-      'Brazil': 'BR',
-      'Japan': 'JP',
-      'South Korea': 'KR',
-      'Netherlands': 'NL',
-      'Switzerland': 'CH',
-      'Austria': 'AT',
-      'Belgium': 'BE',
-      'Croatia': 'HR',
-      'Czech Republic': 'CZ',
-      'Denmark': 'DK',
-      'Finland': 'FI',
-      'Hungary': 'HU',
-      'Iceland': 'IS',
-      'Ireland': 'IE',
-      'Norway': 'NO',
-      'Poland': 'PL',
-      'Sweden': 'SE',
-      'Turkey': 'TR',
-      'Albania': 'AL',
-      'Andorra': 'AD',
-      'Monaco': 'MC',
-      'Luxembourg': 'LU',
-      'Liechtenstein': 'LI',
-      'San Marino': 'SM',
-      'Vatican City': 'VA',
-      'Malta': 'MT',
-      'Cyprus': 'CY',
-      'Slovenia': 'SI',
-      'Slovakia': 'SK',
-      'Romania': 'RO',
-      'Bulgaria': 'BG',
-      'Serbia': 'RS',
-      'Montenegro': 'ME',
-      'North Macedonia': 'MK',
-      'Bosnia and Herzegovina': 'BA',
-      'Moldova': 'MD',
-      'Ukraine': 'UA',
-      'Belarus': 'BY',
-      'Latvia': 'LV',
-      'Lithuania': 'LT',
-      'Estonia': 'EE',
-      'Russia': 'RU',
-      'Georgia': 'GE',
-      'Armenia': 'AM',
-      'Azerbaijan': 'AZ',
-      'Kazakhstan': 'KZ',
-      'Uzbekistan': 'UZ',
-      'Kyrgyzstan': 'KG',
-      'Tajikistan': 'TJ',
-      'Turkmenistan': 'TM',
-      'China': 'CN',
-      'India': 'IN',
-      'Pakistan': 'PK',
-      'Afghanistan': 'AF',
-      'Iran': 'IR',
-      'Iraq': 'IQ',
-      'Syria': 'SY',
-      'Lebanon': 'LB',
-      'Jordan': 'JO',
-      'Israel': 'IL',
-      'Palestine': 'PS',
-      'Egypt': 'EG',
-      'Libya': 'LY',
-      'Tunisia': 'TN',
-      'Algeria': 'DZ',
-      'Morocco': 'MA',
-      'Mauritania': 'MR',
-      'Senegal': 'SN',
-      'Gambia': 'GM',
-      'Guinea-Bissau': 'GW',
-      'Guinea': 'GN',
-      'Sierra Leone': 'SL',
-      'Liberia': 'LR',
-      'Ivory Coast': 'CI',
-      'Ghana': 'GH',
-      'Togo': 'TG',
-      'Benin': 'BJ',
-      'Nigeria': 'NG',
-      'Cameroon': 'CM',
-      'Chad': 'TD',
-      'Central African Republic': 'CF',
-      'Sudan': 'SD',
-      'South Sudan': 'SS',
-      'Ethiopia': 'ET',
-      'Eritrea': 'ER',
-      'Djibouti': 'DJ',
-      'Somalia': 'SO',
-      'Kenya': 'KE',
-      'Uganda': 'UG',
-      'Rwanda': 'RW',
-      'Burundi': 'BI',
-      'Tanzania': 'TZ',
-      'Malawi': 'MW',
-      'Zambia': 'ZM',
-      'Zimbabwe': 'ZW',
-      'Botswana': 'BW',
-      'Namibia': 'NA',
-      'South Africa': 'ZA',
-      'Lesotho': 'LS',
-      'Eswatini': 'SZ',
-      'Mozambique': 'MZ',
-      'Madagascar': 'MG',
-      'Comoros': 'KM',
-      'Mauritius': 'MU',
-      'Seychelles': 'SC',
-      'Guatemala': 'GT',
-      'Belize': 'BZ',
-      'El Salvador': 'SV',
-      'Honduras': 'HN',
-      'Nicaragua': 'NI',
-      'Costa Rica': 'CR',
-      'Panama': 'PA',
-      'Colombia': 'CO',
-      'Venezuela': 'VE',
-      'Guyana': 'GY',
-      'Suriname': 'SR',
-      'French Guiana': 'GF',
-      'Ecuador': 'EC',
-      'Peru': 'PE',
-      'Bolivia': 'BO',
-      'Paraguay': 'PY',
-      'Uruguay': 'UY',
-      'Argentina': 'AR',
-      'Chile': 'CL'
-    };
-    
-    return codeMap[countryName] || null;
-  };
-
-  const getSocialIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case 'instagram':
-        return <SiInstagram className="w-4 h-4 text-pink-600" />;
-      case 'facebook':
-        return <SiFacebook className="w-4 h-4 text-blue-600" />;
-      case 'linkedin':
-        return <SiLinkedin className="w-4 h-4 text-blue-700" />;
-      case 'tiktok':
-        return <SiTiktok className="w-4 h-4 text-black" />;
-      case 'youtube':
-        return <SiYoutube className="w-4 h-4 text-red-600" />;
-      default:
-        return <ExternalLink className="w-4 h-4" />;
-    }
-  };
-
-  // Parse social media links if they exist
-  const socialLinks = [];
-  if (submission.instagram) {
-    socialLinks.push({ platform: 'Instagram', url: submission.instagram });
-  }
-  if (submission.facebook) {
-    socialLinks.push({ platform: 'Facebook', url: submission.facebook });
-  }
-  if (submission.linkedin) {
-    socialLinks.push({ platform: 'LinkedIn', url: submission.linkedin });
-  }
-  if (submission.tiktok) {
-    socialLinks.push({ platform: 'TikTok', url: submission.tiktok });
-  }
-  if (submission.youtubeVideoTour) {
-    socialLinks.push({ platform: 'YouTube', url: submission.youtubeVideoTour });
-  }
 
   // Check if it's a premium listing
   const isPremium = submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99');
 
   return (
-    <>
-      <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
-        {/* Featured Badge */}
-        {isPremium && (
-          <div className="absolute top-3 right-3 z-10">
-            <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
-              Featured
-            </Badge>
+    <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
+      {/* Featured Badge */}
+      {isPremium && (
+        <div className="absolute top-3 right-3 z-10">
+          <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
+            Featured
+          </Badge>
+        </div>
+      )}
+
+      <CardContent className="p-6 flex flex-col h-full">
+        {/* Header Image with Logo Overlay */}
+        {submission.highlightImage && (
+          <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+            <img
+              src={submission.highlightImage}
+              alt={submission.brandName}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            />
+            
+            {/* Logo Overlay */}
+            {submission.logo && (
+              <div className="absolute top-3 left-3 right-3 flex justify-center">
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
+                  <img
+                    src={submission.logo}
+                    alt={`${submission.brandName} logo`}
+                    className="max-w-full max-h-12 object-contain"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        <CardContent className="p-6 flex flex-col h-full">
-          {/* Header Image with Logo Overlay */}
-          {submission.highlightImage && (
-            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
-              <img
-                src={submission.highlightImage}
-                alt={submission.brandName}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-              />
-              
-              {/* Logo Overlay */}
-              {submission.logo && (
-                <div className="absolute top-3 left-3 right-3 flex justify-center">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
-                    <img
-                      src={submission.logo}
-                      alt={`${submission.brandName} logo`}
-                      className="max-w-full max-h-12 object-contain"
-                    />
-                  </div>
-                </div>
-              )}
+        {/* Brand Header */}
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
+            {submission.brandName}
+          </h3>
+          
+          {/* One-line Description */}
+          <div className="min-h-[3rem]">
+            {submission.oneLineDescription && (
+              <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
+                {submission.oneLineDescription}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Property Count & Pricing */}
+        <div className="flex items-center justify-between mb-3 text-sm">
+          {submission.numberOfListings && (
+            <div className="flex items-center gap-1 text-gray-600">
+              <Building2 className="w-4 h-4" />
+              <span>{submission.numberOfListings} properties</span>
             </div>
           )}
-
-          {/* Brand Header - No Logo */}
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
-              {submission.brandName}
-            </h3>
-            
-            {/* One-line Description in Italic */}
-            <div className="min-h-[3rem]">
-              {submission.oneLineDescription && (
-                <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
-                  {submission.oneLineDescription}
-                </p>
-              )}
+          
+          {(submission.minPrice || submission.maxPrice) && submission.currency && (
+            <div className="flex items-center gap-1 font-medium text-blue-600">
+              <span className="text-gray-500">💰</span>
+              <span>
+                {submission.minPrice && submission.maxPrice ? (
+                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]} to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                ) : submission.minPrice ? (
+                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]}`
+                ) : (
+                  `up to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
+                )}
+              </span>
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Property Count & Pricing */}
-          <div className="flex items-center justify-between mb-3 text-sm">
-            {submission.numberOfListings && (
-              <div className="flex items-center gap-1 text-gray-600">
-                <Building2 className="w-4 h-4" />
-                <span>{submission.numberOfListings} properties</span>
-              </div>
-            )}
-            
-
-            {(submission.minPrice || submission.maxPrice) && submission.currency && (
-              <div className="flex items-center gap-1 font-medium text-blue-600">
-                <span className="text-gray-500">💰</span>
-                <span>
-                  {submission.minPrice && submission.maxPrice ? (
-                    `from ${submission.minPrice} ${submission.currency.split(' – ')[1]} to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
-                  ) : submission.minPrice ? (
-                    `from ${submission.minPrice} ${submission.currency.split(' – ')[1]}`
-                  ) : (
-                    `up to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
-                  )}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Types of Stays - Horizontal carousel when many, wrap when few */}
-          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
-            <div className="mb-4 min-h-[2.5rem]">
-              {submission.typesOfStays.length > 4 ? (
-                // Carousel for many types (>4)
-                <div className="relative">
-                  <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                    {[...submission.typesOfStays].sort().map((type, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="text-xs whitespace-nowrap flex-shrink-0"
-                      >
-                        {type.trim()}
-                      </Badge>
-                    ))}
-                  </div>
-                  {/* Fade effect on right edge to indicate scrollability */}
-                  <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
-                </div>
-              ) : (
-                // Regular flex wrap for few types (≤4)
-                <div className="flex flex-wrap gap-2">
+        {/* Types of Stays - Horizontal carousel when many, wrap when few */}
+        {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+          <div className="mb-4 min-h-[2.5rem]">
+            {submission.typesOfStays.length > 4 ? (
+              // Carousel for many types (>4)
+              <div className="relative">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
                   {[...submission.typesOfStays].sort().map((type, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge 
+                      key={index} 
+                      variant="secondary" 
+                      className="text-xs whitespace-nowrap flex-shrink-0"
+                    >
                       {type.trim()}
                     </Badge>
                   ))}
                 </div>
-              )}
-            </div>
-          )}
+                {/* Fade effect on right edge to indicate scrollability */}
+                <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+              </div>
+            ) : (
+              // Regular flex wrap for few types (≤4)
+              <div className="flex flex-wrap gap-2">
+                {[...submission.typesOfStays].sort().map((type, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs">
+                    {type.trim()}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-          {/* Spacer for cards without Types of Stays to maintain alignment */}
-          {(!submission.typesOfStays || submission.typesOfStays.length === 0) && (
-            <div className="mb-4 min-h-[2.5rem]"></div>
-          )}
+        {/* Spacer for cards without Types of Stays to maintain alignment */}
+        {(!submission.typesOfStays || submission.typesOfStays.length === 0) && (
+          <div className="mb-4 min-h-[2.5rem]"></div>
+        )}
 
-          {/* Countries - Moved after Types of Stays */}
-          <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
-            <span className="flex items-center gap-1 flex-wrap">
-              {submission.countries.map((country, index) => (
-                <span key={country}>
-                  {getFlagEmoji(country)} {country}
-                  {index < submission.countries.length - 1 && ", "}
-                </span>
-              ))}
-            </span>
+        {/* Countries - Moved after Types of Stays */}
+        <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
+          <MapPin className="w-4 h-4 flex-shrink-0" />
+          <span className="flex items-center gap-1 flex-wrap">
+            {submission.countries.map((country, index) => (
+              <span key={country}>
+                {getFlagEmoji(country)} {country}
+                {index < submission.countries.length - 1 && ", "}
+              </span>
+            ))}
+          </span>
+        </div>
+
+        {/* Top Stats Component */}
+        {submission.topStats && (
+          <div className="mb-4 min-h-[3rem]">
+            <TopStats 
+              topStats={submission.topStats} 
+              brandName={submission.brandName}
+              hostWebsite={submission.website}
+            />
+          </div>
+        )}
+
+        {/* Spacer for cards without Top Stats to maintain alignment */}
+        {!submission.topStats && (
+          <div className="mb-4 min-h-[3rem]"></div>
+        )}
+
+        {/* Why Book With CTA */}
+        <div className="mb-6">
+          <Button 
+            asChild 
+            variant="outline" 
+            size="sm"
+            className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
+          >
+            <Link 
+              to={`/property/${slug}`}
+              onClick={trackCompany}
+            >
+              Why book with {submission.brandName}?
+            </Link>
+          </Button>
+        </div>
+
+        {/* Bottom Section: Social Links Left, Book Direct Right */}
+        <div className="flex items-center justify-between mt-auto pt-4">
+          {/* Social Links - Left */}
+          <div className="flex items-center gap-3">
+            {submission.instagram && (
+              <a
+                href={submission.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-600 hover:scale-110 transition-transform"
+                title="Instagram"
+                onClick={trackInstagram}
+              >
+                <SiInstagram className="w-5 h-5" />
+              </a>
+            )}
+            {submission.facebook && (
+              <a
+                href={submission.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:scale-110 transition-transform"
+                title="Facebook"
+                onClick={trackFacebook}
+              >
+                <SiFacebook className="w-5 h-5" />
+              </a>
+            )}
+            {submission.linkedin && (
+              <a
+                href={submission.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 hover:scale-110 transition-transform"
+                title="LinkedIn"
+                onClick={trackLinkedIn}
+              >
+                <SiLinkedin className="w-5 h-5" />
+              </a>
+            )}
+            {submission.tiktok && (
+              <a
+                href={submission.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:scale-110 transition-transform"
+                title="TikTok"
+                onClick={trackTikTok}
+              >
+                <SiTiktok className="w-5 h-5" />
+              </a>
+            )}
+            {submission.youtubeVideoTour && (
+              <a
+                href={submission.youtubeVideoTour}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-red-600 hover:scale-110 transition-transform"
+                title="YouTube"
+                onClick={trackYouTube}
+              >
+                <SiYoutube className="w-5 h-5" />
+              </a>
+            )}
           </div>
 
-          {/* Top Stats Component - Moved down */}
-          {submission.topStats && (
-            <div className="mb-4 min-h-[3rem]">
-              <TopStats 
-                topStats={submission.topStats} 
-                brandName={submission.brandName}
-                hostWebsite={submission.website}
-              />
-            </div>
-          )}
-
-          {/* Spacer for cards without Top Stats to maintain alignment */}
-          {!submission.topStats && (
-            <div className="mb-4 min-h-[3rem]"></div>
-          )}
-
-          {/* Why Book With CTA */}
-          <div className="mb-6">
+          {/* Book Direct - Right */}
+          {submission.website && (
             <Button 
               asChild 
-              variant="outline" 
+              variant="default" 
               size="sm"
-              className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
             >
-              <Link 
-                href={`/property/${slug}`}
-                onClick={() => trackCompany()} // Track company page clicks
+              <a 
+                href={submission.website} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2"
+                onClick={trackWebsite}
               >
-                Why book with {submission.brandName}?
-              </Link>
+                <ExternalLink className="w-4 h-4" />
+                Book Direct
+              </a>
             </Button>
-          </div>
-
-          {/* Bottom Section: Social Links Left, Book Direct Right */}
-          <div className="flex items-center justify-between mt-auto pt-4">
-            {/* Social Links - Left */}
-            <div className="flex items-center gap-3">
-              {submission.instagram && (
-                <a
-                  href={submission.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-pink-600 hover:scale-110 transition-transform"
-                  title="Instagram"
-                  onClick={() => trackInstagram()}
-                >
-                  <SiInstagram className="w-5 h-5" />
-                </a>
-              )}
-              {submission.facebook && (
-                <a
-                  href={submission.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:scale-110 transition-transform"
-                  title="Facebook"
-                  onClick={() => trackFacebook()}
-                >
-                  <SiFacebook className="w-5 h-5" />
-                </a>
-              )}
-              {submission.linkedin && (
-                <a
-                  href={submission.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-700 hover:scale-110 transition-transform"
-                  title="LinkedIn"
-                  onClick={() => trackLinkedIn()}
-                >
-                  <SiLinkedin className="w-5 h-5" />
-                </a>
-              )}
-              {submission.tiktok && (
-                <a
-                  href={submission.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-black hover:scale-110 transition-transform"
-                  title="TikTok"
-                  onClick={() => trackTikTok()}
-                >
-                  <SiTiktok className="w-5 h-5" />
-                </a>
-              )}
-              {submission.youtubeVideoTour && (
-                <a
-                  href={submission.youtubeVideoTour}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-red-600 hover:scale-110 transition-transform"
-                  title="YouTube"
-                  onClick={() => trackYouTube()}
-                >
-                  <SiYoutube className="w-5 h-5" />
-                </a>
-              )}
-            </div>
-
-            {/* Book Direct - Right */}
-            <div className="flex items-center gap-2">
-              {/* PMC General Website Link */}
-              {submission.pmcGeneralWebsite && (
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="sm"
-                >
-                  <a 
-                    href={submission.pmcGeneralWebsite} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2"
-                    onClick={() => trackCompany()}
-                  >
-                    <Globe className="w-4 h-4" />
-                    Company
-                  </a>
-                </Button>
-              )}
-              
-              {/* Direct Booking Engine */}
-              {submission.website && (
-                <Button 
-                  asChild 
-                  variant="default" 
-                  size="sm"
-                >
-                  <a 
-                    href={submission.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2"
-                    onClick={() => trackWebsite()}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Book Direct
-                  </a>
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 } 

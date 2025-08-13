@@ -51,7 +51,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}/submit/success?session_id={CHECKOUT_SESSION_ID}&plan=${encodeURIComponent(plan)}`,
       cancel_url: `${baseUrl}/submit?canceled=true`,
       metadata: {
         submissionData: JSON.stringify(metadata), // Store form data
@@ -64,7 +64,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       allow_promotion_codes: true,
     });
 
-    res.json({ checkoutUrl: session.url });
+    res.json({ sessionId: session.id });
   } catch (error) {
     console.error('Stripe checkout error:', error);
     
@@ -126,9 +126,8 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
       : formData["Choose Your Listing Type"] === "Premium (€499.99/year)" 
         ? "Premium Listing - €499.99/year" 
         : formData["Choose Your Listing Type"],
-    "Verification Option": formData["Verification Option"] || "No Verification",
-    "Verification Purchased": formData["Verification Option"] === "Verification (€100 one-time)" ? "Yes" : "No",
-    "Verification Status": formData["Verification Option"] === "Verification (€100 one-time)" ? "Pending" : "N/A",
+    "Verification Purchased": "No", // Removed verification logic
+    "Verification Status": "N/A", // Removed verification logic
     "Submission Date": new Date().toISOString().split('T')[0],
     "Status": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" 
       ? "Approved – Published" 

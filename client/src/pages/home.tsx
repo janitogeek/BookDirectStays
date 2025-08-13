@@ -9,7 +9,7 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const [showAirbnbScreenshot, setShowAirbnbScreenshot] = useState(false);
   const [showDirectScreenshot, setShowDirectScreenshot] = useState(false);
-
+ 
   // Quotes carousel state
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   
@@ -290,11 +290,11 @@ export default function Home() {
                     <div className="flex justify-between">
                       <span className="line-through text-gray-400">Host pays OTA commission fees (15%)</span>
                       <span className="line-through text-gray-400 font-semibold">€193</span>
-                    </div>
-                    <div className="flex justify-between">
+                  </div>
+                  <div className="flex justify-between">
                       <span className="text-green-600 font-medium">Host does not pay any commission fees</span>
-                      <span className="font-semibold text-green-600">€0</span>
-                    </div>
+                    <span className="font-semibold text-green-600">€0</span>
+                  </div>
                   </div>
                 </div>
                 
@@ -407,7 +407,7 @@ export default function Home() {
                   <blockquote className="text-lg lg:text-xl font-light text-gray-700 italic leading-relaxed max-w-3xl">
                     {expertQuotes[currentQuoteIndex].quote}
                   </blockquote>
-                </div>
+                    </div>
                 
                 {/* Source */}
                 <div className="flex items-center justify-center space-x-3 mb-6">
@@ -415,7 +415,7 @@ export default function Home() {
                     <span className={`font-semibold text-sm ${getColorClasses(expertQuotes[currentQuoteIndex].color).text}`}>
                       {expertQuotes[currentQuoteIndex].initials}
                     </span>
-                  </div>
+                    </div>
                   <div className="text-left">
                     <div className="font-semibold text-gray-900">{expertQuotes[currentQuoteIndex].source}</div>
                     <div className="text-gray-600 text-sm">{expertQuotes[currentQuoteIndex].description}</div>
@@ -454,7 +454,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section - Clean and Focused */}
+             {/* CTA Section - Clean and Focused */}
        <section className="py-20 bg-blue-600">
          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
            <div className="max-w-4xl mx-auto text-center">
