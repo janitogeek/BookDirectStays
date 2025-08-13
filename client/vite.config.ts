@@ -13,13 +13,7 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
     sourcemap: false, // Disable sourcemaps in production for smaller bundle
-    minify: 'terser', // Use terser for better minification
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-      },
-    },
+    minify: 'esbuild', // Use esbuild for faster builds, fallback to terser if needed
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),

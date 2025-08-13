@@ -5,6 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     
+    <!-- Performance Optimizations -->
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/assets/tsx/main-CUIHI6iA.tsx" as="script" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" />
+    
     <!-- Primary Meta Tags - Optimized for LLM Understanding -->
     <title>BookDirectStays.com - Global Directory of Direct Booking Vacation Rentals | Skip OTA Fees</title>
     <meta name="description" content="Find and book vacation rentals directly with property managers worldwide. Skip Airbnb and booking.com fees. 1000+ verified direct booking sites across 50+ countries. Save 10-20% by booking direct." />
@@ -80,17 +89,35 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://bookdirectstays.com" />
     
-    <!-- External Resources -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/main-DRIeNlTs.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-DrQrvF6n.js">
-    <link rel="modulepreload" crossorigin href="/assets/ui-CT7T4cpU.js">
-    <link rel="stylesheet" crossorigin href="/assets/main-DVYJ8dp-.css">
+    <!-- External Resources - Load asynchronously -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
+    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" /></noscript>
+    
+    <!-- Critical CSS inline for above-the-fold content -->
+    <style>
+      /* Critical CSS for initial render */
+      body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+      #root { min-height: 100vh; }
+      .loading { display: flex; justify-content: center; align-items: center; height: 100vh; }
+    </style>
+    <script type="module" crossorigin src="/assets/js/main-BylbNqTC.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/js/react-vendor-BWwvOZYK.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/core-BATCG1yE.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/ui-BpxT241S.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/icons-Baa3S0vk.js">
+    <link rel="stylesheet" crossorigin href="/assets/css/main-Cc7Zw5X7.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Loading state for better perceived performance -->
+      <div class="loading">
+        <div>Loading BookDirectStays...</div>
+      </div>
+    </div>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" async></script>
   </body>
 </html>
