@@ -3,6 +3,41 @@ import App from "./App";
 import "./index.css";
 import { Toaster } from "@/components/ui/toaster";
 
+// Register Service Worker for caching
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// Performance monitoring
+const reportWebVitals = () => {
+  if ('performance' in window) {
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if (navigation) {
+      const metrics = {
+        // Time to First Byte
+        ttfb: navigation.responseStart - navigation.requestStart,
+        // First Contentful Paint
+        fcp: 0,
+        // Largest Contentful Paint
+        lcp: 0,
+        // First Input Delay
+        fid: 0,
+      };
+
+      // Report metrics to console (can be sent to analytics)
+      console.log('Performance Metrics:', metrics);
+    }
+  }
+};
+
 // Dynamic title and meta description based on route
 const updatePageMeta = () => {
   const path = window.location.pathname;
@@ -70,6 +105,11 @@ history.replaceState = function(...args) {
   originalReplaceState.apply(history, args);
   setTimeout(updatePageMeta, 0);
 };
+
+// Report performance metrics after page load
+window.addEventListener('load', () => {
+  setTimeout(reportWebVitals, 1000);
+});
 
 createRoot(document.getElementById("root")!).render(
   <>

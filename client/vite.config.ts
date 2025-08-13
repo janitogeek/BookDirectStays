@@ -12,27 +12,45 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps in production for smaller bundle
+    minify: 'terser', // Use terser for better minification
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
       },
       output: {
         manualChunks: {
-          vendor: [
-            'react',
-            'react-dom',
-            'wouter',
-            '@tanstack/react-query',
-            'lucide-react',
-          ],
-          ui: [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-toast',
-            '@radix-ui/react-tooltip',
-          ],
+          // Core React libraries
+          'react-vendor': ['react', 'react-dom'],
+          // Routing and state management
+          'core': ['wouter', '@tanstack/react-query'],
+          // UI components
+          'ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-toast', '@radix-ui/react-tooltip'],
+          // Icons
+          'icons': ['react-icons/si'],
         },
+        // Optimize chunk naming
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
+    // Enable chunk size warnings
+    chunkSizeWarningLimit: 1000,
+  },
+  // Development optimizations
+  server: {
+    hmr: true,
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'wouter', '@tanstack/react-query'],
   },
 });
+

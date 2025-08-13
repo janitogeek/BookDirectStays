@@ -45,13 +45,24 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
-      refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      // Performance optimizations
+      staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+      gcTime: 10 * 60 * 1000, // 10 minutes - keep in memory longer
+      refetchOnWindowFocus: false, // Don't refetch when window regains focus
+      refetchOnReconnect: true, // Refetch when reconnecting to internet
+      refetchOnMount: true, // Refetch when component mounts
+      retry: (failureCount, error) => {
+        // Retry network errors, but not 4xx errors
+        if (error instanceof Error && error.message.includes('4')) {
+          return false;
+        }
+        return failureCount < 2; // Retry up to 2 times
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
     mutations: {
-      retry: false,
+      retry: 1, // Retry mutations once
+      retryDelay: 1000,
     },
   },
 });
