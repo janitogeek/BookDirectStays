@@ -72,7 +72,12 @@ export default function Country() {
   // Fetch validated cities for this country from submissions
   const { data: cities = [], isLoading: isCitiesLoading } = useQuery({
     queryKey: [`/api/validated-cities/${countryName}`],
-    queryFn: () => getValidatedCitiesForCountry(countryName),
+    queryFn: async () => {
+      console.log('🚀 City fetching function called for country:', countryName);
+      const result = await getValidatedCitiesForCountry(countryName);
+      console.log('🚀 City fetching result:', result);
+      return result;
+    },
     enabled: !!countryName,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -80,7 +85,12 @@ export default function Country() {
   // Fetch city submission counts
   const { data: citySubmissionCounts = {}, isLoading: isCityCountsLoading } = useQuery({
     queryKey: [`/api/city-submission-counts/${countryName}`],
-    queryFn: () => getCitySubmissionCounts(countryName),
+    queryFn: async () => {
+      console.log('🚀 City counts function called for country:', countryName);
+      const result = await getCitySubmissionCounts(countryName);
+      console.log('🚀 City counts result:', result);
+      return result;
+    },
     enabled: !!countryName,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
