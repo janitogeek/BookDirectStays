@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { Listing } from "@/lib/data";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, extractCityName } from "@/lib/utils";
 import { getFlagByCountryName } from "@/lib/utils";
 
 interface PropertyCardProps {
@@ -15,6 +15,14 @@ interface PropertyCardProps {
 export default function PropertyCard({ property }: PropertyCardProps) {
   // Use unique slug if available, otherwise generate one
   const slug = (property as any).uniqueSlug || generateSlug(property.name);
+  
+  // Extract just city names for display (keeping full data in backend)
+  const displayCities = (property as any).citiesRegions?.map((city: any) => {
+    if (typeof city === 'string') {
+      return extractCityName(city);
+    }
+    return city;
+  }) || [];
 
   const getFlagEmoji = (countryCode: string) => {
     // Use the comprehensive flag mapping from utils
@@ -151,6 +159,21 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               ))}
             </span>
           </div>
+
+          {/* Cities - Display only city names */}
+          {displayCities.length > 0 && (
+            <div className="flex items-center gap-2 mb-3 text-sm text-gray-700 min-h-[1.5rem]">
+              <Building2 className="w-4 h-4 flex-shrink-0" />
+              <span className="flex items-center gap-1 flex-wrap">
+                {displayCities.map((city: string, index: number) => (
+                  <span key={city}>
+                    {city}
+                    {index < displayCities.length - 1 && ", "}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
 
           {/* Top Stats - Placeholder since data structure doesn't have these */}
           <div className="mb-4 min-h-[3rem]">

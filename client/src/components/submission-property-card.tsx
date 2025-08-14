@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, extractCityName } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
 import TopStats from "@/components/top-stats";
 
@@ -14,8 +14,16 @@ interface SubmissionPropertyCardProps {
 }
 
 export default function SubmissionPropertyCard({ submission }: SubmissionPropertyCardProps) {
-  // Generate slug from brand name
-  const slug = generateSlug(submission.brandName);
+  // Use unique slug if available, otherwise generate one
+  const slug = (submission as any).uniqueSlug || generateSlug(submission.brandName);
+  
+  // Extract just city names for display (keeping full data in backend)
+  const displayCities = submission.citiesRegions?.map((city: any) => {
+    if (typeof city === 'string') {
+      return extractCityName(city);
+    }
+    return city;
+  }) || [];
 
   // Initialize click tracking for this submission
   const {
@@ -426,6 +434,21 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             ))}
           </span>
         </div>
+
+        {/* Cities - Display only city names */}
+        {displayCities.length > 0 && (
+          <div className="flex items-center gap-2 mb-3 text-sm text-gray-700 min-h-[1.5rem]">
+            <Building2 className="w-4 h-4 flex-shrink-0" />
+            <span className="flex items-center gap-1 flex-wrap">
+              {displayCities.map((city: string, index: number) => (
+                <span key={city}>
+                  {city}
+                  {index < displayCities.length - 1 && ", "}
+                </span>
+              ))}
+            </span>
+          </div>
+        )}
 
         {/* Top Stats Component */}
         {submission.topStats && (

@@ -404,3 +404,33 @@ export function generateUniqueCompanySlug(brandName: string, existingBrandNames:
 export function isAirtableId(str: string): boolean {
   return str.startsWith('rec') && str.length === 17;
 }
+
+/**
+ * Extract just the city name from "City, Region, Country" format
+ * Used for displaying city names in the frontend while keeping full data in backend
+ */
+export function extractCityName(fullCityString: string): string {
+  if (!fullCityString) return '';
+  
+  const parts = fullCityString.split(', ');
+  if (parts.length >= 1) {
+    return parts[0]; // First part is the city name
+  }
+  
+  return fullCityString; // Fallback to original string if parsing fails
+}
+
+/**
+ * Extract just the country name from "City, Region, Country" format
+ * Used for backend logic while keeping full data in database
+ */
+export function extractCountryName(fullCityString: string): string {
+  if (!fullCityString) return '';
+  
+  const parts = fullCityString.split(', ');
+  if (parts.length >= 3) {
+    return parts[2]; // Last part is the country name
+  }
+  
+  return ''; // Return empty if no country found
+}
