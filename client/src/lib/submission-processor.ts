@@ -137,7 +137,7 @@ function capitalizeCountryName(countryName: string): string {
 
 /**
  * Get active countries (countries that have approved submissions)
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure accurate country detection
  */
 export async function getActiveCountries(): Promise<string[]> {
   try {
@@ -146,11 +146,11 @@ export async function getActiveCountries(): Promise<string[]> {
     const uniqueCountries = new Set<string>();
     
     approvedSubmissions.forEach(submission => {
-      // First, try the new city-based approach with full city data
+      // Process cities/regions field for country information
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         submission.citiesRegions.forEach((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract the country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const countryName = parts[2]; // Last part is the country
@@ -158,14 +158,6 @@ export async function getActiveCountries(): Promise<string[]> {
               uniqueCountries.add(capitalizedCountry);
             }
           }
-        });
-      }
-      
-      // Fallback to legacy countries field for backward compatibility
-      if (submission.countries && submission.countries.length > 0) {
-        submission.countries.forEach(country => {
-          const capitalizedCountry = capitalizeCountryName(country);
-          uniqueCountries.add(capitalizedCountry);
         });
       }
     });
@@ -182,7 +174,7 @@ export async function getActiveCountries(): Promise<string[]> {
 
 /**
  * Get submissions for a specific country
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure cities only appear in their correct countries
  * Now also generates unique slugs for each submission to handle duplicate company names
  */
 export async function getSubmissionsForCountry(countryName: string): Promise<Submission[]> {
@@ -192,13 +184,13 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
     // Generate unique slugs for all submissions to handle duplicate company names
     const submissionsWithSlugs = generateUniqueSlugsForSubmissions(approvedSubmissions);
     
-    // Filter submissions that have cities in the requested country
+    // Filter submissions that have cities that belong to the requested country
     const countrySubmissions = submissionsWithSlugs.filter(submission => {
-      // First, try the new city-based approach with full city data
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        // Check if ANY city in this submission belongs to the requested country
         const hasCityInCountry = submission.citiesRegions.some((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract the country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const cityCountry = parts[2]; // Last part is the country
@@ -211,13 +203,6 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
         if (hasCityInCountry) {
           return true;
         }
-      }
-      
-      // Fallback to legacy countries field for backward compatibility
-      if (submission.countries && submission.countries.length > 0) {
-        return submission.countries.some(country => 
-          country.toLowerCase() === countryName.toLowerCase()
-        );
       }
       
       return false;
@@ -304,7 +289,7 @@ export async function getSubmissionsForCity(
 
 /**
  * Get city submission counts for a specific country
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure cities only appear in their correct countries
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
@@ -318,27 +303,23 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     for (const submission of countrySubmissions) {
       console.log(`🏙️ Processing submission: ${submission.brandName}`);
       console.log(`🏙️ Cities/regions in submission:`, submission.citiesRegions);
-      console.log(`🏙️ Countries in submission:`, submission.countries);
       
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         submission.citiesRegions.forEach((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract city name and country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const cityName = parts[0]; // First part is the city
               const cityCountry = parts[2]; // Last part is the country
               
-              // Only count cities that belong to the requested country
+              // ONLY count cities that belong to the requested country
               if (cityCountry.toLowerCase() === countryName.toLowerCase()) {
                 cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
                 console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
+              } else {
+                console.log(`❌ Skipped city: ${cityName} - belongs to ${cityCountry}, not ${countryName}`);
               }
-            } else {
-              // Fallback: if city doesn't have country info, count it if submission is in this country
-              const cityName = cityRegion;
-              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-              console.log(`✅ Added city (fallback): ${cityName} (count: ${cityCounts[cityName]})`);
             }
           }
         });
@@ -416,7 +397,7 @@ export async function getActiveCountriesFromAirtable(): Promise<string[]> {
 
 /**
  * Get ALL active cities from Airtable (for dynamic city page creation)
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure cities only appear in their correct countries
  */
 export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
   cityName: string;
@@ -435,7 +416,7 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         submission.citiesRegions.forEach((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract city name and country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const cityName = parts[0]; // First part is the city
@@ -453,26 +434,6 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
               }
               
               console.log(`🏙️ City: ${cityName} in ${countryName} (count: ${cityMap.get(cityKey)!.submissionCount})`);
-            } else {
-              // Fallback: use countries field for city-country mapping
-              if (submission.countries && submission.countries.length > 0) {
-                submission.countries.forEach(country => {
-                  const cityName = cityRegion;
-                  const cityKey = `${cityName}-${country}`;
-                  
-                  if (cityMap.has(cityKey)) {
-                    cityMap.get(cityKey)!.submissionCount++;
-                  } else {
-                    cityMap.set(cityKey, {
-                      cityName,
-                      countryName: capitalizeCountryName(country),
-                      submissionCount: 1
-                    });
-                  }
-                  
-                  console.log(`🏙️ City (fallback): ${cityName} in ${country} (count: ${cityMap.get(cityKey)!.submissionCount})`);
-                });
-              }
             }
           }
         });
@@ -491,7 +452,7 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
 
 /**
  * Get top countries with submission counts
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure accurate country counting
  */
 export async function getTopCountriesWithCounts(): Promise<Array<{name: string, count: number}>> {
   try {
@@ -499,11 +460,11 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
     const countryCounts: Record<string, number> = {};
     
     approvedSubmissions.forEach(submission => {
-      // First, try the new city-based approach with full city data
+      // Process cities/regions field for country information
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         submission.citiesRegions.forEach((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract the country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const countryName = parts[2]; // Last part is the country
@@ -511,14 +472,6 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
               countryCounts[capitalizedCountry] = (countryCounts[capitalizedCountry] || 0) + 1;
             }
           }
-        });
-      }
-      
-      // Fallback to legacy countries field for backward compatibility
-      if (submission.countries && submission.countries.length > 0) {
-        submission.countries.forEach(country => {
-          const capitalizedCountry = capitalizeCountryName(country);
-          countryCounts[capitalizedCountry] = (countryCounts[capitalizedCountry] || 0) + 1;
         });
       }
     });
@@ -547,7 +500,7 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
 
 /**
  * Get top cities with submission counts (across all countries)
- * Works with both old and new data formats to ensure compatibility
+ * Works with full city data "City, Region, Country" to ensure cities only appear in their correct countries
  */
 export async function getTopCitiesWithCounts(): Promise<Array<{name: string, country: string, count: number}>> {
   try {
@@ -560,7 +513,7 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
         // Process each city in the submission
         submission.citiesRegions.forEach((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
+            // Parse "City, Region, Country" format to extract city name and country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
               const cityName = parts[0]; // First part is the city
@@ -571,19 +524,6 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
                 cityCounts[cityKey] = { country: capitalizeCountryName(countryName), count: 0 };
               }
               cityCounts[cityKey].count += 1;
-            } else {
-              // Fallback: use countries field for city-country mapping
-              if (submission.countries && submission.countries.length > 0) {
-                submission.countries.forEach(country => {
-                  const cityName = cityRegion;
-                  const cityKey = `${cityName}, ${country}`;
-                  
-                  if (!cityCounts[cityKey]) {
-                    cityCounts[cityKey] = { country: capitalizeCountryName(country), count: 0 };
-                  }
-                  cityCounts[cityKey].count += 1;
-                });
-              }
             }
           }
         });
