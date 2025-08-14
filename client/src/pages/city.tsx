@@ -33,6 +33,14 @@ export default function City() {
   const getCityNameFromSlug = (slug: string) => {
     // Map of common city slugs to their proper names with accents
     const cityNameMap: { [key: string]: string } = {
+      'new-york': 'New York',
+      'los-angeles': 'Los Angeles',
+      'san-francisco': 'San Francisco',
+      'las-vegas': 'Las Vegas',
+      'new-orleans': 'New Orleans',
+      'san-diego': 'San Diego',
+      'san-antonio': 'San Antonio',
+      'salt-lake-city': 'Salt Lake City',
       'durres': 'Durrës',
       'nice': 'Nice',
       'malaga': 'Málaga',
@@ -66,20 +74,33 @@ export default function City() {
   // Get country name from slug
   const getCountryName = (slug: string) => {
     const countryMap: { [key: string]: string } = {
-      usa: 'United States',
-      spain: 'Spain',
-      uk: 'United Kingdom',
-      germany: 'Germany',
-      france: 'France',
-      australia: 'Australia',
-      canada: 'Canada',
-      italy: 'Italy',
-      portugal: 'Portugal',
-      thailand: 'Thailand',
-      greece: 'Greece',
-      albania: 'Albania'
+      'united-states': 'United States',
+      'usa': 'United States',
+      'spain': 'Spain',
+      'uk': 'United Kingdom',
+      'united-kingdom': 'United Kingdom',
+      'germany': 'Germany',
+      'france': 'France',
+      'australia': 'Australia',
+      'canada': 'Canada',
+      'italy': 'Italy',
+      'portugal': 'Portugal',
+      'thailand': 'Thailand',
+      'greece': 'Greece',
+      'albania': 'Albania',
+      'indonesia': 'Indonesia',
+      'new-zealand': 'New Zealand',
+      'south-africa': 'South Africa',
+      'costa-rica': 'Costa Rica',
+      'czech-republic': 'Czech Republic',
+      'dominican-republic': 'Dominican Republic',
+      'saudi-arabia': 'Saudi Arabia',
+      'sri-lanka': 'Sri Lanka',
+      'united-arab-emirates': 'United Arab Emirates'
     };
-    return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
+    return countryMap[slug] || slug.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
   };
   
   const countryName = getCountryName(countrySlug || '');

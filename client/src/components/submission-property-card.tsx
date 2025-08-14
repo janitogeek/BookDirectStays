@@ -23,6 +23,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
   const buildPropertyUrl = () => {
     let url = `/property/${slug}`;
     if (fromCity && fromCountry) {
+      // Use the actual city and country names (not slugs) in URL parameters
       url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;
     }
     return url;

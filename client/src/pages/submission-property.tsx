@@ -123,21 +123,21 @@ export default function SubmissionProperty() {
             <Link href="/find-host" className="hover:underline">
               Find a Host
             </Link>
-            {submission.countries && submission.countries.length > 0 && (
+            {(fromCountry || (submission.countries && submission.countries.length > 0)) && (
               <>
                 <span>›</span>
                 <Link 
-                  href={`/country/${submission.countries[0].toLowerCase().replace(/\s+/g, '-')}`} 
+                  href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}`} 
                   className="hover:underline flex items-center gap-1"
                 >
-                  <span className="text-lg">{getFlagByCountryName(submission.countries[0])}</span>
-                  {submission.countries[0]}
+                  <span className="text-lg">{getFlagByCountryName(fromCountry || submission.countries[0])}</span>
+                  {fromCountry || submission.countries[0]}
                 </Link>
                 {fromCity && (
                   <>
                     <span>›</span>
                     <Link 
-                      href={`/city/${fromCity.toLowerCase().replace(/\s+/g, '-')}?country=${submission.countries[0].toLowerCase().replace(/\s+/g, '-')}`} 
+                      href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}/${fromCity.toLowerCase().replace(/\s+/g, '-')}`} 
                       className="hover:underline"
                     >
                       {fromCity}
