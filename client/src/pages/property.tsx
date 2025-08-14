@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import WhyBookWith from "@/components/why-book-with";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { apiRequest } from "@/lib/queryClient";
-import { getFlagEmoji } from "@/lib/utils";
+import { getFlagByCountryName } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
 import { Listing } from "@/lib/data";
 
@@ -19,7 +19,10 @@ export default function Property() {
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["/api/property", id],
-    queryFn: () => apiRequest<Listing>(`/api/property/${id}`),
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/property/${id}`);
+      return response.json();
+    },
   });
 
   if (isLoading) {
@@ -71,11 +74,11 @@ export default function Property() {
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{listing.name}</h1>
           
           <div className="flex flex-wrap items-center gap-2 mb-6">
-            {listing.countries.map((country) => (
+            {listing.countries.map((country: string) => (
               <span 
                 key={country} 
                 className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                <span className="mr-1">{getFlagEmoji(country.substring(0, 2))}</span>
+                <span className="mr-1">{getFlagByCountryName(country)}</span>
                 {country}
               </span>
             ))}

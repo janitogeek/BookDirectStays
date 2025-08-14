@@ -6,6 +6,7 @@ import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { Listing } from "@/lib/data";
 import { generateSlug } from "@/lib/utils";
+import { getFlagByCountryName } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: Listing;
@@ -16,11 +17,8 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const slug = generateSlug(property.name);
 
   const getFlagEmoji = (countryCode: string) => {
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt(0));
-    return String.fromCodePoint(...codePoints);
+    // Use the comprehensive flag mapping from utils
+    return getFlagByCountryName(countryCode);
   };
 
   // Generate structured data for each property

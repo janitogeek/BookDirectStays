@@ -11,6 +11,7 @@ import { airtableService } from "@/lib/airtable";
 import { getActiveCountries, getSubmissionsForCountry } from "@/lib/submission-processor";
 import { getCountryCode } from "@/lib/geonames";
 import { slugify } from "@/lib/utils";
+import { getFlagByCountryName } from "@/lib/utils";
 
 export default function FindHost() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,11 +77,8 @@ export default function FindHost() {
   };
 
   const getFlagEmoji = (countryCode: string) => {
-    const codePoints = countryCode
-      .toUpperCase()
-      .split('')
-      .map(char => 127397 + char.charCodeAt(0));
-    return String.fromCodePoint(...codePoints);
+    // Use the comprehensive flag mapping from utils
+    return getFlagByCountryName(countryCode);
   };
 
   return (

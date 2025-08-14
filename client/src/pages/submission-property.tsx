@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
 import { isAirtableId } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
+import { getFlagByCountryName } from "@/lib/utils";
 
 
 export default function SubmissionProperty() {
@@ -36,35 +37,8 @@ export default function SubmissionProperty() {
   const clickTracking = submission ? useClickTracking(submission.id) : null;
 
   const getFlagEmoji = (countryName: string) => {
-    const countryMap: { [key: string]: string } = {
-      'United States': '🇺🇸',
-      'Spain': '🇪🇸',
-      'United Kingdom': '🇬🇧',
-      'Germany': '🇩🇪',
-      'France': '🇫🇷',
-      'Australia': '🇦🇺',
-      'Canada': '🇨🇦',
-      'Italy': '🇮🇹',
-      'Portugal': '🇵🇹',
-      'Thailand': '🇹🇭',
-      'Greece': '🇬🇷',
-      'Netherlands': '🇳🇱',
-      'Switzerland': '🇨🇭',
-      'Austria': '🇦🇹',
-      'Belgium': '🇧🇪',
-      'Croatia': '🇭🇷',
-      'Czech Republic': '🇨🇿',
-      'Denmark': '🇩🇰',
-      'Finland': '🇫🇮',
-      'Hungary': '🇭🇺',
-      'Ireland': '🇮🇪',
-      'Norway': '🇳🇴',
-      'Poland': '🇵🇱',
-      'Sweden': '🇸🇪',
-      'Turkey': '🇹🇷',
-      'Albania': '🇦🇱'
-    };
-    return countryMap[countryName] || '🌍';
+    // Use the comprehensive flag mapping from utils
+    return getFlagByCountryName(countryName);
   };
 
   const getSocialIcon = (platform: string) => {
