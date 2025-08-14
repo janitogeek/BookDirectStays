@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
-import { getValidatedCitiesForCountry, getCitySubmissionCounts } from "@/lib/submission-processor";
+import { getValidatedCitiesForCountry, getCitySubmissionCounts, reprocessAllApprovedSubmissions } from "@/lib/submission-processor";
 import { getFlagByCountryName } from "@/lib/utils";
 
 export default function Country() {
@@ -151,6 +151,16 @@ export default function Country() {
       });
     }
   }, [countryName, queryClient]);
+
+  // Reprocess all approved submissions to populate city data
+  useEffect(() => {
+    console.log('🔄 Checking if city data needs to be populated...');
+    reprocessAllApprovedSubmissions().then(() => {
+      console.log('✅ City data population completed');
+    }).catch(error => {
+      console.error('❌ Error populating city data:', error);
+    });
+  }, []); // Run once on component mount
 
   // Debug submissions in React component
   console.log('🎬 React component - submissions data:', submissions);

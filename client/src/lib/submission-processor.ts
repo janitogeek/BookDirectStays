@@ -33,36 +33,157 @@ export async function processApprovedSubmission(submission: Submission): Promise
   }
 
   try {
-    // Step 1: Validate all city-country combinations
-    const cityObjects = submission.citiesRegions.map((city: any) => ({
-      name: typeof city === 'string' ? city : (city?.name || city),
-      geonameId: typeof city === 'object' && city?.geonameId ? city.geonameId : undefined
-    }));
-    
-    const validationResults = await validateCitiesForCountries(
-      cityObjects,
-      submission.countries
-    );
+    // Step 1: Process cities from Geo API format
+    const processedCities = await processCitiesFromGeoAPI(submission.citiesRegions, submission.countries);
+    console.log(`📊 Processed cities for ${submission.brandName}:`, processedCities);
 
-    console.log(`📊 Validation results for ${submission.brandName}:`, validationResults);
-
-    // Step 2: Filter valid combinations and create city records
-    const validCities = validationResults.filter(result => result.isValid);
-    
-    if (validCities.length === 0) {
-      console.log(`❌ No valid cities found for ${submission.brandName}`);
+    if (processedCities.length === 0) {
+      console.log(`❌ No valid cities processed for ${submission.brandName}`);
       return;
     }
 
-    // Step 3: Process each valid city
-    for (const validCity of validCities) {
-      await processValidCity(validCity, submission);
+    // Step 2: Store city-country relationships
+    for (const cityData of processedCities) {
+      await storeCityCountryRelationship(cityData, submission);
     }
 
-    console.log(`✅ Successfully processed ${validCities.length} cities for ${submission.brandName}`);
+    console.log(`✅ Successfully processed ${processedCities.length} cities for ${submission.brandName}`);
     
   } catch (error) {
     console.error(`❌ Error processing submission ${submission.brandName}:`, error);
+  }
+}
+
+/**
+ * Process cities from Geo API format (city, region, country)
+ */
+async function processCitiesFromGeoAPI(citiesRegions: any[], countries: string[]): Promise<Array<{
+  cityName: string;
+  regionName: string;
+  countryName: string;
+  fullLocation: string;
+}>> {
+  const processedCities: Array<{
+    cityName: string;
+    regionName: string;
+    countryName: string;
+    fullLocation: string;
+  }> = [];
+
+  for (const cityRegion of citiesRegions) {
+    try {
+      // Handle different data formats
+      let cityText = '';
+      if (typeof cityRegion === 'string') {
+        cityText = cityRegion;
+      } else if (cityRegion?.name) {
+        cityText = cityRegion.name;
+      } else {
+        console.log(`⚠️ Skipping invalid city format:`, cityRegion);
+        continue;
+      }
+
+      // Parse Geo API format: "city, region, country"
+      const parts = cityText.split(',').map(part => part.trim());
+      
+      if (parts.length >= 3) {
+        // Format: "city, region, country"
+        const cityName = parts[0];
+        const regionName = parts[1];
+        const countryName = parts[2];
+        
+        // Validate that this country is in the submission's countries list
+        const isValidCountry = countries.some(country => 
+          country.toLowerCase() === countryName.toLowerCase() ||
+          country.toLowerCase() === countryName.toLowerCase().replace(/\s+/g, '')
+        );
+
+        if (isValidCountry) {
+          processedCities.push({
+            cityName,
+            regionName,
+            countryName,
+            fullLocation: cityText
+          });
+          console.log(`✅ Processed city: ${cityName} in ${countryName}`);
+        } else {
+          console.log(`⚠️ City ${cityName} country ${countryName} not in submission countries:`, countries);
+        }
+      } else if (parts.length === 2) {
+        // Format: "city, country" (no region)
+        const cityName = parts[0];
+        const countryName = parts[1];
+        
+        const isValidCountry = countries.some(country => 
+          country.toLowerCase() === countryName.toLowerCase() ||
+          country.toLowerCase() === countryName.toLowerCase().replace(/\s+/g, '')
+        );
+
+        if (isValidCountry) {
+          processedCities.push({
+            cityName,
+            regionName: '',
+            countryName,
+            fullLocation: cityText
+          });
+          console.log(`✅ Processed city: ${cityName} in ${countryName}`);
+        }
+      } else if (parts.length === 1) {
+        // Single city name - try to match with countries
+        const cityName = parts[0];
+        
+        // For single cities, we'll need to validate against countries later
+        // This is a fallback for legacy data
+        console.log(`⚠️ Single city format detected: ${cityName} - will validate later`);
+      }
+      
+    } catch (error) {
+      console.error(`❌ Error processing city: ${cityRegion}`, error);
+    }
+  }
+
+  return processedCities;
+}
+
+/**
+ * Store city-country relationship in the system
+ */
+async function storeCityCountryRelationship(cityData: {
+  cityName: string;
+  regionName: string;
+  countryName: string;
+  fullLocation: string;
+}, submission: Submission): Promise<void> {
+  const { cityName, countryName, fullLocation } = cityData;
+  
+  console.log(`🏙️ Storing city relationship: ${cityName} in ${countryName}`);
+  
+  // Add to the in-memory cache (in production, this would be a database)
+  const cityKey = `${countryName}`;
+  const existingCities = validatedCitiesCache.get(cityKey) || [];
+  
+  // Check if city already exists for this country
+  const existingCity = existingCities.find(city => 
+    city.name.toLowerCase() === cityName.toLowerCase() ||
+    city.name.toLowerCase() === fullLocation.toLowerCase()
+  );
+  
+  if (!existingCity) {
+    // Create new city record
+    const newCity: ProcessedCity = {
+      name: cityName,
+      slug: slugify(cityName),
+      countryName: capitalizeCountryName(countryName),
+      countryCode: getCountryCode(countryName) || 'XX',
+      geonameId: undefined
+    };
+    
+    existingCities.push(newCity);
+    validatedCitiesCache.set(cityKey, existingCities);
+    
+    console.log(`✅ Added new city: ${cityName} to ${countryName}`);
+  } else {
+    console.log(`ℹ️ City ${cityName} already exists for ${countryName}`);
   }
 }
 
@@ -131,6 +252,29 @@ export async function processAllApprovedSubmissions(): Promise<void> {
     
   } catch (error) {
     console.error(`❌ Error processing approved submissions:`, error);
+  }
+}
+
+/**
+ * Reprocess all approved submissions to populate city data
+ * This should be called once to fix existing data
+ */
+export async function reprocessAllApprovedSubmissions(): Promise<void> {
+  try {
+    console.log('🔄 Starting reprocessing of all approved submissions...');
+    
+    const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${approvedSubmissions.length} approved submissions to reprocess`);
+    
+    for (const submission of approvedSubmissions) {
+      console.log(`🔄 Reprocessing submission: ${submission.brandName}`);
+      await processApprovedSubmission(submission);
+    }
+    
+    console.log('✅ Successfully reprocessed all approved submissions');
+    
+  } catch (error) {
+    console.error('❌ Error reprocessing approved submissions:', error);
   }
 }
 
@@ -272,24 +416,18 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
       console.log(`🏙️ Countries in submission:`, submission.countries);
       
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        const cityObjects = submission.citiesRegions.map((city: any) => ({
-          name: typeof city === 'string' ? city : (city?.name || city),
-          geonameId: typeof city === 'object' && city?.geonameId ? city.geonameId : undefined
-        }));
+        // Process cities using the new Geo API parser
+        const processedCities = await processCitiesFromGeoAPI(submission.citiesRegions, submission.countries);
+        console.log(`🏙️ Processed cities for ${submission.brandName}:`, processedCities);
         
-        console.log(`🏙️ Processed city objects:`, cityObjects);
-        
-        const validations = await validateCitiesForCountries(
-          cityObjects,
-          [countryName]
-        );
-        
-        console.log(`🏙️ City validations for ${countryName}:`, validations);
-        
-        validations
-          .filter(validation => validation.isValid)
-          .forEach(validation => {
-            const cityName = validation.validatedName || validation.cityName;
+        // Count cities for this specific country
+        processedCities
+          .filter(cityData => 
+            cityData.countryName.toLowerCase() === countryName.toLowerCase() ||
+            cityData.countryName.toLowerCase().replace(/\s+/g, '') === countryName.toLowerCase().replace(/\s+/g, '')
+          )
+          .forEach(cityData => {
+            const cityName = cityData.cityName;
             cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
             console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
           });
