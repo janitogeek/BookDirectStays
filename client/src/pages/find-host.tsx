@@ -76,9 +76,9 @@ export default function FindHost() {
     setSearchQuery("");
   };
 
-  const getFlagEmoji = (countryCode: string) => {
+  const getFlagEmoji = (countryName: string) => {
     // Use the comprehensive flag mapping from utils
-    return getFlagByCountryName(countryCode);
+    return getFlagByCountryName(countryName);
   };
 
   return (
@@ -178,7 +178,7 @@ export default function FindHost() {
                     <Link href={`/country/${country.slug}`} className="block">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center space-x-3">
-                          <span className="text-2xl">{getFlagEmoji(country.code)}</span>
+                          <span className="text-2xl">{getFlagEmoji(country.name)}</span>
                           <h3 className="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors">
                             {country.name}
                           </h3>

@@ -371,24 +371,22 @@ export default function Country() {
           </div>
           
           {/* City Navigation Button - Centered under title */}
-          {cities.length > 0 && (
-            <div className="text-center mb-8">
-              <Button 
-                onClick={() => {
-                  const element = document.getElementById('city-navigation');
-                  if (element) {
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'start'
-                    });
-                  }
-                }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold"
-              >
-                Find Hosts by City
-              </Button>
-            </div>
-          )}
+          <div className="text-center mb-8">
+            <Button 
+              onClick={() => {
+                const element = document.getElementById('city-navigation');
+                if (element) {
+                  element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold"
+            >
+              Find Hosts by City
+            </Button>
+          </div>
           
           {/* Host Filters */}
           <HostFilters onFiltersChange={setFilters} />
