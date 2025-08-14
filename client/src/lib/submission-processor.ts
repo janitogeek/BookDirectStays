@@ -235,8 +235,11 @@ export async function getSubmissionsForCity(
  */
 export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
   try {
+    console.log(`🔍 Getting validated cities for country: ${countryName}`);
+    
     // Get city submission counts first
     const cityCounts = await getCitySubmissionCounts(countryName);
+    console.log(`📊 City counts received:`, cityCounts);
     
     // Return only cities that have at least 1 submission
     const citiesWithSubmissions = Object.keys(cityCounts).filter(cityName => cityCounts[cityName] > 0);
@@ -257,30 +260,45 @@ export async function getValidatedCitiesForCountry(countryName: string): Promise
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
+    console.log(`🔍 Getting city submission counts for country: ${countryName}`);
     const countrySubmissions = await getSubmissionsForCountry(countryName);
+    console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName}`);
+    
     const cityCounts: Record<string, number> = {};
     
     for (const submission of countrySubmissions) {
+      console.log(`🏙️ Processing submission: ${submission.brandName}`);
+      console.log(`🏙️ Cities/regions in submission:`, submission.citiesRegions);
+      console.log(`🏙️ Countries in submission:`, submission.countries);
+      
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         const cityObjects = submission.citiesRegions.map((city: any) => ({
           name: typeof city === 'string' ? city : (city?.name || city),
           geonameId: typeof city === 'object' && city?.geonameId ? city.geonameId : undefined
         }));
         
+        console.log(`🏙️ Processed city objects:`, cityObjects);
+        
         const validations = await validateCitiesForCountries(
           cityObjects,
           [countryName]
         );
+        
+        console.log(`🏙️ City validations for ${countryName}:`, validations);
         
         validations
           .filter(validation => validation.isValid)
           .forEach(validation => {
             const cityName = validation.validatedName || validation.cityName;
             cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+            console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
           });
+      } else {
+        console.log(`⚠️ No cities/regions found in submission: ${submission.brandName}`);
       }
     }
     
+    console.log(`🏙️ Final city counts for ${countryName}:`, cityCounts);
     return cityCounts;
     
   } catch (error) {
