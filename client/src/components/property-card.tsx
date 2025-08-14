@@ -13,8 +13,8 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  // Generate slug from property name
-  const slug = generateSlug(property.name);
+  // Use unique slug if available, otherwise generate one
+  const slug = (property as any).uniqueSlug || generateSlug(property.name);
 
   const getFlagEmoji = (countryCode: string) => {
     // Use the comprehensive flag mapping from utils

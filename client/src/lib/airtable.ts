@@ -99,6 +99,8 @@ export interface Submission {
   currency?: string;
   googleReviewsLink?: string;
   cancellationPolicy?: string;
+  // Unique slug for duplicate company names
+  uniqueSlug?: string;
 }
 
 // Airtable service
