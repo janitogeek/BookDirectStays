@@ -1,6 +1,6 @@
 import React from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
+import { useRoute, Link } from "wouter";
 import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine, Globe } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 
@@ -111,6 +111,33 @@ export default function SubmissionProperty() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Breadcrumb Navigation */}
+      <nav className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className="container mx-auto">
+          <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
+            <Link href="/find-host" className="hover:underline">
+              Find a Host
+            </Link>
+            {submission.countries && submission.countries.length > 0 && (
+              <>
+                <span>›</span>
+                <Link 
+                  href={`/country/${submission.countries[0].toLowerCase().replace(/\s+/g, '-')}`} 
+                  className="hover:underline flex items-center gap-1"
+                >
+                  <span className="text-lg">{getFlagByCountryName(submission.countries[0])}</span>
+                  {submission.countries[0]}
+                </Link>
+              </>
+            )}
+            <span>›</span>
+            <span className="flex items-center gap-1">
+              {submission.brandName}
+            </span>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section with Image and Logo Overlay */}
       {submission.highlightImage && (
         <div className="relative h-96">
@@ -188,28 +215,58 @@ export default function SubmissionProperty() {
                   </div>
                 )}
 
-                {/* Countries - Moved after Property Types */}
+                {/* Countries - Moved after Property Types, Remove duplicates */}
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
-                    {submission.countries.map((country, index) => (
+                    {Array.from(new Set(submission.countries)).map((country, index) => (
                       <span key={country}>
                         {getFlagEmoji(country)} {country}
-                        {index < submission.countries.length - 1 && ", "}
+                        {index < Array.from(new Set(submission.countries)).length - 1 && ", "}
                       </span>
                     ))}
                   </span>
                 </div>
 
-                {/* Cities - Same styling as countries, positioned after countries */}
-                {submission.citiesRegions && submission.citiesRegions.length > 0 && (
-                  <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
-                    <span className="flex items-center gap-1 flex-wrap">
-                      Cities: {submission.citiesRegions.join(", ")}
-                    </span>
-                  </div>
-                )}
+                {/* Cities - Show only city names, remove duplicates and filter out invalid names */}
+                {submission.citiesRegions && submission.citiesRegions.length > 0 && (() => {
+                  // Extract unique city names only
+                  const uniqueCityNames = Array.from(new Set(
+                    submission.citiesRegions.map((cityRegion: any) => {
+                      if (typeof cityRegion === 'string') {
+                        let cityName = '';
+                        // If it's "City, Region, Country" format, extract just the city
+                        if (cityRegion.includes(', ')) {
+                          cityName = cityRegion.split(', ')[0].trim();
+                        } else {
+                          // Otherwise it's just a city name
+                          cityName = cityRegion.trim();
+                        }
+                        
+                        // Filter out obvious non-city names
+                        if (cityName && 
+                            !cityName.toLowerCase().includes('komplex') && 
+                            !cityName.toLowerCase().includes('pemilihan') &&
+                            !cityName.toLowerCase().includes('panitia') &&
+                            cityName.length > 2 && 
+                            cityName.length < 50) {
+                          return cityName;
+                        }
+                        return null;
+                      }
+                      return cityRegion;
+                    }).filter(Boolean)
+                  ));
+
+                  return uniqueCityNames.length > 0 && (
+                    <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
+                      <Building2 className="w-4 h-4 flex-shrink-0" />
+                      <span className="flex items-center gap-1 flex-wrap">
+                        Cities: {uniqueCityNames.join(", ")}
+                      </span>
+                    </div>
+                  );
+                })()}
 
                 {/* Bottom Section: Social Links Left, Book Direct Right - Standardized Layout */}
                 <div className="flex items-center justify-between pt-4">

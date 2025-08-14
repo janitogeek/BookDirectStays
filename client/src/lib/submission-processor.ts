@@ -267,10 +267,29 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
           if (typeof cityRegion === 'string') {
             // If it's already "City, Region, Country" format, extract just the city
             if (cityRegion.includes(', ')) {
-              return extractCityName(cityRegion);
+              const cityName = extractCityName(cityRegion);
+              // Filter out obvious non-city names
+              if (cityName && 
+                  !cityName.toLowerCase().includes('komplex') && 
+                  !cityName.toLowerCase().includes('pemilihan') &&
+                  !cityName.toLowerCase().includes('panitia') &&
+                  cityName.length > 2 && 
+                  cityName.length < 50) {
+                return cityName;
+              }
+              return null;
             }
-            // Otherwise it's just a city name
-            return cityRegion.trim();
+            // Otherwise it's just a city name - apply same filters
+            const cityName = cityRegion.trim();
+            if (cityName && 
+                !cityName.toLowerCase().includes('komplex') && 
+                !cityName.toLowerCase().includes('pemilihan') &&
+                !cityName.toLowerCase().includes('panitia') &&
+                cityName.length > 2 && 
+                cityName.length < 50) {
+              return cityName;
+            }
+            return null;
           }
           return cityRegion;
         }).filter(Boolean);

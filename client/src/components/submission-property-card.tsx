@@ -422,33 +422,20 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
           <div className="mb-4 min-h-[2.5rem]"></div>
         )}
 
-        {/* Countries - Moved after Types of Stays */}
+        {/* Countries - Moved after Types of Stays, Remove duplicates */}
         <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
           <MapPin className="w-4 h-4 flex-shrink-0" />
           <span className="flex items-center gap-1 flex-wrap">
-            {submission.countries.map((country, index) => (
+            {Array.from(new Set(submission.countries)).map((country, index) => (
               <span key={country}>
                 {getFlagEmoji(country)} {country}
-                {index < submission.countries.length - 1 && ", "}
+                {index < Array.from(new Set(submission.countries)).length - 1 && ", "}
               </span>
             ))}
           </span>
         </div>
 
-        {/* Cities - Display only city names */}
-        {displayCities.length > 0 && (
-          <div className="flex items-center gap-2 mb-3 text-sm text-gray-700 min-h-[1.5rem]">
-            <Building2 className="w-4 h-4 flex-shrink-0" />
-            <span className="flex items-center gap-1 flex-wrap">
-              {displayCities.map((city: string, index: number) => (
-                <span key={city}>
-                  {city}
-                  {index < displayCities.length - 1 && ", "}
-                </span>
-              ))}
-            </span>
-          </div>
-        )}
+        {/* Cities removed from cards - keeping only countries like featured hosts */}
 
         {/* Top Stats Component */}
         {submission.topStats && (

@@ -160,20 +160,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             </span>
           </div>
 
-          {/* Cities - Display only city names */}
-          {displayCities.length > 0 && (
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-700 min-h-[1.5rem]">
-              <Building2 className="w-4 h-4 flex-shrink-0" />
-              <span className="flex items-center gap-1 flex-wrap">
-                {displayCities.map((city: string, index: number) => (
-                  <span key={city}>
-                    {city}
-                    {index < displayCities.length - 1 && ", "}
-                  </span>
-                ))}
-              </span>
-            </div>
-          )}
+          {/* Cities removed from cards - keeping only countries like featured hosts */}
 
           {/* Top Stats - Placeholder since data structure doesn't have these */}
           <div className="mb-4 min-h-[3rem]">
