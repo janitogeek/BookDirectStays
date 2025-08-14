@@ -12,6 +12,9 @@ interface CityRegion {
   name: string; // Just the city name (stored value)
   displayName: string; // Full geographic context (shown in dropdown)
   geonameId: number;
+  countryName: string; // Country name from GeoNames
+  countryCode: string; // Country code from GeoNames
+  adminName1?: string; // State/region name if available
 }
 
 interface CityRegionAsyncMultiSelectProps {
@@ -52,6 +55,9 @@ export function CityRegionAsyncMultiSelect({ selected, onSelect, placeholder = "
               name: g.name, // Just the city name (stored)
               displayName: `${g.name}${g.adminName1 ? ", " + g.adminName1 : ""}${g.countryName ? ", " + g.countryName : ""}`, // Full context (displayed)
               geonameId: g.geonameId,
+              countryName: g.countryName,
+              countryCode: g.countryCode,
+              adminName1: g.adminName1,
             }))
           );
         })

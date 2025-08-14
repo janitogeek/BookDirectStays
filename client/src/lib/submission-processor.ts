@@ -121,21 +121,41 @@ export async function getActiveCountries(): Promise<string[]> {
 
 /**
  * Get submissions for a specific country
+ * Now works with city-based country determination
  */
 export async function getSubmissionsForCountry(countryName: string): Promise<Submission[]> {
   try {
     const approvedSubmissions = await airtableService.getApprovedSubmissions();
     
-    return approvedSubmissions.filter(submission =>
-      submission.countries.some(country => {
-        const capitalizedOriginal = capitalizeCountryName(country);
-        const capitalizedQuery = capitalizeCountryName(countryName);
-        
-        // Match either the original or capitalized version
-        return country.toLowerCase() === countryName.toLowerCase() ||
-               capitalizedOriginal.toLowerCase() === capitalizedQuery.toLowerCase();
-      })
-    );
+    return approvedSubmissions.filter(submission => {
+      // Check if any of the cities in this submission belong to the requested country
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        return submission.citiesRegions.some((cityRegion: any) => {
+          let cityCountryName = '';
+          
+          if (typeof cityRegion === 'string') {
+            // Legacy submissions without country data - skip for now
+            console.warn(`⚠️ Legacy submission found with string city: ${cityRegion} - country unknown`);
+            return false;
+          } else if (cityRegion?.countryName || cityRegion?.country) {
+            cityCountryName = cityRegion.countryName || cityRegion.country;
+          }
+          
+          if (cityCountryName) {
+            const capitalizedOriginal = capitalizeCountryName(cityCountryName);
+            const capitalizedQuery = capitalizeCountryName(countryName);
+            
+            // Match either the original or capitalized version
+            return cityCountryName.toLowerCase() === countryName.toLowerCase() ||
+                   capitalizedOriginal.toLowerCase() === capitalizedQuery.toLowerCase();
+          }
+          
+          return false;
+        });
+      }
+      
+      return false;
+    });
     
   } catch (error) {
     console.error(`❌ Error getting submissions for country ${countryName}:`, error);
@@ -169,6 +189,7 @@ export async function getSubmissionsForCity(
 /**
  * Get city submission counts for a specific country
  * ALWAYS reads from Airtable - no caching, always fresh data
+ * Now works with city-based country determination
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
@@ -183,23 +204,29 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     for (const submission of countrySubmissions) {
       console.log(`🏙️ Processing submission: ${submission.brandName}`);
       console.log(`🏙️ Cities/regions in submission:`, submission.citiesRegions);
-      console.log(`🏙️ Countries in submission:`, submission.countries);
       
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        // Extract ALL cities from this submission
+        // Extract cities that belong to this specific country
         submission.citiesRegions.forEach((cityRegion: any) => {
           let cityName = '';
+          let cityCountryName = '';
           
           if (typeof cityRegion === 'string') {
             cityName = cityRegion;
+            // Legacy submissions without country data - skip for now
+            console.warn(`⚠️ Legacy submission found with string city: ${cityName} - country unknown`);
+            return;
           } else if (cityRegion?.name) {
             cityName = cityRegion.name;
+            cityCountryName = cityRegion.countryName || cityRegion.country;
           }
           
-          if (cityName) {
-            // Count this city for the country
-            cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-            console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
+          if (cityName && cityCountryName) {
+            // Only count cities that belong to the requested country
+            if (cityCountryName.toLowerCase() === countryName.toLowerCase()) {
+              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+              console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
+            }
           }
         });
       } else {
@@ -219,6 +246,7 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
 /**
  * Get validated cities for a specific country
  * ALWAYS reads from Airtable - no caching, always fresh data
+ * Now works with city-based country determination
  */
 export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
   try {
@@ -275,6 +303,7 @@ export async function getActiveCountriesFromAirtable(): Promise<string[]> {
 
 /**
  * Get ALL active cities from Airtable (for dynamic city page creation)
+ * Now automatically determines countries from city data
  */
 export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
   cityName: string;
@@ -294,31 +323,33 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         submission.citiesRegions.forEach((cityRegion: any) => {
           let cityName = '';
+          let countryName = '';
           
           if (typeof cityRegion === 'string') {
             cityName = cityRegion;
+            // For legacy submissions without country data, we can't determine country
+            // These will need to be updated or handled separately
+            console.warn(`⚠️ Legacy submission found with string city: ${cityName} - country unknown`);
+            return;
           } else if (cityRegion?.name) {
             cityName = cityRegion.name;
+            countryName = cityRegion.countryName || cityRegion.country;
           }
           
-          if (cityName) {
-            // For each city, count submissions per country
-            submission.countries.forEach(country => {
-              const capitalizedCountry = capitalizeCountryName(country);
-              const cityKey = `${cityName}-${capitalizedCountry}`;
-              
-              if (cityMap.has(cityKey)) {
-                cityMap.get(cityKey)!.submissionCount++;
-              } else {
-                cityMap.set(cityKey, {
-                  cityName,
-                  countryName: capitalizedCountry,
-                  submissionCount: 1
-                });
-              }
-              
-              console.log(`🏙️ City: ${cityName} in ${capitalizedCountry} (count: ${cityMap.get(cityKey)!.submissionCount})`);
-            });
+          if (cityName && countryName) {
+            const cityKey = `${cityName}-${countryName}`;
+            
+            if (cityMap.has(cityKey)) {
+              cityMap.get(cityKey)!.submissionCount++;
+            } else {
+              cityMap.set(cityKey, {
+                cityName,
+                countryName: capitalizeCountryName(countryName),
+                submissionCount: 1
+              });
+            }
+            
+            console.log(`🏙️ City: ${cityName} in ${countryName} (count: ${cityMap.get(cityKey)!.submissionCount})`);
           }
         });
       }
@@ -336,6 +367,7 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
 
 /**
  * Get top countries with submission counts
+ * Now works with city-based country determination
  */
 export async function getTopCountriesWithCounts(): Promise<Array<{name: string, count: number}>> {
   try {
@@ -343,10 +375,24 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
     const countryCounts: Record<string, number> = {};
     
     approvedSubmissions.forEach(submission => {
-      submission.countries.forEach(country => {
-        const capitalizedCountry = capitalizeCountryName(country);
-        countryCounts[capitalizedCountry] = (countryCounts[capitalizedCountry] || 0) + 1;
-      });
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        submission.citiesRegions.forEach((cityRegion: any) => {
+          let countryName = '';
+          
+          if (typeof cityRegion === 'string') {
+            // Legacy submissions without country data - skip for now
+            console.warn(`⚠️ Legacy submission found with string city: ${cityRegion} - country unknown`);
+            return;
+          } else if (cityRegion?.countryName || cityRegion?.country) {
+            countryName = cityRegion.countryName || cityRegion.country;
+          }
+          
+          if (countryName) {
+            const capitalizedCountry = capitalizeCountryName(countryName);
+            countryCounts[capitalizedCountry] = (countryCounts[capitalizedCountry] || 0) + 1;
+          }
+        });
+      }
     });
     
     // Sort by count descending, then alphabetically and take top 5
@@ -373,6 +419,7 @@ export async function getTopCountriesWithCounts(): Promise<Array<{name: string, 
 
 /**
  * Get top cities with submission counts (across all countries)
+ * Now works with city-based country determination
  */
 export async function getTopCitiesWithCounts(): Promise<Array<{name: string, country: string, count: number}>> {
   try {
@@ -382,45 +429,41 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
     for (const submission of approvedSubmissions) {
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
         
-        // Process each country the submission operates in
-        for (const country of submission.countries) {
-          const capitalizedCountry = capitalizeCountryName(country);
+        // Process each city in the submission
+        submission.citiesRegions.forEach((cityRegion: any) => {
+          let cityName = '';
+          let countryName = '';
           
-          const cityObjects = submission.citiesRegions.map((city: any) => ({
-            name: typeof city === 'string' ? city : (city?.name || city),
-            geonameId: typeof city === 'object' && city?.geonameId ? city.geonameId : undefined
-          }));
+          if (typeof cityRegion === 'string') {
+            cityName = cityRegion;
+            // Legacy submissions without country data - skip for now
+            console.warn(`⚠️ Legacy submission found with string city: ${cityRegion} - country unknown`);
+            return;
+          } else if (cityRegion?.name) {
+            cityName = cityRegion.name;
+            countryName = cityRegion.countryName || cityRegion.country;
+          }
           
-          const validations = await validateCitiesForCountries(
-            cityObjects,
-            [country]
-          );
-          
-          validations
-            .filter(validation => validation.isValid)
-            .forEach(validation => {
-              const cityName = validation.validatedName || validation.cityName;
-              const cityKey = `${cityName}, ${capitalizedCountry}`;
-              
-              if (!cityCounts[cityKey]) {
-                cityCounts[cityKey] = { country: capitalizedCountry, count: 0 };
-              }
-              cityCounts[cityKey].count += 1;
-            });
-        }
+          if (cityName && countryName) {
+            const capitalizedCountry = capitalizeCountryName(countryName);
+            const cityKey = `${cityName}, ${capitalizedCountry}`;
+            
+            if (!cityCounts[cityKey]) {
+              cityCounts[cityKey] = { country: capitalizedCountry, count: 0 };
+            }
+            cityCounts[cityKey].count += 1;
+          }
+        });
       }
     }
     
     // Sort by count descending, then alphabetically and take top 5
     const sortedCities = Object.entries(cityCounts)
-      .map(([cityCountryKey, data]) => {
-        const cityName = cityCountryKey.split(', ')[0];
-        return {
-          name: cityName,
-          country: data.country,
-          count: data.count
-        };
-      })
+      .map(([cityKey, data]) => ({
+        name: cityKey.split(', ')[0],
+        country: data.country,
+        count: data.count
+      }))
       .sort((a, b) => {
         // Primary sort: by count descending
         if (b.count !== a.count) {

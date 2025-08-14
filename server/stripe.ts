@@ -101,7 +101,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
     "PMC General Website": formData["PMC General Website"],
     "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
     "Number of Listings": formData["Number of Listings"],
-    "Countries": Array.isArray(formData["Countries"]) ? formData["Countries"].join(", ") : formData["Countries"],
+
     "Cities / Regions": Array.isArray(formData["Cities / Regions"]) 
       ? formData["Cities / Regions"].map((city: any) => city.name || city).join(", ")
       : formData["Cities / Regions"],

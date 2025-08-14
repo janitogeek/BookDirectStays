@@ -12,6 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { CountryMultiSelect } from "../components/country-multi-select";
@@ -32,7 +33,6 @@ const formSchema = z.object({
   "Direct Booking Engine URL": z.string().url("Please enter a valid URL"),
   "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
-  "Countries": z.array(z.string()).min(1),
   "Cities / Regions": z.array(z.object({ name: z.string(), displayName: z.string(), geonameId: z.number() })).min(1),
   "Logo Upload": z.object({
     url: z.string().url(),
@@ -73,9 +73,7 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
-const COUNTRIES = [
-  "USA", "Spain", "UK", "Germany", "France", "Australia", "Canada", "Italy", "Portugal", "Thailand", "Greece"
-];
+
 const CITIES = [
   "New York", "Paris", "Bali", "Lisbon", "Dolomites", "Rome", "Bangkok", "Athens"
 ];
@@ -176,7 +174,7 @@ export default function Submit() {
       "Direct Booking Engine URL": "",
       "PMS/Channel Manager": "",
       "Number of Listings": 1,
-      "Countries": [],
+
       "Cities / Regions": [],
       "Logo Upload": { url: "", name: "" },
       "Highlight Image": { url: "", name: "" },
@@ -493,7 +491,6 @@ export default function Submit() {
         "Direct Booking Engine URL": values["Direct Booking Engine URL"],
         "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
-        "Countries": values["Countries"].join(", "),
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
@@ -738,22 +735,12 @@ export default function Submit() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name="Countries" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Countries<RequiredAsterisk /></FormLabel>
-                  <FormControl>
-                    <CountryMultiSelect
-                      selected={field.value || []}
-                      onSelect={(values: string[]) => field.onChange(values)}
-                      className={field.value && field.value.length > 0 ? 'border-blue-500 bg-blue-50' : ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
               <FormField control={form.control} name="Cities / Regions" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cities<RequiredAsterisk /></FormLabel>
+                  <FormDescription>
+                    Select the cities where you operate. Countries will be automatically determined.
+                  </FormDescription>
                   <FormControl>
                     <CityRegionAsyncMultiSelect
                       selected={field.value || []}

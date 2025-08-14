@@ -121,6 +121,14 @@
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
       }
       
+      .logo-main {
+        color: #3B82F6; /* Bright medium blue matching your logo */
+      }
+      
+      .logo-extension {
+        color: #374151; /* Dark gray/charcoal for .com */
+      }
+      
       .loading-subtitle {
         font-size: 1.1rem;
         font-weight: 400;
@@ -182,7 +190,9 @@
     <div id="root">
       <!-- Loading state for better perceived performance -->
       <div class="loading">
-        <div class="loading-logo">BookDirectStays</div>
+        <div class="loading-logo">
+          <span class="logo-main">BookDirectStays</span><span class="logo-extension">.com</span>
+        </div>
         <div class="loading-subtitle">Loading...</div>
         <div class="loading-spinner"></div>
         <div class="loading-dots">

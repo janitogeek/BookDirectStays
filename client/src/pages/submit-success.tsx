@@ -98,7 +98,7 @@ export default function SubmitSuccess() {
         "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
         "PMS": formData["PMS/Channel Manager"],
         "Number of Listings": formData["Number of Listings"],
-        "Countries": formData["Countries"].join(", "),
+
         "Cities / Regions": formData["Cities / Regions"].map((city: any) => city.name).join(", "),
         "One-line Description": formData["One-line Description"],
         "Why Book With You": formData["Why Book With You?"],
