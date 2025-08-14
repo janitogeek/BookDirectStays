@@ -103,7 +103,14 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
     "Number of Listings": formData["Number of Listings"],
 
     "Cities / Regions": Array.isArray(formData["Cities / Regions"]) 
-      ? formData["Cities / Regions"].map((city: any) => city.displayName || city).join(", ")
+      ? formData["Cities / Regions"].map((city: any) => {
+          const cityDisplayName = city.displayName || city;
+          // Extract only the city name from "City, Region, Country" format
+          if (typeof cityDisplayName === 'string' && cityDisplayName.includes(', ')) {
+            return cityDisplayName.split(', ')[0].trim();
+          }
+          return cityDisplayName;
+        }).join(", ")
       : formData["Cities / Regions"],
     "Countries": Array.isArray(formData["Cities / Regions"]) 
       ? Array.from(new Set(formData["Cities / Regions"].map((city: any) => city.countryName || "").filter(Boolean))).join(", ")

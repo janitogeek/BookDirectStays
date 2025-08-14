@@ -17,6 +17,11 @@ import { getFlagByCountryName } from "@/lib/utils";
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
   const submissionId = params?.id;
+  
+  // Check if we came from a city page (look for city in URL parameters or referrer)
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromCity = urlParams.get('city');
+  const fromCountry = urlParams.get('country');
 
   const { data: submission, isLoading, error } = useQuery({
     queryKey: ["/api/submission", submissionId],
@@ -128,6 +133,17 @@ export default function SubmissionProperty() {
                   <span className="text-lg">{getFlagByCountryName(submission.countries[0])}</span>
                   {submission.countries[0]}
                 </Link>
+                {fromCity && (
+                  <>
+                    <span>›</span>
+                    <Link 
+                      href={`/city/${fromCity.toLowerCase().replace(/\s+/g, '-')}?country=${submission.countries[0].toLowerCase().replace(/\s+/g, '-')}`} 
+                      className="hover:underline"
+                    >
+                      {fromCity}
+                    </Link>
+                  </>
+                )}
               </>
             )}
             <span>›</span>
@@ -260,7 +276,7 @@ export default function SubmissionProperty() {
 
                   return uniqueCityNames.length > 0 && (
                     <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
-                      <Building2 className="w-4 h-4 flex-shrink-0" />
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
                       <span className="flex items-center gap-1 flex-wrap">
                         Cities: {uniqueCityNames.join(", ")}
                       </span>

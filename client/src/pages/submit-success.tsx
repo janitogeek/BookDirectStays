@@ -99,7 +99,14 @@ export default function SubmitSuccess() {
         "PMS": formData["PMS/Channel Manager"],
         "Number of Listings": formData["Number of Listings"],
 
-        "Cities / Regions": formData["Cities / Regions"].map((city: any) => city.displayName).join(", "),
+        "Cities / Regions": formData["Cities / Regions"].map((city: any) => {
+          const cityDisplayName = city.displayName;
+          // Extract only the city name from "City, Region, Country" format
+          if (typeof cityDisplayName === 'string' && cityDisplayName.includes(', ')) {
+            return cityDisplayName.split(', ')[0].trim();
+          }
+          return cityDisplayName;
+        }).join(", "),
         "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
         "One-line Description": formData["One-line Description"],
         "Why Book With You": formData["Why Book With You?"],

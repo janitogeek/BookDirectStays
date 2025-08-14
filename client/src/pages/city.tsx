@@ -421,7 +421,12 @@ export default function City() {
                 <>
                   {/* Display approved submissions first */}
                   {filteredSubmissions.map((submission) => (
-                    <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
+                    <SubmissionPropertyCard 
+                      key={`submission-${submission.id}`} 
+                      submission={submission} 
+                      fromCity={cityName}
+                      fromCountry={countryName}
+                    />
                   ))}
                   
                   {/* Display existing listings */}

@@ -11,11 +11,22 @@ import TopStats from "@/components/top-stats";
 
 interface SubmissionPropertyCardProps {
   submission: Submission;
+  fromCity?: string;
+  fromCountry?: string;
 }
 
-export default function SubmissionPropertyCard({ submission }: SubmissionPropertyCardProps) {
+export default function SubmissionPropertyCard({ submission, fromCity, fromCountry }: SubmissionPropertyCardProps) {
   // Use unique slug if available, otherwise generate one
   const slug = (submission as any).uniqueSlug || generateSlug(submission.brandName);
+  
+  // Build URL with city/country parameters if available
+  const buildPropertyUrl = () => {
+    let url = `/property/${slug}`;
+    if (fromCity && fromCountry) {
+      url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;
+    }
+    return url;
+  };
   
   // Extract just city names for display (keeping full data in backend)
   const displayCities = submission.citiesRegions?.map((city: any) => {
@@ -462,7 +473,7 @@ export default function SubmissionPropertyCard({ submission }: SubmissionPropert
             className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
           >
             <Link 
-              to={`/property/${slug}`}
+              to={buildPropertyUrl()}
               onClick={trackCompany}
             >
               Why book with {submission.brandName}?
