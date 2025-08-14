@@ -1,9 +1,9 @@
 // Submission processing service
 // Handles validation and creation of cities when submissions are approved
 
-import { validateCitiesForCountries, getCountryCode } from './geonames';
+import { validateCitiesForCountries, getCountryCode, matchCitiesToCountries } from './geonames';
 import { airtableService, type Submission } from './airtable';
-import { slugify } from './utils';
+import { slugify, extractCityName } from './utils';
 
 interface CityValidationResult {
   cityName: string;
@@ -182,48 +182,66 @@ export async function getActiveCountries(): Promise<string[]> {
 
 /**
  * Get submissions for a specific country
- * Works with both new "City, Region, Country" format and existing cities + countries fields
- * Now also generates unique slugs for each submission to handle duplicate company names
+ * NEW APPROACH: Uses GeoNames API to properly match cities to countries
+ * Also generates unique slugs for each submission to handle duplicate company names
  */
 export async function getSubmissionsForCountry(countryName: string): Promise<Submission[]> {
   try {
+    console.log(`🔍 SMART MATCHING: Getting submissions for country: ${countryName}`);
+    
     const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${approvedSubmissions.length} total submissions`);
     
     // Generate unique slugs for all submissions to handle duplicate company names
     const submissionsWithSlugs = generateUniqueSlugsForSubmissions(approvedSubmissions);
     
-    // Filter submissions that have cities that belong to the requested country
-    const countrySubmissions = submissionsWithSlugs.filter(submission => {
-      // First, try the new city-based approach with full city data
-      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        const hasCityInCountry = submission.citiesRegions.some((cityRegion: any) => {
-          if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format to extract the country
-            const parts = cityRegion.split(', ');
-            if (parts.length >= 3) {
-              const cityCountry = parts[2].trim(); // Last part is the country
-              return cityCountry.toLowerCase() === countryName.toLowerCase();
-            }
-          }
-          return false;
-        });
+    const countrySubmissions = [];
+    
+    for (const submission of submissionsWithSlugs) {
+      let belongsToCountry = false;
+      
+      // NEW SMART APPROACH: Use GeoNames to match cities to countries
+      if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
+          submission.countries && submission.countries.length > 0) {
         
-        if (hasCityInCountry) {
-          return true;
-        }
+        // Extract just city names from the cities/regions data
+        const cityNames = submission.citiesRegions.map((cityRegion: any) => {
+          if (typeof cityRegion === 'string') {
+            // If it's already "City, Region, Country" format, extract just the city
+            if (cityRegion.includes(', ')) {
+              return extractCityName(cityRegion);
+            }
+            // Otherwise it's just a city name
+            return cityRegion.trim();
+          }
+          return cityRegion;
+        }).filter(Boolean);
+        
+        // Use GeoNames API to match each city to its correct country
+        const cityMatches = await matchCitiesToCountries(cityNames, submission.countries);
+        
+        // Check if any matched cities belong to the requested country
+        belongsToCountry = cityMatches.some(match => 
+          match.countryName.toLowerCase() === countryName.toLowerCase()
+        );
+        
+        console.log(`🎯 Submission "${submission.brandName}" belongs to ${countryName}: ${belongsToCountry}`);
       }
       
-      // Fallback to legacy countries field for existing submissions
-      if (submission.countries && submission.countries.length > 0) {
-        return submission.countries.some(country => 
+      // Fallback to legacy countries field for submissions without proper city data
+      if (!belongsToCountry && submission.countries && submission.countries.length > 0) {
+        belongsToCountry = submission.countries.some(country => 
           country.toLowerCase() === countryName.toLowerCase()
         );
+        console.log(`🔄 Fallback: Submission "${submission.brandName}" belongs to ${countryName}: ${belongsToCountry}`);
       }
       
-      return false;
-    });
+      if (belongsToCountry) {
+        countrySubmissions.push(submission);
+      }
+    }
     
-    console.log(`Found ${countrySubmissions.length} submissions for country: ${countryName}`);
+    console.log(`✅ SMART MATCHED: Found ${countrySubmissions.length} submissions for country: ${countryName}`);
     return countrySubmissions;
     
   } catch (error) {
@@ -304,52 +322,61 @@ export async function getSubmissionsForCity(
 
 /**
  * Get city submission counts for a specific country
- * Works with both new "City, Region, Country" format and existing cities + countries fields
+ * NEW APPROACH: Uses GeoNames API to properly match cities to countries
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
-    console.log(`🔍 Getting city submission counts for country: ${countryName} - FRESH FROM AIRTABLE`);
+    console.log(`🔍 SMART MATCHING: Getting city submission counts for country: ${countryName}`);
     
-    const countrySubmissions = await getSubmissionsForCountry(countryName);
-    console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName} in Airtable`);
+    // Get all approved submissions (not just for this country)
+    const allSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${allSubmissions.length} total submissions in Airtable`);
     
     const cityCounts: Record<string, number> = {};
     
-    for (const submission of countrySubmissions) {
+    for (const submission of allSubmissions) {
       console.log(`🏙️ Processing submission: ${submission.brandName}`);
       console.log(`🏙️ Cities/regions in submission:`, submission.citiesRegions);
       console.log(`🏙️ Countries in submission:`, submission.countries);
       
-      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        submission.citiesRegions.forEach((cityRegion: any) => {
+      if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
+          submission.countries && submission.countries.length > 0) {
+        
+        // Extract just city names from the cities/regions data
+        const cityNames = submission.citiesRegions.map((cityRegion: any) => {
           if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
-            const parts = cityRegion.split(', ');
-            if (parts.length >= 3) {
-              const cityName = parts[0].trim(); // First part is the city
-              const cityCountry = parts[2].trim(); // Last part is the country
-              
-              // Only count cities that belong to the requested country
-              if (cityCountry.toLowerCase() === countryName.toLowerCase()) {
-                cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-                console.log(`✅ Added city: ${cityName} (count: ${cityCounts[cityName]})`);
-              } else {
-                console.log(`❌ Skipped city: ${cityName} - belongs to ${cityCountry}, not ${countryName}`);
-              }
-            } else {
-              // Fallback: if city doesn't have country info, count it if submission is in this country
-              const cityName = cityRegion.trim();
-              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-              console.log(`✅ Added city (fallback): ${cityName} (count: ${cityCounts[cityName]})`);
+            // If it's already "City, Region, Country" format, extract just the city
+            if (cityRegion.includes(', ')) {
+              return extractCityName(cityRegion);
             }
+            // Otherwise it's just a city name
+            return cityRegion.trim();
+          }
+          return cityRegion;
+        }).filter(Boolean);
+        
+        console.log(`🎯 Extracted city names:`, cityNames);
+        console.log(`🌍 Available countries:`, submission.countries);
+        
+        // Use GeoNames API to match each city to its correct country
+        const cityMatches = await matchCitiesToCountries(cityNames, submission.countries);
+        console.log(`🔍 GeoNames matches:`, cityMatches);
+        
+        // Count cities that belong to the requested country
+        cityMatches.forEach(match => {
+          if (match.countryName.toLowerCase() === countryName.toLowerCase()) {
+            cityCounts[match.cityName] = (cityCounts[match.cityName] || 0) + 1;
+            console.log(`✅ MATCHED: ${match.cityName} belongs to ${countryName} (count: ${cityCounts[match.cityName]})`);
+          } else {
+            console.log(`❌ SKIPPED: ${match.cityName} belongs to ${match.countryName}, not ${countryName}`);
           }
         });
       } else {
-        console.log(`⚠️ No cities/regions found in submission: ${submission.brandName}`);
+        console.log(`⚠️ Submission ${submission.brandName} missing cities or countries data`);
       }
     }
     
-    console.log(`🏙️ Final city counts for ${countryName} (FRESH FROM AIRTABLE):`, cityCounts);
+    console.log(`🏙️ FINAL SMART MATCHED city counts for ${countryName}:`, cityCounts);
     return cityCounts;
     
   } catch (error) {
