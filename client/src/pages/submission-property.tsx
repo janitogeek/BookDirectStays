@@ -22,6 +22,13 @@ export default function SubmissionProperty() {
   const urlParams = new URLSearchParams(window.location.search);
   const fromCity = urlParams.get('city');
   const fromCountry = urlParams.get('country');
+  
+  // Debug logging
+  console.log(`🔍 Submission Property Page Debug:`);
+  console.log(`🔍 URL: ${window.location.href}`);
+  console.log(`🔍 Search params: ${window.location.search}`);
+  console.log(`🔍 fromCity: "${fromCity}"`);
+  console.log(`🔍 fromCountry: "${fromCountry}"`);
 
   const { data: submission, isLoading, error } = useQuery({
     queryKey: ["/api/submission", submissionId],

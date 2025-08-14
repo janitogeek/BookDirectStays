@@ -25,6 +25,8 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
     if (fromCity && fromCountry) {
       // Use the actual city and country names (not slugs) in URL parameters
       url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;
+      console.log(`🔗 Building URL for ${submission.brandName}: ${url}`);
+      console.log(`🔗 fromCity: "${fromCity}", fromCountry: "${fromCountry}"`);
     }
     return url;
   };
@@ -474,7 +476,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
             className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
           >
             <Link 
-              to={buildPropertyUrl()}
+              href={buildPropertyUrl()}
               onClick={trackCompany}
             >
               Why book with {submission.brandName}?
