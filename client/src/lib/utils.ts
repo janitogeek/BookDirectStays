@@ -379,6 +379,26 @@ export function generateSlug(brandName: string): string {
 }
 
 /**
+ * Generate a unique slug for a company name by checking for duplicates
+ * If a company with the same name exists, adds -2, -3, etc.
+ */
+export function generateUniqueCompanySlug(brandName: string, existingBrandNames: string[]): string {
+  // Generate base slug
+  let baseSlug = generateSlug(brandName);
+  let uniqueSlug = baseSlug;
+  let counter = 2;
+  
+  // Check if slug already exists and add number suffix if needed
+  while (existingBrandNames.some((name: string) => generateSlug(name) === uniqueSlug)) {
+    uniqueSlug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  
+  console.log(`Generated unique slug for "${brandName}": ${uniqueSlug}`);
+  return uniqueSlug;
+}
+
+/**
  * Check if a string is an Airtable record ID
  */
 export function isAirtableId(str: string): boolean {
