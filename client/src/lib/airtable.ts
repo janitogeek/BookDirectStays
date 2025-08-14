@@ -381,32 +381,53 @@ export const airtableService = {
   },
 
   async getSubmissionBySlug(slug: string): Promise<Submission | null> {
+    // Use the new slug-email mapping system
+    const { getSubmissionBySlug } = await import('./slug-email-mapping');
+    return getSubmissionBySlug(slug);
+  },
+
+  async getSubmissionByEmail(email: string): Promise<Submission | null> {
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       throw new Error('Airtable configuration missing');
     }
 
     try {
-      // Get all approved submissions and find the one with matching slug
-      const submissions = await this.getApprovedSubmissions();
+      console.log(`🔍 Looking up submission by email: "${email}"`);
       
-      // Generate slug for each submission and find match
-      const submission = submissions.find(sub => {
-        const generatedSlug = sub.brandName
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '') // Remove accents
-          .replace(/&/g, 'and')
-          .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-          .replace(/\s+/g, '-') // Replace spaces with hyphens
-          .replace(/-+/g, '-') // Replace multiple hyphens with single
-          .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
-        
-        return generatedSlug === slug;
+      // Filter by email field
+      const filterFormula = `AND({Status} = "Approved – Published", {Email} = "${email}")`;
+      const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
+
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
       });
 
-      return submission || null;
+      if (!response.ok) {
+        console.error('❌ Airtable API error:', response.status, response.statusText);
+        return null;
+      }
+
+      const data = await response.json();
+      const records: AirtableSubmission[] = data.records || [];
+      
+      if (records.length === 0) {
+        console.log(`❌ No submission found for email: "${email}"`);
+        return null;
+      }
+
+      if (records.length > 1) {
+        console.warn(`⚠️ Multiple submissions found for email "${email}", using first one`);
+      }
+
+      const submission = this.transformSubmission(records[0]);
+      console.log(`✅ Found submission for email "${email}": "${submission.brandName}"`);
+      
+      return submission;
+      
     } catch (error) {
-      console.error('Error fetching submission by slug:', error);
+      console.error(`❌ Error fetching submission by email "${email}":`, error);
       return null;
     }
   },

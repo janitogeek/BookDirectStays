@@ -278,4 +278,58 @@ export async function matchCitiesToCountries(
   }
   
   return results;
+}
+
+/**
+ * OPTIMIZED BATCH SOLUTION: Match cities with caching and reduced API calls
+ */
+const cityCountryCache = new Map<string, { cityName: string; countryName: string; fullLocation: string } | null>();
+
+export async function matchCitiesToCountriesOptimized(
+  cities: string[], 
+  possibleCountries: string[]
+): Promise<Array<{ cityName: string; countryName: string; fullLocation: string }>> {
+  const results = [];
+  const uncachedCities = [];
+  
+  // First, check cache
+  for (const cityName of cities) {
+    const cacheKey = `${cityName.trim()}-${possibleCountries.join(',')}`;
+    const cached = cityCountryCache.get(cacheKey);
+    
+    if (cached !== undefined) {
+      if (cached) {
+        results.push(cached);
+        console.log(`📋 CACHED: ${cityName} → ${cached.countryName}`);
+      }
+    } else {
+      uncachedCities.push(cityName.trim());
+    }
+  }
+  
+  // Process uncached cities with smaller delays
+  for (const cityName of uncachedCities) {
+    const cacheKey = `${cityName}-${possibleCountries.join(',')}`;
+    
+    try {
+      const match = await matchCityToCountry(cityName, possibleCountries);
+      
+      // Cache the result (even if null)
+      cityCountryCache.set(cacheKey, match);
+      
+      if (match) {
+        results.push(match);
+        console.log(`🌍 API: ${cityName} → ${match.countryName}`);
+      }
+    } catch (error) {
+      console.error(`❌ Error matching city ${cityName}:`, error);
+      // Cache the failure
+      cityCountryCache.set(cacheKey, null);
+    }
+    
+    // Shorter delay for optimization
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  
+  return results;
 } 

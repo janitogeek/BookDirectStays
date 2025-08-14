@@ -1,65 +1,9 @@
 // Submission processing service
 // Handles validation and creation of cities when submissions are approved
 
-import { validateCitiesForCountries, getCountryCode, matchCitiesToCountries } from './geonames';
+import { matchCitiesToCountriesOptimized } from './geonames';
 import { airtableService, type Submission } from './airtable';
-import { slugify, extractCityName } from './utils';
-
-interface CityValidationResult {
-  cityName: string;
-  countryName: string;
-  isValid: boolean;
-  geonameId?: number;
-  validatedName?: string;
-}
-
-interface ProcessedCity {
-  name: string;
-  slug: string;
-  countryName: string;
-  countryCode: string;
-  geonameId?: number;
-}
-
-/**
- * Generate a unique slug for a company name by checking for duplicates
- * If a company with the same name exists, adds -2, -3, etc.
- */
-function generateUniqueCompanySlug(brandName: string, existingBrandNames: string[]): string {
-  // Generate base slug
-  let baseSlug = brandName
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
-  
-  let uniqueSlug = baseSlug;
-  let counter = 2;
-  
-  // Check if slug already exists and add number suffix if needed
-  while (existingBrandNames.some((name: string) => {
-    const existingSlug = name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/&/g, 'and')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+|-+$/g, '');
-    return existingSlug === uniqueSlug;
-  })) {
-    uniqueSlug = `${baseSlug}-${counter}`;
-    counter++;
-  }
-  
-  console.log(`Generated unique slug for "${brandName}": ${uniqueSlug}`);
-  return uniqueSlug;
-}
+import { extractCityName } from './utils';
 
 /**
  * Process an approved submission and create/link cities
@@ -193,7 +137,7 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
     console.log(`📊 Found ${approvedSubmissions.length} total submissions`);
     
     // Generate unique slugs for all submissions to handle duplicate company names
-    const submissionsWithSlugs = generateUniqueSlugsForSubmissions(approvedSubmissions);
+    const submissionsWithSlugs = await generateUniqueSlugsForSubmissions(approvedSubmissions);
     
     // Filter submissions that belong to the requested country
     const countrySubmissions = submissionsWithSlugs.filter(submission => {
@@ -222,35 +166,44 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
 }
 
 /**
- * Generate unique slugs for all submissions to handle duplicate company names
- * If companies have the same name, they get -2, -3, etc. suffixes
+ * Generate unique slugs for all submissions using email-based mapping
+ * Uses the slug-email mapping system for proper identification
  */
-function generateUniqueSlugsForSubmissions(submissions: Submission[]): Array<Submission & { uniqueSlug: string }> {
-  const submissionsWithSlugs: Array<Submission & { uniqueSlug: string }> = [];
-  const existingSlugs = new Set<string>();
-  
-  for (const submission of submissions) {
-    let baseSlug = generateSlug(submission.brandName);
-    let uniqueSlug = baseSlug;
-    let counter = 2;
+async function generateUniqueSlugsForSubmissions(submissions: Submission[]): Promise<Array<Submission & { uniqueSlug: string }>> {
+  try {
+    // Use the slug-email mapping system
+    const { getAllSubmissionsWithSlugs } = await import('./slug-email-mapping');
+    return getAllSubmissionsWithSlugs();
+  } catch (error) {
+    console.error('❌ Error generating unique slugs, falling back to simple method:', error);
     
-    // Check if slug already exists and add number suffix if needed
-    while (existingSlugs.has(uniqueSlug)) {
-      uniqueSlug = `${baseSlug}-${counter}`;
-      counter++;
+    // Fallback to simple method
+    const submissionsWithSlugs: Array<Submission & { uniqueSlug: string }> = [];
+    const existingSlugs = new Set<string>();
+    
+    for (const submission of submissions) {
+      let baseSlug = generateSlug(submission.brandName);
+      let uniqueSlug = baseSlug;
+      let counter = 2;
+      
+      // Check if slug already exists and add number suffix if needed
+      while (existingSlugs.has(uniqueSlug)) {
+        uniqueSlug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+      
+      existingSlugs.add(uniqueSlug);
+      
+      submissionsWithSlugs.push({
+        ...submission,
+        uniqueSlug
+      });
+      
+      console.log(`Generated unique slug for "${submission.brandName}": ${uniqueSlug}`);
     }
     
-    existingSlugs.add(uniqueSlug);
-    
-    submissionsWithSlugs.push({
-      ...submission,
-      uniqueSlug
-    });
-    
-    console.log(`Generated unique slug for "${submission.brandName}": ${uniqueSlug}`);
+    return submissionsWithSlugs;
   }
-  
-  return submissionsWithSlugs;
 }
 
 /**
@@ -293,57 +246,49 @@ export async function getSubmissionsForCity(
 
 /**
  * Get city submission counts for a specific country
- * FAST APPROACH: Only use existing data, no API calls for better performance
+ * OPTIMIZED GEONAMES: Use cached results + smart city-country matching
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
-    console.log(`🔍 FAST MATCHING: Getting city submission counts for country: ${countryName}`);
+    console.log(`🔍 OPTIMIZED GEONAMES: Getting city submission counts for country: ${countryName}`);
     
-    // Get all approved submissions (not just for this country)
+    // Get all approved submissions
     const allSubmissions = await airtableService.getApprovedSubmissions();
     console.log(`📊 Found ${allSubmissions.length} total submissions in Airtable`);
     
     const cityCounts: Record<string, number> = {};
     
     for (const submission of allSubmissions) {
-      // Only count submissions that have this country in their countries field
-      if (submission.countries && submission.countries.some(country => 
-          country.toLowerCase() === countryName.toLowerCase())) {
+      if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
+          submission.countries && submission.countries.length > 0) {
         
-        if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-          submission.citiesRegions.forEach((cityRegion: any) => {
-            if (typeof cityRegion === 'string') {
-              let cityName = '';
-              
-              // If it's "City, Region, Country" format, extract just the city
-              if (cityRegion.includes(', ')) {
-                const parts = cityRegion.split(', ');
-                if (parts.length >= 3) {
-                  const cityCountry = parts[2].trim();
-                  // Only count if the city's country matches our target country
-                  if (cityCountry.toLowerCase() === countryName.toLowerCase()) {
-                    cityName = parts[0].trim();
-                  }
-                } else {
-                  // If it has commas but not full format, extract first part
-                  cityName = extractCityName(cityRegion);
-                }
-              } else {
-                // Otherwise it's just a city name
-                cityName = cityRegion.trim();
-              }
-              
-              if (cityName) {
-                cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-                console.log(`✅ COUNTED: ${cityName} in ${countryName} (count: ${cityCounts[cityName]})`);
-              }
+        // Extract just city names from the cities/regions data
+        const cityNames = submission.citiesRegions.map((cityRegion: any) => {
+          if (typeof cityRegion === 'string') {
+            // If it's already "City, Region, Country" format, extract just the city
+            if (cityRegion.includes(', ')) {
+              return extractCityName(cityRegion);
             }
-          });
-        }
+            // Otherwise it's just a city name
+            return cityRegion.trim();
+          }
+          return cityRegion;
+        }).filter(Boolean);
+        
+        // Use cached/optimized GeoNames matching (with batching and delays)
+        const cityMatches = await matchCitiesToCountriesOptimized(cityNames, submission.countries);
+        
+        // Count cities that belong to the requested country
+        cityMatches.forEach(match => {
+          if (match.countryName.toLowerCase() === countryName.toLowerCase()) {
+            cityCounts[match.cityName] = (cityCounts[match.cityName] || 0) + 1;
+            console.log(`✅ MATCHED: ${match.cityName} belongs to ${countryName} (count: ${cityCounts[match.cityName]})`);
+          }
+        });
       }
     }
     
-    console.log(`🏙️ FINAL FAST city counts for ${countryName}:`, cityCounts);
+    console.log(`🏙️ FINAL GEONAMES city counts for ${countryName}:`, cityCounts);
     return cityCounts;
     
   } catch (error) {
@@ -634,18 +579,12 @@ export async function getTopCitiesWithCounts(): Promise<Array<{name: string, cou
 
 /**
  * Get all submissions with unique slugs generated for company names
- * This ensures no duplicate slugs exist for companies with the same name
+ * Uses the new slug-email mapping system
  */
 export async function getAllSubmissionsWithUniqueSlugs(): Promise<Array<Submission & { uniqueSlug: string }>> {
   try {
-    const allSubmissions = await airtableService.getApprovedSubmissions();
-    const existingBrandNames = allSubmissions.map(sub => sub.brandName);
-    
-    return allSubmissions.map(submission => ({
-      ...submission,
-      uniqueSlug: generateUniqueCompanySlug(submission.brandName, existingBrandNames)
-    }));
-    
+    const { getAllSubmissionsWithSlugs } = await import('./slug-email-mapping');
+    return getAllSubmissionsWithSlugs();
   } catch (error) {
     console.error('❌ Error getting submissions with unique slugs:', error);
     return [];
@@ -654,12 +593,12 @@ export async function getAllSubmissionsWithUniqueSlugs(): Promise<Array<Submissi
 
 /**
  * Get a specific submission by its unique slug
+ * Uses the new slug-email mapping system
  */
 export async function getSubmissionBySlug(slug: string): Promise<Submission | null> {
   try {
-    const submissionsWithSlugs = await getAllSubmissionsWithUniqueSlugs();
-    return submissionsWithSlugs.find(sub => sub.uniqueSlug === slug) || null;
-    
+    const { getSubmissionBySlug } = await import('./slug-email-mapping');
+    return getSubmissionBySlug(slug);
   } catch (error) {
     console.error(`❌ Error getting submission by slug ${slug}:`, error);
     return null;
