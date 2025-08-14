@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
@@ -32,6 +32,8 @@ export default function Country() {
     minPrice: null,
     maxPrice: null
   });
+  
+  const queryClient = useQueryClient();
   
   // Map country slugs to full country names for Airtable matching
   const getCountryNameFromSlug = (slug: string) => {
@@ -123,6 +125,15 @@ export default function Country() {
     staleTime: 30 * 1000, // 30 seconds - back to normal
     refetchInterval: 60 * 1000, // Refetch every minute
   });
+
+  // Force cache invalidation for Andorra to ensure city fetching runs
+  useEffect(() => {
+    if (countryName === 'Andorra') {
+      console.log('🔄 Force invalidating Andorra city queries...');
+      queryClient.invalidateQueries({ queryKey: [`/api/validated-cities/${countryName}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/city-submission-counts/${countryName}`] });
+    }
+  }, [countryName, queryClient]);
 
   // Debug submissions in React component
   console.log('🎬 React component - submissions data:', submissions);
