@@ -10,7 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 import { getActiveCountries, getSubmissionsForCountry } from "@/lib/submission-processor";
 import { getCountryCode } from "@/lib/geonames";
-import { slugify } from "@/lib/utils";
+import { slugify, createUniqueSlug } from "@/lib/utils";
 import { getFlagByCountryName } from "@/lib/utils";
 
 export default function FindHost() {
@@ -24,17 +24,22 @@ export default function FindHost() {
   });
 
   // Transform active country names into country objects with metadata
-  const countries = activeCountryNames.map((countryName, index) => {
-    const countryCode = getCountryCode(countryName) || "XX";
-    const slug = slugify(countryName);
+  const countries = useMemo(() => {
+    const existingSlugs: string[] = [];
     
-    return {
-      id: index + 1,
-      name: countryName,
-      slug: slug,
-      code: countryCode,
-    };
-  });
+    return activeCountryNames.map((countryName, index) => {
+      const countryCode = getCountryCode(countryName) || "XX";
+      const slug = createUniqueSlug(countryName, existingSlugs);
+      existingSlugs.push(slug);
+      
+      return {
+        id: index + 1,
+        name: countryName,
+        slug: slug,
+        code: countryCode,
+      };
+    });
+  }, [activeCountryNames]);
 
   // Fetch submission counts for each active country
   const { data: countriesWithCounts = [], isLoading: isCountsLoading } = useQuery({

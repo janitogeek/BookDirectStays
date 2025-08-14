@@ -25,6 +25,25 @@ export function slugify(text: string): string {
 }
 
 /**
+ * Creates a unique slug by appending numbers for duplicates
+ * @param text - The text to slugify
+ * @param existingSlugs - Array of existing slugs to check against
+ * @returns A unique slug
+ */
+export function createUniqueSlug(text: string, existingSlugs: string[]): string {
+  let slug = slugify(text);
+  let counter = 2;
+  let uniqueSlug = slug;
+  
+  while (existingSlugs.includes(uniqueSlug)) {
+    uniqueSlug = `${slug}-${counter}`;
+    counter++;
+  }
+  
+  return uniqueSlug;
+}
+
+/**
  * Converts a country code to a flag emoji
  */
 export function getFlagEmoji(countryCode: string): string {
