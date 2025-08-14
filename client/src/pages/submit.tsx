@@ -25,6 +25,7 @@ import { CheckboxGroup } from "../components/checkbox-group";
 import { SearchableMultiSelect } from "../components/searchable-multi-select";
 import { airtableService } from "@/lib/airtable";
 import { createCheckoutSession } from "@/lib/stripe";
+import { useMemo, useEffect } from "react";
 
 const planEnum = z.enum(["Basic (€99.99/year)", "Premium (€499.99/year)"]);
 const formSchema = z.object({
@@ -33,7 +34,14 @@ const formSchema = z.object({
   "Direct Booking Engine URL": z.string().url("Please enter a valid URL"),
   "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
-  "Cities / Regions": z.array(z.object({ name: z.string(), displayName: z.string(), geonameId: z.number() })).min(1),
+  "Cities / Regions": z.array(z.object({ 
+    name: z.string(), 
+    displayName: z.string(), 
+    geonameId: z.number(),
+    countryName: z.string(),
+    countryCode: z.string(),
+    adminName1: z.string().optional()
+  })).min(1),
   "Logo Upload": z.object({
     url: z.string().url(),
     name: z.string()
@@ -70,6 +78,7 @@ const formSchema = z.object({
   "YouTube / Video Tour": z.string().url().optional().or(z.literal("")),
   "Choose Your Listing Type": planEnum,
   "Submitted By (Email)": z.string().email(),
+  "Countries": z.array(z.string()).optional(),
 });
 type FormValues = z.infer<typeof formSchema>;
 
@@ -203,6 +212,7 @@ export default function Submit() {
       "YouTube / Video Tour": "",
       "Choose Your Listing Type": "Basic (€99.99/year)",
       "Submitted By (Email)": "",
+      "Countries": [],
     },
   });
 
@@ -492,6 +502,7 @@ export default function Submit() {
         "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
         "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
+        "Countries": extractedCountries.join(", "),
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
@@ -669,6 +680,40 @@ export default function Submit() {
       });
     }
   };
+
+  // Extract countries from selected cities and populate countries field
+  const extractCountriesFromCities = (cities: any[]) => {
+    const countries = new Set<string>();
+    
+    cities.forEach(city => {
+      if (city.displayName) {
+        // Parse "City, Region, Country" format
+        const parts = city.displayName.split(', ');
+        if (parts.length >= 3) {
+          const country = parts[2]; // Last part is the country
+          countries.add(country);
+        }
+      }
+    });
+    
+    return Array.from(countries);
+  };
+
+  // Watch cities changes to auto-populate countries
+  const selectedCities = form.watch("Cities / Regions");
+  const extractedCountries = useMemo(() => {
+    if (selectedCities && selectedCities.length > 0) {
+      return extractCountriesFromCities(selectedCities);
+    }
+    return [];
+  }, [selectedCities]);
+
+  // Update countries field when cities change
+  useEffect(() => {
+    if (extractedCountries.length > 0) {
+      form.setValue("Countries", extractedCountries);
+    }
+  }, [extractedCountries, form]);
 
   return (
     <div className="container mx-auto px-4 py-12">
