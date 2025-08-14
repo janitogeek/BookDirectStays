@@ -130,6 +130,15 @@ export default function Country() {
   console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
   console.log('🎬 React component - countryName:', countryName);
   console.log('🎬 React component - countrySlug:', countrySlug);
+  
+  // Debug individual submission data
+  if (submissions.length > 0) {
+    console.log('🔍 First submission details:');
+    console.log('  - Brand Name:', submissions[0].brandName);
+    console.log('  - Countries:', submissions[0].countries);
+    console.log('  - Cities/Regions:', submissions[0].citiesRegions);
+    console.log('  - Full submission object:', submissions[0]);
+  }
 
   // Get submission count for a city from the fetched counts
   const getCitySubmissionCount = (cityName: string) => {
