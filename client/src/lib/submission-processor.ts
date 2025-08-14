@@ -71,29 +71,6 @@ export async function processAllApprovedSubmissions(): Promise<void> {
 }
 
 /**
- * Reprocess all approved submissions to populate city data
- * This should be called once to fix existing data
- */
-export async function reprocessAllApprovedSubmissions(): Promise<void> {
-  try {
-    console.log('🔄 Starting reprocessing of all approved submissions...');
-    
-    const approvedSubmissions = await airtableService.getApprovedSubmissions();
-    console.log(`📊 Found ${approvedSubmissions.length} approved submissions to reprocess`);
-    
-    for (const submission of approvedSubmissions) {
-      console.log(`🔄 Reprocessing submission: ${submission.brandName}`);
-      await processApprovedSubmission(submission);
-    }
-    
-    console.log('✅ Successfully reprocessed all approved submissions');
-    
-  } catch (error) {
-    console.error('❌ Error reprocessing approved submissions:', error);
-  }
-}
-
-/**
  * Properly capitalize country names
  */
 function capitalizeCountryName(countryName: string): string {
@@ -190,38 +167,16 @@ export async function getSubmissionsForCity(
 }
 
 /**
- * Get validated cities for a specific country (only those with actual submissions)
- */
-export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
-  try {
-    console.log(`🔍 Getting validated cities for country: ${countryName}`);
-    
-    // Get city submission counts first
-    const cityCounts = await getCitySubmissionCounts(countryName);
-    console.log(`📊 City counts received:`, cityCounts);
-    
-    // Return only cities that have at least 1 submission
-    const citiesWithSubmissions = Object.keys(cityCounts).filter(cityName => cityCounts[cityName] > 0);
-    
-    console.log(`🏙️ Cities with submissions for ${countryName}:`, citiesWithSubmissions);
-    console.log(`📊 City counts:`, cityCounts);
-    
-    return citiesWithSubmissions.sort();
-    
-  } catch (error) {
-    console.error(`❌ Error getting validated cities for country ${countryName}:`, error);
-    return [];
-  }
-}
-
-/**
  * Get city submission counts for a specific country
+ * ALWAYS reads from Airtable - no caching, always fresh data
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
-    console.log(`🔍 Getting city submission counts for country: ${countryName}`);
+    console.log(`🔍 Getting city submission counts for country: ${countryName} - FRESH FROM AIRTABLE`);
+    
+    // ALWAYS get fresh data from Airtable
     const countrySubmissions = await getSubmissionsForCountry(countryName);
-    console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName}`);
+    console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName} in Airtable`);
     
     const cityCounts: Record<string, number> = {};
     
@@ -231,7 +186,7 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
       console.log(`🏙️ Countries in submission:`, submission.countries);
       
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        // SIMPLE: Just extract city names from the citiesRegions field
+        // Extract ALL cities from this submission
         submission.citiesRegions.forEach((cityRegion: any) => {
           let cityName = '';
           
@@ -252,14 +207,132 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
       }
     }
     
-    console.log(`🏙️ Final city counts for ${countryName}:`, cityCounts);
+    console.log(`🏙️ Final city counts for ${countryName} (FRESH FROM AIRTABLE):`, cityCounts);
     return cityCounts;
     
   } catch (error) {
     console.error(`❌ Error getting city submission counts for country ${countryName}:`, error);
     return {};
   }
-} 
+}
+
+/**
+ * Get validated cities for a specific country
+ * ALWAYS reads from Airtable - no caching, always fresh data
+ */
+export async function getValidatedCitiesForCountry(countryName: string): Promise<string[]> {
+  try {
+    console.log(`🔍 Getting validated cities for country: ${countryName} - FRESH FROM AIRTABLE`);
+    
+    // Get city submission counts directly from Airtable
+    const cityCounts = await getCitySubmissionCounts(countryName);
+    console.log(`📊 City counts received from Airtable:`, cityCounts);
+    
+    // Return only cities that have at least 1 submission
+    const citiesWithSubmissions = Object.keys(cityCounts).filter(cityName => cityCounts[cityName] > 0);
+    
+    console.log(`🏙️ Cities with submissions for ${countryName} (FRESH FROM AIRTABLE):`, citiesWithSubmissions);
+    console.log(`📊 City counts:`, cityCounts);
+    
+    return citiesWithSubmissions.sort();
+    
+  } catch (error) {
+    console.error(`❌ Error getting validated cities for country ${countryName}:`, error);
+    return [];
+  }
+}
+
+/**
+ * Get ALL active countries from Airtable (for dynamic country page creation)
+ */
+export async function getActiveCountriesFromAirtable(): Promise<string[]> {
+  try {
+    console.log('🌍 Getting ALL active countries from Airtable...');
+    
+    // ALWAYS get fresh data from Airtable
+    const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${approvedSubmissions.length} approved submissions in Airtable`);
+    
+    const uniqueCountries = new Set<string>();
+    
+    approvedSubmissions.forEach(submission => {
+      submission.countries.forEach(country => {
+        const capitalizedCountry = capitalizeCountryName(country);
+        uniqueCountries.add(capitalizedCountry);
+        console.log(`🌍 Found country: ${capitalizedCountry} from submission: ${submission.brandName}`);
+      });
+    });
+    
+    const countryList = Array.from(uniqueCountries).sort();
+    console.log(`🌍 All active countries from Airtable:`, countryList);
+    return countryList;
+    
+  } catch (error) {
+    console.error('❌ Error getting active countries from Airtable:', error);
+    return [];
+  }
+}
+
+/**
+ * Get ALL active cities from Airtable (for dynamic city page creation)
+ */
+export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
+  cityName: string;
+  countryName: string;
+  submissionCount: number;
+}>> {
+  try {
+    console.log('🏙️ Getting ALL active cities from Airtable...');
+    
+    // ALWAYS get fresh data from Airtable
+    const approvedSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${approvedSubmissions.length} approved submissions in Airtable`);
+    
+    const cityMap = new Map<string, { cityName: string; countryName: string; submissionCount: number }>();
+    
+    for (const submission of approvedSubmissions) {
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        submission.citiesRegions.forEach((cityRegion: any) => {
+          let cityName = '';
+          
+          if (typeof cityRegion === 'string') {
+            cityName = cityRegion;
+          } else if (cityRegion?.name) {
+            cityName = cityRegion.name;
+          }
+          
+          if (cityName) {
+            // For each city, count submissions per country
+            submission.countries.forEach(country => {
+              const capitalizedCountry = capitalizeCountryName(country);
+              const cityKey = `${cityName}-${capitalizedCountry}`;
+              
+              if (cityMap.has(cityKey)) {
+                cityMap.get(cityKey)!.submissionCount++;
+              } else {
+                cityMap.set(cityKey, {
+                  cityName,
+                  countryName: capitalizedCountry,
+                  submissionCount: 1
+                });
+              }
+              
+              console.log(`🏙️ City: ${cityName} in ${capitalizedCountry} (count: ${cityMap.get(cityKey)!.submissionCount})`);
+            });
+          }
+        });
+      }
+    }
+    
+    const cityList = Array.from(cityMap.values());
+    console.log(`🏙️ All active cities from Airtable:`, cityList);
+    return cityList;
+    
+  } catch (error) {
+    console.error('❌ Error getting all active cities from Airtable:', error);
+    return [];
+  }
+}
 
 /**
  * Get top countries with submission counts
