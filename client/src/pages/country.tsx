@@ -119,6 +119,7 @@ export default function Country() {
   console.log('🎬 React component - submissions length:', submissions.length);
   console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
   console.log('🎬 React component - countryName:', countryName);
+  console.log('🎬 React component - countrySlug:', countrySlug);
 
   // Get submission count for a city from the fetched counts
   const getCitySubmissionCount = (cityName: string) => {
@@ -129,6 +130,8 @@ export default function Country() {
   console.log('🏙️ City submission counts:', citySubmissionCounts);
   console.log('🏙️ Cities loading:', isCitiesLoading);
   console.log('🏙️ City counts loading:', isCityCountsLoading);
+  console.log('🏙️ Country name being used for city fetch:', countryName);
+  console.log('🏙️ Country slug being used for submissions:', countrySlug);
 
   // Filter cities based on search query
   const filteredCities = useMemo(() => {
@@ -471,119 +474,136 @@ export default function Country() {
       </section>
 
       {/* City Navigation Section */}
-      {(isCitiesLoading || isCityCountsLoading || cities.length > 0) && (
-        <section id="city-navigation" className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
-                  <span>Find Hosts by City in</span> 
-                  <span className="inline-flex items-center gap-2">
-                    <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
-                    {country?.name || countryName}
-                  </span>
-                </h2>
-                <p className="text-xl text-gray-600 mb-6">
-                  Looking for something more specific? Browse hosts by city
-                </p>
-                
-                {/* City Search Input */}
-                {cities.length > 0 && (
-                  <div className="max-w-md mx-auto mb-6">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                      <Input
-                        type="text"
-                        placeholder="Search for a city..."
-                        value={citySearchQuery}
-                        onChange={(e) => setCitySearchQuery(e.target.value)}
-                        className="pl-10 pr-10 py-3"
-                      />
-                      {citySearchQuery && (
-                        <button
-                          onClick={clearCitySearch}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
-                          <X className="h-5 w-5" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
+      <section id="city-navigation" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                <span>Find Hosts by City in</span> 
+                <span className="inline-flex items-center gap-2">
+                  <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
+                  {country?.name || countryName}
+                </span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-6">
+                Looking for something more specific? Browse hosts by city
+              </p>
+              
+              {/* Debug Info */}
+              <div className="text-sm text-gray-500 mb-4 p-3 bg-gray-100 rounded">
+                <p>Debug: Cities loaded: {cities.length} | Loading: {isCitiesLoading ? 'Yes' : 'No'} | Counts loading: {isCityCountsLoading ? 'Yes' : 'No'}</p>
+                <p>Cities: {cities.join(', ') || 'None'}</p>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {isCitiesLoading || isCityCountsLoading ? (
-                  // Loading skeleton
-                  Array.from({ length: 8 }).map((_, i) => (
-                    <Card key={i} className="hover:shadow-md transition-shadow duration-200">
-                      <CardContent className="p-4">
-                        <div className="animate-pulse text-center">
-                          <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
-                          <div className="h-6 bg-gray-200 rounded w-12 mx-auto"></div>
+              {/* City Search Input */}
+              {cities.length > 0 && (
+                <div className="max-w-md mx-auto mb-6">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <Input
+                      type="text"
+                      placeholder="Search for a city..."
+                      value={citySearchQuery}
+                      onChange={(e) => setCitySearchQuery(e.target.value)}
+                      className="pl-10 pr-10 py-3"
+                    />
+                    {citySearchQuery && (
+                      <button
+                        onClick={clearCitySearch}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {isCitiesLoading || isCityCountsLoading ? (
+                // Loading skeleton
+                Array.from({ length: 8 }).map((_, i) => (
+                  <Card key={i} className="hover:shadow-md transition-shadow duration-200">
+                    <CardContent className="p-4">
+                      <div className="animate-pulse text-center">
+                        <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mb-2"></div>
+                        <div className="h-6 bg-gray-200 rounded w-12 mx-auto"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : cities.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                    <p className="text-yellow-800 font-medium mb-2">No cities found for this country yet.</p>
+                    <p className="text-yellow-700 text-sm mb-4">
+                      This usually means either:
+                    </p>
+                    <ul className="text-yellow-700 text-sm text-left max-w-md mx-auto space-y-1">
+                      <li>• No submissions have been approved yet for this country</li>
+                      <li>• The city data hasn't been processed yet</li>
+                      <li>• There might be a data processing issue</li>
+                    </ul>
+                    <p className="text-yellow-700 text-sm mt-4">
+                      Check the console for debugging information.
+                    </p>
+                  </div>
+                </div>
+              ) : filteredCities.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <div className="text-gray-500">
+                    <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <h3 className="text-xl font-semibold mb-2">No cities found</h3>
+                    <p>Try searching for a different city name.</p>
+                    {citySearchQuery && (
+                      <Button 
+                        variant="outline" 
+                        onClick={clearCitySearch}
+                        className="mt-4"
+                      >
+                        Clear search
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                filteredCities.map((city, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                    <CardContent className="p-4">
+                      <Link 
+                        href={`/country/${countrySlug}/${city.toLowerCase().replace(/\s+/g, '-')}`}
+                        className="block text-center"
+                      >
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <span className="text-lg">📍</span>
+                          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                            {city}
+                          </h3>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : cities.length === 0 ? (
-                  <div className="col-span-full text-center py-8">
-                    <p className="text-gray-500">No cities found for this country yet.</p>
-                  </div>
-                ) : filteredCities.length === 0 ? (
-                  <div className="col-span-full text-center py-8">
-                    <div className="text-gray-500">
-                      <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <h3 className="text-xl font-semibold mb-2">No cities found</h3>
-                      <p>Try searching for a different city name.</p>
-                      {citySearchQuery && (
-                        <Button 
-                          variant="outline" 
-                          onClick={clearCitySearch}
-                          className="mt-4"
-                        >
-                          Clear search
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  filteredCities.map((city, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
-                      <CardContent className="p-4">
-                        <Link 
-                          href={`/country/${countrySlug}/${city.toLowerCase().replace(/\s+/g, '-')}`}
-                          className="block text-center"
-                        >
-                          <div className="flex items-center justify-center gap-2 mb-2">
-                            <span className="text-lg">📍</span>
-                            <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                              {city}
-                            </h3>
-                          </div>
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                            {getCitySubmissionCount(city)} hosts
-                          </Badge>
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-              
-              <div className="text-center mt-12">
-                <p className="text-gray-600 mb-4">
-                  Can't find your city or region?
-                </p>
-                <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-                  <Link href="/submit">
-                    Add Your Direct Booking Site
-                  </Link>
-                </Button>
-              </div>
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          {getCitySubmissionCount(city)} hosts
+                        </Badge>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+            
+            <div className="text-center mt-12">
+              <p className="text-gray-600 mb-4">
+                Can't find your city or region?
+              </p>
+              <Button asChild variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                <Link href="/submit">
+                  Add Your Direct Booking Site
+                </Link>
+              </Button>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </main>
   );
 }

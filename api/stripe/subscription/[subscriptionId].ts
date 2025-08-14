@@ -19,3 +19,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   return getSubscription(req as any, res as any);
 }
 
+
