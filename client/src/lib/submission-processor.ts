@@ -144,6 +144,7 @@ function capitalizeCountryName(countryName: string): string {
     'uk': 'United Kingdom',
     'uae': 'United Arab Emirates',
     'drc': 'Democratic Republic of Congo',
+    'andorra': 'Andorra'
   };
   
   const lowerName = countryName.toLowerCase().trim();

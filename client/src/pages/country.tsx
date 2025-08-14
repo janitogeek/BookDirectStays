@@ -61,7 +61,8 @@ export default function Country() {
       poland: 'Poland',
       sweden: 'Sweden',
       turkey: 'Turkey',
-      albania: 'Albania'
+      albania: 'Albania',
+      andorra: 'Andorra'
     };
     return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
   };
