@@ -334,38 +334,9 @@ export const airtableService = {
   },
 
   async getSubmissionsByCountry(countryName: string): Promise<Submission[]> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
-
-    console.log('🌍 Fetching approved-published submissions for country:', countryName);
-
-    // Only show "Approved – Published" records for this country (note: em dash)
-    // Use FIND() to search in the multi-select Countries field
-    const filterFormula = `AND({Status} = "Approved – Published", FIND("${countryName}", {Countries}) > 0)`;
-    const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
-
-    console.log('🔗 Country API URL:', url);
-    console.log('📝 Country filter formula:', filterFormula);
-    console.log('🎯 Looking for status "Approved – Published" (em dash) in Countries field for:', countryName);
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      },
-    });
-
-    if (!response.ok) {
-      console.error('❌ Airtable API error:', response.status, response.statusText);
-      throw new Error(`Airtable API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const records: AirtableSubmission[] = data.records || [];
-    
-    console.log(`📦 Approved-published submissions for ${countryName}:`, records.length);
-
-    return records.map(record => this.transformSubmission(record));
+    // Use the submission processor function that includes unique slug generation
+    const { getSubmissionsForCountry } = await import('./submission-processor');
+    return getSubmissionsForCountry(countryName);
   },
 
   async getSubmissionById(id: string): Promise<Submission | null> {

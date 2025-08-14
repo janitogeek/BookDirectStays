@@ -38,6 +38,7 @@ export default function Country() {
   // Map country slugs to full country names for Airtable matching
   const getCountryNameFromSlug = (slug: string) => {
     const countryMap: { [key: string]: string } = {
+      'united-states': 'United States',
       usa: 'United States',
       spain: 'Spain',
       uk: 'United Kingdom',
@@ -64,7 +65,8 @@ export default function Country() {
       sweden: 'Sweden',
       turkey: 'Turkey',
       albania: 'Albania',
-      andorra: 'Andorra'
+      andorra: 'Andorra',
+      indonesia: 'Indonesia'
     };
     return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
   };
@@ -406,6 +408,20 @@ export default function Country() {
       {/* Hero Section */}
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb Navigation */}
+          <nav className="mb-6">
+            <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
+              <Link href="/find-host" className="hover:underline">
+                Find a Host
+              </Link>
+              <span>›</span>
+              <span className="flex items-center gap-1">
+                <span className="text-lg">{getFlagByCountryName(country?.name || countryName)}</span>
+                {country?.name || countryName}
+              </span>
+            </div>
+          </nav>
+
           {/* Centered Title */}
           <div className="text-center mb-6">
             {isCountryLoading ? (
