@@ -132,6 +132,23 @@ export default function Country() {
       console.log('🔄 Force invalidating Andorra city queries...');
       queryClient.invalidateQueries({ queryKey: [`/api/validated-cities/${countryName}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/city-submission-counts/${countryName}`] });
+      
+      // DIRECT FUNCTION TEST - bypass React Query entirely
+      console.log('🧪 DIRECT FUNCTION TEST - calling city functions directly...');
+      
+      // Test city submission counts directly
+      getCitySubmissionCounts(countryName).then(result => {
+        console.log('🧪 DIRECT RESULT - city submission counts:', result);
+      }).catch(error => {
+        console.error('🧪 DIRECT ERROR - city submission counts:', error);
+      });
+      
+      // Test validated cities directly
+      getValidatedCitiesForCountry(countryName).then(result => {
+        console.log('🧪 DIRECT RESULT - validated cities:', result);
+      }).catch(error => {
+        console.error('🧪 DIRECT ERROR - validated cities:', error);
+      });
     }
   }, [countryName, queryClient]);
 
