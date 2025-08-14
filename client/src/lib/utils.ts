@@ -414,10 +414,10 @@ export function extractCityName(fullCityString: string): string {
   
   const parts = fullCityString.split(', ');
   if (parts.length >= 1) {
-    return parts[0]; // First part is the city name
+    return parts[0].trim(); // First part is the city name
   }
   
-  return fullCityString; // Fallback to original string if parsing fails
+  return fullCityString.trim(); // Fallback to original string if parsing fails
 }
 
 /**
@@ -429,7 +429,7 @@ export function extractCountryName(fullCityString: string): string {
   
   const parts = fullCityString.split(', ');
   if (parts.length >= 3) {
-    return parts[2]; // Last part is the country name
+    return parts[2].trim(); // Last part is the country name
   }
   
   return ''; // Return empty if no country found

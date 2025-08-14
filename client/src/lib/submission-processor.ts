@@ -201,7 +201,7 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
             // Try to parse "City, Region, Country" format to extract the country
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
-              const cityCountry = parts[2]; // Last part is the country
+              const cityCountry = parts[2].trim(); // Last part is the country
               return cityCountry.toLowerCase() === countryName.toLowerCase();
             }
           }
@@ -326,8 +326,8 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
             // Try to parse "City, Region, Country" format
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
-              const cityName = parts[0]; // First part is the city
-              const cityCountry = parts[2]; // Last part is the country
+              const cityName = parts[0].trim(); // First part is the city
+              const cityCountry = parts[2].trim(); // Last part is the country
               
               // Only count cities that belong to the requested country
               if (cityCountry.toLowerCase() === countryName.toLowerCase()) {
@@ -338,7 +338,7 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
               }
             } else {
               // Fallback: if city doesn't have country info, count it if submission is in this country
-              const cityName = cityRegion;
+              const cityName = cityRegion.trim();
               cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
               console.log(`✅ Added city (fallback): ${cityName} (count: ${cityCounts[cityName]})`);
             }
@@ -387,6 +387,7 @@ export async function getValidatedCitiesForCountry(countryName: string): Promise
 
 /**
  * Get ALL active countries from Airtable (for dynamic country page creation)
+ * Now extracts countries from city data to avoid duplicates and ensure accuracy
  */
 export async function getActiveCountriesFromAirtable(): Promise<string[]> {
   try {
@@ -399,11 +400,30 @@ export async function getActiveCountriesFromAirtable(): Promise<string[]> {
     const uniqueCountries = new Set<string>();
     
     approvedSubmissions.forEach(submission => {
-      submission.countries.forEach(country => {
-        const capitalizedCountry = capitalizeCountryName(country);
-        uniqueCountries.add(capitalizedCountry);
-        console.log(`🌍 Found country: ${capitalizedCountry} from submission: ${submission.brandName}`);
-      });
+      // First, try to extract countries from city data (new approach)
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        submission.citiesRegions.forEach((cityRegion: any) => {
+          if (typeof cityRegion === 'string') {
+            // Parse "City, Region, Country" format to extract country
+            const parts = cityRegion.split(', ');
+            if (parts.length >= 3) {
+              const countryName = parts[2].trim(); // Last part is the country
+              const capitalizedCountry = capitalizeCountryName(countryName);
+              uniqueCountries.add(capitalizedCountry);
+              console.log(`🌍 Found country from city: ${capitalizedCountry} from submission: ${submission.brandName}`);
+            }
+          }
+        });
+      }
+      
+      // Fallback to countries field for existing submissions that don't have city data
+      if (submission.countries && submission.countries.length > 0) {
+        submission.countries.forEach(country => {
+          const capitalizedCountry = capitalizeCountryName(country);
+          uniqueCountries.add(capitalizedCountry);
+          console.log(`🌍 Found country from countries field: ${capitalizedCountry} from submission: ${submission.brandName}`);
+        });
+      }
     });
     
     const countryList = Array.from(uniqueCountries).sort();
@@ -440,8 +460,8 @@ export async function getAllActiveCitiesFromAirtable(): Promise<Array<{
             // Try to parse "City, Region, Country" format
             const parts = cityRegion.split(', ');
             if (parts.length >= 3) {
-              const cityName = parts[0]; // First part is the city
-              const countryName = parts[2]; // Last part is the country
+              const cityName = parts[0].trim(); // First part is the city
+              const countryName = parts[2].trim(); // Last part is the country
               const cityKey = `${cityName}-${countryName}`;
               
               if (cityMap.has(cityKey)) {

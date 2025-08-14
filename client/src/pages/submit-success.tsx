@@ -100,7 +100,7 @@ export default function SubmitSuccess() {
         "Number of Listings": formData["Number of Listings"],
 
         "Cities / Regions": formData["Cities / Regions"].map((city: any) => city.displayName).join(", "),
-        "Countries": formData["Cities / Regions"].map((city: any) => city.countryName).join(", "),
+        "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
         "One-line Description": formData["One-line Description"],
         "Why Book With You": formData["Why Book With You?"],
         "Top Stats": formData["Top Stats"] || "",

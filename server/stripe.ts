@@ -106,7 +106,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
       ? formData["Cities / Regions"].map((city: any) => city.displayName || city).join(", ")
       : formData["Cities / Regions"],
     "Countries": Array.isArray(formData["Cities / Regions"]) 
-      ? formData["Cities / Regions"].map((city: any) => city.countryName || "").filter(Boolean).join(", ")
+      ? Array.from(new Set(formData["Cities / Regions"].map((city: any) => city.countryName || "").filter(Boolean))).join(", ")
       : "",
     "One-line Description": formData["One-line Description"],
     "Why Book With You": formData["Why Book With You?"],
