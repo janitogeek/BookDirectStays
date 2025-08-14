@@ -501,7 +501,7 @@ export default function Submit() {
         "Direct Booking Engine URL": values["Direct Booking Engine URL"],
         "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
-        "Cities / Regions": values["Cities / Regions"].map(city => city.name).join(", "),
+        "Cities / Regions": values["Cities / Regions"].map(city => city.displayName).join(", "),
         "Countries": extractedCountries.join(", "),
         "One-line Description": values["One-line Description"],
         "Why Book With You": values["Why Book With You?"],
