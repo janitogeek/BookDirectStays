@@ -1,6 +1,6 @@
 import React from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
-import { useRoute, Link } from "wouter";
+import { useRoute, Link, useLocation } from "wouter";
 import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine, Globe } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 
@@ -16,6 +16,7 @@ import { getFlagByCountryName } from "@/lib/utils";
 
 export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
+  const [, setLocation] = useLocation();
   const submissionId = params?.id;
   
   // Check navigation context from URL parameters
@@ -130,8 +131,15 @@ export default function SubmissionProperty() {
                            className="hover:underline"
                            onClick={(e) => {
                              e.preventDefault();
-                             // Navigate to home and scroll to featured hosts section
-                             window.location.href = '/#our-featured-hosts';
+                             // Navigate to home using wouter
+                             setLocation('/');
+                             // Wait for navigation and DOM update, then scroll to featured hosts
+                             setTimeout(() => {
+                               const element = document.getElementById('our-featured-hosts');
+                               if (element) {
+                                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                               }
+                             }, 500); // Increased timeout to ensure page loads
                            }}
                          >
                            Our Featured Hosts
@@ -305,7 +313,7 @@ export default function SubmissionProperty() {
                     <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                       <MapPin className="w-4 h-4 flex-shrink-0" />
                       <span className="flex items-center gap-1 flex-wrap">
-                        Cities: {uniqueCityNames.join(", ")}
+                        Cities: {uniqueCityNames.sort((a, b) => a.localeCompare(b)).join(", ")}
                       </span>
                     </div>
                   );
