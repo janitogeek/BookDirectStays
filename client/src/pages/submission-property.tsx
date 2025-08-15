@@ -18,10 +18,11 @@ export default function SubmissionProperty() {
   const [, params] = useRoute('/property/:id');
   const submissionId = params?.id;
   
-  // Check if we came from a city page (look for city in URL parameters or referrer)
+  // Check navigation context from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const fromCity = urlParams.get('city');
   const fromCountry = urlParams.get('country');
+  const fromFeatured = urlParams.get('from') === 'featured';
   
 
 
@@ -121,38 +122,52 @@ export default function SubmissionProperty() {
       {/* Breadcrumb Navigation */}
       <nav className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="container mx-auto">
-          <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
-            <Link href="/find-host" className="hover:underline">
-              Find a Host
-            </Link>
-            {(fromCountry || (submission.countries && submission.countries.length > 0)) && (
-              <>
-                <span>›</span>
-                <Link 
-                  href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}`} 
-                  className="hover:underline flex items-center gap-1"
-                >
-                  <span className="text-lg">{getFlagByCountryName(fromCountry || submission.countries[0])}</span>
-                  {fromCountry || submission.countries[0]}
-                </Link>
-                {fromCity && (
-                  <>
-                    <span>›</span>
-                    <Link 
-                      href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}/${fromCity.toLowerCase().replace(/\s+/g, '-')}`} 
-                      className="hover:underline"
-                    >
-                      {fromCity}
-                    </Link>
-                  </>
-                )}
-              </>
-            )}
-            <span>›</span>
-            <span className="flex items-center gap-1">
-              {submission.brandName}
-            </span>
-          </div>
+                             <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
+                     {fromFeatured ? (
+                       <>
+                         <Link href="/#our-featured-hosts" className="hover:underline">
+                           Our Featured Hosts
+                         </Link>
+                         <span>›</span>
+                         <span className="flex items-center gap-1">
+                           {submission.brandName}
+                         </span>
+                       </>
+                     ) : (
+                       <>
+                         <Link href="/find-host" className="hover:underline">
+                           Find a Host
+                         </Link>
+                         {(fromCountry || (submission.countries && submission.countries.length > 0)) && (
+                           <>
+                             <span>›</span>
+                             <Link
+                               href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}`}
+                               className="hover:underline flex items-center gap-1"
+                             >
+                               <span className="text-lg">{getFlagByCountryName(fromCountry || submission.countries[0])}</span>
+                               {fromCountry || submission.countries[0]}
+                             </Link>
+                             {fromCity && (
+                               <>
+                                 <span>›</span>
+                                 <Link
+                                   href={`/country/${(fromCountry || submission.countries[0]).toLowerCase().replace(/\s+/g, '-')}/${fromCity.toLowerCase().replace(/\s+/g, '-')}`}
+                                   className="hover:underline"
+                                 >
+                                   {fromCity}
+                                 </Link>
+                               </>
+                             )}
+                           </>
+                         )}
+                         <span>›</span>
+                         <span className="flex items-center gap-1">
+                           {submission.brandName}
+                         </span>
+                       </>
+                     )}
+                   </div>
         </div>
       </nav>
 
@@ -237,10 +252,12 @@ export default function SubmissionProperty() {
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
-                    {Array.from(new Set(submission.countries)).map((country, index) => (
+                    {Array.from(new Set(submission.countries))
+                      .sort((a, b) => a.localeCompare(b))
+                      .map((country, index, sortedCountries) => (
                       <span key={country}>
                         {getFlagEmoji(country)} {country}
-                        {index < Array.from(new Set(submission.countries)).length - 1 && ", "}
+                        {index < sortedCountries.length - 1 && ", "}
                       </span>
                     ))}
                   </span>

@@ -33,6 +33,9 @@ export default function Country() {
     maxPrice: null
   });
   
+  // Featured filter state
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+  
   const queryClient = useQueryClient();
   
   // Map country slugs to full country names for Airtable matching
@@ -206,17 +209,31 @@ export default function Country() {
   //   }
   // });
 
-  // Filter submissions based on active filters
+  // Filter and sort submissions based on active filters
   const filteredSubmissions = useMemo(() => {
     if (!submissions.length) return [];
     
+    let filtered = submissions;
+    
+    // Apply featured filter first
+    if (featuredOnly) {
+      filtered = filtered.filter(submission => {
+        // Check if it's a premium listing (Featured)
+        return submission.plan?.includes('Premium') || submission.plan?.includes('€499.99');
+      });
+    }
+    
     const hasActiveFilters = Object.values(filters).some(filterArray => Array.isArray(filterArray) ? filterArray.length > 0 : Boolean(filterArray));
-    if (!hasActiveFilters) return submissions;
-
-    return submissions.filter(submission => {
-      // Check keyword search first
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
+    if (!hasActiveFilters && !featuredOnly) {
+      // No filters, just sort
+      return sortSubmissions(submissions);
+    }
+    
+    if (hasActiveFilters) {
+      filtered = filtered.filter(submission => {
+        // Check keyword search first
+        if (filters.search) {
+          const searchTerm = filters.search.toLowerCase();
         const searchableContent = [
           submission.brandName,
           submission.oneLineDescription,
@@ -329,9 +346,29 @@ export default function Country() {
         }
       }
 
-      return true;
+        return true;
+      });
+    }
+    
+    // Sort submissions: Featured first, then alphabetical
+    return sortSubmissions(filtered);
+  }, [submissions, filters, featuredOnly]);
+
+  // Sort function: Featured first, then alphabetical by brand name
+  const sortSubmissions = (submissionsToSort: any[]) => {
+    return submissionsToSort.sort((a, b) => {
+      // Check if either is featured/premium
+      const aIsPremium = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+      const bIsPremium = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+      
+      // Featured first
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      
+      // Then alphabetical by brand name
+      return a.brandName.localeCompare(b.brandName);
     });
-  }, [submissions, filters]);
+  };
 
   const handleShowMore = () => {
     setVisibleCount(prevCount => prevCount + 6);
@@ -458,6 +495,21 @@ export default function Country() {
           {/* Host Filters */}
           <HostFilters onFiltersChange={setFilters} />
 
+          {/* Featured Only Toggle */}
+          <div className="mb-6">
+            <Button
+              variant={featuredOnly ? "default" : "outline"}
+              onClick={() => setFeaturedOnly(!featuredOnly)}
+              className={`${
+                featuredOnly 
+                  ? "bg-yellow-500 hover:bg-yellow-600 text-yellow-900 border-yellow-500" 
+                  : "border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+              }`}
+            >
+              {featuredOnly ? "✓ Featured Only" : "Featured Only"}
+            </Button>
+          </div>
+
           {/* Property Manager Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {isListingsLoading || isSubmissionsLoading ? (
@@ -510,7 +562,11 @@ export default function Country() {
               <>
                 {/* Display approved submissions first */}
                 {filteredSubmissions.map((submission) => (
-                  <SubmissionPropertyCard key={`submission-${submission.id}`} submission={submission} />
+                  <SubmissionPropertyCard 
+                    key={`submission-${submission.id}`} 
+                    submission={submission} 
+                    fromCountry={countryName}
+                  />
                 ))}
                 
                 {/* Display existing listings */}

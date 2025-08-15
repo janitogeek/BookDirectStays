@@ -439,10 +439,12 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
         <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
           <MapPin className="w-4 h-4 flex-shrink-0" />
           <span className="flex items-center gap-1 flex-wrap">
-            {Array.from(new Set(submission.countries)).map((country, index) => (
+            {Array.from(new Set(submission.countries))
+              .sort((a, b) => a.localeCompare(b))
+              .map((country, index, sortedCountries) => (
               <span key={country}>
                 {getFlagEmoji(country)} {country}
-                {index < Array.from(new Set(submission.countries)).length - 1 && ", "}
+                {index < sortedCountries.length - 1 && ", "}
               </span>
             ))}
           </span>

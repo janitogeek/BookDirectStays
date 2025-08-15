@@ -48,10 +48,13 @@ export default function FeaturedHostsCarousel() {
     };
   }, []);
 
-  // Fetch all approved submissions and filter for featured ones
+  // Fetch all approved submissions with unique slugs and filter for featured ones
   const { data: submissions, isLoading, error } = useQuery({
     queryKey: ["/api/featured-submissions"],
-    queryFn: () => airtableService.getApprovedSubmissions(),
+    queryFn: async () => {
+      const { getAllSubmissionsWithSlugs } = await import('@/lib/slug-email-mapping');
+      return getAllSubmissionsWithSlugs();
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
@@ -555,10 +558,12 @@ export default function FeaturedHostsCarousel() {
                 <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span className="flex items-center gap-1 flex-wrap">
-                    {host.countries.map((country, index) => (
+                    {host.countries
+                      .sort((a, b) => a.localeCompare(b))
+                      .map((country, index, sortedCountries) => (
                       <span key={country}>
                         {getFlagEmoji(country)} {country}
-                        {index < host.countries.length - 1 && ", "}
+                        {index < sortedCountries.length - 1 && ", "}
                       </span>
                     ))}
                   </span>
@@ -590,7 +595,7 @@ export default function FeaturedHostsCarousel() {
                     className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
                   >
                     <Link 
-                      to={`/property/${generateSlug(host.brandName)}`}
+                      to={`/property/${host.uniqueSlug || generateSlug(host.brandName)}?from=featured`}
                       onClick={clickTracking.trackCompany}
                     >
                       Why book with {host.brandName}?

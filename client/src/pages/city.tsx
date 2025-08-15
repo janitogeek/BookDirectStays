@@ -29,6 +29,9 @@ export default function City() {
     maxPrice: null
   });
   
+  // Featured filter state
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+  
   // Convert slug back to readable city name with proper accents
   const getCityNameFromSlug = (slug: string) => {
     // Map of common city slugs to their proper names with accents
@@ -130,17 +133,31 @@ export default function City() {
     })
   );
 
-  // Filter submissions by all active filters
+  // Filter and sort submissions by all active filters
   const filteredSubmissions = useMemo(() => {
     if (!citySubmissions.length) return [];
     
+    let filtered = citySubmissions;
+    
+    // Apply featured filter first
+    if (featuredOnly) {
+      filtered = filtered.filter(submission => {
+        // Check if it's a premium listing (Featured)
+        return submission.plan?.includes('Premium') || submission.plan?.includes('€499.99');
+      });
+    }
+    
     const hasActiveFilters = Object.values(filters).some(filterArray => Array.isArray(filterArray) ? filterArray.length > 0 : Boolean(filterArray));
-    if (!hasActiveFilters) return citySubmissions;
-
-    return citySubmissions.filter(submission => {
-      // Check keyword search first
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase();
+    if (!hasActiveFilters && !featuredOnly) {
+      // No filters, just sort
+      return sortSubmissions(citySubmissions);
+    }
+    
+    if (hasActiveFilters) {
+      filtered = filtered.filter(submission => {
+        // Check keyword search first
+        if (filters.search) {
+          const searchTerm = filters.search.toLowerCase();
         const searchableContent = [
           submission.brandName,
           submission.oneLineDescription,
@@ -253,9 +270,29 @@ export default function City() {
         }
       }
 
-      return true;
+        return true;
+      });
+    }
+    
+    // Sort submissions: Featured first, then alphabetical
+    return sortSubmissions(filtered);
+  }, [citySubmissions, filters, featuredOnly]);
+
+  // Sort function: Featured first, then alphabetical by brand name
+  const sortSubmissions = (submissionsToSort: any[]) => {
+    return submissionsToSort.sort((a, b) => {
+      // Check if either is featured/premium
+      const aIsPremium = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+      const bIsPremium = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+      
+      // Featured first
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      
+      // Then alphabetical by brand name
+      return a.brandName.localeCompare(b.brandName);
     });
-  }, [citySubmissions, filters]);
+  };
 
   console.log('🏙️ City page - cityName:', cityName);
   console.log('🏙️ City page - countryName:', countryName);
@@ -375,6 +412,23 @@ export default function City() {
             {/* Host Filters */}
             {citySubmissions.length > 0 && (
               <HostFilters onFiltersChange={setFilters} />
+            )}
+
+            {/* Featured Only Toggle */}
+            {citySubmissions.length > 0 && (
+              <div className="mb-6">
+                <Button
+                  variant={featuredOnly ? "default" : "outline"}
+                  onClick={() => setFeaturedOnly(!featuredOnly)}
+                  className={`${
+                    featuredOnly 
+                      ? "bg-yellow-500 hover:bg-yellow-600 text-yellow-900 border-yellow-500" 
+                      : "border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+                  }`}
+                >
+                  {featuredOnly ? "✓ Featured Only" : "Featured Only"}
+                </Button>
+              </div>
             )}
             
             {/* Property Manager Cards Grid */}
