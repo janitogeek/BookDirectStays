@@ -425,29 +425,15 @@ export default function SubmissionProperty() {
             {/* Left Column - Company Content (Desktop) */}
             <div className="flex flex-col gap-8 lg:flex-1">
               
-              {/* Why Book With - Mobile: 1st, Desktop: Left column 1st */}
+              {/* Why Book With - Single section with blue header */}
               {submission.whyBookWithYou && (
-                <Card className="order-1 lg:order-none">
-                  <CardHeader>
-                    <CardTitle>Why Book Direct with {submission.brandName}? (for guests)</CardTitle>
+                <Card className="order-1 lg:order-none overflow-hidden">
+                  <CardHeader className="bg-blue-600 text-white p-6">
+                    <CardTitle className="text-xl font-semibold text-center">
+                      Why Book With {submission.brandName}?
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="prose prose-gray max-w-none">
-                      <p className="text-gray-700 whitespace-pre-line">
-                        {submission.whyBookWithYou}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Why Book With - Mobile: 2nd, Desktop: Left column 2nd */}
-              {submission.whyBookWithYou && (
-                <Card className="order-2 lg:order-none">
-                  <CardHeader>
-                    <CardTitle>Why Book with {submission.brandName}?</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-6">
                     <div className="prose prose-gray max-w-none">
                       <p className="text-gray-700 whitespace-pre-line">
                         {submission.whyBookWithYou}
