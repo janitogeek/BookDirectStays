@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { Toaster } from "@/components/ui/toaster";
+import { dataPreloader } from "./lib/data-preloader";
 
 // Register Service Worker for caching
 if ('serviceWorker' in navigator) {
@@ -105,6 +106,14 @@ history.replaceState = function(...args) {
   originalReplaceState.apply(history, args);
   setTimeout(updatePageMeta, 0);
 };
+
+// Start preloading data immediately when app starts
+console.log('🚀 Starting background data preload...');
+dataPreloader.preloadData().then(() => {
+  console.log('✅ Background data preload completed!');
+}).catch((error) => {
+  console.error('❌ Background data preload failed:', error);
+});
 
 // Report performance metrics after page load
 window.addEventListener('load', () => {

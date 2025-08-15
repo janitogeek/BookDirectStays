@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
-import { getValidatedCitiesForCountry, getCitySubmissionCounts } from "@/lib/submission-processor";
+import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 
 export default function Country() {
@@ -93,30 +93,23 @@ export default function Country() {
   const countryName = getCountryNameFromSlug(countrySlug || '');
   
   // Fetch validated cities for this country from submissions
-  const { data: cities = [], isLoading: isCitiesLoading } = useQuery({
-    queryKey: [`/api/validated-cities/${countryName}`],
-    queryFn: async () => {
-      console.log('🚀 City fetching function called for country:', countryName);
-      const result = await getValidatedCitiesForCountry(countryName);
-      console.log('🚀 City fetching result:', result);
-      return result;
-    },
+  // Fetch cities for this country (instant if cached)  
+  const { data: citiesWithCounts = [], isLoading: isCitiesLoading } = useQuery({
+    queryKey: ["/api/preloaded-cities", countryName],
+    queryFn: () => dataPreloader.getCitiesForCountry(countryName),
     enabled: !!countryName,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
   });
 
-  // Fetch city submission counts
-  const { data: citySubmissionCounts = {}, isLoading: isCityCountsLoading } = useQuery({
-    queryKey: [`/api/city-submission-counts/${countryName}`],
-    queryFn: async () => {
-      console.log('🚀 City counts function called for country:', countryName);
-      const result = await getCitySubmissionCounts(countryName);
-      console.log('🚀 City counts result:', result);
-      return result;
-    },
-    enabled: !!countryName,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  // Transform cities data to match existing format
+  const cities = citiesWithCounts.map(city => city.name);
+  const citySubmissionCounts = citiesWithCounts.reduce((acc, city) => {
+    acc[city.name] = city.submissionCount;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  console.log('🏙️ Cities with counts (instant):', citiesWithCounts);
+  console.log('📊 City counts:', citySubmissionCounts);
   
   // Fetch country
   const { data: country, isLoading: isCountryLoading } = useQuery({
@@ -140,10 +133,10 @@ export default function Country() {
 
   // Query submissions for this country
   const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: ['submissions', countrySlug],
-    queryFn: () => airtableService.getSubmissionsByCountry(countryName),
+    queryKey: ["/api/preloaded-submissions", countryName],
+    queryFn: () => dataPreloader.getSubmissionsForCountry(countryName),
     enabled: !!countryName,
-    staleTime: 30 * 1000, // 30 seconds - back to normal
+    staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
     refetchInterval: 60 * 1000, // Refetch every minute
   });
 
@@ -197,7 +190,7 @@ export default function Country() {
   console.log('🏙️ Cities for country:', cities);
   console.log('🏙️ City submission counts:', citySubmissionCounts);
   console.log('🏙️ Cities loading:', isCitiesLoading);
-  console.log('🏙️ City counts loading:', isCityCountsLoading);
+  console.log('🏙️ Cities loading (cached):', isCitiesLoading);
   console.log('🏙️ Country name being used for city fetch:', countryName);
   console.log('🏙️ Country slug being used for submissions:', countrySlug);
 
@@ -610,7 +603,7 @@ export default function Country() {
               
               {/* Debug Info */}
               <div className="text-sm text-gray-500 mb-4 p-3 bg-gray-100 rounded">
-                <p>Debug: Cities loaded: {cities.length} | Loading: {isCitiesLoading ? 'Yes' : 'No'} | Counts loading: {isCityCountsLoading ? 'Yes' : 'No'}</p>
+                <p>Debug: Cities loaded: {cities.length} | Loading: {isCitiesLoading ? 'Yes' : 'No'} | Cached: ⚡</p>
                 <p>Cities: {cities.join(', ') || 'None'}</p>
               </div>
                 
@@ -640,7 +633,7 @@ export default function Country() {
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {isCitiesLoading || isCityCountsLoading ? (
+                {isCitiesLoading ? (
                   // Loading skeleton
                   Array.from({ length: 8 }).map((_, i) => (
                     <Card key={i} className="hover:shadow-md transition-shadow duration-200">

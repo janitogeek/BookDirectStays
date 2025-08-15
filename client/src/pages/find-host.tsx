@@ -8,63 +8,46 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
-import { getActiveCountries, getSubmissionsForCountry } from "@/lib/submission-processor";
-import { getCountryCode } from "@/lib/geonames";
-import { slugify, createUniqueSlug } from "@/lib/utils";
+import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 
 export default function FindHost() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch active countries (countries that have approved submissions)
-  const { data: activeCountryNames = [], isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/active-countries"],
-    queryFn: () => getActiveCountries(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+  // Fetch countries data from preloader (instant if cached)
+  const { data: countriesData = [], isLoading: isCountriesLoading } = useQuery({
+    queryKey: ["/api/preloaded-countries"],
+    queryFn: () => dataPreloader.getCountries(),
+    staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
   });
 
   // Transform active country names into country objects with metadata
   const countries = useMemo(() => {
     const existingSlugs: string[] = [];
     
-    return activeCountryNames.map((countryName, index) => {
-      const countryCode = getCountryCode(countryName) || "XX";
-      const slug = createUniqueSlug(countryName, existingSlugs);
-      existingSlugs.push(slug);
-      
-      return {
-        id: index + 1,
-        name: countryName,
-        slug: slug,
-        code: countryCode,
-      };
-    });
-  }, [activeCountryNames]);
+    return countriesData.map((country, index) => ({
+      id: index + 1,
+      name: country.name,
+      slug: country.slug,
+      code: "XX", // Not needed anymore since we have flag emojis
+      submissionCount: country.submissionCount,
+      cities: country.cities
+    }));
+  }, [countriesData]);
 
-  // Fetch submission counts for each active country
-  const { data: countriesWithCounts = [], isLoading: isCountsLoading } = useQuery({
-    queryKey: ["/api/countries-with-counts", activeCountryNames],
-    queryFn: async () => {
-      const countriesWithCounts = [];
-      
-      for (const country of countries) {
-        const submissions = await getSubmissionsForCountry(country.name);
-        countriesWithCounts.push({
-          ...country,
-          listingCount: submissions.length
-        });
-      }
-      
-      return countriesWithCounts.sort((a, b) => b.listingCount - a.listingCount);
-    },
-    enabled: activeCountryNames.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  // Countries with counts are already precomputed - instant!
+  const countriesWithCounts = useMemo(() => {
+    return countries.map(country => ({
+      ...country,
+      listingCount: country.submissionCount,
+      flag: getFlagByCountryName(country.name),
+    })).sort((a, b) => b.listingCount - a.listingCount);
+  }, [countries]);
 
-  console.log('🌍 Find Host - Active countries:', activeCountryNames);
-  console.log('📊 Find Host - Countries with counts:', countriesWithCounts);
+  console.log('🌍 Find Host - Preloaded countries:', countriesData);
+  console.log('📊 Find Host - Countries with counts (instant):', countriesWithCounts);
 
-  const isLoading = isCountriesLoading || isCountsLoading;
+  const isLoading = isCountriesLoading;
 
   // Filter countries based on search query
   const filteredCountries = useMemo(() => {
