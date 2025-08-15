@@ -85,3 +85,4 @@ export default function CacheStatus({ showInProduction = false }: CacheStatusPro
 // Debug helper - users can enable cache status display
 // Run in console: localStorage.setItem('bds_show_cache_debug', 'true')
 // To disable: localStorage.removeItem('bds_show_cache_debug')
+

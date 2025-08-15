@@ -256,7 +256,6 @@ export default function FeaturedHostsCarousel() {
       'Estonia': '🇪🇪',
       'Finland': '🇫🇮',
       'France': '🇫🇷',
-      'United Kingdom': '🇬🇧',
       'Georgia': '🇬🇪',
       'Guernsey': '🇬🇬',
       'Gibraltar': '🇬🇮',
@@ -598,7 +597,7 @@ export default function FeaturedHostsCarousel() {
                       to={`/property/${host.uniqueSlug || generateSlug(host.brandName)}?from=featured`}
                       onClick={clickTracking.trackCompany}
                     >
-                      Why book with {host.brandName}?
+                      Why Book With {host.brandName}?
                     </Link>
                   </Button>
                 </div>

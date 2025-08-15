@@ -441,16 +441,16 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Why Rent With - Mobile: 2nd, Desktop: Left column 2nd */}
-              {submission.whyRentWithYou && (
+              {/* Why Book With - Mobile: 2nd, Desktop: Left column 2nd */}
+              {submission.whyBookWithYou && (
                 <Card className="order-2 lg:order-none">
                   <CardHeader>
-                    <CardTitle>Why Rent with {submission.brandName}? (for owners)</CardTitle>
+                    <CardTitle>Why Book with {submission.brandName}?</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-gray max-w-none">
                       <p className="text-gray-700 whitespace-pre-line">
-                        {submission.whyRentWithYou}
+                        {submission.whyBookWithYou}
                       </p>
                     </div>
                   </CardContent>

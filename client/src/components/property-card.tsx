@@ -178,7 +178,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
             >
               <Link to={`/property/${slug}`}>
-                Why book with {property.name}?
+                Why Book With {property.name}?
               </Link>
             </Button>
           </div>

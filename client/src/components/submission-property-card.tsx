@@ -494,7 +494,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
               href={buildPropertyUrl()}
               onClick={trackCompany}
             >
-              Why book with {submission.brandName}?
+              Why Book With {submission.brandName}?
             </Link>
           </Button>
         </div>

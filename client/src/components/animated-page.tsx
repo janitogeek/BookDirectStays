@@ -81,3 +81,4 @@ export const AnimatedContainer: React.FC<{
 };
 
 export default AnimatedPage;
+

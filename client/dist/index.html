@@ -11,7 +11,6 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     
     <!-- Preload critical resources -->
-    <link rel="preload" href="/assets/tsx/main-CUIHI6iA.tsx" as="script" />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" />
     
     <!-- Primary Meta Tags - Optimized for LLM Understanding -->
@@ -102,18 +101,7 @@
       body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
       #root { min-height: 100vh; }
       
-      /* Enhanced loading screen styles */
-      .loading {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-align: center;
-      }
-      
+      /* Enhanced BookDirectStays loading screen styles */
       .loading {
         display: flex;
         flex-direction: column;
@@ -154,7 +142,8 @@
         position: relative;
         z-index: 10;
         background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
         border-radius: 20px;
         padding: 3rem 4rem;
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -281,15 +270,13 @@
         .loading-subtitle { font-size: 0.9rem; }
         .loading-progress { width: 150px; }
       }
-      
-
     </style>
-    <script type="module" crossorigin src="/assets/js/main-BylbNqTC.js"></script>
+    <script type="module" crossorigin src="/assets/js/main-CHa1Dpk4.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/js/react-vendor-BWwvOZYK.js">
-    <link rel="modulepreload" crossorigin href="/assets/js/core-BATCG1yE.js">
-    <link rel="modulepreload" crossorigin href="/assets/js/ui-BpxT241S.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/core-aFXuhJqR.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/ui-qE7W9x_y.js">
     <link rel="modulepreload" crossorigin href="/assets/js/icons-Baa3S0vk.js">
-    <link rel="stylesheet" crossorigin href="/assets/css/main-Cc7Zw5X7.css">
+    <link rel="stylesheet" crossorigin href="/assets/css/main-B3V2WCDz.css">
   </head>
   <body>
     <div id="root">
@@ -300,7 +287,7 @@
             <span class="logo-main">BookDirectStays</span><span class="logo-extension">.com</span>
           </div>
           <div class="loading-tagline">Your trusted source for direct booking vacation rentals.</div>
-          <div class="loading-subtitle">Loading...</div>
+          <div class="loading-subtitle" id="loading-status">Pre-loading data...</div>
           <div class="loading-spinner"></div>
           <div class="loading-dots">
             <span></span>
@@ -313,6 +300,80 @@
         </div>
       </div>
     </div>
+
+    <!-- INSTANT PRE-LOADING SCRIPT - Runs before React -->
+    <script>
+    (function() {
+      const loadingStatus = document.getElementById('loading-status');
+      
+      // Update loading text
+      function updateStatus(text) {
+        if (loadingStatus) {
+          loadingStatus.textContent = text;
+        }
+      }
+      
+      // Pre-load data immediately
+      async function instantPreload() {
+        try {
+          updateStatus('Pre-loading countries & hosts...');
+          console.log('🚀 INSTANT PRELOAD: Starting before React...');
+          
+          // Check if we already have recent data
+          const CACHE_VERSION = 'v3.0';
+          const CACHE_TIMESTAMP = 'bds_cache_timestamp';
+          const CACHE_VERSION_KEY = 'bds_cache_version';
+          
+          const lastCached = localStorage.getItem(CACHE_TIMESTAMP);
+          const cacheVersion = localStorage.getItem(CACHE_VERSION_KEY);
+          const now = Date.now();
+          const oneHour = 60 * 60 * 1000;
+          
+          // Check if cache is valid (less than 1 hour old and correct version)
+          if (lastCached && cacheVersion === CACHE_VERSION && (now - parseInt(lastCached)) < oneHour) {
+            updateStatus('Using cached data...');
+            console.log('✅ INSTANT PRELOAD: Using valid cache');
+            
+            // Set a flag that data is ready
+            localStorage.setItem('bds_preload_ready', 'true');
+            updateStatus('Ready!');
+            return;
+          }
+          
+          updateStatus('Fetching fresh data...');
+          console.log('🔄 INSTANT PRELOAD: Fetching fresh data...');
+          
+          // Fetch submissions data
+          const response = await fetch('/api/airtable-submissions');
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+          }
+          
+          const submissions = await response.json();
+          updateStatus('Processing ' + submissions.length + ' hosts...');
+          console.log(`📊 INSTANT PRELOAD: Got ${submissions.length} submissions`);
+          
+          // Store raw data with timestamp and version
+          localStorage.setItem('bds_submissions_cache', JSON.stringify(submissions));
+          localStorage.setItem(CACHE_TIMESTAMP, now.toString());
+          localStorage.setItem(CACHE_VERSION_KEY, CACHE_VERSION);
+          localStorage.setItem('bds_preload_ready', 'true');
+          
+          updateStatus('Data cached successfully!');
+          console.log('✅ INSTANT PRELOAD: Data cached and ready!');
+          
+        } catch (error) {
+          console.error('❌ INSTANT PRELOAD: Failed:', error);
+          updateStatus('Loading...');
+          // Don't block the app if pre-loading fails
+        }
+      }
+      
+      // Start pre-loading immediately
+      instantPreload();
+    })();
+    </script>
+
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" async></script>
   </body>

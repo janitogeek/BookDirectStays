@@ -55,8 +55,7 @@ const formSchema = z.object({
     name: z.string()
   }).optional(),
   "One-line Description": z.string().min(5).max(70),
-  "Why Book With You?": z.string().min(50, "Please provide at least 50 characters explaining why guests should book with you"),
-  "Why Rent With You?": z.string().min(50, "Please provide at least 50 characters explaining why property owners should rent with you"),
+      "Why Book With You?": z.string().min(50, "Please provide at least 50 characters explaining why guests should book with you"),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
   "Min Price": z.string().min(1, "Please enter a minimum price"),
@@ -191,7 +190,6 @@ export default function Submit() {
       "Rating (X/5) & Reviews (#) Screenshot": { url: "", name: "" },
       "One-line Description": "",
       "Why Book With You?": "",
-      "Why Rent With You?": "",
       "Top Stats": "",
       "Currency": "",
       "Min Price": "",
@@ -513,8 +511,7 @@ export default function Submit() {
         }).join(", "),
         "Countries": extractedCountries.join(", "),
         "One-line Description": values["One-line Description"],
-        "Why Book With You": values["Why Book With You?"],
-        "Why Rent With You": values["Why Rent With You?"],
+              "Why Book With You": values["Why Book With You?"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
         "Min Price": values["Min Price"] ? parseInt(values["Min Price"]) : undefined,
@@ -912,9 +909,9 @@ export default function Submit() {
                   </div>
                 </FormItem>
               )} />
-              <FormField control={form.control} name="Why Rent With You?" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Why Rent With You? (for owners)<RequiredAsterisk /></FormLabel>
+                      <FormField control={form.control} name="Why Book With You?" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Why Book With You? (for guests)<RequiredAsterisk /></FormLabel>
                   <FormControl>
                     <Textarea 
                       {...field} 
