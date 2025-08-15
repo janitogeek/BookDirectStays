@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
+import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 
 export default function City() {
@@ -124,12 +125,12 @@ export default function City() {
   
   const countryName = getCountryName(countrySlug || '');
 
-  // Fetch submissions for this country and filter by city
+  // Fetch submissions for this country (instant if cached)
   const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
-    queryKey: [`/api/submissions/country/${countryName}`],
-    queryFn: () => airtableService.getSubmissionsByCountry(countryName),
+    queryKey: ["/api/preloaded-submissions-city", countryName],
+    queryFn: () => dataPreloader.getSubmissionsForCountry(countryName),
     enabled: !!countryName,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
   });
 
   // Filter submissions by city (handle accented characters)
@@ -296,9 +297,11 @@ export default function City() {
 
   console.log('🏙️ City page - cityName:', cityName);
   console.log('🏙️ City page - countryName:', countryName);
-  console.log('🏙️ City page - allSubmissions:', allSubmissions);
+  console.log('🏙️ City page - allSubmissions (cached):', allSubmissions);
   console.log('🏙️ City page - citySubmissions:', citySubmissions);
   console.log('🏙️ City page - citySubmissions length:', citySubmissions.length);
+  console.log('📊 City page - Cache status:', dataPreloader.getCacheStatus());
+  console.log('⚡ City page - Loading state:', isSubmissionsLoading);
   
   // Fetch listings for this city (placeholder - would be real API call)
   const { data: listingsData, isLoading: isListingsLoading } = useQuery({

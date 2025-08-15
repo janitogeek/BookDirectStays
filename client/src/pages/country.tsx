@@ -140,31 +140,13 @@ export default function Country() {
     refetchInterval: 60 * 1000, // Refetch every minute
   });
 
-  // Force cache invalidation for Andorra to ensure city fetching runs
+  // Debug: Check if data preloader is working
   useEffect(() => {
-    if (countryName === 'Andorra') {
-      console.log('🔄 Force invalidating Andorra city queries...');
-      queryClient.invalidateQueries({ queryKey: [`/api/validated-cities/${countryName}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/city-submission-counts/${countryName}`] });
-      
-      // DIRECT FUNCTION TEST - bypass React Query entirely
-      console.log('🧪 DIRECT FUNCTION TEST - calling city functions directly...');
-      
-      // Test city submission counts directly
-      getCitySubmissionCounts(countryName).then(result => {
-        console.log('🧪 DIRECT RESULT - city submission counts:', result);
-      }).catch(error => {
-        console.error('🧪 DIRECT ERROR - city submission counts:', error);
-      });
-      
-      // Test validated cities directly
-      getValidatedCitiesForCountry(countryName).then(result => {
-        console.log('🧪 DIRECT RESULT - validated cities:', result);
-      }).catch(error => {
-        console.error('🧪 DIRECT ERROR - validated cities:', error);
-      });
+    if (countryName) {
+      console.log('🔍 Country page - checking preloaded data for:', countryName);
+      console.log('📊 Cache status:', dataPreloader.getCacheStatus());
     }
-  }, [countryName, queryClient]);
+  }, [countryName]);
 
   // Debug submissions in React component
   console.log('🎬 React component - submissions data:', submissions);
