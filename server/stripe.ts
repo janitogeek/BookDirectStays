@@ -117,6 +117,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
       : "",
     "One-line Description": formData["One-line Description"],
           "Why Book With You": formData["Why Book With You?"],
+      "Why Rent With You": formData["Why Rent With You?"],
     "Top Stats": formData["Top Stats"] || "",
     "Types of Stays": Array.isArray(formData["Types of Stays"]) ? formData["Types of Stays"] : [],
     "Ideal For": Array.isArray(formData["Ideal For"]) ? formData["Ideal For"] : [],

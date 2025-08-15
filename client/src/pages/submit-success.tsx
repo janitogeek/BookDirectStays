@@ -110,6 +110,7 @@ export default function SubmitSuccess() {
         "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
         "One-line Description": formData["One-line Description"],
               "Why Book With You": formData["Why Book With You?"],
+      "Why Rent With You": formData["Why Rent With You?"],
         "Top Stats": formData["Top Stats"] || "",
         "Types of Stays": formData["Types of Stays"] || [],
         "Ideal For": formData["Ideal For"] || [],
