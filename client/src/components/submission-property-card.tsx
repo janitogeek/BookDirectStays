@@ -25,8 +25,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
     if (fromCity && fromCountry) {
       // Use the actual city and country names (not slugs) in URL parameters
       url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;
-      console.log(`🔗 Building URL for ${submission.brandName}: ${url}`);
-      console.log(`🔗 fromCity: "${fromCity}", fromCountry: "${fromCountry}"`);
+
     }
     return url;
   };

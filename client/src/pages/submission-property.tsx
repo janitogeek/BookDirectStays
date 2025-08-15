@@ -23,12 +23,7 @@ export default function SubmissionProperty() {
   const fromCity = urlParams.get('city');
   const fromCountry = urlParams.get('country');
   
-  // Debug logging
-  console.log(`🔍 Submission Property Page Debug:`);
-  console.log(`🔍 URL: ${window.location.href}`);
-  console.log(`🔍 Search params: ${window.location.search}`);
-  console.log(`🔍 fromCity: "${fromCity}"`);
-  console.log(`🔍 fromCountry: "${fromCountry}"`);
+
 
   const { data: submission, isLoading, error } = useQuery({
     queryKey: ["/api/submission", submissionId],
@@ -392,7 +387,7 @@ export default function SubmissionProperty() {
               {submission.whyBookWithYou && (
                 <Card className="order-1 lg:order-none">
                   <CardHeader>
-                    <CardTitle>Why Book Direct with {submission.brandName}?</CardTitle>
+                    <CardTitle>Why Book Direct with {submission.brandName}? (for guests)</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-gray max-w-none">
@@ -404,9 +399,25 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Ideal For - Mobile: 4th, Desktop: Left column 2nd */}
+              {/* Why Rent With - Mobile: 2nd, Desktop: Left column 2nd */}
+              {submission.whyRentWithYou && (
+                <Card className="order-2 lg:order-none">
+                  <CardHeader>
+                    <CardTitle>Why Rent with {submission.brandName}? (for owners)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-700 whitespace-pre-line">
+                        {submission.whyRentWithYou}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Ideal For - Mobile: 3rd, Desktop: Left column 3rd */}
               {submission.idealFor && submission.idealFor.length > 0 && (
-                <Card className="order-4 lg:order-none">
+                <Card className="order-3 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="w-5 h-5 text-blue-600" />
@@ -425,9 +436,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Properties Features - Mobile: 5th, Desktop: Left column 3rd */}
+              {/* Properties Features - Mobile: 4th, Desktop: Left column 4th */}
               {submission.propertiesFeatures && submission.propertiesFeatures.length > 0 && (
-                <Card className="order-5 lg:order-none">
+                <Card className="order-4 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Home className="w-5 h-5 text-blue-600" />
@@ -447,9 +458,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Services & Convenience - Mobile: 6th, Desktop: Left column 4th */}
+              {/* Services & Convenience - Mobile: 5th, Desktop: Left column 5th */}
               {submission.servicesConvenience && submission.servicesConvenience.length > 0 && (
-                <Card className="order-6 lg:order-none">
+                <Card className="order-5 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Wrench className="w-5 h-5 text-green-600" />
@@ -469,9 +480,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Lifestyle & Values - Mobile: 7th, Desktop: Left column 5th */}
+              {/* Lifestyle & Values - Mobile: 6th, Desktop: Left column 6th */}
               {submission.lifestyleValues && submission.lifestyleValues.length > 0 && (
-                <Card className="order-7 lg:order-none">
+                <Card className="order-6 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="w-5 h-5 text-purple-600" />
@@ -490,9 +501,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Design Style - Mobile: 8th, Desktop: Left column 6th */}
+              {/* Design Style - Mobile: 7th, Desktop: Left column 7th */}
               {submission.designStyle && submission.designStyle.length > 0 && (
-                <Card className="order-8 lg:order-none">
+                <Card className="order-7 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Palette className="w-5 h-5 text-indigo-600" />
@@ -511,9 +522,9 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Atmospheres - Mobile: 9th, Desktop: Left column 7th */}
+              {/* Atmospheres - Mobile: 8th, Desktop: Left column 8th */}
               {submission.atmospheres && submission.atmospheres.length > 0 && (
-                <Card className="order-9 lg:order-none">
+                <Card className="order-8 lg:order-none">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Coffee className="w-5 h-5 text-amber-600" />
@@ -613,8 +624,8 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Get in Touch - Mobile: 7th (last), Desktop: Right column 3rd */}
-              <Card className="order-7 lg:order-none">
+              {/* Get in Touch - Mobile: 9th (last), Desktop: Right column 3rd */}
+              <Card className="order-9 lg:order-none">
                 <CardHeader>
                   <CardTitle>Get in Touch</CardTitle>
                 </CardHeader>
