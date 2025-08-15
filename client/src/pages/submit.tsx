@@ -726,7 +726,21 @@ export default function Submit() {
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">🚀 Boost your Direct Bookings!</h1>
-        <p className="text-gray-600 mb-8">Join our directory and connect with travelers looking to book directly.</p>
+        <p className="text-gray-600 mb-4">Join our directory and connect with travelers looking to book directly.</p>
+        
+        {/* FindRentalManager Cross-Promotion */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+          <div className="flex items-start gap-3">
+            <div className="text-blue-600 text-lg">💼</div>
+            <div>
+              <h3 className="font-semibold text-blue-900 mb-1">Double Your Visibility!</h3>
+              <p className="text-blue-800 text-sm">
+                Your listing will also appear on <strong>FindRentalManager</strong> to boost visibility among property owners, 
+                helping you generate more leads and grow your portfolio. Get exposure on both platforms with one submission!
+              </p>
+            </div>
+          </div>
+        </div>
         <Form {...form}>
                       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
 
