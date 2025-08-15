@@ -57,6 +57,7 @@ const formSchema = z.object({
   "One-line Description": z.string().min(5).max(70),
       "Why Book With You?": z.string().min(50, "Please provide at least 50 characters explaining why guests should book with you"),
   "Why Rent With You?": z.string().min(50, "Please provide at least 50 characters explaining why property owners should rent with you"),
+  "Commission on Revenue (%)": z.string().min(1, "Please enter your commission percentage"),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
   "Min Price": z.string().min(1, "Please enter a minimum price"),
@@ -192,6 +193,7 @@ export default function Submit() {
       "One-line Description": "",
       "Why Book With You?": "",
     "Why Rent With You?": "",
+    "Commission on Revenue (%)": "",
       "Top Stats": "",
       "Currency": "",
       "Min Price": "",
@@ -515,6 +517,7 @@ export default function Submit() {
         "One-line Description": values["One-line Description"],
               "Why Book With You": values["Why Book With You?"],
       "Why Rent With You": values["Why Rent With You?"],
+      "Commission on Revenue": values["Commission on Revenue (%)"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
         "Min Price": values["Min Price"] ? parseInt(values["Min Price"]) : undefined,
@@ -943,6 +946,21 @@ export default function Submit() {
                       {field.value?.length || 0}/50 characters minimum
                     </span>
                   </div>
+                </FormItem>
+              )} />
+
+              <FormField control={form.control} name="Commission on Revenue (%)" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Commission on Revenue (%)<RequiredAsterisk /></FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                      type="text"
+                      placeholder="e.g. 15%, 20%, 25%"
+                      className={field.value ? 'border-blue-500 bg-blue-50' : ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )} />
 

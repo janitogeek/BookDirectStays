@@ -27,6 +27,7 @@ export interface AirtableSubmission {
     'One-line Description': string;
       'Why Book With You': string;
   'Why Rent With You': string;
+  'Commission on Revenue': string;
     'Plan': string;
     'Top Stats': string;
     'Countries': string | string[];
@@ -71,6 +72,7 @@ export interface Submission {
   oneLineDescription: string;
   whyBookWithYou: string;
   whyRentWithYou: string;
+  commissionOnRevenue: string;
   plan: string;
   topStats: string;
   countries: string[];
@@ -130,6 +132,7 @@ export const airtableService = {
               'One-line Description': submissionData.field9,
               'Why Book With You': submissionData.field10,
       'Why Rent With You': submissionData.field11,
+      'Commission on Revenue': submissionData.field12,
               'Plan': submissionData.field11,
               'Countries': submissionData.Countries,
               'Cities / Regions': submissionData.Cities_Regions,
@@ -579,6 +582,7 @@ export const airtableService = {
       oneLineDescription: fields['One-line Description'] || '',
               whyBookWithYou: fields['Why Book With You'] || '',
     whyRentWithYou: fields['Why Rent With You'] || '',
+    commissionOnRevenue: fields['Commission on Revenue'] || '',
       plan: fields['Plan'] || '',
       topStats: fields['Top Stats'] || '',
       countries: parseArray(fields['Countries']),

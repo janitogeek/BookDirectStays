@@ -443,23 +443,7 @@ export default function SubmissionProperty() {
                 </Card>
               )}
 
-              {/* Why Rent With You - for property owners */}
-              {submission.whyRentWithYou && (
-                <Card className="order-2 lg:order-none overflow-hidden">
-                  <CardHeader className="bg-green-600 text-white p-6">
-                    <CardTitle className="text-xl font-semibold text-center">
-                      Why Rent With {submission.brandName}?
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="prose prose-gray max-w-none">
-                      <p className="text-gray-700 whitespace-pre-line">
-                        {submission.whyRentWithYou}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+
 
               {/* Ideal For - Mobile: 3rd, Desktop: Left column 3rd */}
               {submission.idealFor && submission.idealFor.length > 0 && (

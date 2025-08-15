@@ -111,7 +111,10 @@ export default function SubmitSuccess() {
         "One-line Description": formData["One-line Description"],
               "Why Book With You": formData["Why Book With You?"],
       "Why Rent With You": formData["Why Rent With You?"],
-        "Top Stats": formData["Top Stats"] || "",
+            "Commission on Revenue": formData["Commission on Revenue (%)"],
+      "Top Stats": formData["Top Stats"] || "",
+      "Status": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review",
+      "Status Bis (PMC directory)": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review",
         "Types of Stays": formData["Types of Stays"] || [],
         "Ideal For": formData["Ideal For"] || [],
         "Properties Features": formData["Properties Features"] || [],
@@ -129,8 +132,7 @@ export default function SubmitSuccess() {
         "Min Price": formData["Min Price"] ? parseInt(formData["Min Price"]) : undefined,
         "Max Price": formData["Max Price"] ? parseFloat(formData["Max Price"]) : undefined,
         "Plan": plan === "Basic (€99.99/year)" ? "Basic Listing - €99.99/year" : plan === "Premium (€499.99/year)" ? "Premium Listing - €499.99/year" : plan,
-        "Submission Date": new Date().toISOString().split('T')[0],
-        "Status": "Approved – Published" // All PMCs are verified by default
+        "Submission Date": new Date().toISOString().split('T')[0]
       };
 
       // Submit to Airtable
