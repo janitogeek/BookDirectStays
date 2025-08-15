@@ -111,25 +111,21 @@ export default function Country() {
   console.log('🏙️ Cities with counts (instant):', citiesWithCounts);
   console.log('📊 City counts:', citySubmissionCounts);
   
-  // Fetch country
-  const { data: country, isLoading: isCountryLoading } = useQuery({
-    queryKey: [`/api/countries/${countrySlug}`],
-    queryFn: async () => {
-      const res = await apiRequest("GET", `/api/countries/${countrySlug}`, undefined);
-      return res.json();
-    },
-    enabled: !!countrySlug
+  // Get country data from preloaded cache (instant)
+  const { data: allCountries = [], isLoading: isCountryLoading } = useQuery({
+    queryKey: ["/api/preloaded-countries-for-country-page"],
+    queryFn: () => dataPreloader.getCountries(),
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
+  
+  // Find the specific country from preloaded data
+  const country = useMemo(() => {
+    return allCountries.find(c => c.slug === countrySlug || c.name.toLowerCase() === countryName.toLowerCase());
+  }, [allCountries, countrySlug, countryName]);
 
-  // Fetch listings for this country
-  const { data: listingsData, isLoading: isListingsLoading } = useQuery({
-    queryKey: [`/api/listings?country=${countrySlug}`, visibleCount],
-    queryFn: async () => {
-      const res = await apiRequest("GET", `/api/listings?country=${countrySlug}&limit=${visibleCount}`, undefined);
-      return res.json();
-    },
-    enabled: !!countrySlug
-  });
+  // Placeholder listings (instant - no real API call needed)
+  const listingsData = { listings: [], total: 0, hasMore: false };
+  const isListingsLoading = false;
 
   // Query submissions for this country
   const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({

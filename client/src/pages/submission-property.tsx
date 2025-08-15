@@ -1,4 +1,4 @@
-import React from "react"; // Added missing import for React
+import React, { useMemo } from "react"; // Added missing import for React
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link, useLocation } from "wouter";
 import { ExternalLink, MapPin, Building2, Users, Star, Heart, Sparkles, Home, Wrench, Shield, Palette, Coffee, TreePine, Globe } from "lucide-react";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { airtableService, Submission } from "@/lib/airtable";
+import { dataPreloader } from "@/lib/data-preloader";
 import { isAirtableId } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
 import { getFlagByCountryName } from "@/lib/utils";
@@ -27,20 +28,28 @@ export default function SubmissionProperty() {
   
 
 
-  const { data: submission, isLoading, error } = useQuery({
-    queryKey: ["/api/submission", submissionId],
-    queryFn: () => {
-      if (!submissionId) return null;
-      
-      // Check if it's an Airtable ID or a slug
-      if (isAirtableId(submissionId)) {
-        return airtableService.getSubmissionById(submissionId);
-      } else {
-        return airtableService.getSubmissionBySlug(submissionId);
-      }
-    },
-    enabled: !!submissionId,
+  // Get all preloaded submissions and find the specific one (instant if cached)
+  const { data: allSubmissions = [], isLoading: isAllSubmissionsLoading } = useQuery({
+    queryKey: ["/api/preloaded-submissions-for-property"],
+    queryFn: () => dataPreloader.getSubmissions(),
+    staleTime: 30 * 60 * 1000, // 30 minutes
   });
+
+  // Find the specific submission from preloaded data
+  const submission = useMemo(() => {
+    if (!submissionId || !allSubmissions.length) return null;
+    
+    // Check if it's an Airtable ID or a slug
+    if (isAirtableId(submissionId)) {
+      return allSubmissions.find(s => s.id === submissionId);
+    } else {
+      // Find by unique slug
+      return allSubmissions.find(s => (s as any).uniqueSlug === submissionId);
+    }
+  }, [allSubmissions, submissionId]);
+
+  const isLoading = isAllSubmissionsLoading || (!submission && allSubmissions.length > 0);
+  const error = null; // No error handling needed for preloaded data
 
   // Initialize click tracking when submission data is available
   const clickTracking = submission ? useClickTracking(submission.id) : null;
