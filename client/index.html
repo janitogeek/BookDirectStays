@@ -280,7 +280,7 @@
             <span class="logo-main">BookDirectStays</span><span class="logo-extension">.com</span>
           </div>
           <div class="loading-tagline">Your trusted source for direct booking vacation rentals.</div>
-          <div class="loading-subtitle">Loading...</div>
+          <div class="loading-subtitle" id="loading-status">Pre-loading data...</div>
           <div class="loading-spinner"></div>
           <div class="loading-dots">
             <span></span>
@@ -293,6 +293,80 @@
         </div>
       </div>
     </div>
+
+    <!-- INSTANT PRE-LOADING SCRIPT - Runs before React -->
+    <script>
+    (function() {
+      const loadingStatus = document.getElementById('loading-status');
+      
+      // Update loading text
+      function updateStatus(text) {
+        if (loadingStatus) {
+          loadingStatus.textContent = text;
+        }
+      }
+      
+      // Pre-load data immediately
+      async function instantPreload() {
+        try {
+          updateStatus('Pre-loading countries & hosts...');
+          console.log('🚀 INSTANT PRELOAD: Starting before React...');
+          
+          // Check if we already have recent data
+          const CACHE_VERSION = 'v3.0';
+          const CACHE_TIMESTAMP = 'bds_cache_timestamp';
+          const CACHE_VERSION_KEY = 'bds_cache_version';
+          
+          const lastCached = localStorage.getItem(CACHE_TIMESTAMP);
+          const cacheVersion = localStorage.getItem(CACHE_VERSION_KEY);
+          const now = Date.now();
+          const oneHour = 60 * 60 * 1000;
+          
+          // Check if cache is valid (less than 1 hour old and correct version)
+          if (lastCached && cacheVersion === CACHE_VERSION && (now - parseInt(lastCached)) < oneHour) {
+            updateStatus('Using cached data...');
+            console.log('✅ INSTANT PRELOAD: Using valid cache');
+            
+            // Set a flag that data is ready
+            localStorage.setItem('bds_preload_ready', 'true');
+            updateStatus('Ready!');
+            return;
+          }
+          
+          updateStatus('Fetching fresh data...');
+          console.log('🔄 INSTANT PRELOAD: Fetching fresh data...');
+          
+          // Fetch submissions data
+          const response = await fetch('/api/airtable-submissions');
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+          }
+          
+          const submissions = await response.json();
+          updateStatus('Processing ' + submissions.length + ' hosts...');
+          console.log(`📊 INSTANT PRELOAD: Got ${submissions.length} submissions`);
+          
+          // Store raw data with timestamp and version
+          localStorage.setItem('bds_submissions_cache', JSON.stringify(submissions));
+          localStorage.setItem(CACHE_TIMESTAMP, now.toString());
+          localStorage.setItem(CACHE_VERSION_KEY, CACHE_VERSION);
+          localStorage.setItem('bds_preload_ready', 'true');
+          
+          updateStatus('Data cached successfully!');
+          console.log('✅ INSTANT PRELOAD: Data cached and ready!');
+          
+        } catch (error) {
+          console.error('❌ INSTANT PRELOAD: Failed:', error);
+          updateStatus('Loading...');
+          // Don't block the app if pre-loading fails
+        }
+      }
+      
+      // Start pre-loading immediately
+      instantPreload();
+    })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js" async></script>

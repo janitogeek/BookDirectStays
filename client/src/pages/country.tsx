@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
@@ -107,9 +107,7 @@ export default function Country() {
     acc[city.name] = city.submissionCount;
     return acc;
   }, {} as Record<string, number>);
-  
-  console.log('🏙️ Cities with counts (instant):', citiesWithCounts);
-  console.log('📊 City counts:', citySubmissionCounts);
+
   
   // Get country data from preloaded cache (instant)
   const { data: allCountries = [], isLoading: isCountryLoading } = useQuery({
@@ -136,41 +134,16 @@ export default function Country() {
     refetchInterval: 60 * 1000, // Refetch every minute
   });
 
-  // Debug: Check if data preloader is working
-  useEffect(() => {
-    if (countryName) {
-      console.log('🔍 Country page - checking preloaded data for:', countryName);
-      console.log('📊 Cache status:', dataPreloader.getCacheStatus());
-    }
-  }, [countryName]);
 
-  // Debug submissions in React component
-  console.log('🎬 React component - submissions data:', submissions);
-  console.log('🎬 React component - submissions length:', submissions.length);
-  console.log('🎬 React component - isSubmissionsLoading:', isSubmissionsLoading);
-  console.log('🎬 React component - countryName:', countryName);
-  console.log('🎬 React component - countrySlug:', countrySlug);
-  
-  // Debug individual submission data
-  if (submissions.length > 0) {
-    console.log('🔍 First submission details:');
-    console.log('  - Brand Name:', submissions[0].brandName);
-    console.log('  - Countries:', submissions[0].countries);
-    console.log('  - Cities/Regions:', submissions[0].citiesRegions);
-    console.log('  - Full submission object:', submissions[0]);
-  }
+
+
 
   // Get submission count for a city from the fetched counts
   const getCitySubmissionCount = (cityName: string) => {
     return citySubmissionCounts[cityName] || 0;
   };
 
-  console.log('🏙️ Cities for country:', cities);
-  console.log('🏙️ City submission counts:', citySubmissionCounts);
-  console.log('🏙️ Cities loading:', isCitiesLoading);
-  console.log('🏙️ Cities loading (cached):', isCitiesLoading);
-  console.log('🏙️ Country name being used for city fetch:', countryName);
-  console.log('🏙️ Country slug being used for submissions:', countrySlug);
+
 
   // Filter cities based on search query
   const filteredCities = useMemo(() => {
@@ -579,11 +552,7 @@ export default function Country() {
                   Looking for something more specific? Browse hosts by city
                 </p>
               
-              {/* Debug Info */}
-              <div className="text-sm text-gray-500 mb-4 p-3 bg-gray-100 rounded">
-                <p>Debug: Cities loaded: {cities.length} | Loading: {isCitiesLoading ? 'Yes' : 'No'} | Cached: ⚡</p>
-                <p>Cities: {cities.join(', ') || 'None'}</p>
-              </div>
+
                 
                 {/* City Search Input */}
                 {cities.length > 0 && (

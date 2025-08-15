@@ -19,7 +19,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = '1.0.0';
+const CACHE_VERSION = 'v3.0'; // Match the instant preload version
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
@@ -162,6 +162,91 @@ class DataPreloader {
   }
 
   /**
+   * Process submissions data (for instant cache)
+   */
+  private async processSubmissionsData(rawSubmissions: any[]): Promise<CachedData> {
+    console.log('🚀 Processing instant cache data...');
+    const startTime = Date.now();
+
+    try {
+      // Step 1: Process submissions with unique slugs
+      console.log('📊 Step 1/3: Processing submissions with unique slugs...');
+      const submissions = await this.processRawSubmissions(rawSubmissions);
+      console.log(`✅ Processed ${submissions.length} submissions with unique slugs`);
+
+      // Step 2: Get countries data
+      console.log('🌍 Step 2/3: Processing countries data...');
+      const countryNames = await getActiveCountriesFromAirtable();
+      console.log(`✅ Found ${countryNames.length} active countries`);
+
+      // Step 3: Process each country and its cities
+      console.log('🏙️ Step 3/3: Processing cities for each country...');
+      const countriesData: CachedCountryData[] = [];
+
+      for (const countryName of countryNames) {
+        const countrySubmissions = submissions.filter(submission => 
+          submission.countries && submission.countries.some(country => 
+            country.toLowerCase() === countryName.toLowerCase()
+          )
+        );
+
+        // Get cities for this country
+        const cityData = await getCitySubmissionCounts(countryName);
+        const cities = Object.entries(cityData).map(([cityName, count]) => ({
+          name: cityName,
+          slug: this.generateCitySlug(cityName),
+          submissionCount: count
+        })).sort((a, b) => a.name.localeCompare(b.name));
+
+        countriesData.push({
+          name: countryName,
+          slug: this.generateCountrySlug(countryName),
+          submissionCount: countrySubmissions.length,
+          cities
+        });
+
+        console.log(`✅ Processed ${countryName}: ${countrySubmissions.length} submissions, ${cities.length} cities`);
+      }
+
+      // Sort countries alphabetically
+      countriesData.sort((a, b) => a.name.localeCompare(b.name));
+
+      const data: CachedData = {
+        submissions,
+        countries: countriesData,
+        lastUpdated: Date.now(),
+        version: CACHE_VERSION
+      };
+
+      const processingTime = Date.now() - startTime;
+      console.log(`🎉 Instant cache processing completed in ${processingTime}ms`, {
+        submissions: submissions.length,
+        countries: countriesData.length,
+        totalCities: countriesData.reduce((sum, country) => sum + country.cities.length, 0)
+      });
+
+      return data;
+    } catch (error) {
+      console.error('❌ Instant cache processing failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Process raw submissions data into format with unique slugs
+   */
+  private async processRawSubmissions(rawSubmissions: any[]): Promise<Array<Submission & { uniqueSlug: string }>> {
+    // Import and use the slug processing functions
+    const { buildSlugEmailMappings, getAllSubmissionsWithSlugs } = await import('./slug-email-mapping');
+    
+    // Build slug mappings first (this processes the raw data)
+    await buildSlugEmailMappings();
+    
+    // Then get all submissions with unique slugs
+    return getAllSubmissionsWithSlugs();
+  }
+
+  /**
    * Process all data in the background
    */
   private async processAllData(): Promise<CachedData> {
@@ -241,6 +326,40 @@ class DataPreloader {
       console.log('⏳ Data preloading already in progress...');
       await this.loadingPromise;
       return;
+    }
+
+    // First check if instant preload has already cached the data
+    const instantCacheReady = localStorage.getItem('bds_preload_ready');
+    if (instantCacheReady === 'true') {
+      console.log('⚡ INSTANT CACHE detected - using pre-cached data!');
+      
+      // Try to load from cache first (instant cache should have created it)
+      this.cachedData = this.loadFromCache();
+      if (this.cachedData) {
+        console.log('✅ Instant cache data loaded successfully!');
+        return;
+      }
+      
+      // If instant cache flag is set but no processed data, process the raw instant cache
+      const rawCachedData = localStorage.getItem('bds_submissions_cache');
+      if (rawCachedData) {
+        console.log('🔄 Processing instant cache data...');
+        this.isLoading = true;
+        
+        try {
+          const submissions = JSON.parse(rawCachedData);
+          this.loadingPromise = this.processSubmissionsData(submissions);
+          this.cachedData = await this.loadingPromise;
+          this.saveToCache(this.cachedData);
+          console.log('✅ Instant cache data processed and ready!');
+        } catch (error) {
+          console.error('❌ Failed to process instant cache:', error);
+        } finally {
+          this.isLoading = false;
+          this.loadingPromise = null;
+        }
+        return;
+      }
     }
 
     // Try to load from cache first
