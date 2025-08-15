@@ -125,7 +125,15 @@ export default function SubmissionProperty() {
                              <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
                      {fromFeatured ? (
                        <>
-                         <Link href="/#our-featured-hosts" className="hover:underline">
+                         <Link 
+                           href="/" 
+                           className="hover:underline"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             // Navigate to home and scroll to featured hosts section
+                             window.location.href = '/#our-featured-hosts';
+                           }}
+                         >
                            Our Featured Hosts
                          </Link>
                          <span>›</span>

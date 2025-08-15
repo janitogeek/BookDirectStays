@@ -31,6 +31,22 @@ export default function City() {
   
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
+
+  // Sort function: Featured first, then alphabetical by brand name
+  const sortSubmissions = (submissionsToSort: any[]) => {
+    return submissionsToSort.sort((a, b) => {
+      // Check if either is featured/premium
+      const aIsPremium = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+      const bIsPremium = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+      
+      // Featured first
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      
+      // Then alphabetical by brand name
+      return a.brandName.localeCompare(b.brandName);
+    });
+  };
   
   // Convert slug back to readable city name with proper accents
   const getCityNameFromSlug = (slug: string) => {
@@ -277,22 +293,6 @@ export default function City() {
     // Sort submissions: Featured first, then alphabetical
     return sortSubmissions(filtered);
   }, [citySubmissions, filters, featuredOnly]);
-
-  // Sort function: Featured first, then alphabetical by brand name
-  const sortSubmissions = (submissionsToSort: any[]) => {
-    return submissionsToSort.sort((a, b) => {
-      // Check if either is featured/premium
-      const aIsPremium = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
-      const bIsPremium = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
-      
-      // Featured first
-      if (aIsPremium && !bIsPremium) return -1;
-      if (!aIsPremium && bIsPremium) return 1;
-      
-      // Then alphabetical by brand name
-      return a.brandName.localeCompare(b.brandName);
-    });
-  };
 
   console.log('🏙️ City page - cityName:', cityName);
   console.log('🏙️ City page - countryName:', countryName);
