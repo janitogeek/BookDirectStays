@@ -1,9 +1,12 @@
 import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
+import { motion } from "framer-motion";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
 import HostFilters, { FilterState } from "@/components/host-filters";
+import AnimatedPage, { AnimatedSection, AnimatedContainer } from "@/components/animated-page";
+import { containerVariants, itemVariants, fadeInUpVariants } from "@/lib/animations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -357,7 +360,7 @@ export default function Country() {
     "containsPlace": {
       "@type": "Country",
       "name": country.name,
-      "identifier": country.code
+      "identifier": country.slug
     },
     "touristType": "Vacation Rental Seekers",
     "hasOfferCatalog": {
@@ -368,7 +371,8 @@ export default function Country() {
   } : null;
 
   return (
-    <main>
+    <AnimatedPage key={`country-${countrySlug}`}>
+      <main>
       {/* Structured Data for AI Understanding */}
       <script
         type="application/ld+json"
@@ -663,6 +667,7 @@ export default function Country() {
             </div>
           </div>
         </section>
-    </main>
+      </main>
+    </AnimatedPage>
   );
 }

@@ -1,12 +1,14 @@
 import { ExternalLink, MapPin, Building2 } from "lucide-react";
 import { SiInstagram, SiFacebook, SiLinkedin, SiTiktok, SiYoutube } from "react-icons/si";
 import { Link } from "wouter";
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
 import { generateSlug, extractCityName } from "@/lib/utils";
 import { useClickTracking } from "@/lib/click-tracking";
+import { cardHoverVariants, buttonVariants, itemVariants } from "@/lib/animations";
 import TopStats from "@/components/top-stats";
 
 interface SubmissionPropertyCardProps {
@@ -321,7 +323,19 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
   const isPremium = submission.plan?.includes('Premium Listing') || submission.plan?.includes('€499.99');
 
   return (
-    <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
+    <motion.div
+      variants={itemVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+    >
+      <motion.div
+        variants={cardHoverVariants}
+        initial="rest"
+        whileHover="hover"
+        className="h-full"
+      >
+        <Card className="group border border-gray-200 bg-white relative h-full overflow-hidden">
       {/* Featured Badge */}
       {isPremium && (
         <div className="absolute top-3 right-3 z-10">
@@ -572,6 +586,8 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
           )}
         </div>
       </CardContent>
-    </Card>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 } 
