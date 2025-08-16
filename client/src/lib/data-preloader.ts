@@ -456,6 +456,8 @@ class DataPreloader {
     
     // Fallback: Process cities directly from submissions
     const submissions = await this.getSubmissions();
+    console.log(`🔍 Total submissions available: ${submissions.length}`);
+    
     const countrySubmissions = submissions.filter(submission => 
       submission.countries && submission.countries.some(country => 
         country.toLowerCase() === countryName.toLowerCase()
@@ -464,11 +466,25 @@ class DataPreloader {
     
     console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName}`);
     
+    // Debug: Show what countries each submission has
+    countrySubmissions.forEach((submission, index) => {
+      console.log(`📝 Submission ${index + 1} (${submission.brandName}):`, {
+        countries: submission.countries,
+        citiesRegions: submission.citiesRegions,
+        hasCitiesRegions: !!submission.citiesRegions,
+        citiesRegionsLength: submission.citiesRegions?.length || 0
+      });
+    });
+    
     const cityCounts: Record<string, number> = {};
     
     for (const submission of countrySubmissions) {
       if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        submission.citiesRegions.forEach((cityRegion: any) => {
+        console.log(`🏙️ Processing cities for ${submission.brandName}:`, submission.citiesRegions);
+        
+        submission.citiesRegions.forEach((cityRegion: any, index: number) => {
+          console.log(`  City ${index + 1}:`, { cityRegion, type: typeof cityRegion });
+          
           if (typeof cityRegion === 'string') {
             let cityName = cityRegion.trim();
             
@@ -476,14 +492,24 @@ class DataPreloader {
             if (cityRegion.includes(', ')) {
               const parts = cityRegion.split(', ');
               cityName = parts[0].trim(); // First part is the city
+              console.log(`    📍 Extracted city from "City, Region, Country": "${cityName}"`);
+            } else {
+              console.log(`    📍 Using city as-is: "${cityName}"`);
             }
             
             // Basic validation
             if (cityName && cityName.length > 2 && cityName.length < 50) {
               cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+              console.log(`    ✅ Valid city "${cityName}" added (count: ${cityCounts[cityName]})`);
+            } else {
+              console.log(`    ❌ Invalid city "${cityName}" - length: ${cityName?.length}, skipped`);
             }
+          } else {
+            console.log(`    ❌ Non-string cityRegion:`, cityRegion);
           }
         });
+      } else {
+        console.log(`⚠️ No citiesRegions for ${submission.brandName}:`, submission.citiesRegions);
       }
     }
     
