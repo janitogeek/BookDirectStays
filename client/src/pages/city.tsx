@@ -395,7 +395,7 @@ export default function City() {
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
               <div className="flex items-center space-x-4">
                 <Badge className="bg-blue-500 text-white">
-                  {(listingsData?.total || 0) + filteredSubmissions.length} hosts
+                  {(listingsData?.total || 0) + filteredSubmissions.length} {(listingsData?.total || 0) + filteredSubmissions.length === 1 ? 'host' : 'hosts'}
                 </Badge>
                 <span className="text-blue-100">•</span>
                 <span className="text-blue-100">Skip OTA fees</span>

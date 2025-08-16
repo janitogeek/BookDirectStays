@@ -416,7 +416,7 @@ export default function Country() {
                 <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
                 <span>
                   {country?.name || countryName} Direct Booking Sites
-                  <span className="text-gray-500 text-lg ml-2">({totalHosts} hosts)</span>
+                  <span className="text-gray-500 text-lg ml-2">({totalHosts} {totalHosts === 1 ? 'host' : 'hosts'})</span>
                 </span>
               </h1>
             )}
@@ -645,7 +645,7 @@ export default function Country() {
                             </h3>
                           </div>
                           <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                            {getCitySubmissionCount(city)} hosts
+                            {getCitySubmissionCount(city)} {getCitySubmissionCount(city) === 1 ? 'host' : 'hosts'}
                           </Badge>
                         </Link>
                       </CardContent>

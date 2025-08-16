@@ -23,7 +23,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
   
   // Build URL to the specific submission page using the Airtable record ID
   const buildPropertyUrl = () => {
-    let url = `/submission-property/${submission.id}`;
+    let url = `/property/${submission.id}`;
     if (fromCity && fromCountry) {
       // Use the actual city and country names (not slugs) in URL parameters
       url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;

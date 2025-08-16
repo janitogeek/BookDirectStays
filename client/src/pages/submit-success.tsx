@@ -113,7 +113,7 @@ export default function SubmitSuccess() {
         "One-line Description": formData["One-line Description"],
               "Why Book With You": formData["Why Book With You?"],
       "Why Rent With You": formData["Why Rent With You?"],
-            "Commission On Revenue": formData["Commission on Revenue (%)"],
+            "Commission On Revenue": parseFloat(formData["Commission on Revenue (%)"]),
       "Top Stats": formData["Top Stats"] || "",
       "Status": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review",
       "Status Bis (PMC directory)": formData["Choose Your Listing Type"] === "Premium (€499.99/year)" ? "Approved – Published" : "Pending Review",
