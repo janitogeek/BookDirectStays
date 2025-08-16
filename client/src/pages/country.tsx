@@ -61,9 +61,10 @@ export default function Country() {
   const getCountryNameFromSlug = (slug: string) => {
     const countryMap: { [key: string]: string } = {
       'united-states': 'United States',
+      'united-kingdom': 'United Kingdom', // Add missing mapping
       usa: 'United States',
-      spain: 'Spain',
       uk: 'United Kingdom',
+      spain: 'Spain',
       germany: 'Germany',
       france: 'France',
       australia: 'Australia',
