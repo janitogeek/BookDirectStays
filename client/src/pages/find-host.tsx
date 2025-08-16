@@ -172,7 +172,7 @@ export default function FindHost() {
                           </h3>
                         </div>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                          {country.listingCount} hosts
+                          {country.listingCount} {country.listingCount === 1 ? 'host' : 'hosts'}
                         </Badge>
                       </div>
                       <p className="text-gray-600 mb-4">
