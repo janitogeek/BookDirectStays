@@ -517,7 +517,7 @@ export default function Submit() {
         "One-line Description": values["One-line Description"],
               "Why Book With You": values["Why Book With You?"],
       "Why Rent With You": values["Why Rent With You?"],
-      "Commission on Revenue": values["Commission on Revenue (%)"],
+      "Commission On Revenue": values["Commission on Revenue (%)"],
         "Top Stats": values["Top Stats"] || "",
         "Currency": values["Currency"] || "",
         "Min Price": values["Min Price"] ? parseInt(values["Min Price"]) : undefined,
