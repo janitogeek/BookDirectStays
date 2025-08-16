@@ -27,9 +27,16 @@ const statusCache = new Map<string, string>();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // This endpoint is called by Vercel Cron every 2 minutes
-    // No authentication needed as it's called internally by Vercel
+    // SECURITY: Verify this is a legitimate Vercel cron job
+    const authHeader = req.headers.authorization;
+    const cronSecret = process.env.CRON_SECRET;
     
+    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      console.log('❌ Unauthorized cron job access attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    // This endpoint is called by Vercel Cron every 2 minutes
     console.log('🕐 Vercel Cron: Checking for status changes...');
     console.log(`⏰ Timestamp: ${new Date().toISOString()}`);
     
