@@ -57,54 +57,119 @@ export default function Country() {
     });
   };
   
-  // Dynamic country name resolver that works for ANY country format
+  // SYSTEMATIC country name resolver that works for ALL countries automatically
+  // No hardcoded mappings - handles any country format dynamically
   const getCountryNameFromSlug = async (slug: string) => {
     try {
-      // First, try to get the country name from our cached data
+      console.log(`🔍 SYSTEMATIC: Resolving country name for slug: ${slug}`);
+      
+      // Step 1: Try to get from cached countries data first
       const countries = await dataPreloader.getCountries();
       const cachedCountry = countries.find(c => c.slug === slug);
       
       if (cachedCountry) {
-        console.log(`✅ Found country in cache: ${slug} → ${cachedCountry.name}`);
+        console.log(`✅ CACHE HIT: ${slug} → ${cachedCountry.name}`);
         return cachedCountry.name;
       }
       
-      // If not in cache, try to find it in submissions data
+      // Step 2: Try to find in submissions data (most reliable source)
       const submissions = await dataPreloader.getSubmissions();
-      const allCountries = new Set<string>();
+      const allCountriesFromSubmissions = new Set<string>();
       
+      // Extract ALL unique countries from submissions
       submissions.forEach(submission => {
-        if (submission.countries) {
-          submission.countries.forEach(country => allCountries.add(country));
+        if (submission.countries && submission.countries.length > 0) {
+          submission.countries.forEach(country => {
+            allCountriesFromSubmissions.add(country.trim());
+          });
+        }
+        
+        // Also check citiesRegions for country information
+        if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+          submission.citiesRegions.forEach((cityRegion: any) => {
+            if (typeof cityRegion === 'string' && cityRegion.includes(', ')) {
+              const parts = cityRegion.split(', ');
+              if (parts.length >= 3) {
+                const countryFromCity = parts[parts.length - 1].trim(); // Last part is country
+                allCountriesFromSubmissions.add(countryFromCity);
+              }
+            }
+          });
         }
       });
       
-      // Find the best match for this slug
-      const countryArray = Array.from(allCountries);
-      const bestMatch = countryArray.find(country => {
-        const countrySlug = country.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-        return countrySlug === slug;
-      });
+      console.log(`📊 Found ${allCountriesFromSubmissions.size} unique countries in submissions`);
       
-      if (bestMatch) {
-        console.log(`✅ Found country in submissions: ${slug} → ${bestMatch}`);
+      // Step 3: Find the best match using systematic slug comparison
+      const countryArray = Array.from(allCountriesFromSubmissions);
+      let bestMatch = null;
+      let bestScore = 0;
+      
+      for (const country of countryArray) {
+        // Generate slug from country name
+        const countrySlug = country.toLowerCase()
+          .replace(/\s+/g, '-')           // Replace spaces with hyphens
+          .replace(/[^\w-]/g, '')         // Remove special characters
+          .replace(/-+/g, '-')            // Replace multiple hyphens with single
+          .replace(/^-|-$/g, '');         // Remove leading/trailing hyphens
+        
+        // Calculate similarity score
+        let score = 0;
+        
+        // Exact match gets highest score
+        if (countrySlug === slug) {
+          score = 100;
+        }
+        // Partial match gets medium score
+        else if (countrySlug.includes(slug) || slug.includes(countrySlug)) {
+          score = 50;
+        }
+        // Word-by-word comparison
+        else {
+          const slugWords = slug.split('-');
+          const countryWords = countrySlug.split('-');
+          
+          let wordMatches = 0;
+          slugWords.forEach(slugWord => {
+            if (countryWords.some(countryWord => countryWord.includes(slugWord) || slugWord.includes(countryWord))) {
+              wordMatches++;
+            }
+          });
+          
+          score = (wordMatches / slugWords.length) * 30;
+        }
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = country;
+        }
+      }
+      
+      if (bestMatch && bestScore > 20) {
+        console.log(`✅ SYSTEMATIC MATCH: ${slug} → ${bestMatch} (score: ${bestScore})`);
         return bestMatch;
       }
       
-      // Fallback: convert slug to readable format
-      const fallbackName = slug.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
+      // Step 4: Smart fallback - convert slug to readable format
+      const fallbackName = slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
       
-      console.log(`⚠️ Using fallback country name: ${slug} → ${fallbackName}`);
+      console.log(`⚠️ FALLBACK: ${slug} → ${fallbackName}`);
       return fallbackName;
       
     } catch (error) {
-      console.error(`❌ Error resolving country name for slug ${slug}:`, error);
-      // Ultimate fallback
-      return slug.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
+      console.error(`❌ SYSTEMATIC RESOLVER ERROR for slug ${slug}:`, error);
+      
+      // Ultimate fallback - convert slug to readable format
+      const ultimateFallback = slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+      
+      console.log(`🆘 ULTIMATE FALLBACK: ${slug} → ${ultimateFallback}`);
+      return ultimateFallback;
     }
   };
 
