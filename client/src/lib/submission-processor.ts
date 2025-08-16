@@ -250,7 +250,7 @@ export async function getSubmissionsForCity(
  */
 export async function getCitySubmissionCounts(countryName: string): Promise<Record<string, number>> {
   try {
-    console.log(`🔍 OPTIMIZED GEONAMES: Getting city submission counts for country: ${countryName}`);
+    console.log(`🔍 SIMPLIFIED: Getting city submission counts for country: ${countryName}`);
     
     // Get all approved submissions
     const allSubmissions = await airtableService.getApprovedSubmissions();
@@ -259,55 +259,35 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     const cityCounts: Record<string, number> = {};
     
     for (const submission of allSubmissions) {
-      if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
-          submission.countries && submission.countries.length > 0) {
+      // Check if this submission has the requested country
+      if (submission.countries && submission.countries.some(country => 
+        country.toLowerCase() === countryName.toLowerCase()
+      )) {
         
-        // Extract just city names from the cities/regions data
-        const cityNames = submission.citiesRegions.map((cityRegion: any) => {
-          if (typeof cityRegion === 'string') {
-            // If it's already "City, Region, Country" format, extract just the city
-            if (cityRegion.includes(', ')) {
-              const cityName = extractCityName(cityRegion);
-              // Filter out obvious non-city names
-              if (cityName && 
-                  !cityName.toLowerCase().includes('komplex') && 
-                  !cityName.toLowerCase().includes('pemilihan') &&
-                  !cityName.toLowerCase().includes('panitia') &&
-                  cityName.length > 2 && 
-                  cityName.length < 50) {
-                return cityName;
+        // Extract city names from citiesRegions
+        if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+          submission.citiesRegions.forEach((cityRegion: any) => {
+            if (typeof cityRegion === 'string') {
+              let cityName = cityRegion.trim();
+              
+              // If it's "City, Region, Country" format, extract just the city
+              if (cityRegion.includes(', ')) {
+                const parts = cityRegion.split(', ');
+                cityName = parts[0].trim(); // First part is the city
               }
-              return null;
+              
+              // Basic validation - city name should be reasonable
+              if (cityName && cityName.length > 2 && cityName.length < 50) {
+                cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+                console.log(`✅ CITY: ${cityName} in ${countryName} (count: ${cityCounts[cityName]})`);
+              }
             }
-            // Otherwise it's just a city name - apply same filters
-            const cityName = cityRegion.trim();
-            if (cityName && 
-                !cityName.toLowerCase().includes('komplex') && 
-                !cityName.toLowerCase().includes('pemilihan') &&
-                !cityName.toLowerCase().includes('panitia') &&
-                cityName.length > 2 && 
-                cityName.length < 50) {
-              return cityName;
-            }
-            return null;
-          }
-          return cityRegion;
-        }).filter(Boolean);
-        
-        // Use cached/optimized GeoNames matching (with batching and delays)
-        const cityMatches = await matchCitiesToCountriesOptimized(cityNames, submission.countries);
-        
-        // Count cities that belong to the requested country
-        cityMatches.forEach(match => {
-          if (match.countryName.toLowerCase() === countryName.toLowerCase()) {
-            cityCounts[match.cityName] = (cityCounts[match.cityName] || 0) + 1;
-            console.log(`✅ MATCHED: ${match.cityName} belongs to ${countryName} (count: ${cityCounts[match.cityName]})`);
-          }
-        });
+          });
+        }
       }
     }
     
-    console.log(`🏙️ FINAL GEONAMES city counts for ${countryName}:`, cityCounts);
+    console.log(`🏙️ FINAL city counts for ${countryName}:`, cityCounts);
     return cityCounts;
     
   } catch (error) {

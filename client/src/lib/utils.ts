@@ -263,6 +263,7 @@ export function getFlagByCountryName(countryName: string): string {
     'North Macedonia': '🇲🇰',
     'Malta': '🇲🇹',
     'Netherlands': '🇳🇱',
+    'The Netherlands': '🇳🇱',
     'Norway': '🇳🇴',
     'Poland': '🇵🇱',
     'Portugal': '🇵🇹',
