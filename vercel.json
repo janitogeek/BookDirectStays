@@ -11,7 +11,7 @@
     }
   ],
   "functions": {
-    "api/**/*.js": {
+    "client/api/**/*.js": {
       "maxDuration": 30
     }
   },
