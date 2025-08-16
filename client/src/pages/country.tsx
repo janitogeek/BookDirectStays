@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { motion } from "framer-motion";
@@ -57,51 +57,79 @@ export default function Country() {
     });
   };
   
-  // Map country slugs to full country names for Airtable matching
-  const getCountryNameFromSlug = (slug: string) => {
-    const countryMap: { [key: string]: string } = {
-      'united-states': 'United States',
-      'united-kingdom': 'United Kingdom', // Add missing mapping
-      usa: 'United States',
-      uk: 'United Kingdom',
-      spain: 'Spain',
-      germany: 'Germany',
-      france: 'France',
-      australia: 'Australia',
-      canada: 'Canada',
-      italy: 'Italy',
-      portugal: 'Portugal',
-      thailand: 'Thailand',
-      greece: 'Greece',
-      netherlands: 'Netherlands',
-      switzerland: 'Switzerland',
-      austria: 'Austria',
-      belgium: 'Belgium',
-      croatia: 'Croatia',
-      'czech-republic': 'Czech Republic',
-      denmark: 'Denmark',
-      finland: 'Finland',
-      hungary: 'Hungary',
-      ireland: 'Ireland',
-      norway: 'Norway',
-      poland: 'Poland',
-      sweden: 'Sweden',
-      turkey: 'Turkey',
-      albania: 'Albania',
-      andorra: 'Andorra',
-      indonesia: 'Indonesia'
-    };
-    return countryMap[slug] || slug.charAt(0).toUpperCase() + slug.slice(1);
+  // Dynamic country name resolver that works for ANY country format
+  const getCountryNameFromSlug = async (slug: string) => {
+    try {
+      // First, try to get the country name from our cached data
+      const countries = await dataPreloader.getCountries();
+      const cachedCountry = countries.find(c => c.slug === slug);
+      
+      if (cachedCountry) {
+        console.log(`✅ Found country in cache: ${slug} → ${cachedCountry.name}`);
+        return cachedCountry.name;
+      }
+      
+      // If not in cache, try to find it in submissions data
+      const submissions = await dataPreloader.getSubmissions();
+      const allCountries = new Set<string>();
+      
+      submissions.forEach(submission => {
+        if (submission.countries) {
+          submission.countries.forEach(country => allCountries.add(country));
+        }
+      });
+      
+      // Find the best match for this slug
+      const countryArray = Array.from(allCountries);
+      const bestMatch = countryArray.find(country => {
+        const countrySlug = country.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+        return countrySlug === slug;
+      });
+      
+      if (bestMatch) {
+        console.log(`✅ Found country in submissions: ${slug} → ${bestMatch}`);
+        return bestMatch;
+      }
+      
+      // Fallback: convert slug to readable format
+      const fallbackName = slug.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
+      
+      console.log(`⚠️ Using fallback country name: ${slug} → ${fallbackName}`);
+      return fallbackName;
+      
+    } catch (error) {
+      console.error(`❌ Error resolving country name for slug ${slug}:`, error);
+      // Ultimate fallback
+      return slug.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
+    }
   };
 
-  const countryName = getCountryNameFromSlug(countrySlug || '');
+  const [countryName, setCountryName] = useState<string>('');
+  const [isCountryNameLoading, setIsCountryNameLoading] = useState(true);
+  
+  // Resolve country name from slug
+  useEffect(() => {
+    if (countrySlug) {
+      setIsCountryNameLoading(true);
+      getCountryNameFromSlug(countrySlug)
+        .then(setCountryName)
+        .finally(() => setIsCountryNameLoading(false));
+    }
+  }, [countrySlug]);
+  
+  // Don't fetch cities until we have the country name
+  const shouldFetchCities = Boolean(countryName) && !isCountryNameLoading;
   
   // Fetch validated cities for this country from submissions
   // Fetch cities for this country (instant if cached)  
   const { data: citiesWithCounts = [], isLoading: isCitiesLoading } = useQuery({
     queryKey: ["/api/preloaded-cities", countryName],
     queryFn: () => dataPreloader.getCitiesForCountry(countryName),
-    enabled: !!countryName,
+    enabled: shouldFetchCities,
     staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
   });
 
@@ -133,7 +161,7 @@ export default function Country() {
   const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({
     queryKey: ["/api/preloaded-submissions", countryName],
     queryFn: () => dataPreloader.getSubmissionsForCountry(countryName),
-    enabled: !!countryName,
+    enabled: shouldFetchCities,
     staleTime: 30 * 60 * 1000, // 30 minutes (longer since we have smart caching)
     refetchInterval: 60 * 1000, // Refetch every minute
   });
@@ -370,6 +398,42 @@ export default function Country() {
       "numberOfItems": totalHosts
     }
   } : null;
+
+  // Show loading state while resolving country name
+  if (isCountryNameLoading) {
+    return (
+      <AnimatedPage key={`country-${countrySlug}`}>
+        <main>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="animate-pulse">
+                <div className="h-12 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
+                <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </AnimatedPage>
+    );
+  }
+
+  // Show error state if no country name resolved
+  if (!countryName) {
+    return (
+      <AnimatedPage key={`country-${countrySlug}`}>
+        <main>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <h1 className="text-2xl font-bold text-red-800 mb-2">Country Not Found</h1>
+                <p className="text-red-700">Could not resolve country name for slug: {countrySlug}</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </AnimatedPage>
+    );
+  }
 
   return (
     <AnimatedPage key={`country-${countrySlug}`}>
