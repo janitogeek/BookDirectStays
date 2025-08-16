@@ -19,7 +19,20 @@ import SubmissionProperty from "@/pages/submission-property";
 import CMSAdmin from "@/pages/admin/cms";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { useStatusPolling } from "@/hooks/useStatusPolling";
 
+// Status Polling Component
+function StatusPolling() {
+  // Poll every 5 minutes (300,000 ms)
+  const { isPolling } = useStatusPolling(5 * 60 * 1000);
+  
+  return (
+    <div className="hidden">
+      {/* Hidden component that handles status polling */}
+      {isPolling && <span>🔄 Status monitoring active</span>}
+    </div>
+  );
+}
 
 function Router() {
   const [location] = useLocation();
@@ -64,7 +77,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Router />
-
+        <StatusPolling />
         <CacheStatus />
       </TooltipProvider>
     </QueryClientProvider>
