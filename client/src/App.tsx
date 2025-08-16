@@ -19,7 +19,7 @@ import SubmissionProperty from "@/pages/submission-property";
 import CMSAdmin from "@/pages/admin/cms";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import PerformanceMonitor from "@/components/performance-monitor";
+
 
 function Router() {
   const [location] = useLocation();
@@ -64,7 +64,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Router />
-        <PerformanceMonitor />
+
         <CacheStatus />
       </TooltipProvider>
     </QueryClientProvider>

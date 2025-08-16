@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { getFlagByCountryName } from "@/lib/utils";
 
 interface CountryTagsProps {
   countries: any[];
@@ -10,8 +9,35 @@ interface CountryTagsProps {
 
 // Get flag emoji for country name
 const getFlagEmoji = (countryName: string) => {
-  // Use the comprehensive flag mapping from utils
-  return getFlagByCountryName(countryName);
+  const countryMap: { [key: string]: string } = {
+    'United States': '🇺🇸',
+    'Spain': '🇪🇸',
+    'United Kingdom': '🇬🇧',
+    'Germany': '🇩🇪',
+    'France': '🇫🇷',
+    'Australia': '🇦🇺',
+    'Canada': '🇨🇦',
+    'Italy': '🇮🇹',
+    'Portugal': '🇵🇹',
+    'Thailand': '🇹🇭',
+    'Greece': '🇬🇷',
+    'Netherlands': '🇳🇱',
+    'Switzerland': '🇨🇭',
+    'Austria': '🇦🇹',
+    'Belgium': '🇧🇪',
+    'Croatia': '🇭🇷',
+    'Czech Republic': '🇨🇿',
+    'Denmark': '🇩🇰',
+    'Finland': '🇫🇮',
+    'Hungary': '🇭🇺',
+    'Ireland': '🇮🇪',
+    'Norway': '🇳🇴',
+    'Poland': '🇵🇱',
+    'Sweden': '🇸🇪',
+    'Turkey': '🇹🇷',
+    'Albania': '🇦🇱'
+  };
+  return countryMap[countryName] || '🌍';
 };
 
 export default function CountryTags({ countries, isLoading, activeCountry }: CountryTagsProps) {

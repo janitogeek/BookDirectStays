@@ -12,39 +12,29 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    sourcemap: false, // Disable sourcemaps in production for smaller bundle
-    minify: 'esbuild', // Use esbuild for faster builds, fallback to terser if needed
+    sourcemap: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
       },
       output: {
         manualChunks: {
-          // Core React libraries
-          'react-vendor': ['react', 'react-dom'],
-          // Routing and state management
-          'core': ['wouter', '@tanstack/react-query'],
-          // UI components
-          'ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-toast', '@radix-ui/react-tooltip'],
-          // Icons
-          'icons': ['react-icons/si'],
+          vendor: [
+            'react',
+            'react-dom',
+            'wouter',
+            '@tanstack/react-query',
+            'lucide-react',
+          ],
+          ui: [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-tooltip',
+          ],
         },
-        // Optimize chunk naming
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
+
     },
-    // Enable chunk size warnings
-    chunkSizeWarningLimit: 1000,
-  },
-  // Development optimizations
-  server: {
-    hmr: true,
-  },
-  // Optimize dependencies
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'wouter', '@tanstack/react-query'],
   },
 });
 
