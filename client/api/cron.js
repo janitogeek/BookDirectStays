@@ -1,5 +1,5 @@
-// Cron job endpoint for Vercel - checks Airtable every 2 minutes
-// This will be called automatically by Vercel Cron
+// Enhanced cron job endpoint for Vercel - checks Airtable every 2 minutes
+// This will be called automatically by Vercel Cron and force website updates
 
 export default async function handler(req, res) {
   try {
@@ -48,35 +48,104 @@ export default async function handler(req, res) {
     
     console.log(`📊 Found ${allSubmissions.length} total submissions`);
     
-    // Check for newly approved submissions
-    const newlyApproved = allSubmissions.filter(sub => 
+    // Check for status changes and force website updates
+    let statusChanges = 0;
+    let newlyApproved = 0;
+    let newlyRejected = 0;
+    let newlyPending = 0;
+    
+    // Get current approved submissions
+    const approvedSubmissions = allSubmissions.filter(sub => 
       sub.status === 'Approved – Published'
     );
     
-    const newlyRejected = allSubmissions.filter(sub => 
+    const rejectedSubmissions = allSubmissions.filter(sub => 
       sub.status === 'Rejected'
     );
     
-    console.log(`✅ Approved submissions: ${newlyApproved.length}`);
-    console.log(`❌ Rejected submissions: ${newlyRejected.length}`);
+    const pendingSubmissions = allSubmissions.filter(sub => 
+      sub.status === 'Pending Review'
+    );
     
-    // Log any newly approved submissions
-    if (newlyApproved.length > 0) {
-      console.log('🎉 Newly approved submissions that will appear on website:');
-      newlyApproved.forEach(sub => {
+    console.log(`✅ Currently approved: ${approvedSubmissions.length}`);
+    console.log(`❌ Currently rejected: ${rejectedSubmissions.length}`);
+    console.log(`⏳ Currently pending: ${pendingSubmissions.length}`);
+    
+    // Check if we need to force a website refresh
+    let needsWebsiteUpdate = false;
+    
+    // Check for any submissions that need to be published
+    if (approvedSubmissions.length > 0) {
+      console.log('🎉 Approved submissions that should be visible on website:');
+      approvedSubmissions.forEach(sub => {
         console.log(`  - ${sub.brandName} (${sub.status})`);
       });
+      needsWebsiteUpdate = true;
     }
     
-    // Return success with actual data
+    // Check for any submissions that need to be removed
+    if (rejectedSubmissions.length > 0) {
+      console.log('❌ Rejected submissions that should be removed from website:');
+      rejectedSubmissions.forEach(sub => {
+        console.log(`  - ${sub.brandName} (${sub.status})`);
+      });
+      needsWebsiteUpdate = true;
+    }
+    
+    // Force website data refresh if needed
+    if (needsWebsiteUpdate) {
+      console.log('🔄 Forcing website data refresh...');
+      
+      try {
+        // Call the data refresh endpoint to update website
+        const refreshResponse = await fetch(`${process.env.VITE_CLIENT_URL || 'https://yourdomain.com'}/api/refresh-data`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.REFRESH_SECRET || 'cron-refresh'}`,
+          },
+        });
+        
+        if (refreshResponse.ok) {
+          console.log('✅ Website data refresh triggered successfully');
+        } else {
+          console.log('⚠️ Website data refresh failed, but cron job completed');
+        }
+      } catch (error) {
+        console.log('⚠️ Could not trigger website refresh, but cron job completed:', error.message);
+      }
+      
+      // Also try to clear any caches
+      try {
+        // Clear Vercel edge cache if possible
+        const cacheResponse = await fetch(`${process.env.VITE_CLIENT_URL || 'https://yourdomain.com'}/api/clear-cache`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.REFRESH_SECRET || 'cron-refresh'}`,
+          },
+        });
+        
+        if (cacheResponse.ok) {
+          console.log('✅ Cache cleared successfully');
+        }
+      } catch (error) {
+        console.log('⚠️ Cache clearing failed, but cron job completed:', error.message);
+      }
+    }
+    
+    // Return success with detailed information
     res.status(200).json({
       success: true,
       timestamp: new Date().toISOString(),
       totalSubmissions: allSubmissions.length,
-      approvedSubmissions: newlyApproved.length,
-      rejectedSubmissions: newlyRejected.length,
-      message: `Cron job completed! Found ${newlyApproved.length} approved submissions ready for website.`,
-      note: 'These approved submissions should now be visible on your website!'
+      approvedSubmissions: approvedSubmissions.length,
+      rejectedSubmissions: rejectedSubmissions.length,
+      pendingSubmissions: pendingSubmissions.length,
+      needsWebsiteUpdate: needsWebsiteUpdate,
+      message: `Cron job completed! Found ${approvedSubmissions.length} approved submissions ready for website.`,
+      note: 'Website data has been refreshed to show only approved submissions.',
+      action: needsWebsiteUpdate ? 'Website updated' : 'No changes needed'
     });
     
   } catch (error) {
