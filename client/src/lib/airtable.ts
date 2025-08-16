@@ -19,9 +19,10 @@ console.log('Airtable Config:', {
 export interface AirtableSubmission {
   id: string;
   fields: {
-    'Brand Name': string;
-    'PMC General Website': string;
-    'Direct Booking Engine URL': string;
+      'Brand Name': string;
+  'PMC General Website': string;
+  'Direct Booking Engine URL': string;
+  'Unique Slug': string;
     'Number of Listings': number;
     'Email': string;
     'One-line Description': string;
@@ -67,6 +68,7 @@ export interface Submission {
   brandName: string;
   pmcGeneralWebsite: string;
   website: string;
+  uniqueSlug: string;
   numberOfListings: number;
   email: string;
   oneLineDescription: string;
@@ -103,8 +105,6 @@ export interface Submission {
   currency?: string;
   googleReviewsLink?: string;
   cancellationPolicy?: string;
-  // Unique slug for duplicate company names
-  uniqueSlug?: string;
 }
 
 // Airtable service
@@ -577,6 +577,7 @@ export const airtableService = {
       brandName: fields['Brand Name'] || '',
       pmcGeneralWebsite: fields['PMC General Website'] || '',
       website: fields['Direct Booking Engine URL'] || '',
+      uniqueSlug: fields['Unique Slug'] || '',
       numberOfListings: fields['Number of Listings'] || 0,
       email: fields['Email'] || '',
       oneLineDescription: fields['One-line Description'] || '',

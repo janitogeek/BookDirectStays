@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { generateUniqueCompanySlug } from "@/lib/utils";
 
 export default function SubmitSuccess() {
   const [, setLocation] = useLocation();
@@ -94,6 +95,7 @@ export default function SubmitSuccess() {
       const submissionData: any = {
         "Email": email,
         "Brand Name": formData["Brand Name"],
+        "Unique Slug": generateUniqueCompanySlug(formData["Brand Name"], []), // Generate unique slug for routing
         "PMC General Website": formData["PMC General Website"],
         "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
         "PMS": formData["PMS/Channel Manager"],

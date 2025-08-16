@@ -57,7 +57,15 @@ const formSchema = z.object({
   "One-line Description": z.string().min(5).max(70),
       "Why Book With You?": z.string().min(50, "Please provide at least 50 characters explaining why guests should book with you"),
   "Why Rent With You?": z.string().min(50, "Please provide at least 50 characters explaining why property owners should rent with you"),
-  "Commission on Revenue (%)": z.string().min(1, "Please enter your commission percentage"),
+  "Commission on Revenue (%)": z.string().min(1, "Please enter your commission percentage").transform((val) => {
+    // Remove % symbol and convert to number, then back to string for Airtable
+    const cleanVal = val.replace(/%/g, '').trim();
+    const num = parseFloat(cleanVal);
+    if (isNaN(num) || num < 0 || num > 100) {
+      throw new Error("Please enter a valid percentage between 0 and 100");
+    }
+    return num.toString(); // Return as string but ensure it's a valid number
+  }),
   "Top Stats": z.string().min(1, "Please share your top stats (e.g., average rating, number of reviews, etc.)"),
   "Currency": z.string().min(1, "Please select a currency"),
   "Min Price": z.string().min(1, "Please enter a minimum price"),
