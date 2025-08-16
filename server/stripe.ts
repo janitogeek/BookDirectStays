@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
-import { generateUniqueCompanySlug } from '../client/src/lib/utils';
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-12-18.acacia',
@@ -101,7 +101,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
           "Brand Name": formData["Brand Name"],
       "PMC General Website": formData["PMC General Website"],
       "Direct Booking Engine URL": formData["Direct Booking Engine URL"],
-      "Unique Slug": generateUniqueCompanySlug(formData["Brand Name"], []), // Generate unique slug for routing
+
     "Number of Listings": formData["Number of Listings"],
 
     "Cities / Regions": Array.isArray(formData["Cities / Regions"]) 

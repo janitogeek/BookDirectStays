@@ -22,7 +22,7 @@ export interface AirtableSubmission {
       'Brand Name': string;
   'PMC General Website': string;
   'Direct Booking Engine URL': string;
-  'Unique Slug': string;
+
     'Number of Listings': number;
     'Email': string;
     'One-line Description': string;
@@ -68,7 +68,8 @@ export interface Submission {
   brandName: string;
   pmcGeneralWebsite: string;
   website: string;
-  uniqueSlug: string;
+  uniqueSlug?: string; // Optional unique slug for routing
+
   numberOfListings: number;
   email: string;
   oneLineDescription: string;
@@ -577,7 +578,7 @@ export const airtableService = {
       brandName: fields['Brand Name'] || '',
       pmcGeneralWebsite: fields['PMC General Website'] || '',
       website: fields['Direct Booking Engine URL'] || '',
-      uniqueSlug: fields['Unique Slug'] || '',
+
       numberOfListings: fields['Number of Listings'] || 0,
       email: fields['Email'] || '',
       oneLineDescription: fields['One-line Description'] || '',
