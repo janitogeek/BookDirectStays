@@ -440,9 +440,61 @@ class DataPreloader {
    * Get cities for a specific country (instant)
    */
   async getCitiesForCountry(countryName: string): Promise<Array<{name: string; slug: string; submissionCount: number}>> {
+    console.log(`🔍 getCitiesForCountry called for: ${countryName}`);
+    
+    // Try to get from processed countries data first
     const countries = await this.getCountries();
+    console.log(`📊 Found ${countries.length} countries in cache`);
+    
     const country = countries.find(c => c.name.toLowerCase() === countryName.toLowerCase());
-    return country?.cities || [];
+    if (country && country.cities && country.cities.length > 0) {
+      console.log(`✅ Found ${country.cities.length} cities for ${countryName} in cache`);
+      return country.cities;
+    }
+    
+    console.log(`⚠️ No cities found in cache for ${countryName}, falling back to direct submission processing`);
+    
+    // Fallback: Process cities directly from submissions
+    const submissions = await this.getSubmissions();
+    const countrySubmissions = submissions.filter(submission => 
+      submission.countries && submission.countries.some(country => 
+        country.toLowerCase() === countryName.toLowerCase()
+      )
+    );
+    
+    console.log(`📊 Found ${countrySubmissions.length} submissions for ${countryName}`);
+    
+    const cityCounts: Record<string, number> = {};
+    
+    for (const submission of countrySubmissions) {
+      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
+        submission.citiesRegions.forEach((cityRegion: any) => {
+          if (typeof cityRegion === 'string') {
+            let cityName = cityRegion.trim();
+            
+            // If it's "City, Region, Country" format, extract just the city
+            if (cityRegion.includes(', ')) {
+              const parts = cityRegion.split(', ');
+              cityName = parts[0].trim(); // First part is the city
+            }
+            
+            // Basic validation
+            if (cityName && cityName.length > 2 && cityName.length < 50) {
+              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+            }
+          }
+        });
+      }
+    }
+    
+    const cities = Object.entries(cityCounts).map(([cityName, count]) => ({
+      name: cityName,
+      slug: this.generateCitySlug(cityName),
+      submissionCount: count
+    })).sort((a, b) => a.name.localeCompare(b.name));
+    
+    console.log(`🏙️ Fallback processing found ${cities.length} cities for ${countryName}:`, cities);
+    return cities;
   }
 
   /**
