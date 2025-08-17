@@ -10,7 +10,7 @@ interface StatusMonitorResponse {
   totalSubmissions: number;
 }
 
-export const useStatusPolling = (pollingInterval: number = 5 * 60 * 1000) => {
+export const useStatusPolling = (pollingInterval: number = 2 * 60 * 1000) => { // Changed from 5 to 2 minutes
   const queryClient = useQueryClient();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isPollingRef = useRef(false);
