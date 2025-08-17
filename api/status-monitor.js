@@ -2,6 +2,19 @@
 // This checks Airtable for status changes and triggers website updates
 
 export default async function handler(req, res) {
+  // Handle CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     // SECURITY: Verify this is a legitimate request
     const authHeader = req.headers.authorization;
@@ -71,7 +84,7 @@ export default async function handler(req, res) {
     
     console.log('✅ Status monitor completed successfully');
     
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       statusChanges: statusChanges,
       newlyApproved: newlyApproved,
@@ -86,7 +99,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('❌ Status monitor failed:', error);
     
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false,
       error: 'Status monitor failed',
       details: error.message || 'Unknown error',
