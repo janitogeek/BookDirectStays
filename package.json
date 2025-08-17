@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "airtable": "^0.12.2",
-    "@vercel/node": "^3.0.21"
+    "@vercel/node": "^3.0.21",
+    "airtable": "^0.12.2"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

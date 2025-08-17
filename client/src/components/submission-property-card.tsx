@@ -70,55 +70,55 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
         className="h-full"
       >
         <Card className="group border border-gray-200 bg-white relative h-full overflow-hidden">
-      {/* Featured Badge */}
-      {isPremium && (
-        <div className="absolute top-3 right-3 z-10">
-          <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
-            Featured
-          </Badge>
-        </div>
-      )}
-
-      <CardContent className="p-6 flex flex-col h-full">
-        {/* Header Image with Logo Overlay */}
-        {submission.highlightImage && (
-          <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
-            <img
-              src={submission.highlightImage}
-              alt={submission.brandName}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-            />
-            
-            {/* Logo Overlay */}
-            {submission.logo && (
-              <div className="absolute top-3 left-3 right-3 flex justify-center">
-                <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
-                  <img
-                    src={submission.logo}
-                    alt={`${submission.brandName} logo`}
-                    className="max-w-full max-h-12 object-contain"
-                  />
-                </div>
-              </div>
-            )}
+        {/* Featured Badge */}
+        {isPremium && (
+          <div className="absolute top-3 right-3 z-10">
+            <Badge className="bg-yellow-500 text-yellow-900 font-semibold">
+              Featured
+            </Badge>
           </div>
         )}
 
+        <CardContent className="p-6 flex flex-col h-full">
+          {/* Header Image with Logo Overlay */}
+          {submission.highlightImage && (
+            <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden">
+              <img
+                src={submission.highlightImage}
+                alt={submission.brandName}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+              />
+              
+              {/* Logo Overlay */}
+              {submission.logo && (
+                <div className="absolute top-3 left-3 right-3 flex justify-center">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 max-w-[80%]">
+                    <img
+                      src={submission.logo}
+                      alt={`${submission.brandName} logo`}
+                      className="max-w-full max-h-12 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
         {/* Brand Header */}
-        <div className="mb-4">
-          <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
-            {submission.brandName}
-          </h3>
-          
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-1 truncate">
+              {submission.brandName}
+            </h3>
+            
           {/* One-line Description */}
-          <div className="min-h-[3rem]">
-            {submission.oneLineDescription && (
-              <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
-                {submission.oneLineDescription}
-              </p>
-            )}
+            <div className="min-h-[3rem]">
+              {submission.oneLineDescription && (
+                <p className="text-sm italic text-gray-600 leading-relaxed line-clamp-2">
+                  {submission.oneLineDescription}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
         {/* Property Count & Pricing */}
         <div className="flex items-center justify-between mb-3 text-sm">
@@ -128,7 +128,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
               <span>{submission.numberOfListings} properties</span>
             </div>
           )}
-          
+
           {(submission.minPrice || submission.maxPrice) && submission.currency && (
             <div className="flex items-center gap-1 font-medium text-blue-600">
               <span className="text-gray-500">💰</span>
@@ -146,7 +146,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
         </div>
 
         {/* Types of Stays - Horizontal carousel when many, wrap when few */}
-        {submission.typesOfStays && submission.typesOfStays.length > 0 && (
+          {submission.typesOfStays && submission.typesOfStays.length > 0 && (
           <div className="mb-4 min-h-[2.5rem]">
             {submission.typesOfStays.length > 4 ? (
               // Carousel for many types (>4)
@@ -169,11 +169,11 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
               // Regular flex wrap for few types (≤4)
               <div className="flex flex-wrap gap-2">
                 {[...submission.typesOfStays].sort().map((type, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {type.trim()}
-                  </Badge>
-                ))}
-              </div>
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {type.trim()}
+                </Badge>
+              ))}
+            </div>
             )}
           </div>
         )}
@@ -185,142 +185,142 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
 
         {/* Countries - Moved after Types of Stays, Remove duplicates */}
         <div className="flex items-center gap-2 mb-3 text-sm text-gray-900 min-h-[1.5rem]">
-          <MapPin className="w-4 h-4 flex-shrink-0" />
-          <span className="flex items-center gap-1 flex-wrap">
+            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <span className="flex items-center gap-1 flex-wrap">
             {Array.from(new Set(submission.countries))
               .sort((a, b) => a.localeCompare(b))
               .map((country, index, sortedCountries) => (
-              <span key={country}>
+                <span key={country}>
                 {getFlagByCountryName(country)} {country}
                 {index < sortedCountries.length - 1 && ", "}
-              </span>
-            ))}
-          </span>
-        </div>
+                </span>
+              ))}
+            </span>
+          </div>
 
         {/* Cities removed from cards - keeping only countries like featured hosts */}
 
         {/* Top Stats Component */}
-        {submission.topStats && (
+          {submission.topStats && (
           <div className="mb-4 min-h-[3rem]">
-            <TopStats 
-              topStats={submission.topStats} 
-              brandName={submission.brandName}
-              hostWebsite={submission.website}
-            />
-          </div>
-        )}
+              <TopStats 
+                topStats={submission.topStats} 
+                brandName={submission.brandName}
+                hostWebsite={submission.website}
+              />
+            </div>
+          )}
 
         {/* Spacer for cards without Top Stats to maintain alignment */}
         {!submission.topStats && (
           <div className="mb-4 min-h-[3rem]"></div>
         )}
 
-        {/* Why Book With CTA */}
-        <div className="mb-6">
-          <Button 
-            asChild 
-            variant="outline" 
-            size="sm"
-            className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
-          >
-            <Link 
-              href={buildPropertyUrl()}
-              onClick={trackCompany}
-            >
-              Why Book With {submission.brandName}?
-            </Link>
-          </Button>
-        </div>
-
-        {/* Bottom Section: Social Links Left, Book Direct Right */}
-        <div className="flex items-center justify-between mt-auto pt-4">
-          {/* Social Links - Left */}
-          <div className="flex items-center gap-3">
-            {submission.instagram && (
-              <a
-                href={submission.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-pink-600 hover:scale-110 transition-transform"
-                title="Instagram"
-                onClick={trackInstagram}
-              >
-                <SiInstagram className="w-5 h-5" />
-              </a>
-            )}
-            {submission.facebook && (
-              <a
-                href={submission.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:scale-110 transition-transform"
-                title="Facebook"
-                onClick={trackFacebook}
-              >
-                <SiFacebook className="w-5 h-5" />
-              </a>
-            )}
-            {submission.linkedin && (
-              <a
-                href={submission.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-700 hover:scale-110 transition-transform"
-                title="LinkedIn"
-                onClick={trackLinkedIn}
-              >
-                <SiLinkedin className="w-5 h-5" />
-              </a>
-            )}
-            {submission.tiktok && (
-              <a
-                href={submission.tiktok}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black hover:scale-110 transition-transform"
-                title="TikTok"
-                onClick={trackTikTok}
-              >
-                <SiTiktok className="w-5 h-5" />
-              </a>
-            )}
-            {submission.youtubeVideoTour && (
-              <a
-                href={submission.youtubeVideoTour}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-red-600 hover:scale-110 transition-transform"
-                title="YouTube"
-                onClick={trackYouTube}
-              >
-                <SiYoutube className="w-5 h-5" />
-              </a>
-            )}
-          </div>
-
-          {/* Book Direct - Right */}
-          {submission.website && (
+          {/* Why Book With CTA */}
+          <div className="mb-6">
             <Button 
               asChild 
-              variant="default" 
+              variant="outline" 
               size="sm"
+              className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
             >
-              <a 
-                href={submission.website} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2"
-                onClick={trackWebsite}
+              <Link 
+              href={buildPropertyUrl()}
+              onClick={trackCompany}
               >
-                <ExternalLink className="w-4 h-4" />
-                Book Direct
-              </a>
+              Why Book With {submission.brandName}?
+              </Link>
             </Button>
-          )}
-        </div>
-      </CardContent>
-        </Card>
+          </div>
+
+          {/* Bottom Section: Social Links Left, Book Direct Right */}
+          <div className="flex items-center justify-between mt-auto pt-4">
+            {/* Social Links - Left */}
+            <div className="flex items-center gap-3">
+              {submission.instagram && (
+                <a
+                  href={submission.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-600 hover:scale-110 transition-transform"
+                  title="Instagram"
+                onClick={trackInstagram}
+                >
+                  <SiInstagram className="w-5 h-5" />
+                </a>
+              )}
+              {submission.facebook && (
+                <a
+                  href={submission.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:scale-110 transition-transform"
+                  title="Facebook"
+                onClick={trackFacebook}
+                >
+                  <SiFacebook className="w-5 h-5" />
+                </a>
+              )}
+              {submission.linkedin && (
+                <a
+                  href={submission.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 hover:scale-110 transition-transform"
+                  title="LinkedIn"
+                onClick={trackLinkedIn}
+                >
+                  <SiLinkedin className="w-5 h-5" />
+                </a>
+              )}
+              {submission.tiktok && (
+                <a
+                  href={submission.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-black hover:scale-110 transition-transform"
+                  title="TikTok"
+                onClick={trackTikTok}
+                >
+                  <SiTiktok className="w-5 h-5" />
+                </a>
+              )}
+              {submission.youtubeVideoTour && (
+                <a
+                  href={submission.youtubeVideoTour}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-red-600 hover:scale-110 transition-transform"
+                  title="YouTube"
+                onClick={trackYouTube}
+                >
+                  <SiYoutube className="w-5 h-5" />
+                </a>
+              )}
+            </div>
+
+            {/* Book Direct - Right */}
+            {submission.website && (
+              <Button 
+                asChild 
+                variant="default" 
+                size="sm"
+              >
+                <a 
+                  href={submission.website} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
+                onClick={trackWebsite}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Book Direct
+                </a>
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
       </motion.div>
     </motion.div>
   );

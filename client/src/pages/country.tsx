@@ -285,12 +285,12 @@ export default function Country() {
       // No filters, just sort
       return sortSubmissions(submissions);
     }
-    
+
     if (hasActiveFilters) {
       filtered = filtered.filter(submission => {
-        // Check keyword search first
-        if (filters.search) {
-          const searchTerm = filters.search.toLowerCase();
+      // Check keyword search first
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
         const searchableContent = [
           submission.brandName,
           submission.oneLineDescription,
@@ -403,8 +403,8 @@ export default function Country() {
         }
       }
 
-        return true;
-      });
+      return true;
+    });
     }
     
     // Sort submissions: Featured first, then alphabetical
@@ -502,7 +502,7 @@ export default function Country() {
 
   return (
     <AnimatedPage key={`country-${countrySlug}`}>
-      <main>
+    <main>
       {/* Structured Data for AI Understanding */}
       <script
         type="application/ld+json"
@@ -797,7 +797,7 @@ export default function Country() {
             </div>
           </div>
         </section>
-      </main>
+    </main>
     </AnimatedPage>
   );
 }

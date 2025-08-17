@@ -116,8 +116,8 @@ export default function Home() {
 
   return (
     <AnimatedPage key="home">
-      <main className="min-h-screen">
-        {/* Hero Section - Clean and Spacious */}
+    <main className="min-h-screen">
+      {/* Hero Section - Clean and Spacious */}
         <AnimatedSection className="relative overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -155,12 +155,12 @@ export default function Home() {
                 whileHover="hover"
                 whileTap="tap"
               >
-                <Button 
-                  onClick={() => setLocation("/find-host")}
+              <Button 
+                onClick={() => setLocation("/find-host")}
                   className="w-full py-2 px-4 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold"
-                >
-                  Find a Host Now!
-                </Button>
+              >
+                Find a Host Now!
+              </Button>
               </motion.div>
             </motion.div>
 
@@ -538,7 +538,7 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
-      </main>
+    </main>
     </AnimatedPage>
   );
 }
