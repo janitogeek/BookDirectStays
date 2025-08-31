@@ -97,23 +97,38 @@ export default function About() {
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
               <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
-                  <h3 className="text-2xl font-bold text-blue-900 mb-4">🌍 Global Travelers & STR Industry Experts</h3>
-                  <p className="text-blue-800 text-lg leading-relaxed">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🌍</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Global Travelers & STR Industry Experts</h3>
+                  </div>
+                  <p className="text-gray-700 text-lg leading-relaxed text-center">
                     Our journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as consumers. This global perspective, combined with our expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives us unique insights into what travelers want and how PMCs can deliver it.
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
-                  <h3 className="text-2xl font-bold text-green-900 mb-4">💼 100+ PMCs Trust Our Expertise</h3>
-                  <p className="text-green-800 text-lg leading-relaxed">
-                    We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo). Elsa creates content to grow their brand and increase direct bookings (e.g., Kamili Villas).
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">💼</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">100+ PMCs Trust Our Expertise</h3>
+                  </div>
+                  <p className="text-gray-700 text-lg leading-relaxed text-center">
+                    We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., <strong>StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo</strong>). Elsa creates content to grow their brand and increase direct bookings (e.g., <strong>Kamili Villas</strong>).
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-purple-900 mb-4">🎯 The BookDirectStays Solution</h3>
-                  <p className="text-purple-800 text-lg leading-relaxed">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl">🎯</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">The BookDirectStays Solution</h3>
+                  </div>
+                  <p className="text-gray-700 text-lg leading-relaxed text-center">
                     We discovered that most of the listings on OTAs are professionally managed and can also be booked direct for way cheaper through their direct booking sites, but they're extremely hard to find. So we built the solution for that: a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
                   </p>
                 </div>
@@ -391,7 +406,9 @@ export default function About() {
                   <p className="text-center text-gray-600 text-sm">
                     <strong>Property Types:</strong> Villas, Apartments, Cabins, Chalets, Domes, Boutique Stays, Beach Houses, Mountain Retreats
                   </p>
-                  <p className="text-center text-gray-600 text-sm mt-3">
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-center text-gray-600 text-sm">
                     Whether you're looking for a villa in Greece, a cabin in Canada, an apartment in Paris, or a beach house in Mexico, BookDirectStays connects you directly with verified professional hosts.
                   </p>
                 </div>
