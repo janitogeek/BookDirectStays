@@ -266,24 +266,52 @@ export default function About() {
               Directory + Partnerships
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700 mb-8">
-              <p className="mb-6">
-                Listing your company on BookDirectStays is almost free (99.99 euros / year - probably less than the cost of a night in one of your properties). *Could not make it free as maintaining the website has costs.
-              </p>
-              <p className="mb-6">
-                In addition, we offer partnership opportunities designed to help PMCs and owners boost their direct bookings:
-              </p>
-              <ul className="list-disc pl-6 mb-6 space-y-2">
-                <li>Social media content creation & campaigns led by Elsa.</li>
-                <li>Featured listings & enhanced visibility on the site.</li>
-                <li>Custom collaborations and marketing partnerships.</li>
-              </ul>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-8">
+                <h3 className="text-xl font-bold text-blue-900 mb-3">💡 Smart Investment for Your Business</h3>
+                <p className="text-blue-800 mb-4">
+                  <strong>List your company for just €99.99/year</strong> - that's less than €0.28 per day, or roughly the cost of a coffee. 
+                  <span className="text-blue-600 text-sm block mt-1">*Website maintenance costs require this small fee</span>
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-8">
+                <h3 className="text-xl font-bold text-purple-900 mb-3">🚀 Partnership Opportunities to Scale Your Direct Bookings</h3>
+                <p className="text-purple-800 mb-4">
+                  Beyond basic listing, unlock premium growth opportunities designed specifically for property managers:
+                </p>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">📱</span>
+                    </div>
+                    <h4 className="font-semibold text-purple-900 mb-2">Social Media Growth</h4>
+                    <p className="text-sm text-purple-700">Elsa creates engaging content & campaigns to boost your online presence</p>
+                  </div>
+                  <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">⭐</span>
+                    </div>
+                    <h4 className="font-semibold text-purple-900 mb-2">Featured Visibility</h4>
+                    <p className="text-sm text-purple-700">Premium placement & enhanced visibility to attract more guests</p>
+                  </div>
+                  <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <span className="text-2xl">🤝</span>
+                    </div>
+                    <h4 className="font-semibold text-purple-900 mb-2">Custom Partnerships</h4>
+                    <p className="text-sm text-purple-700">Tailored marketing collaborations to maximize your direct booking success</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="text-center">
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 px-8 py-3 text-lg font-semibold"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                   onClick={() => setLocation("/partnerships")}
                 >
-                  👉 Learn more on our Partnerships page
+                  🚀 Explore Partnership Opportunities
                 </Button>
+                <p className="text-gray-500 text-sm mt-2">Discover how we can help you grow your direct bookings</p>
               </div>
             </div>
           </div>
@@ -313,7 +341,7 @@ export default function About() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🇺🇸</span>
+                <span className="text-2xl">🌎</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">North America</h3>
               <p className="text-gray-600 text-sm">USA, Canada, Mexico…</p>
