@@ -96,24 +96,24 @@ export default function About() {
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg">
-                  <h3 className="text-xl font-bold text-blue-900 mb-3">🌍 Global Travelers & STR Industry Experts</h3>
-                  <p className="text-blue-800">
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-4">🌍 Global Travelers & STR Industry Experts</h3>
+                  <p className="text-blue-800 text-lg leading-relaxed">
                     Our journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as consumers. This global perspective, combined with our expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives us unique insights into what travelers want and how PMCs can deliver it.
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg">
-                  <h3 className="text-xl font-bold text-green-900 mb-3">💼 100+ PMCs Trust Our Expertise</h3>
-                  <p className="text-green-800">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
+                  <h3 className="text-2xl font-bold text-green-900 mb-4">💼 100+ PMCs Trust Our Expertise</h3>
+                  <p className="text-green-800 text-lg leading-relaxed">
                     We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo). Elsa creates content to grow their brand and increase direct bookings (e.g., Kamili Villas).
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg">
-                  <h3 className="text-xl font-bold text-purple-900 mb-3">🎯 The BookDirectStays Solution</h3>
-                  <p className="text-purple-800">
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-8 rounded-xl min-h-[280px] flex flex-col justify-center">
+                  <h3 className="text-xl font-bold text-purple-900 mb-4">🎯 The BookDirectStays Solution</h3>
+                  <p className="text-purple-800 text-lg leading-relaxed">
                     We discovered that most of the listings on OTAs are professionally managed and can also be booked direct for way cheaper through their direct booking sites, but they're extremely hard to find. So we built the solution for that: a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
                   </p>
                 </div>
@@ -145,43 +145,9 @@ export default function About() {
             </div>
 
             {/* Team Descriptions with Arrows */}
-            <div className="space-y-12">
-              {/* Elsa - Co-Founder (Left Side) */}
-              <div className="flex items-start space-x-6">
-                <div className="flex-1 text-right">
-                  <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
-                  <p className="text-purple-700 font-medium mb-4">Co-Founder & Content Strategist</p>
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings (e.g., Kamili Villas).
-                  </p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline"
-                      className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
-                      onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
-                    >
-                      View LinkedIn
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                  </div>
-                </div>
-                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src="/uploads/elsa-profile.jpg" 
-                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-
-              {/* Jan - Founder (Right Side) */}
-              <div className="flex items-start space-x-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Jan - Founder (Top Right) */}
+              <div className="lg:col-start-2 flex items-start space-x-6">
                 <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
                   <img 
                     src="/uploads/jan-profile.jpg" 
@@ -211,6 +177,40 @@ export default function About() {
                       View LinkedIn
                     </Button>
                   </div>
+                </div>
+              </div>
+
+              {/* Elsa - Co-Founder (Bottom Left) */}
+              <div className="lg:col-start-1 flex items-start space-x-6">
+                <div className="flex-1 text-right">
+                  <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
+                  <p className="text-purple-700 font-medium mb-4">Co-Founder & Content Strategist</p>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings (e.g., Kamili Villas).
+                  </p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline"
+                      className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
+                      onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
+                    >
+                      View LinkedIn
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
+                  <img 
+                    src="/uploads/elsa-profile.jpg" 
+                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -280,75 +280,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Global Coverage Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Global Coverage 🌍
-            </h2>
-            <p className="text-xl text-gray-600">
-              BookDirectStays is global. We feature verified PMCs & owners using PMS across:
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🇪🇺</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Europe</h3>
-              <p className="text-gray-600 text-sm">France, Spain, Italy, Portugal, Greece, UK, Ireland…</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🌎</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">North America</h3>
-              <p className="text-gray-600 text-sm">USA, Canada, Mexico…</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🌎</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Latin America & Caribbean</h3>
-              <p className="text-gray-600 text-sm">Jamaica, Bahamas, Brazil, Argentina…</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🌏</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Asia-Pacific</h3>
-              <p className="text-gray-600 text-sm">Indonesia, Thailand, Australia, New Zealand…</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🌍</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Africa & Middle East</h3>
-              <p className="text-gray-600 text-sm">Morocco, South Africa, Egypt, UAE…</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">🏠</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Property Types</h3>
-              <p className="text-gray-600 text-sm">Villas, cabins, apartments, chalets, domes, boutique stays</p>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-lg text-gray-700 mb-6">
-              Whether you're looking for a villa in Greece, a cabin in Canada, an apartment in Paris, or a beach house in Mexico, BookDirectStays connects you directly with verified professional hosts.
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* Vision Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
@@ -458,6 +390,9 @@ export default function About() {
                 <div className="mt-6 pt-4 border-t border-gray-200">
                   <p className="text-center text-gray-600 text-sm">
                     <strong>Property Types:</strong> Villas, Apartments, Cabins, Chalets, Domes, Boutique Stays, Beach Houses, Mountain Retreats
+                  </p>
+                  <p className="text-center text-gray-600 text-sm mt-3">
+                    Whether you're looking for a villa in Greece, a cabin in Canada, an apartment in Paris, or a beach house in Mexico, BookDirectStays connects you directly with verified professional hosts.
                   </p>
                 </div>
               </div>
