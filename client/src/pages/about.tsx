@@ -56,24 +56,23 @@ export default function About() {
             <p className="text-xl lg:text-2xl mb-8 opacity-90">
               The Global Directory for Direct Vacation Rental Bookings
             </p>
-                          <p className="text-lg mb-8 opacity-90">
+                                        <p className="text-lg mb-8 opacity-90">
                 Connecting travelers with verified professional hosts — property management companies (PMCs) and serious owners using a PMS — for direct bookings. No OTA middlemen, fewer fees, better service.
               </p>
-                          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
-                onClick={() => setLocation("/find-host")}
-              >
-                Find Your Stay
-              </Button>
-              <Button 
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
-                onClick={() => setLocation("/submit")}
-              >
-                List Your Company
-              </Button>
-            </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+                  onClick={() => setLocation("/find-host")}
+                >
+                  Find Your Stay
+                </Button>
+                <Button 
+                  className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4 text-lg font-semibold"
+                  onClick={() => setLocation("/submit")}
+                >
+                  List Your Company
+                </Button>
+              </div>
           </div>
         </div>
       </section>
@@ -126,7 +125,7 @@ export default function About() {
                 <CardHeader className="text-center">
                   <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
                     <img 
-                      src="/uploads/jan-profile.jpg" 
+                      src="/uploads/jan-profile.png" 
                       alt="Jan Sahagun - Founder of BookDirectStays"
                       className="w-full h-full object-cover"
                     />
@@ -369,14 +368,13 @@ export default function About() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
                 onClick={() => setLocation("/find-host")}
               >
                 Find Your Stay
               </Button>
               <Button 
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+                className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4 text-lg font-semibold"
                 onClick={() => setLocation("/submit")}
               >
                 List Your Company
@@ -391,9 +389,9 @@ export default function About() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-gray-600">
-              All companies listed are verified before publishing. If you see an issue, contact us at{' '}
-              <a href="mailto:hello@bookdirectstays.com" className="text-blue-600 hover:underline">
-                hello@bookdirectstays.com
+              All companies listed are verified before publishing. If you see an issue, or outdated info contact us at{' '}
+              <a href="mailto:bookdirectstays@gmail.com" className="text-blue-600 hover:underline">
+                bookdirectstays@gmail.com
               </a>
             </p>
           </div>

@@ -10,7 +10,7 @@ client/public/uploads/
 
 ## Required Files
 
-1. **Jan's Profile Picture**: `jan-profile.jpg`
+1. **Jan's Profile Picture**: `jan-profile.png`
    - Place your headshot image here
    - The image you provided will be used
    - Recommended size: 200x200px or larger (will be cropped to circle)
@@ -36,7 +36,7 @@ The About page will automatically:
 
 ## File Paths Used
 
-- Jan's image: `/uploads/jan-profile.jpg`
+- Jan's image: `/uploads/jan-profile.png`
 - Elsa's image: `/uploads/elsa-profile.jpg`
 
 ## After Adding Images
@@ -48,3 +48,4 @@ The About page will automatically:
 ## Fallback
 
 If images are not found, the page will show placeholder icons instead, so the page will work even without the images initially.
+
