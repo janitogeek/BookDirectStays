@@ -57,7 +57,7 @@ export default function About() {
               The Global Directory for Direct Vacation Rental Bookings
             </p>
                                         <p className="text-lg mb-8 opacity-90">
-                Connecting travelers with verified professional hosts — property management companies (PMCs) and serious owners using a PMS — for direct bookings. No OTA middlemen, fewer fees, better service.
+                Connecting travelers with verified professional hosts — property management companies (PMCs) and serious owners using a PMS — for direct bookings. No OTA middlemen, fewer fees, better service. We list trusted operators across the whole world (Europe, North America, Latin America & the Caribbean, Asia-Pacific, Africa, and Oceania) covering everything from villas and apartments to cabins, chalets, domes, and boutique stays.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
@@ -77,16 +77,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Intro Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-xl text-gray-700 leading-relaxed mb-8">
-              We list trusted operators across the whole world (Europe, North America, Latin America & the Caribbean, Asia-Pacific, Africa, and Oceania) covering everything from villas and apartments to cabins, chalets, domes, and boutique stays.
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* Our Story Section */}
       <section className="py-20 bg-gray-50">
@@ -96,39 +87,39 @@ export default function About() {
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl">🌍</span>
+              <div className="grid md:grid-cols-3 gap-10">
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-10 min-h-[380px] flex flex-col justify-center">
+                  <div className="text-center mb-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-3xl">🌍</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Global Travelers & STR Industry Experts</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">Global Travelers & STR Industry Experts</h3>
                   </div>
-                  <p className="text-gray-700 text-lg leading-relaxed text-center">
+                  <p className="text-gray-700 text-base leading-relaxed text-center">
                     Our journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as consumers. This global perspective, combined with our expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives us unique insights into what travelers want and how PMCs can deliver it.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl">💼</span>
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-10 min-h-[380px] flex flex-col justify-center">
+                  <div className="text-center mb-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-3xl">💼</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">100+ PMCs Trust Our Expertise</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">100+ PMCs Trust Our Expertise</h3>
                   </div>
-                  <p className="text-gray-700 text-lg leading-relaxed text-center">
+                  <p className="text-gray-700 text-base leading-relaxed text-center">
                     We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., <strong>StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo</strong>). Elsa creates content to grow their brand and increase direct bookings (e.g., <strong>Kamili Villas</strong>).
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[320px] flex flex-col justify-center">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl">🎯</span>
+                <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-10 min-h-[380px] flex flex-col justify-center">
+                  <div className="text-center mb-8">
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-3xl">🎯</span>
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">The BookDirectStays Solution</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">The BookDirectStays Solution</h3>
                   </div>
-                  <p className="text-gray-700 text-lg leading-relaxed text-center">
+                  <p className="text-gray-700 text-base leading-relaxed text-center">
                     We discovered that most of the listings on OTAs are professionally managed and can also be booked direct for way cheaper through their direct booking sites, but they're extremely hard to find. So we built the solution for that: a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
                   </p>
                 </div>
@@ -159,73 +150,62 @@ export default function About() {
               </div>
             </div>
 
-            {/* Team Descriptions with Arrows */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Jan - Founder (Top Right) */}
-              <div className="lg:col-start-2 flex items-start space-x-6">
-                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src="/uploads/jan-profile.jpg" 
-                    alt="Jan Sahagun - Founder of BookDirectStays"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
+            {/* Team Photo */}
+            <div className="text-center mb-16">
+              <div className="w-80 h-80 mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="/uploads/elsa-jan-profile.jpg"
+                  alt="Elsa Ibos and Jan Sahagun - Co-Founders of BookDirectStays"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Team Descriptions with Professional Boxes */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Elsa - Co-Founder (Left Box) */}
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
+                <div className="text-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">👩‍💼</span>
                   </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Elsa Ibos</h3>
+                  <p className="text-purple-600 font-semibold text-lg">Co-Founder</p>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
-                  <p className="text-blue-700 font-medium mb-4">Founder & STR Tech Expert</p>
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo).
-                  </p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline"
-                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                    >
-                      View LinkedIn
-                    </Button>
-                  </div>
+                <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
+                  Strategic Planner, Brand Strategist and Content Creator (5+ years). Elsa leads our social media strategy and content partnerships with property managers worldwide.
+                </p>
+                <div className="text-center">
+                  <Button 
+                    variant="outline"
+                    className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
+                    onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
+                  >
+                    View LinkedIn
+                  </Button>
                 </div>
               </div>
 
-              {/* Elsa - Co-Founder (Bottom Left) */}
-              <div className="lg:col-start-1 flex items-start space-x-6">
-                <div className="flex-1 text-right">
-                  <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
-                  <p className="text-purple-700 font-medium mb-4">Co-Founder & Content Strategist</p>
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings (e.g., Kamili Villas).
-                  </p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline"
-                      className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
-                      onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
-                    >
-                      View LinkedIn
-                    </Button>
+              {/* Jan - Founder (Right Box) */}
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
+                <div className="text-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">👨‍💻</span>
                   </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Jan Sahagun</h3>
+                  <p className="text-blue-600 font-semibold text-lg">Founder</p>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                  </div>
-                </div>
-                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src="/uploads/elsa-profile.jpg" 
-                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
-                    className="w-full h-full object-cover"
-                  />
+                <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
+                  Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility.
+                </p>
+                <div className="text-center">
+                  <Button 
+                    variant="outline"
+                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                    onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
+                  >
+                    View LinkedIn
+                  </Button>
                 </div>
               </div>
             </div>
