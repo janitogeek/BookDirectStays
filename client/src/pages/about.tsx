@@ -150,63 +150,36 @@ export default function About() {
               <img 
                 src="/uploads/elsa-jan-profile.jpg" 
                 alt="Elsa and Jan - BookDirectStays Founders"
-                className="w-64 h-64 rounded-2xl mx-auto shadow-lg"
+                className="w-80 h-80 rounded-2xl mx-auto shadow-lg object-cover"
               />
             </div>
 
-            {/* Team Descriptions with Professional Boxes */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Elsa - Co-Founder (Left Box) */}
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
-                <div className="text-center mb-6">
-                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                    <img 
-                      src="/uploads/elsa-profile.jpg" 
-                      alt="Elsa Ibos"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Elsa Ibos</h3>
-                  <p className="text-purple-600 font-semibold text-lg">Co-Founder</p>
-                </div>
-                <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
-                  Strategic Planner, Brand Strategist and Content Creator (5+ years). Elsa leads our social media strategy and content partnerships with property managers worldwide.
-                </p>
-                <div className="text-center">
-                  <Button 
-                    variant="outline"
-                    className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
-                    onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
-                  >
-                    View LinkedIn
-                  </Button>
-                </div>
-              </div>
-
-              {/* Jan - Founder (Right Box) */}
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
-                <div className="text-center mb-6">
-                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                    <img 
-                      src="/uploads/jan-profile.jpg" 
-                      alt="Jan Sahagun"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Jan Sahagun</h3>
-                  <p className="text-blue-600 font-semibold text-lg">Founder</p>
-                </div>
-                <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
-                  Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility.
-                </p>
-                <div className="text-center">
-                  <Button 
-                    variant="outline"
-                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                    onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                  >
-                    View LinkedIn
-                  </Button>
+            {/* Our Story - Beautiful Storytelling Format */}
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                  Our Journey Together
+                </h3>
+                <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
+                  <p className="text-lg leading-relaxed">
+                    Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
+                  </p>
+                  
+                  <p className="text-lg leading-relaxed">
+                    From early on, my parents set the tone: we never stayed in hotels. Vacation rentals felt more personal, more genuine, and were always more affordable. That shaped how I see hospitality: not as a transaction, but as a human connection.
+                  </p>
+                  
+                  <p className="text-lg leading-relaxed">
+                    Years later, working in STR tech, I noticed something striking. Nearly every property manager, and owners using a PMS system, already had a direct booking website - often with better rates and perks you'd never find on OTAs. The problem was that most were outdated, and almost all were impossible to find compared to OTA listings.
+                  </p>
+                  
+                  <p className="text-lg leading-relaxed">
+                    That's the gap I set out to close. BookDirectStays is my answer: a global directory that gives verified professional hosts the visibility they deserve and gives travelers a simple, trustworthy way to discover them.
+                  </p>
+                  
+                  <p className="text-lg leading-relaxed">
+                    But visibility alone isn't enough. That's why I teamed up with my girlfriend, Elsa. Beyond creating content, she helps property managers and companies build their personal brands, strengthen their presence on social platforms, and grow their communities — turning visibility into real, lasting direct bookings. Together, our mission is to help hosts reduce OTA dependency and build thriving brands of their own.
+                  </p>
                 </div>
               </div>
             </div>
