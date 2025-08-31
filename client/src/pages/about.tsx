@@ -56,9 +56,9 @@ export default function About() {
             <p className="text-xl lg:text-2xl mb-8 opacity-90">
               The Global Directory for Direct Vacation Rental Bookings
             </p>
-                                        <p className="text-lg mb-8 opacity-90">
-                Global directory connecting travelers with verified professional hosts — PMCs and owners using PMS — for direct vacation rental bookings across 50+ countries. No OTA fees, better rates, trusted operators worldwide.
-              </p>
+                                                    <p className="text-lg mb-8 opacity-90">
+              Global directory connecting travelers with verified professional hosts for direct vacation rental bookings across 50+ countries. No OTA fees just better rates with trusted operators worldwide.
+            </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
@@ -80,18 +80,18 @@ export default function About() {
 
 
       {/* Our Story Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8 text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8 text-center animate-fade-in">
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-500 animate-slide-up">
 
                 <div className="space-y-12">
                   {/* 🌍 A Life of Travel - Left-aligned */}
-                  <div className="text-left">
+                  <div className="text-left hover:scale-105 transition-transform duration-300">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">🌍 A Life of Travel</h3>
                     <p className="text-lg leading-relaxed text-gray-700">
                       Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
@@ -99,7 +99,7 @@ export default function About() {
                   </div>
                   
                   {/* 🏡 The Roots of Hospitality - Right-aligned */}
-                  <div className="text-right">
+                  <div className="text-right hover:scale-105 transition-transform duration-300">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">🏡 The Roots of Hospitality</h3>
                     <p className="text-lg leading-relaxed text-gray-700">
                       From early on, my parents set the tone: we never stayed in hotels. Vacation rentals felt more personal, more genuine, and were always more affordable. That shaped how I see hospitality: not as a transaction, but as a human connection.
@@ -107,7 +107,7 @@ export default function About() {
                   </div>
                   
                   {/* 🔎 A Problem I Couldn't Ignore - Left-aligned */}
-                  <div className="text-left">
+                  <div className="text-left hover:scale-105 transition-transform duration-300">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">🔎 A Problem I Couldn't Ignore</h3>
                     <p className="text-lg leading-relaxed text-gray-700">
                       Years later, working in STR tech, I noticed something striking. Nearly every property manager, and many owners using PMS systems, already had a direct booking website — often with better rates and perks you'd never find on OTAs. The problem was that most were outdated, and almost all were impossible to find compared to OTA listings.
@@ -115,7 +115,7 @@ export default function About() {
                   </div>
                   
                   {/* 🚀 The Solution: BookDirectStays - Right-aligned */}
-                  <div className="text-right">
+                  <div className="text-right hover:scale-105 transition-transform duration-300">
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">🚀 The Solution: BookDirectStays</h3>
                     <p className="text-lg leading-relaxed text-gray-700">
                       That's the gap I set out to close. BookDirectStays is my answer: a global directory that gives verified professional hosts the visibility they deserve and gives travelers a simple, trustworthy way to discover them.
@@ -123,7 +123,7 @@ export default function About() {
                   </div>
                   
                   {/* 🤝 Building More Than Visibility - Centered (Highlighted) */}
-                  <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl border border-blue-200">
+                  <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl border border-blue-200 hover:shadow-xl transition-all duration-500 hover:scale-105">
                     <h3 className="text-3xl font-bold text-gray-900 mb-6">🤝 Building More Than Visibility</h3>
                     <p className="text-xl leading-relaxed text-gray-700 max-w-4xl mx-auto">
                       But visibility alone isn't enough. That's why I teamed up with my girlfriend, Elsa. Beyond creating content, she helps property managers and companies build their personal brands, strengthen their presence on social platforms, and grow their communities — turning visibility into real, lasting direct bookings. Together, our mission is to help hosts reduce OTA dependency and build thriving brands of their own.
@@ -137,10 +137,10 @@ export default function About() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 animate-fade-in">
               Who We Are
             </h2>
           </div>
@@ -219,7 +219,7 @@ export default function About() {
 
 
       {/* Directory + Partnerships Section */}
-      <section className="py-20 bg-white">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8 text-center">
@@ -281,7 +281,7 @@ export default function About() {
 
 
       {/* Vision Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -402,7 +402,7 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl lg:text-4xl font-bold mb-6">
