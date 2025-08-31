@@ -232,6 +232,9 @@ export default function About() {
                   <strong>List your company for just €99.99/year</strong> - that's less than €0.28 per day, or roughly the cost of a coffee. 
                   <span className="text-blue-600 text-sm block mt-1">*Website maintenance costs require this small fee</span>
                 </p>
+                <p className="text-blue-800 mb-4">
+                  <strong>2 for 1 Deal:</strong> Get listed on both <strong>BookDirectStays.com</strong> and <a href="https://findrentalmanager.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">FindRentalManager.com</a> for the same price!
+                </p>
               </div>
 
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-8">
