@@ -96,15 +96,26 @@ export default function About() {
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <p className="mb-6">
-                For as long as I can remember, I've been a traveler — first with my family, then on my own and now with my girlfriend. I've explored over 30 countries across Europe, North America, Latin America, Asia-Pacific, and Africa. From early on, I was also a consumer of short-term rentals. My parents always chose vacation rentals instead of hotels, since they were usually more genuine, personal, and affordable. That experience shaped the way I travel and how I see hospitality today.
-              </p>
-              <p className="mb-6">
-                Now, after years of travel, I also work in the tech side of the STR industry — helping property managers adopt the right tools to save time, automate workflows, and grow profits. I've seen firsthand that most property managers — and even some owners using PMS systems — already have their own direct booking websites. But here's the challenge: some sites are modern and polished, most are outdated, but all of them are hard to find compared to OTA listings.
-              </p>
-              <p className="mb-6">
-                That's why I built BookDirectStays: a global directory that gives visibility to these verified professional hosts, making it easier for travelers to discover and trust them.
-              </p>
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+                <h3 className="text-xl font-bold text-blue-900 mb-3">🌍 Global Traveler & STR Industry Expert</h3>
+                <p className="text-blue-800 mb-4">
+                  My journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as a consumer. This global perspective, combined with my expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives me unique insights into what travelers want and how PMCs can deliver it.
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
+                <h3 className="text-xl font-bold text-green-900 mb-3">💼 100+ PMCs Trust My Expertise</h3>
+                <p className="text-green-800 mb-4">
+                  I've collaborated with industry leaders including <strong>We Host, Brickon, StayC, Astay, In Playa Rentals, and Momentum Cabo</strong>. My work focuses on helping property managers adopt <strong>cutting-edge technology, optimize direct booking strategies, and maximize profitability</strong> through smart automation and workflow optimization.
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
+                <h3 className="text-xl font-bold text-purple-900 mb-3">🎯 The BookDirectStays Solution</h3>
+                <p className="text-purple-800">
+                  I discovered that while most PMCs have direct booking websites, they're often <strong>hard to discover compared to OTA listings</strong>. BookDirectStays solves this by providing a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -133,13 +144,47 @@ export default function About() {
 
             {/* Team Descriptions with Arrows */}
             <div className="space-y-12">
-              {/* Elsa - Left Side */}
+              {/* Jan - Founder (First) */}
+              <div className="flex items-start space-x-6">
+                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
+                  <img 
+                    src="/uploads/jan-profile.png" 
+                    alt="Jan Sahagun - Founder of BookDirectStays"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
+                  <p className="text-blue-700 font-medium mb-4">Founder & STR Tech Expert</p>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    I've worked with over 100+ property management companies (PMCs) including industry leaders like We Host, Brickon, StayC, Astay, In Playa Rentals, and Momentum Cabo. My expertise spans from helping PMCs adopt cutting-edge technology to optimizing their direct booking strategies for maximum profitability.
+                  </p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline"
+                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
+                    >
+                      View LinkedIn
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Elsa - Co-Founder (Second) */}
               <div className="flex items-start space-x-6">
                 <div className="flex-1 text-right">
                   <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
-                  <p className="text-purple-700 font-medium mb-4">Co-Founder</p>
-                  <p className="text-gray-600 leading-relaxed">
-                    Strategic Planner, Brand Strategist and Content Creator (5+ years). Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings.
+                  <p className="text-purple-700 font-medium mb-4">Co-Founder & Content Strategist</p>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings.
                   </p>
                   <div className="mt-4">
                     <Button 
@@ -161,43 +206,9 @@ export default function About() {
                 <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
                   <img 
                     src="/uploads/elsa-profile.jpg" 
-                    alt="Elsa Ibos"
+                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
                     className="w-full h-full object-cover"
                   />
-                </div>
-              </div>
-
-              {/* Jan - Right Side */}
-              <div className="flex items-start space-x-6">
-                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src="/uploads/jan-profile.png" 
-                    alt="Jan Sahagun"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
-                  <p className="text-blue-700 font-medium mb-4">Founder</p>
-                  <p className="text-gray-600 leading-relaxed">
-                    Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility. I've explored over 30 countries and work in the tech side of the STR industry, helping property managers adopt the right tools to save time, automate workflows, and grow profits.
-                  </p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline"
-                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                    >
-                      View LinkedIn
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -205,58 +216,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* Why Book Direct Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              Why Book Direct?
-            </h2>
-          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Save 10-30%</h3>
-              <p className="text-gray-600 text-sm">Guests save compared to OTA prices (no service fees)</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Earn More</h3>
-              <p className="text-gray-600 text-sm">Professional PMCs and owners earn more by cutting out OTA commissions</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Better Communication</h3>
-              <p className="text-gray-600 text-sm">Guests connect directly with verified hosts</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Exclusive Perks</h3>
-              <p className="text-gray-600 text-sm">Many operators share special deals only on their direct sites</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Directory + Partnerships Section */}
       <section className="py-20 bg-white">
@@ -299,7 +259,7 @@ export default function About() {
                       <span className="text-2xl">🤝</span>
                     </div>
                     <h4 className="font-semibold text-purple-900 mb-2">Custom Partnerships</h4>
-                    <p className="text-sm text-purple-700">Tailored marketing collaborations to maximize your direct booking success</p>
+                    <p className="text-sm text-purple-700">Tailored consulting services and marketing collaborations to maximize your direct booking success</p>
                   </div>
                 </div>
               </div>
