@@ -33,12 +33,6 @@ export default function Header() {
               Home
             </Link>
             <Link 
-              href="/about" 
-              className={`font-medium ${location === '/about' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
-            >
-              About
-            </Link>
-            <Link 
               href="/find-host" 
               className={`font-medium ${location === '/find-host' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
             >
@@ -49,6 +43,12 @@ export default function Header() {
               className={`font-medium ${location === '/submit' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
             >
               Add Your Direct Booking Site
+            </Link>
+            <Link 
+              href="/about" 
+              className={`font-medium ${location === '/about' ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}
+            >
+              About
             </Link>
             <Link 
               href="/partnerships" 
@@ -95,13 +95,6 @@ export default function Header() {
                 Home
               </Link>
               <Link 
-                href="/about"
-                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/about' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
-                onClick={closeMenu}
-              >
-                About
-              </Link>
-              <Link 
                 href="/find-host"
                 className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/find-host' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
                 onClick={closeMenu}
@@ -114,6 +107,13 @@ export default function Header() {
                 onClick={closeMenu}
               >
                 Add Your Direct Booking Site
+              </Link>
+              <Link 
+                href="/about"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/about' ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100'}`}
+                onClick={closeMenu}
+              >
+                About
               </Link>
               <Link 
                 href="/partnerships"

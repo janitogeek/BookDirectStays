@@ -59,16 +59,16 @@ export default function About() {
                           <p className="text-lg mb-8 opacity-90">
                 Connecting travelers with verified professional hosts — property management companies (PMCs) and serious owners using a PMS — for direct bookings. No OTA middlemen, fewer fees, better service.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
-                  onClick={() => setLocation("/find-host")}
-                >
-                  Find Your Stay
-                </Button>
+                          <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+                onClick={() => setLocation("/find-host")}
+              >
+                Find Your Stay
+              </Button>
+              <Button 
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
                 onClick={() => setLocation("/submit")}
               >
                 List Your Company
@@ -98,7 +98,7 @@ export default function About() {
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
               <p className="mb-6">
-                For as long as I can remember, I've been a traveler — first with my family, then on my own and now with my girlfriend. I've explored over 30 countries across Europe, North America, Latin America, Asia, and Africa. From early on, I was also a consumer of short-term rentals. My parents always chose vacation rentals instead of hotels, since they were usually more genuine, personal, and affordable. That experience shaped the way I travel and how I see hospitality today.
+                For as long as I can remember, I've been a traveler — first with my family, then on my own and now with my girlfriend. I've explored over 30 countries across Europe, North America, Latin America, Asia-Pacific, and Africa. From early on, I was also a consumer of short-term rentals. My parents always chose vacation rentals instead of hotels, since they were usually more genuine, personal, and affordable. That experience shaped the way I travel and how I see hospitality today.
               </p>
               <p className="mb-6">
                 Now, after years of travel, I also work in the tech side of the STR industry — helping property managers adopt the right tools to save time, automate workflows, and grow profits. I've seen firsthand that most property managers — and even some owners using PMS systems — already have their own direct booking websites. But here's the challenge: some sites are modern and polished, most are outdated, but all of them are hard to find compared to OTA listings.
@@ -120,39 +120,43 @@ export default function About() {
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Jan */}
-            <Card className="border-2 border-blue-200 hover:border-blue-400 transition-colors">
-              <CardHeader className="text-center">
-                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                  </svg>
-                </div>
-                <CardTitle className="text-xl text-blue-900">Jan Sahagun</CardTitle>
-                <p className="text-blue-700 font-medium">Founder</p>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-gray-600 mb-4">
-                  Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility.
-                </p>
-                <Button 
-                  variant="outline"
-                  className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                  onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                >
-                  View LinkedIn
-                </Button>
-              </CardContent>
-            </Card>
+                      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* Jan */}
+              <Card className="border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                <CardHeader className="text-center">
+                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
+                    <img 
+                      src="/uploads/jan-profile.jpg" 
+                      alt="Jan Sahagun - Founder of BookDirectStays"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardTitle className="text-xl text-blue-900">Jan Sahagun</CardTitle>
+                  <p className="text-blue-700 font-medium">Founder</p>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-gray-600 mb-4">
+                    Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility.
+                  </p>
+                  <Button 
+                    variant="outline"
+                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                    onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
+                  >
+                    View LinkedIn
+                  </Button>
+                </CardContent>
+              </Card>
 
             {/* Elsa */}
             <Card className="border-2 border-purple-200 hover:border-purple-400 transition-colors">
               <CardHeader className="text-center">
-                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                  </svg>
+                <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
+                  <img 
+                    src="/uploads/elsa-profile.jpg" 
+                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <CardTitle className="text-xl text-purple-900">Elsa Ibos</CardTitle>
                 <p className="text-purple-700 font-medium">Co-Founder</p>
@@ -365,14 +369,14 @@ export default function About() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
                 onClick={() => setLocation("/find-host")}
               >
                 Find Your Stay
               </Button>
               <Button 
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold"
                 onClick={() => setLocation("/submit")}
               >
                 List Your Company

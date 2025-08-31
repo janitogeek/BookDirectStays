@@ -19,3 +19,5 @@ export default async function handler(req, res) {
     note: 'This means your API endpoints are accessible'
   });
 }
+
+
