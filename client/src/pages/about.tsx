@@ -96,25 +96,27 @@ export default function About() {
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
-                <h3 className="text-xl font-bold text-blue-900 mb-3">🌍 Global Traveler & STR Industry Expert</h3>
-                <p className="text-blue-800 mb-4">
-                  My journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as a consumer. This global perspective, combined with my expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives me unique insights into what travelers want and how PMCs can deliver it.
-                </p>
-              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-lg">
+                  <h3 className="text-xl font-bold text-blue-900 mb-3">🌍 Global Travelers & STR Industry Experts</h3>
+                  <p className="text-blue-800">
+                    Our journey spans <strong>30+ countries across 6 continents</strong>, experiencing vacation rentals firsthand as consumers. This global perspective, combined with our expertise in <strong>short-term rental technology and property management systems (PMS)</strong>, gives us unique insights into what travelers want and how PMCs can deliver it.
+                  </p>
+                </div>
 
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg mb-6">
-                <h3 className="text-xl font-bold text-green-900 mb-3">💼 100+ PMCs Trust My Expertise</h3>
-                <p className="text-green-800 mb-4">
-                  I've collaborated with industry leaders including <strong>We Host, Brickon, StayC, Astay, In Playa Rentals, and Momentum Cabo</strong>. My work focuses on helping property managers adopt <strong>cutting-edge technology, optimize direct booking strategies, and maximize profitability</strong> through smart automation and workflow optimization.
-                </p>
-              </div>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-lg">
+                  <h3 className="text-xl font-bold text-green-900 mb-3">💼 100+ PMCs Trust Our Expertise</h3>
+                  <p className="text-green-800">
+                    We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo). Elsa creates content to grow their brand and increase direct bookings (e.g., Kamili Villas).
+                  </p>
+                </div>
 
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg mb-6">
-                <h3 className="text-xl font-bold text-purple-900 mb-3">🎯 The BookDirectStays Solution</h3>
-                <p className="text-purple-800">
-                  I discovered that while most PMCs have direct booking websites, they're often <strong>hard to discover compared to OTA listings</strong>. BookDirectStays solves this by providing a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
-                </p>
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-lg">
+                  <h3 className="text-xl font-bold text-purple-900 mb-3">🎯 The BookDirectStays Solution</h3>
+                  <p className="text-purple-800">
+                    We discovered that most of the listings on OTAs are professionally managed and can also be booked direct for way cheaper through their direct booking sites, but they're extremely hard to find. So we built the solution for that: a <strong>global directory of verified professional hosts</strong>, making it easier for travelers to find and trust direct booking options while helping PMCs increase their direct booking revenue.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -144,47 +146,13 @@ export default function About() {
 
             {/* Team Descriptions with Arrows */}
             <div className="space-y-12">
-              {/* Jan - Founder (First) */}
-              <div className="flex items-start space-x-6">
-                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
-                  <img 
-                    src="/uploads/jan-profile.png" 
-                    alt="Jan Sahagun - Founder of BookDirectStays"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
-                  <p className="text-blue-700 font-medium mb-4">Founder & STR Tech Expert</p>
-                  <p className="text-gray-600 leading-relaxed mb-4">
-                    I've worked with over 100+ property management companies (PMCs) including industry leaders like We Host, Brickon, StayC, Astay, In Playa Rentals, and Momentum Cabo. My expertise spans from helping PMCs adopt cutting-edge technology to optimizing their direct booking strategies for maximum profitability.
-                  </p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline"
-                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                    >
-                      View LinkedIn
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Elsa - Co-Founder (Second) */}
+              {/* Elsa - Co-Founder (Left Side) */}
               <div className="flex items-start space-x-6">
                 <div className="flex-1 text-right">
                   <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
                   <p className="text-purple-700 font-medium mb-4">Co-Founder & Content Strategist</p>
                   <p className="text-gray-600 leading-relaxed mb-4">
-                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings.
+                    Strategic Planner, Brand Strategist and Content Creator with 5+ years of experience. Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings (e.g., Kamili Villas).
                   </p>
                   <div className="mt-4">
                     <Button 
@@ -209,6 +177,40 @@ export default function About() {
                     alt="Elsa Ibos - Co-Founder of BookDirectStays"
                     className="w-full h-full object-cover"
                   />
+                </div>
+              </div>
+
+              {/* Jan - Founder (Right Side) */}
+              <div className="flex items-start space-x-6">
+                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
+                  <img 
+                    src="/uploads/jan-profile.jpg" 
+                    alt="Jan Sahagun - Founder of BookDirectStays"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
+                  <p className="text-blue-700 font-medium mb-4">Founder & STR Tech Expert</p>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    We have worked with over 100 PMCs. Jan works in the tech side helping them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo).
+                  </p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline"
+                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
+                    >
+                      View LinkedIn
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -349,24 +351,116 @@ export default function About() {
       </section>
 
       {/* Vision Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8 text-center">
-              Our Vision
-            </h2>
-            <div className="prose prose-lg max-w-none text-gray-700">
-              <p className="mb-6">
-                We believe in a world where booking direct is the default choice:
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                🌍 Our Global Vision for Direct Bookings
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                We believe in a world where booking direct becomes the default choice across all continents and property types
               </p>
-              <ul className="list-disc pl-6 mb-6 space-y-2">
-                <li><strong>More affordable for travelers.</strong></li>
-                <li><strong>More profitable and sustainable for professional hosts and property managers.</strong></li>
-                <li><strong>More transparent for the entire short-term rental industry.</strong></li>
-              </ul>
-              <p className="mb-6">
-                And where direct booking websites — no matter how big or small — can be discovered and trusted worldwide.
-              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Vision Statement */}
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                  Transforming Global Vacation Rental Industry
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Affordable Travel Worldwide</h4>
+                      <p className="text-gray-600">Guests save 10-30% on vacation rentals across Europe, North America, Asia-Pacific, Latin America, Africa, and Oceania</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Profitable PMC Operations</h4>
+                      <p className="text-gray-600">Professional property managers increase revenue by 15-25% through direct bookings and reduced OTA commissions</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Industry Transparency</h4>
+                      <p className="text-gray-600">Clear pricing, verified hosts, and direct communication create trust across the global short-term rental ecosystem</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Global Discovery Platform</h4>
+                      <p className="text-gray-600">Direct booking websites of all sizes become discoverable and trusted worldwide through our verified directory</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Global Coverage Visual */}
+              <div className="bg-white p-8 rounded-2xl shadow-lg">
+                <h4 className="text-xl font-bold text-gray-900 mb-6 text-center">
+                  🌍 Global Coverage & Property Types
+                </h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🇪🇺</span>
+                      <span className="font-medium">Europe</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🌎</span>
+                      <span className="font-medium">North America</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🌏</span>
+                      <span className="font-medium">Asia-Pacific</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🏖️</span>
+                      <span className="font-medium">Latin America</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🌍</span>
+                      <span className="font-medium">Africa</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-blue-600">🦘</span>
+                      <span className="font-medium">Oceania</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                  <p className="text-center text-gray-600 text-sm">
+                    <strong>Property Types:</strong> Villas, Apartments, Cabins, Chalets, Domes, Boutique Stays, Beach Houses, Mountain Retreats
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

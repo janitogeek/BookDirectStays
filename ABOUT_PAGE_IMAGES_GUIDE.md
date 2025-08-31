@@ -14,7 +14,7 @@
   - Good lighting and background
 
 ### 2. **Individual Profile Pictures**
-- **Jan's Profile**: `jan-profile.png` ✅ (Already added)
+- **Jan's Profile**: `jan-profile.jpg` ✅ (Already added)
 - **Elsa's Profile**: `elsa-profile.jpg` ✅ (Already added)
 
 ## 🏢 Company Logos Section (New Addition)
