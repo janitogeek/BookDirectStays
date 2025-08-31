@@ -89,26 +89,46 @@ export default function About() {
             <div className="prose prose-lg max-w-none text-gray-700">
               <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
 
-                <div className="space-y-6">
-                  <p className="text-lg leading-relaxed">
-                    Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
-                  </p>
+                <div className="space-y-12">
+                  {/* 🌍 A Life of Travel - Left-aligned */}
+                  <div className="text-left">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">🌍 A Life of Travel</h3>
+                    <p className="text-lg leading-relaxed text-gray-700">
+                      Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
+                    </p>
+                  </div>
                   
-                  <p className="text-lg leading-relaxed">
-                    From early on, my parents set the tone: we never stayed in hotels. Vacation rentals felt more personal, more genuine, and were always more affordable. That shaped how I see hospitality: not as a transaction, but as a human connection.
-                  </p>
+                  {/* 🏡 The Roots of Hospitality - Right-aligned */}
+                  <div className="text-right">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">🏡 The Roots of Hospitality</h3>
+                    <p className="text-lg leading-relaxed text-gray-700">
+                      From early on, my parents set the tone: we never stayed in hotels. Vacation rentals felt more personal, more genuine, and were always more affordable. That shaped how I see hospitality: not as a transaction, but as a human connection.
+                    </p>
+                  </div>
                   
-                  <p className="text-lg leading-relaxed">
-                    Years later, working in STR tech, I noticed something striking. Nearly every property manager, and owners using a PMS system, already had a direct booking website - often with better rates and perks you'd never find on OTAs. The problem was that most were outdated, and almost all were impossible to find compared to OTA listings.
-                  </p>
+                  {/* 🔎 A Problem I Couldn't Ignore - Left-aligned */}
+                  <div className="text-left">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">🔎 A Problem I Couldn't Ignore</h3>
+                    <p className="text-lg leading-relaxed text-gray-700">
+                      Years later, working in STR tech, I noticed something striking. Nearly every property manager, and many owners using PMS systems, already had a direct booking website — often with better rates and perks you'd never find on OTAs. The problem was that most were outdated, and almost all were impossible to find compared to OTA listings.
+                    </p>
+                  </div>
                   
-                  <p className="text-lg leading-relaxed">
-                    That's the gap I set out to close. BookDirectStays is my answer: a global directory that gives verified professional hosts the visibility they deserve and gives travelers a simple, trustworthy way to discover them.
-                  </p>
+                  {/* 🚀 The Solution: BookDirectStays - Right-aligned */}
+                  <div className="text-right">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4">🚀 The Solution: BookDirectStays</h3>
+                    <p className="text-lg leading-relaxed text-gray-700">
+                      That's the gap I set out to close. BookDirectStays is my answer: a global directory that gives verified professional hosts the visibility they deserve and gives travelers a simple, trustworthy way to discover them.
+                    </p>
+                  </div>
                   
-                  <p className="text-lg leading-relaxed">
-                    But visibility alone isn't enough. That's why I teamed up with my girlfriend, Elsa. Beyond creating content, she helps property managers and companies build their personal brands, strengthen their presence on social platforms, and grow their communities — turning visibility into real, lasting direct bookings. Together, our mission is to help hosts reduce OTA dependency and build thriving brands of their own.
-                  </p>
+                  {/* 🤝 Building More Than Visibility - Centered (Highlighted) */}
+                  <div className="text-center bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl border border-blue-200">
+                    <h3 className="text-3xl font-bold text-gray-900 mb-6">🤝 Building More Than Visibility</h3>
+                    <p className="text-xl leading-relaxed text-gray-700 max-w-4xl mx-auto">
+                      But visibility alone isn't enough. That's why I teamed up with my girlfriend, Elsa. Beyond creating content, she helps property managers and companies build their personal brands, strengthen their presence on social platforms, and grow their communities — turning visibility into real, lasting direct bookings. Together, our mission is to help hosts reduce OTA dependency and build thriving brands of their own.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -179,7 +199,7 @@ export default function About() {
                   <p className="text-blue-600 font-semibold text-lg">Founder</p>
                 </div>
                 <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
-                  Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility. I've worked with over 100 PMCs to help them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo).
+                  Ex-athlete, traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart automation tools and visibility. I've worked with over 100 PMCs to help them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo).
                 </p>
                 <div className="text-center">
                   <Button 
