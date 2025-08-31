@@ -660,22 +660,6 @@ export default function SubmissionProperty() {
                   <CardTitle>Get in Touch</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* PMC General Website Link */}
-                  {submission.pmcGeneralWebsite && (
-                    <Button asChild variant="outline" className="w-full">
-                      <a 
-                        href={submission.pmcGeneralWebsite} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
-                        onClick={() => clickTracking?.trackCompany()}
-                      >
-                        <Globe className="w-4 h-4" />
-                        Visit Company Website
-                      </a>
-                    </Button>
-                  )}
-                  
                   {/* Direct Booking Website Link */}
                   {submission.website && (
                     <Button asChild className="w-full">
