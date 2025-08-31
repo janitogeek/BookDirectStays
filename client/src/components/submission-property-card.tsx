@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
 import { generateSlug, extractCityName, getFlagByCountryName } from "@/lib/utils";
+import { getCurrencySymbolForCountry } from "@/lib/currency-utils";
 import { useClickTracking } from "@/lib/click-tracking";
 import { cardHoverVariants, buttonVariants, itemVariants } from "@/lib/animations";
 import TopStats from "@/components/top-stats";
@@ -129,17 +130,24 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
             </div>
           )}
 
-          {(submission.minPrice || submission.maxPrice) && submission.currency && (
+          {(submission.minPrice || submission.maxPrice) && (
             <div className="flex items-center gap-1 font-medium text-blue-600">
               <span className="text-gray-500">💰</span>
               <span>
-                {submission.minPrice && submission.maxPrice ? (
-                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]} to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
-                ) : submission.minPrice ? (
-                  `from ${submission.minPrice} ${submission.currency.split(' – ')[1]}`
-                ) : (
-                  `up to ${submission.maxPrice} ${submission.currency.split(' – ')[1]}`
-                )}
+                {(() => {
+                  // Get the primary country for currency display
+                  const primaryCountry = submission.countries?.[0] || '';
+                  const localCurrencySymbol = getCurrencySymbolForCountry(primaryCountry);
+                  
+                  if (submission.minPrice && submission.maxPrice) {
+                    return `from ${localCurrencySymbol}${submission.minPrice} to ${localCurrencySymbol}${submission.maxPrice}`;
+                  } else if (submission.minPrice) {
+                    return `from ${localCurrencySymbol}${submission.minPrice}`;
+                  } else if (submission.maxPrice) {
+                    return `up to ${localCurrencySymbol}${submission.maxPrice}`;
+                  }
+                  return '';
+                })()}
               </span>
             </div>
           )}

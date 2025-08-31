@@ -119,60 +119,88 @@ export default function About() {
             </h2>
           </div>
           
-                      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Jan */}
-              <Card className="border-2 border-blue-200 hover:border-blue-400 transition-colors">
-                <CardHeader className="text-center">
-                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
-                    <img 
-                      src="/uploads/jan-profile.png" 
-                      alt="Jan Sahagun - Founder of BookDirectStays"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <CardTitle className="text-xl text-blue-900">Jan Sahagun</CardTitle>
-                  <p className="text-blue-700 font-medium">Founder</p>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <p className="text-gray-600 mb-4">
-                    Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility.
-                  </p>
-                  <Button 
-                    variant="outline"
-                    className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                    onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
-                  >
-                    View LinkedIn
-                  </Button>
-                </CardContent>
-              </Card>
+                                <div className="max-w-4xl mx-auto">
+            {/* Team Photo */}
+            <div className="text-center mb-12">
+              <div className="w-64 h-64 mx-auto mb-8 rounded-lg overflow-hidden shadow-lg">
+                <img 
+                  src="/uploads/elsa-jan-profile.jpg" 
+                  alt="Elsa Ibos and Jan Sahagun - Co-Founders of BookDirectStays"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
 
-            {/* Elsa */}
-            <Card className="border-2 border-purple-200 hover:border-purple-400 transition-colors">
-              <CardHeader className="text-center">
-                <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4">
+            {/* Team Descriptions with Arrows */}
+            <div className="space-y-12">
+              {/* Elsa - Left Side */}
+              <div className="flex items-start space-x-6">
+                <div className="flex-1 text-right">
+                  <h3 className="text-2xl font-bold text-purple-900 mb-3">Elsa Ibos</h3>
+                  <p className="text-purple-700 font-medium mb-4">Co-Founder</p>
+                  <p className="text-gray-600 leading-relaxed">
+                    Strategic Planner, Brand Strategist and Content Creator (5+ years). Elsa leads our social media strategy and content partnerships with property managers worldwide. She has already collaborated with vacation rental companies while traveling, helping them tell their stories and grow their direct bookings.
+                  </p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline"
+                      className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
+                      onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
+                    >
+                      View LinkedIn
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
                   <img 
                     src="/uploads/elsa-profile.jpg" 
-                    alt="Elsa Ibos - Co-Founder of BookDirectStays"
+                    alt="Elsa Ibos"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <CardTitle className="text-xl text-purple-900">Elsa Ibos</CardTitle>
-                <p className="text-purple-700 font-medium">Co-Founder</p>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-gray-600 mb-4">
-                  Strategic Planner, Brand Strategist and Content Creator (5+ years). Elsa leads our social media strategy and content partnerships with property managers worldwide.
-                </p>
-                <Button 
-                  variant="outline"
-                  className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
-                  onClick={() => window.open('https://www.linkedin.com/in/elsa-ibos/', '_blank')}
-                >
-                  View LinkedIn
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
+
+              {/* Jan - Right Side */}
+              <div className="flex items-start space-x-6">
+                <div className="w-32 h-32 rounded-lg overflow-hidden shadow-md">
+                  <img 
+                    src="/uploads/jan-profile.png" 
+                    alt="Jan Sahagun"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-blue-900 mb-3">Jan Sahagun</h3>
+                  <p className="text-blue-700 font-medium mb-4">Founder</p>
+                  <p className="text-gray-600 leading-relaxed">
+                    Traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart tools and visibility. I've explored over 30 countries and work in the tech side of the STR industry, helping property managers adopt the right tools to save time, automate workflows, and grow profits.
+                  </p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline"
+                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                      onClick={() => window.open('https://www.linkedin.com/in/jan-sahagun-escosa/', '_blank')}
+                    >
+                      View LinkedIn
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

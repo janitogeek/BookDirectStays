@@ -10,14 +10,20 @@ client/public/uploads/
 
 ## Required Files
 
-1. **Jan's Profile Picture**: `jan-profile.png`
+1. **Team Photo**: `elsa-jan-profile.jpg`
+   - Place a photo of both Elsa and Jan together
+   - Elsa should be on the left, Jan on the right
+   - Recommended size: 400x400px or larger (will be displayed as 256x256px)
+   - This is the main team photo displayed prominently
+
+2. **Jan's Profile Picture**: `jan-profile.png`
    - Place your headshot image here
    - The image you provided will be used
-   - Recommended size: 200x200px or larger (will be cropped to circle)
+   - Recommended size: 200x200px or larger (will be displayed as 128x128px)
 
-2. **Elsa's Profile Picture**: `elsa-profile.jpg`
+3. **Elsa's Profile Picture**: `elsa-profile.jpg`
    - Place Elsa's headshot image here
-   - Recommended size: 200x200px or larger (will be cropped to circle)
+   - Recommended size: 200x200px or larger (will be displayed as 128x128px)
 
 ## Image Requirements
 
@@ -36,6 +42,7 @@ The About page will automatically:
 
 ## File Paths Used
 
+- Team photo: `/uploads/elsa-jan-profile.jpg`
 - Jan's image: `/uploads/jan-profile.png`
 - Elsa's image: `/uploads/elsa-profile.jpg`
 
