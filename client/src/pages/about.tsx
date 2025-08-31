@@ -199,7 +199,7 @@ export default function About() {
                   <p className="text-blue-600 font-semibold text-lg">Founder</p>
                 </div>
                 <p className="text-gray-700 text-base leading-relaxed text-center mb-6">
-                  Ex-athlete, traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart automation tools and visibility. I've worked with over 100 PMCs to help them automate their operations to save time and earn more money (e.g., StayC, We Host, Brickon, Astay, In Playa Rentals, Momentum Cabo).
+                  Ex-athlete, traveler, lifelong STR consumer, and now STR tech professional dedicated to empowering PMCs with smart automation tools and visibility. (Worked with 100+ PMCs)
                 </p>
                 <div className="text-center">
                   <Button 
