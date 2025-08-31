@@ -87,7 +87,7 @@ export default function About() {
               Our Story
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 min-h-[420px] flex flex-col justify-center">
                   <div className="bg-blue-50 rounded-xl p-6 mb-6">
                     <div className="text-center">
@@ -144,31 +144,18 @@ export default function About() {
             </h2>
           </div>
           
-                                <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             {/* Team Photo */}
             <div className="text-center mb-12">
-              <div className="w-64 h-64 mx-auto mb-8 rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src="/uploads/elsa-jan-profile.jpg" 
-                  alt="Elsa Ibos and Jan Sahagun - Co-Founders of BookDirectStays"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Team Photo */}
-            <div className="text-center mb-16">
-              <div className="w-80 h-80 mx-auto mb-8 rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="/uploads/elsa-jan-profile.png"
-                  alt="Elsa Ibos and Jan Sahagun - Co-Founders of BookDirectStays"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <img 
+                src="/uploads/elsa-jan-profile.jpg" 
+                alt="Elsa and Jan - BookDirectStays Founders"
+                className="w-64 h-64 rounded-2xl mx-auto shadow-lg"
+              />
             </div>
 
             {/* Team Descriptions with Professional Boxes */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Elsa - Co-Founder (Left Box) */}
               <div className="bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8">
                 <div className="text-center mb-6">
