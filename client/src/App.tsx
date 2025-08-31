@@ -12,6 +12,7 @@ import City from "@/pages/city";
 import Submit from "@/pages/submit";
 import SubmitSuccess from "@/pages/submit-success";
 import Partnerships from "@/pages/partnerships";
+import About from "@/pages/about";
 import FAQ from "@/pages/faq";
 import Testimonials from "@/pages/testimonials";
 import Property from "@/pages/property";
@@ -58,6 +59,7 @@ function Router() {
           <Route path="/submit" component={Submit} />
           <Route path="/submit/success" component={SubmitSuccess} />
           <Route path="/partnerships" component={Partnerships} />
+          <Route path="/about" component={About} />
           <Route path="/faq" component={FAQ} />
           <Route path="/testimonials" component={Testimonials} />
           <Route path="/property/:id" component={SubmissionProperty} />

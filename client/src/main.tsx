@@ -59,6 +59,9 @@ const updatePageMeta = () => {
   } else if (path === '/testimonials') {
     title = "Customer Testimonials | BookDirectStays.com";
     description = "Read reviews from travelers and property managers who use BookDirectStays.com for direct booking vacation rentals.";
+  } else if (path === '/about') {
+    title = "About BookDirectStays – Direct Vacation Rental Bookings";
+    description = "BookDirectStays is the global directory for booking vacation rentals directly with verified professional hosts — PMCs and owners using PMS — across 50+ countries.";
   }
 
   document.title = title;
