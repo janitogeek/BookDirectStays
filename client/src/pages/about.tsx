@@ -88,9 +88,7 @@ export default function About() {
             </h2>
             <div className="prose prose-lg max-w-none text-gray-700">
               <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                  Our Journey Together
-                </h3>
+
                 <div className="space-y-6">
                   <p className="text-lg leading-relaxed">
                     Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
@@ -137,35 +135,6 @@ export default function About() {
               />
             </div>
 
-            {/* Our Story - Beautiful Storytelling Format */}
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-8 mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                  Our Journey Together
-                </h3>
-                <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
-                  <p className="text-lg leading-relaxed">
-                    Travel has always been part of my life. First with my family, later on my own, and now with my girlfriend. I've been in over 30 countries across all continents, collected stories, and stayed in countless short-term rentals along the way.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed">
-                    From early on, my parents set the tone: we never stayed in hotels. Vacation rentals felt more personal, more genuine, and were always more affordable. That shaped how I see hospitality: not as a transaction, but as a human connection.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed">
-                    Years later, working in STR tech, I noticed something striking. Nearly every property manager, and owners using a PMS system, already had a direct booking website - often with better rates and perks you'd never find on OTAs. The problem was that most were outdated, and almost all were impossible to find compared to OTA listings.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed">
-                    That's the gap I set out to close. BookDirectStays is my answer: a global directory that gives verified professional hosts the visibility they deserve and gives travelers a simple, trustworthy way to discover them.
-                  </p>
-                  
-                  <p className="text-lg leading-relaxed">
-                    But visibility alone isn't enough. That's why I teamed up with my girlfriend, Elsa. Beyond creating content, she helps property managers and companies build their personal brands, strengthen their presence on social platforms, and grow their communities — turning visibility into real, lasting direct bookings. Together, our mission is to help hosts reduce OTA dependency and build thriving brands of their own.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             {/* Team Descriptions with Professional Boxes */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
