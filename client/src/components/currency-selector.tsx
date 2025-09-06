@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CURRENCY_OPTIONS, CurrencyCode } from '@/lib/currency-utils';
+import { CurrencyCode } from '@/lib/currency-utils';
+import { useCurrency } from '@/contexts/currency-context';
 import { ChevronDown } from 'lucide-react';
 
 interface CurrencySelectorProps {
@@ -16,8 +17,9 @@ export default function CurrencySelector({
   className = '' 
 }: CurrencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { currencyOptions, isLoading } = useCurrency();
 
-  const selectedOption = CURRENCY_OPTIONS.find(option => option.code === selectedCurrency);
+  const selectedOption = currencyOptions.find(option => option.code === selectedCurrency);
 
   return (
     <div className={`relative ${className}`}>
@@ -41,8 +43,11 @@ export default function CurrencySelector({
           
           {/* Dropdown */}
           <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-            <div className="py-1">
-              {CURRENCY_OPTIONS.map((option) => (
+                      <div className="py-1">
+                        {isLoading ? (
+                          <div className="px-4 py-2 text-sm text-gray-500">Loading currencies...</div>
+                        ) : (
+                          currencyOptions.map((option) => (
                 <button
                   key={option.code}
                   onClick={() => {
@@ -63,9 +68,10 @@ export default function CurrencySelector({
                       Selected
                     </Badge>
                   )}
-                </button>
-              ))}
-            </div>
+                            </button>
+                          ))
+                        )}
+                      </div>
           </div>
         </>
       )}

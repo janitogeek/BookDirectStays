@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useCurrency } from '@/contexts/currency-context';
-import { CURRENCY_OPTIONS, convertBudgetRange } from '@/lib/currency-utils';
+import { convertBudgetRange } from '@/lib/currency-utils';
 
 interface BudgetRangeSliderProps {
   minValue?: number | null;
@@ -15,7 +15,7 @@ export default function BudgetRangeSlider({
   onRangeChange,
   className = ""
 }: BudgetRangeSliderProps) {
-  const { selectedCurrency } = useCurrency();
+  const { selectedCurrency, currencyOptions } = useCurrency();
   
   // Base range in EUR (original values)
   const BASE_MIN_RANGE = 20;
@@ -156,7 +156,7 @@ export default function BudgetRangeSlider({
       {/* Selected Range Display */}
       <div className="text-sm text-gray-600 mb-4">
         {(() => {
-          const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+          const selectedCurrencyInfo = currencyOptions.find(c => c.code === selectedCurrency);
           const symbol = selectedCurrencyInfo?.symbol || '$';
           return `From ${symbol}${minPrice} to ${symbol}${maxPrice >= MAX_RANGE ? `${maxPrice}+` : maxPrice}`;
         })()}

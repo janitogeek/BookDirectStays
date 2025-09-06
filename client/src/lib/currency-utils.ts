@@ -196,19 +196,51 @@ export function isEuroCountry(countryName: string): boolean {
   return currency ? currency.code === 'EUR' : false;
 }
 
-// Currency selection options - Based on countries present on the website
-export const CURRENCY_OPTIONS = [
+// Base currency mapping for all possible countries
+const COUNTRY_CURRENCY_MAP: Record<string, { code: string; symbol: string; name: string }> = {
+  'United States': { code: 'USD', symbol: '$', name: 'US Dollar' },
+  'Canada': { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  'Australia': { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  'Belize': { code: 'BZD', symbol: 'BZ$', name: 'Belize Dollar' },
+  'Dominica': { code: 'USD', symbol: '$', name: 'US Dollar' },
+  'France': { code: 'EUR', symbol: '€', name: 'Euro' },
+  'Spain': { code: 'EUR', symbol: '€', name: 'Euro' },
+  'Italy': { code: 'EUR', symbol: '€', name: 'Euro' },
+  'Portugal': { code: 'EUR', symbol: '€', name: 'Euro' },
+  'Greece': { code: 'EUR', symbol: '€', name: 'Euro' },
+  'Croatia': { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
+  'Mexico': { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+  'Thailand': { code: 'THB', symbol: '฿', name: 'Thai Baht' },
+  'Indonesia': { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
+  'United Kingdom': { code: 'GBP', symbol: '£', name: 'British Pound' },
+  'China': { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
+};
+
+// Function to generate currency options based on active countries
+export function generateCurrencyOptions(activeCountries: string[]): Array<{ code: string; symbol: string; name: string }> {
+  const currencyMap = new Map<string, { code: string; symbol: string; name: string }>();
+  
+  // Add currencies for active countries
+  activeCountries.forEach(countryName => {
+    const currency = COUNTRY_CURRENCY_MAP[countryName];
+    if (currency) {
+      currencyMap.set(currency.code, currency);
+    }
+  });
+  
+  // Convert to array and sort by currency code
+  return Array.from(currencyMap.values()).sort((a, b) => a.code.localeCompare(b.code));
+}
+
+// Default currency options (fallback)
+export const DEFAULT_CURRENCY_OPTIONS = [
   { code: 'USD', symbol: '$', name: 'US Dollar' },
   { code: 'EUR', symbol: '€', name: 'Euro' },
   { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
   { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-  { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
-  { code: 'THB', symbol: '฿', name: 'Thai Baht' },
-  { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
-  { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
 ] as const;
 
-export type CurrencyCode = typeof CURRENCY_OPTIONS[number]['code'];
+export type CurrencyCode = 'USD' | 'EUR' | 'CAD' | 'AUD' | 'BZD' | 'HRK' | 'MXN' | 'THB' | 'IDR' | 'GBP' | 'CNY';
 
 // Exchange rates (these would ideally come from an API in production)
 // For now, using approximate rates - in production, fetch from a real API
