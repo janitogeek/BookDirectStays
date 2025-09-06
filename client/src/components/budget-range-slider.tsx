@@ -60,6 +60,15 @@ export default function BudgetRangeSlider({
     setMaxPrice(newConvertedRange.max);
   }, [selectedCurrency]);
 
+  // Reset to initial position when minValue and maxValue are both null (filter cleared)
+  useEffect(() => {
+    if (minValue === null && maxValue === null) {
+      const convertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
+      setMinPrice(convertedRange.min);
+      setMaxPrice(convertedRange.max);
+    }
+  }, [minValue, maxValue, selectedCurrency]);
+
   // Convert mouse position to value
   const getValueFromPosition = useCallback((clientX: number): number => {
     if (!sliderRef.current) return MIN_RANGE;

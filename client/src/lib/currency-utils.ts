@@ -489,3 +489,15 @@ export function convertBudgetRange(
     max: roundToNiceNumber(convertedMax, selectedCurrency)
   };
 }
+
+/**
+ * Simple currency formatting function
+ * @param amount - The amount to format
+ * @param currencyCode - The currency code (e.g., 'USD', 'EUR')
+ * @returns Formatted currency string
+ */
+export function formatCurrency(amount: number, currencyCode: CurrencyCode): string {
+  const currencyInfo = CURRENCY_OPTIONS.find(c => c.code === currencyCode);
+  const symbol = currencyInfo?.symbol || '$';
+  return `${symbol}${amount.toLocaleString()}`;
+}
