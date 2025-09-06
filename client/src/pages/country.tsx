@@ -14,7 +14,6 @@ import { Search, X } from "lucide-react";
 // import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
-import CurrencySelector from "@/components/currency-selector";
 import { useCurrency } from "@/contexts/currency-context";
 
 export default function Country() {
@@ -573,19 +572,12 @@ export default function Country() {
               </Button>
           </div>
           
-          {/* Host Filters and Currency Selector */}
-          <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="w-full sm:w-auto">
-              <HostFilters onFiltersChange={setFilters} />
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">Show prices in:</span>
-              <CurrencySelector 
-                selectedCurrency={selectedCurrency}
-                onCurrencyChange={setSelectedCurrency}
-              />
-            </div>
-          </div>
+          {/* Host Filters with Currency Selector */}
+          <HostFilters 
+            onFiltersChange={setFilters}
+            selectedCurrency={selectedCurrency}
+            onCurrencyChange={setSelectedCurrency}
+          />
 
           {/* Featured Only Toggle */}
           <div className="mb-6">

@@ -7,6 +7,8 @@ import BudgetRangeSlider from "@/components/budget-range-slider";
 import { Separator } from "@/components/ui/separator";
 import { SearchableMultiSelect } from "@/components/searchable-multi-select";
 import { Filter, X, Info, Search } from "lucide-react";
+import CurrencySelector from "@/components/currency-selector";
+import { CurrencyCode } from "@/lib/currency-utils";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
@@ -52,6 +54,8 @@ const SETTINGS_LOCATIONS = [
 
 interface HostFiltersProps {
   onFiltersChange: (filters: FilterState) => void;
+  selectedCurrency?: CurrencyCode;
+  onCurrencyChange?: (currency: CurrencyCode) => void;
 }
 
 export interface FilterState {
@@ -68,7 +72,7 @@ export interface FilterState {
   maxPrice: number | null;
 }
 
-export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
+export default function HostFilters({ onFiltersChange, selectedCurrency, onCurrencyChange }: HostFiltersProps) {
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     propertyTypes: [],
@@ -181,16 +185,27 @@ export default function HostFilters({ onFiltersChange }: HostFiltersProps) {
               </Badge>
             )}
           </CardTitle>
-          {totalActiveFilters > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearAllFilters}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              Clear All
-            </Button>
-          )}
+          <div className="flex items-center gap-4">
+            {selectedCurrency && onCurrencyChange && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Show prices in:</span>
+                <CurrencySelector 
+                  selectedCurrency={selectedCurrency}
+                  onCurrencyChange={onCurrencyChange}
+                />
+              </div>
+            )}
+            {totalActiveFilters > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAllFilters}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Clear All
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
       
