@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { SearchableMultiSelect } from "@/components/searchable-multi-select";
 import { Filter, X, Info, Search } from "lucide-react";
 import CurrencySelector from "@/components/currency-selector";
-import { CurrencyCode, formatCurrency } from "@/lib/currency-utils";
+import { CurrencyCode } from "@/lib/currency-utils";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
@@ -141,15 +141,6 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
     updateFilter('search', '', false);
   };
 
-  const clearBudgetFilter = () => {
-    const newFilters = { ...filters };
-    newFilters.minPrice = null;
-    newFilters.maxPrice = null;
-    
-    setFilters(newFilters);
-    onFiltersChange(newFilters);
-  };
-
   const totalActiveFilters = 
     filters.propertyTypes.length + 
     filters.idealFor.length + 
@@ -159,8 +150,7 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
     filters.designStyle.length + 
     filters.atmospheres.length + 
     filters.settingsLocations.length + 
-    (filters.search ? 1 : 0) +
-    (filters.minPrice !== null || filters.maxPrice !== null ? 1 : 0);
+    (filters.search ? 1 : 0);
 
   const renderFilterDropdown = (
     title: string,
@@ -278,28 +268,6 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
                     <button
                       onClick={clearSearch}
                       className="ml-1 hover:bg-green-200 rounded-full p-0.5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-
-                {/* Budget filter */}
-                {(filters.minPrice !== null || filters.maxPrice !== null) && (
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-purple-100 text-purple-800 flex items-center gap-1"
-                  >
-                    <Filter className="h-3 w-3" />
-                    {filters.minPrice !== null && filters.maxPrice !== null 
-                      ? `${formatCurrency(filters.minPrice, selectedCurrency)} - ${formatCurrency(filters.maxPrice, selectedCurrency)}`
-                      : filters.minPrice !== null 
-                        ? `From ${formatCurrency(filters.minPrice, selectedCurrency)}`
-                        : `Up to ${formatCurrency(filters.maxPrice!, selectedCurrency)}`
-                    }
-                    <button
-                      onClick={clearBudgetFilter}
-                      className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
                     >
                       <X className="h-3 w-3" />
                     </button>
