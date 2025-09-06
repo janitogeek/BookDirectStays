@@ -1,26 +1,26 @@
 import { useState, useMemo, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
-import { motion } from "framer-motion";
 import PropertyCard from "@/components/property-card";
 import SubmissionPropertyCard from "@/components/submission-property-card";
 import HostFilters, { FilterState } from "@/components/host-filters";
-import AnimatedPage, { AnimatedSection, AnimatedContainer } from "@/components/animated-page";
-import { containerVariants, itemVariants, fadeInUpVariants } from "@/lib/animations";
+import AnimatedPage from "@/components/animated-page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
-import { airtableService } from "@/lib/airtable";
+// import { apiRequest } from "@/lib/queryClient";
+// import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
+import CurrencySelector from "@/components/currency-selector";
+import { useCurrency } from "@/contexts/currency-context";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
   const countrySlug = params?.country;
-  const [visibleCount, setVisibleCount] = useState(6);
+  // const [visibleCount, setVisibleCount] = useState(6);
   const [citySearchQuery, setCitySearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>({
     search: "",
@@ -39,7 +39,10 @@ export default function Country() {
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
-  const queryClient = useQueryClient();
+  // Currency context
+  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  
+  // const queryClient = useQueryClient();
 
   // Sort function: Featured first, then alphabetical by brand name
   const sortSubmissions = (submissionsToSort: any[]) => {
@@ -411,11 +414,11 @@ export default function Country() {
     return sortSubmissions(filtered);
   }, [submissions, filters, featuredOnly]);
 
-  const handleShowMore = () => {
-    setVisibleCount(prevCount => prevCount + 6);
-  };
+  // const handleShowMore = () => {
+  //   setVisibleCount(prevCount => prevCount + 6);
+  // };
 
-  const hasMore = listingsData?.hasMore || false;
+  // const hasMore = listingsData?.hasMore || false;
   const totalHosts = (listingsData?.listings?.length || 0) + filteredSubmissions.length;
 
   // Breadcrumb structured data for AI understanding
@@ -570,8 +573,19 @@ export default function Country() {
               </Button>
           </div>
           
-          {/* Host Filters */}
-          <HostFilters onFiltersChange={setFilters} />
+          {/* Currency Selector and Host Filters */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700">Show prices in:</span>
+              <CurrencySelector 
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={setSelectedCurrency}
+              />
+            </div>
+            <div className="w-full sm:w-auto">
+              <HostFilters onFiltersChange={setFilters} />
+            </div>
+          </div>
 
           {/* Featured Only Toggle */}
           <div className="mb-6">
@@ -655,8 +669,8 @@ export default function Country() {
             )}
           </div>
           
-          {/* Show More Button */}
-          {hasMore && (
+          {/* Show More Button - Currently disabled */}
+          {/* {hasMore && (
             <div className="mt-10 text-center">
               <Button 
                 variant="outline"
@@ -666,7 +680,7 @@ export default function Country() {
                 Show More
               </Button>
             </div>
-          )}
+          )} */}
         </div>
       </section>
 

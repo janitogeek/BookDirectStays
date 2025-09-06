@@ -6,10 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Submission } from "@/lib/airtable";
-import { generateSlug, extractCityName, getFlagByCountryName } from "@/lib/utils";
-import { getCurrencySymbolForCountry } from "@/lib/currency-utils";
+import { getFlagByCountryName } from "@/lib/utils";
+import { formatPriceWithConversion } from "@/lib/currency-utils";
+import { useCurrency } from "@/contexts/currency-context";
 import { useClickTracking } from "@/lib/click-tracking";
-import { cardHoverVariants, buttonVariants, itemVariants } from "@/lib/animations";
+import { cardHoverVariants, itemVariants } from "@/lib/animations";
 import TopStats from "@/components/top-stats";
 
 interface SubmissionPropertyCardProps {
@@ -19,8 +20,10 @@ interface SubmissionPropertyCardProps {
 }
 
 export default function SubmissionPropertyCard({ submission, fromCity, fromCountry }: SubmissionPropertyCardProps) {
+  const { selectedCurrency } = useCurrency();
+  
   // Use unique slug if available, otherwise generate one
-  const slug = (submission as any).uniqueSlug || generateSlug(submission.brandName);
+  // const slug = (submission as any).uniqueSlug || generateSlug(submission.brandName);
   
   // Build URL to the specific submission page using the Airtable record ID
   const buildPropertyUrl = () => {
@@ -33,12 +36,12 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
   };
   
   // Extract just city names for display (keeping full data in backend)
-  const displayCities = submission.citiesRegions?.map((city: any) => {
-    if (typeof city === 'string') {
-      return extractCityName(city);
-    }
-    return city;
-  }) || [];
+  // const displayCities = submission.citiesRegions?.map((city: any) => {
+  //   if (typeof city === 'string') {
+  //     return extractCityName(city);
+  //   }
+  //   return city;
+  // }) || [];
 
   // Initialize click tracking for this submission
   const {
@@ -48,8 +51,7 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
     trackLinkedIn,
     trackYouTube,
     trackTikTok,
-    trackCompany,
-    track
+    trackCompany
   } = useClickTracking(submission.id);
 
 
@@ -137,14 +139,37 @@ export default function SubmissionPropertyCard({ submission, fromCity, fromCount
                 {(() => {
                   // Get the primary country for currency display
                   const primaryCountry = submission.countries?.[0] || '';
-                  const localCurrencySymbol = getCurrencySymbolForCountry(primaryCountry);
                   
                   if (submission.minPrice && submission.maxPrice) {
-                    return `from ${localCurrencySymbol}${submission.minPrice} to ${localCurrencySymbol}${submission.maxPrice}`;
+                    const minPriceFormatted = formatPriceWithConversion(
+                      submission.minPrice, 
+                      submission.currency, 
+                      selectedCurrency, 
+                      primaryCountry
+                    );
+                    const maxPriceFormatted = formatPriceWithConversion(
+                      submission.maxPrice, 
+                      submission.currency, 
+                      selectedCurrency, 
+                      primaryCountry
+                    );
+                    return `from ${minPriceFormatted} to ${maxPriceFormatted}`;
                   } else if (submission.minPrice) {
-                    return `from ${localCurrencySymbol}${submission.minPrice}`;
+                    const minPriceFormatted = formatPriceWithConversion(
+                      submission.minPrice, 
+                      submission.currency, 
+                      selectedCurrency, 
+                      primaryCountry
+                    );
+                    return `from ${minPriceFormatted}`;
                   } else if (submission.maxPrice) {
-                    return `up to ${localCurrencySymbol}${submission.maxPrice}`;
+                    const maxPriceFormatted = formatPriceWithConversion(
+                      submission.maxPrice, 
+                      submission.currency, 
+                      selectedCurrency, 
+                      primaryCountry
+                    );
+                    return `up to ${maxPriceFormatted}`;
                   }
                   return '';
                 })()}

@@ -117,6 +117,10 @@ export const COUNTRY_CURRENCIES: Record<string, CurrencyInfo> = {
   'Bosnia and Herzegovina': { code: 'BAM', symbol: 'KM', name: 'Bosnia and Herzegovina Convertible Mark' },
   'Montenegro': { code: 'EUR', symbol: '€', name: 'Euro' },
   'Kosovo': { code: 'EUR', symbol: '€', name: 'Euro' },
+  
+  // Specific countries mentioned by user
+  'Belize': { code: 'BZD', symbol: 'BZ$', name: 'Belize Dollar' },
+  'Dominica': { code: 'USD', symbol: '$', name: 'US Dollar' },
 };
 
 /**
@@ -190,4 +194,192 @@ export function getCurrencySymbolForCountry(countryName: string): string {
 export function isEuroCountry(countryName: string): boolean {
   const currency = getCountryCurrency(countryName);
   return currency ? currency.code === 'EUR' : false;
+}
+
+// Currency selection options
+export const CURRENCY_OPTIONS = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+] as const;
+
+export type CurrencyCode = typeof CURRENCY_OPTIONS[number]['code'];
+
+// Exchange rates (these would ideally come from an API in production)
+// For now, using approximate rates - in production, fetch from a real API
+export const EXCHANGE_RATES: Record<string, number> = {
+  'USD': 1.0,
+  'EUR': 0.85,
+  'AUD': 1.5,
+  'BZD': 2.0, // Belize Dollar
+  'GBP': 0.8,
+  'CAD': 1.35,
+  'CHF': 0.9,
+  'JPY': 110,
+  'CNY': 6.5,
+  'INR': 75,
+  'BRL': 5.2,
+  'MXN': 20,
+  'RUB': 75,
+  'ZAR': 15,
+  'AED': 3.67,
+  'SAR': 3.75,
+  'QAR': 3.64,
+  'KWD': 0.3,
+  'BHD': 0.38,
+  'OMR': 0.38,
+  'JOD': 0.71,
+  'LBP': 1500,
+  'TRY': 8.5,
+  'ILS': 3.2,
+  'EGP': 15.7,
+  'MAD': 9.2,
+  'TND': 2.8,
+  'DZD': 135,
+  'NGN': 410,
+  'KES': 110,
+  'GHS': 6.1,
+  'TZS': 2300,
+  'UGX': 3500,
+  'ETB': 45,
+  'ZAR': 15,
+  'NOK': 8.5,
+  'SEK': 8.7,
+  'DKK': 6.3,
+  'PLN': 3.9,
+  'CZK': 21.5,
+  'HUF': 300,
+  'RON': 4.2,
+  'BGN': 1.66,
+  'HRK': 6.4,
+  'RSD': 100,
+  'MKD': 52,
+  'ALL': 104,
+  'MDL': 18,
+  'UAH': 27,
+  'BYN': 2.5,
+  'KZT': 425,
+  'UZS': 10750,
+  'AZN': 1.7,
+  'GEL': 3.1,
+  'AMD': 520,
+  'BAM': 1.66,
+  'KRW': 1180,
+  'THB': 33,
+  'VND': 23000,
+  'MYR': 4.2,
+  'SGD': 1.35,
+  'IDR': 14300,
+  'PHP': 50,
+  'NZD': 1.45,
+  'HKD': 7.8,
+  'TWD': 28,
+  'CLP': 800,
+  'COP': 3800,
+  'PEN': 3.7,
+  'UYU': 43,
+  'JMD': 155,
+  'BSD': 1.0,
+  'BBD': 2.0,
+  'TTD': 6.8,
+  'CRC': 620,
+  'PAB': 1.0,
+};
+
+/**
+ * Convert amount from one currency to another
+ * @param amount - The amount to convert
+ * @param fromCurrency - Source currency code
+ * @param toCurrency - Target currency code
+ * @returns Converted amount
+ */
+export function convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
+  if (fromCurrency === toCurrency) return amount;
+  
+  const fromRate = EXCHANGE_RATES[fromCurrency] || 1;
+  const toRate = EXCHANGE_RATES[toCurrency] || 1;
+  
+  // Convert to USD first, then to target currency
+  const usdAmount = amount / fromRate;
+  const convertedAmount = usdAmount * toRate;
+  
+  return Math.round(convertedAmount * 100) / 100; // Round to 2 decimal places
+}
+
+/**
+ * Format price with currency selection and conversion
+ * @param amount - The price amount
+ * @param originalCurrency - The original currency from Airtable
+ * @param selectedCurrency - The user-selected currency
+ * @param countryName - The country name for fallback
+ * @returns Formatted price string
+ */
+export function formatPriceWithConversion(
+  amount: number,
+  originalCurrency: string | undefined,
+  selectedCurrency: CurrencyCode,
+  countryName?: string
+): string {
+  if (!originalCurrency) {
+    // If no original currency, use country-based currency
+    const countryCurrency = getCountryCurrency(countryName || '');
+    if (countryCurrency) {
+      const convertedAmount = convertCurrency(amount, countryCurrency.code, selectedCurrency);
+      const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+      return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
+    }
+    // Fallback to EUR
+    const convertedAmount = convertCurrency(amount, 'EUR', selectedCurrency);
+    const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+    return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
+  }
+
+  // Convert from original currency to selected currency
+  const convertedAmount = convertCurrency(amount, originalCurrency, selectedCurrency);
+  const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+  return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
+}
+
+/**
+ * Get the appropriate currency for a country based on user's requirements
+ * @param countryName - The name of the country
+ * @returns Currency code based on user's rules
+ */
+export function getCountryCurrencyByRules(countryName: string): string {
+  if (!countryName) return 'EUR';
+  
+  // European countries use EUR
+  const europeanCountries = [
+    'France', 'Germany', 'Italy', 'Spain', 'Portugal', 'Greece', 'Netherlands', 
+    'Belgium', 'Austria', 'Finland', 'Ireland', 'Luxembourg', 'Slovenia', 
+    'Slovakia', 'Estonia', 'Latvia', 'Lithuania', 'Malta', 'Cyprus', 
+    'Montenegro', 'Kosovo'
+  ];
+  
+  if (europeanCountries.some(country => 
+    countryName.toLowerCase().includes(country.toLowerCase()) || 
+    country.toLowerCase().includes(countryName.toLowerCase())
+  )) {
+    return 'EUR';
+  }
+  
+  // United States uses USD
+  if (countryName.toLowerCase().includes('united states') || 
+      countryName.toLowerCase().includes('usa') ||
+      countryName.toLowerCase().includes('us')) {
+    return 'USD';
+  }
+  
+  // Belize uses BZD
+  if (countryName.toLowerCase().includes('belize')) {
+    return 'BZD';
+  }
+  
+  // Dominica uses USD
+  if (countryName.toLowerCase().includes('dominica')) {
+    return 'USD';
+  }
+  
+  // Default to EUR for other countries
+  return 'EUR';
 }

@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import CacheStatus from "@/components/cache-status";
+import { CurrencyProvider } from "@/contexts/currency-context";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import FindHost from "@/pages/find-host";
@@ -78,9 +79,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Router />
-        <StatusPolling />
-        <CacheStatus />
+        <CurrencyProvider>
+          <Router />
+          <StatusPolling />
+          <CacheStatus />
+        </CurrencyProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

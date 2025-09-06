@@ -10,6 +10,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
+import CurrencySelector from "@/components/currency-selector";
+import { useCurrency } from "@/contexts/currency-context";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -32,6 +34,9 @@ export default function City() {
   
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
+  
+  // Currency context
+  const { selectedCurrency, setSelectedCurrency } = useCurrency();
 
   // Sort function: Featured first, then alphabetical by brand name
   const sortSubmissions = (submissionsToSort: any[]) => {
@@ -412,9 +417,20 @@ export default function City() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             
-            {/* Host Filters */}
+            {/* Currency Selector and Host Filters */}
             {citySubmissions.length > 0 && (
-              <HostFilters onFiltersChange={setFilters} />
+              <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-700">Show prices in:</span>
+                  <CurrencySelector 
+                    selectedCurrency={selectedCurrency}
+                    onCurrencyChange={setSelectedCurrency}
+                  />
+                </div>
+                <div className="w-full sm:w-auto">
+                  <HostFilters onFiltersChange={setFilters} />
+                </div>
+              </div>
             )}
 
             {/* Featured Only Toggle */}
