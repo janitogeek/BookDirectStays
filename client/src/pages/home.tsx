@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AnimatedPage, { AnimatedSection } from "@/components/animated-page";
 import { buttonVariants, fadeInUpVariants, fadeInLeftVariants, fadeInRightVariants } from "@/lib/animations";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -157,9 +158,10 @@ export default function Home() {
               >
               <Button 
                 onClick={() => setLocation("/find-host")}
-                  className="w-full py-2 px-4 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold"
+                  className="w-full py-2 px-4 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold flex items-center justify-center gap-2"
               >
                 Find a Host Now!
+                <ArrowUpRight className="w-4 h-4" />
               </Button>
               </motion.div>
             </motion.div>
@@ -183,8 +185,8 @@ export default function Home() {
         </div>
         </AnimatedSection>
 
-      {/* Trust & Features Section - Clean Cards */}
-      <AnimatedSection className="py-20 bg-gray-50" delay={0.2}>
+      {/* Trust & Features Section - Clean Cards - WHITE BACKGROUND */}
+      <AnimatedSection className="py-20 bg-white" delay={0.2}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -239,8 +241,8 @@ export default function Home() {
         </div>
       </AnimatedSection>
 
-      {/* Real Savings Section - Skol Example - Updated */}
-      <AnimatedSection className="py-20 bg-white" delay={0.4}>
+      {/* Real Savings Section - Skol Example - LIGHT GREY BACKGROUND */}
+      <AnimatedSection className="py-20 bg-gray-50" delay={0.4}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
@@ -363,8 +365,8 @@ export default function Home() {
         </div>
       </AnimatedSection>
 
-      {/* Featured Hosts Carousel Section */}
-      <section id="our-featured-hosts" className="py-20 bg-gray-50">
+      {/* Featured Hosts Carousel Section - WHITE BACKGROUND */}
+      <section id="our-featured-hosts" className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FeaturedHostsCarousel />
           
@@ -401,8 +403,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What the Experts Say Section - Carousel */}
-      <section className="py-20 bg-white">
+      {/* What the Experts Say Section - Carousel - LIGHT GREY BACKGROUND */}
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
@@ -483,9 +485,10 @@ export default function Home() {
              </p>
              <Button 
                onClick={() => setLocation("/find-host")}
-               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold"
+               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2"
              >
                Start Searching Stays
+               <ArrowUpRight className="w-5 h-5" />
              </Button>
            </div>
          </div>
