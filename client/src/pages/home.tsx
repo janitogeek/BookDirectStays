@@ -483,13 +483,15 @@ export default function Home() {
              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
                Join thousands of travelers who save between 10% and 30% on average by booking directly with property managers.
              </p>
-             <Button 
-               onClick={() => setLocation("/find-host")}
-               className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2"
-             >
-               Start Searching Stays
-               <ArrowUpRight className="w-5 h-5" />
-             </Button>
+             <div className="flex justify-center">
+               <Button 
+                 onClick={() => setLocation("/find-host")}
+                 className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-full text-lg font-semibold flex items-center gap-2"
+               >
+                 Start Searching Stays
+                 <ArrowUpRight className="w-5 h-5" />
+               </Button>
+             </div>
            </div>
          </div>
        </section>
