@@ -242,7 +242,6 @@ export const EXCHANGE_RATES: Record<string, number> = {
   'TZS': 2300,
   'UGX': 3500,
   'ETB': 45,
-  'ZAR': 15,
   'NOK': 8.5,
   'SEK': 8.7,
   'DKK': 6.3,
