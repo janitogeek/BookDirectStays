@@ -216,13 +216,14 @@ const COUNTRY_CURRENCY_MAP: Record<string, { code: string; symbol: string; name:
   'China': { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
 };
 
-// Currency options based on your published countries: Canada, United States, Australia, Belize, Dominica, France, Spain
+// Currency options based on your published countries: Canada, United States, Australia, Belize, Dominica, France, Spain, United Kingdom
 export const CURRENCY_OPTIONS = [
   { code: 'USD', symbol: '$', name: 'US Dollar' }, // United States, Dominica
   { code: 'EUR', symbol: '€', name: 'Euro' }, // France, Spain
   { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' }, // Canada
   { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' }, // Australia
   { code: 'BZD', symbol: 'BZ$', name: 'Belize Dollar' }, // Belize
+  { code: 'GBP', symbol: '£', name: 'British Pound' }, // United Kingdom
 ] as const;
 
 export type CurrencyCode = 'USD' | 'EUR' | 'CAD' | 'AUD' | 'BZD' | 'HRK' | 'MXN' | 'THB' | 'IDR' | 'GBP' | 'CNY';
