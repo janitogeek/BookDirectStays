@@ -216,28 +216,13 @@ const COUNTRY_CURRENCY_MAP: Record<string, { code: string; symbol: string; name:
   'China': { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
 };
 
-// Function to generate currency options based on active countries
-export function generateCurrencyOptions(activeCountries: string[]): Array<{ code: string; symbol: string; name: string }> {
-  const currencyMap = new Map<string, { code: string; symbol: string; name: string }>();
-  
-  // Add currencies for active countries
-  activeCountries.forEach(countryName => {
-    const currency = COUNTRY_CURRENCY_MAP[countryName];
-    if (currency) {
-      currencyMap.set(currency.code, currency);
-    }
-  });
-  
-  // Convert to array and sort by currency code
-  return Array.from(currencyMap.values()).sort((a, b) => a.code.localeCompare(b.code));
-}
-
-// Default currency options (fallback)
-export const DEFAULT_CURRENCY_OPTIONS = [
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+// Currency options based on your published countries: Canada, United States, Australia, Belize, Dominica, France, Spain
+export const CURRENCY_OPTIONS = [
+  { code: 'USD', symbol: '$', name: 'US Dollar' }, // United States, Dominica
+  { code: 'EUR', symbol: '€', name: 'Euro' }, // France, Spain
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' }, // Canada
+  { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' }, // Australia
+  { code: 'BZD', symbol: 'BZ$', name: 'Belize Dollar' }, // Belize
 ] as const;
 
 export type CurrencyCode = 'USD' | 'EUR' | 'CAD' | 'AUD' | 'BZD' | 'HRK' | 'MXN' | 'THB' | 'IDR' | 'GBP' | 'CNY';

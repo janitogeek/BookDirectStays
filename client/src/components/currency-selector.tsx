@@ -17,7 +17,7 @@ export default function CurrencySelector({
   className = '' 
 }: CurrencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { currencyOptions, isLoading } = useCurrency();
+  const { currencyOptions } = useCurrency();
 
   const selectedOption = currencyOptions.find(option => option.code === selectedCurrency);
 
@@ -44,10 +44,7 @@ export default function CurrencySelector({
           {/* Dropdown */}
           <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                       <div className="py-1">
-                        {isLoading ? (
-                          <div className="px-4 py-2 text-sm text-gray-500">Loading currencies...</div>
-                        ) : (
-                          currencyOptions.map((option) => (
+                        {currencyOptions.map((option) => (
                 <button
                   key={option.code}
                   onClick={() => {
@@ -69,8 +66,7 @@ export default function CurrencySelector({
                     </Badge>
                   )}
                             </button>
-                          ))
-                        )}
+                          ))}
                       </div>
           </div>
         </>

@@ -1,13 +1,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { CurrencyCode, generateCurrencyOptions, DEFAULT_CURRENCY_OPTIONS } from '@/lib/currency-utils';
-import { dataPreloader } from '@/lib/data-preloader';
+import { CurrencyCode, CURRENCY_OPTIONS } from '@/lib/currency-utils';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
   setSelectedCurrency: (currency: CurrencyCode) => void;
   currencyOptions: Array<{ code: string; symbol: string; name: string }>;
-  isLoading: boolean;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
@@ -19,28 +16,13 @@ interface CurrencyProviderProps {
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('EUR');
 
-  // Fetch active countries to generate currency options
-  const { data: countriesData = [], isLoading: isCountriesLoading } = useQuery({
-    queryKey: ["/api/preloaded-countries"],
-    queryFn: () => dataPreloader.getCountries(),
-    staleTime: 30 * 60 * 1000, // 30 minutes
-  });
-
-  // Generate currency options based on active countries
-  const currencyOptions = countriesData.length > 0 
-    ? generateCurrencyOptions(countriesData.map(c => c.name))
-    : DEFAULT_CURRENCY_OPTIONS;
-
   // Load currency from localStorage on mount
   useEffect(() => {
     const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
-    if (savedCurrency && currencyOptions.some(option => option.code === savedCurrency)) {
+    if (savedCurrency && CURRENCY_OPTIONS.some(option => option.code === savedCurrency)) {
       setSelectedCurrency(savedCurrency);
-    } else if (currencyOptions.length > 0) {
-      // If saved currency is not available, use the first available currency
-      setSelectedCurrency(currencyOptions[0].code as CurrencyCode);
     }
-  }, [currencyOptions]);
+  }, []);
 
   // Save currency to localStorage when it changes
   useEffect(() => {
@@ -51,8 +33,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     <CurrencyContext.Provider value={{ 
       selectedCurrency, 
       setSelectedCurrency, 
-      currencyOptions,
-      isLoading: isCountriesLoading
+      currencyOptions: CURRENCY_OPTIONS
     }}>
       {children}
     </CurrencyContext.Provider>
