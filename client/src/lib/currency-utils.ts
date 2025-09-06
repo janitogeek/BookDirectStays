@@ -202,12 +202,10 @@ export const CURRENCY_OPTIONS = [
   { code: 'EUR', symbol: '€', name: 'Euro' },
   { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
   { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-  { code: 'GBP', symbol: '£', name: 'British Pound' },
   { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
   { code: 'THB', symbol: '฿', name: 'Thai Baht' },
   { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
   { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
-  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
 ] as const;
 
 export type CurrencyCode = typeof CURRENCY_OPTIONS[number]['code'];
@@ -388,4 +386,44 @@ export function getCountryCurrencyByRules(countryName: string): string {
   
   // Default to EUR for other countries
   return 'EUR';
+}
+
+/**
+ * Convert budget range values for display in selected currency
+ * @param minValue - Minimum value in EUR
+ * @param maxValue - Maximum value in EUR
+ * @param selectedCurrency - Target currency
+ * @returns Object with converted min and max values rounded to nice numbers
+ */
+export function convertBudgetRange(
+  minValue: number, 
+  maxValue: number, 
+  selectedCurrency: CurrencyCode
+): { min: number; max: number } {
+  if (selectedCurrency === 'EUR') {
+    return { min: minValue, max: maxValue };
+  }
+
+  // Convert from EUR to selected currency
+  const convertedMin = convertCurrency(minValue, 'EUR', selectedCurrency);
+  const convertedMax = convertCurrency(maxValue, 'EUR', selectedCurrency);
+
+  // Round to nice numbers based on currency
+  const roundToNiceNumber = (value: number, currency: CurrencyCode): number => {
+    if (currency === 'THB' || currency === 'IDR') {
+      // For currencies with high values, round to nearest 50
+      return Math.round(value / 50) * 50;
+    } else if (currency === 'MXN' || currency === 'CAD' || currency === 'AUD') {
+      // For currencies with moderate values, round to nearest 10
+      return Math.round(value / 10) * 10;
+    } else {
+      // For USD, HRK, etc., round to nearest 5
+      return Math.round(value / 5) * 5;
+    }
+  };
+
+  return {
+    min: roundToNiceNumber(convertedMin, selectedCurrency),
+    max: roundToNiceNumber(convertedMax, selectedCurrency)
+  };
 }

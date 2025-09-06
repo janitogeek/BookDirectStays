@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useCurrency } from '@/contexts/currency-context';
-import { CURRENCY_OPTIONS } from '@/lib/currency-utils';
+import { CURRENCY_OPTIONS, convertBudgetRange } from '@/lib/currency-utils';
 
 interface BudgetRangeSliderProps {
   minValue?: number | null;
@@ -16,27 +16,49 @@ export default function BudgetRangeSlider({
   className = ""
 }: BudgetRangeSliderProps) {
   const { selectedCurrency } = useCurrency();
-  const [minPrice, setMinPrice] = useState(minValue || 20);
-  const [maxPrice, setMaxPrice] = useState(maxValue || 300);
+  
+  // Base range in EUR (original values)
+  const BASE_MIN_RANGE = 20;
+  const BASE_MAX_RANGE = 300;
+  
+  // Convert base range to selected currency
+  const convertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
+  
+  const [minPrice, setMinPrice] = useState(minValue || convertedRange.min);
+  const [maxPrice, setMaxPrice] = useState(maxValue || convertedRange.max);
   const [isDragging, setIsDragging] = useState<'min' | 'max' | null>(null);
   
   const sliderRef = useRef<HTMLDivElement>(null);
   
-  const MIN_RANGE = 20;
-  const MAX_RANGE = 300;
-  const GAP = 10;
+  const MIN_RANGE = convertedRange.min;
+  const MAX_RANGE = convertedRange.max;
+  const GAP = Math.max(10, Math.round((MAX_RANGE - MIN_RANGE) * 0.05)); // 5% of range or 10, whichever is larger
 
-  // Histogram data
-  const histogramData = [
-    { range: 20, height: 15 }, { range: 30, height: 25 }, { range: 40, height: 35 },
-    { range: 50, height: 45 }, { range: 60, height: 55 }, { range: 70, height: 65 },
-    { range: 80, height: 70 }, { range: 90, height: 75 }, { range: 100, height: 80 },
-    { range: 110, height: 75 }, { range: 120, height: 70 }, { range: 130, height: 65 },
-    { range: 140, height: 60 }, { range: 150, height: 55 }, { range: 160, height: 50 },
-    { range: 170, height: 45 }, { range: 180, height: 40 }, { range: 190, height: 35 },
-    { range: 200, height: 30 }, { range: 220, height: 25 }, { range: 240, height: 20 },
-    { range: 260, height: 15 }, { range: 280, height: 10 }, { range: 300, height: 8 }
-  ];
+  // Generate histogram data based on converted range
+  const generateHistogramData = () => {
+    const range = MAX_RANGE - MIN_RANGE;
+    const step = range / 20; // 20 bars
+    const data = [];
+    
+    for (let i = 0; i < 20; i++) {
+      const value = MIN_RANGE + (i * step);
+      // Create a bell curve distribution
+      const normalizedPosition = i / 19; // 0 to 1
+      const height = Math.round(15 + (65 * Math.exp(-Math.pow(normalizedPosition - 0.5, 2) * 8)));
+      data.push({ range: Math.round(value), height });
+    }
+    
+    return data;
+  };
+  
+  const histogramData = generateHistogramData();
+
+  // Update range when currency changes
+  useEffect(() => {
+    const newConvertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
+    setMinPrice(newConvertedRange.min);
+    setMaxPrice(newConvertedRange.max);
+  }, [selectedCurrency]);
 
   // Convert mouse position to value
   const getValueFromPosition = useCallback((clientX: number): number => {
