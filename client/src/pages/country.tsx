@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, X, ChevronDown } from "lucide-react";
+import { Search, X, ArrowDown } from "lucide-react";
 // import { apiRequest } from "@/lib/queryClient";
 // import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
@@ -564,7 +564,7 @@ export default function Country() {
           </div>
             
           {/* City Navigation Button - Centered under title */}
-          <div className="text-center mb-8">
+          <div className="flex justify-center mb-8">
               <Button 
                 onClick={() => {
                   const element = document.getElementById('city-navigation');
@@ -578,7 +578,7 @@ export default function Country() {
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
               >
                 Find Hosts by City
-                <ChevronDown className="w-5 h-5" />
+                <ArrowDown className="w-5 h-5" />
               </Button>
           </div>
           
