@@ -158,7 +158,7 @@ export default function Home() {
               >
               <Button 
                 onClick={() => setLocation("/find-host")}
-                  className="w-full py-1.5 px-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  className="py-1.5 px-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold flex items-center justify-center gap-2"
               >
                 Find a Host Now!
                 <ArrowUpRight className="w-4 h-4" />
