@@ -15,6 +15,7 @@ import { Search, X } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
+import { getCurrencyForCountry } from "@/lib/currency-utils";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
@@ -187,6 +188,14 @@ export default function Country() {
         .finally(() => setIsCountryNameLoading(false));
     }
   }, [countrySlug]);
+
+  // Auto-set currency based on country
+  useEffect(() => {
+    if (countryName) {
+      const countryCurrency = getCurrencyForCountry(countryName);
+      setSelectedCurrency(countryCurrency);
+    }
+  }, [countryName, setSelectedCurrency]);
   
   // Don't fetch cities until we have the country name
   const shouldFetchCities = Boolean(countryName) && !isCountryNameLoading;

@@ -228,6 +228,50 @@ export const CURRENCY_OPTIONS = [
 
 export type CurrencyCode = 'USD' | 'EUR' | 'CAD' | 'AUD' | 'BZD' | 'HRK' | 'MXN' | 'THB' | 'IDR' | 'GBP' | 'CNY';
 
+/**
+ * Get the currency code for a specific country
+ * @param countryName - The name of the country
+ * @returns Currency code for that country
+ */
+export function getCurrencyForCountry(countryName: string): CurrencyCode {
+  if (!countryName) return 'EUR'; // Default fallback
+  
+  const country = countryName.toLowerCase();
+  
+  // European countries use EUR
+  if (['france', 'spain', 'italy', 'portugal', 'greece', 'germany', 'netherlands', 'belgium', 'austria'].includes(country)) {
+    return 'EUR';
+  }
+  
+  // United States and Dominica use USD
+  if (['united states', 'usa', 'us', 'dominica'].includes(country)) {
+    return 'USD';
+  }
+  
+  // Canada uses CAD
+  if (['canada'].includes(country)) {
+    return 'CAD';
+  }
+  
+  // Australia uses AUD
+  if (['australia'].includes(country)) {
+    return 'AUD';
+  }
+  
+  // Belize uses BZD
+  if (['belize'].includes(country)) {
+    return 'BZD';
+  }
+  
+  // United Kingdom uses GBP
+  if (['united kingdom', 'uk', 'britain', 'england', 'scotland', 'wales'].includes(country)) {
+    return 'GBP';
+  }
+  
+  // Default to EUR for other countries
+  return 'EUR';
+}
+
 // Exchange rates (these would ideally come from an API in production)
 // For now, using approximate rates - in production, fetch from a real API
 export const EXCHANGE_RATES: Record<string, number> = {

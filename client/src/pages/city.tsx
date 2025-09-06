@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import PropertyCard from "@/components/property-card";
@@ -11,6 +11,7 @@ import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
+import { getCurrencyForCountry } from "@/lib/currency-utils";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -128,6 +129,14 @@ export default function City() {
   };
   
   const countryName = getCountryName(countrySlug || '');
+
+  // Auto-set currency based on country
+  useEffect(() => {
+    if (countryName) {
+      const countryCurrency = getCurrencyForCountry(countryName);
+      setSelectedCurrency(countryCurrency);
+    }
+  }, [countryName, setSelectedCurrency]);
 
   // Fetch submissions for this country (instant if cached)
   const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
