@@ -142,9 +142,9 @@ export default function Home() {
               Connect directly with professional hosts worldwide for better rates, more flexibility, and personalized service (—without the middleman markup.)
             </p>
             
-            {/* Find a Host Button - Smaller */}
+            {/* Find a Host Button - Compact & Centered */}
             <motion.div 
-              className="relative max-w-xs mx-auto mb-8"
+              className="relative mb-8 text-center"
               variants={fadeInUpVariants}
               initial="hidden"
               animate="visible"
@@ -155,14 +155,15 @@ export default function Home() {
                 initial="rest"
                 whileHover="hover"
                 whileTap="tap"
+                className="inline-block"
               >
-              <Button 
-                onClick={() => setLocation("/find-host")}
-                  className="py-1.5 px-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold flex items-center justify-center gap-2"
-              >
-                Find a Host Now!
-                <ArrowUpRight className="w-4 h-4" />
-              </Button>
+                <Button 
+                  onClick={() => setLocation("/find-host")}
+                  className="px-6 py-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-all shadow-xl text-sm font-semibold inline-flex items-center justify-center gap-2"
+                >
+                  Find a Host Now!
+                  <ArrowUpRight className="w-4 h-4" />
+                </Button>
               </motion.div>
             </motion.div>
 
