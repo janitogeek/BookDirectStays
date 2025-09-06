@@ -573,17 +573,17 @@ export default function Country() {
               </Button>
           </div>
           
-          {/* Currency Selector and Host Filters */}
+          {/* Host Filters and Currency Selector */}
           <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="w-full sm:w-auto">
+              <HostFilters onFiltersChange={setFilters} />
+            </div>
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-gray-700">Show prices in:</span>
               <CurrencySelector 
                 selectedCurrency={selectedCurrency}
                 onCurrencyChange={setSelectedCurrency}
               />
-            </div>
-            <div className="w-full sm:w-auto">
-              <HostFilters onFiltersChange={setFilters} />
             </div>
           </div>
 

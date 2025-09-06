@@ -196,11 +196,18 @@ export function isEuroCountry(countryName: string): boolean {
   return currency ? currency.code === 'EUR' : false;
 }
 
-// Currency selection options
+// Currency selection options - Based on countries present on the website
 export const CURRENCY_OPTIONS = [
   { code: 'USD', symbol: '$', name: 'US Dollar' },
   { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
   { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+  { code: 'THB', symbol: '฿', name: 'Thai Baht' },
+  { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
+  { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' },
 ] as const;
 
 export type CurrencyCode = typeof CURRENCY_OPTIONS[number]['code'];
