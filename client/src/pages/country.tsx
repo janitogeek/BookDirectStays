@@ -541,8 +541,16 @@ export default function Country() {
       )}
 
       {/* Hero Section */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section 
+        className="py-12 bg-cover bg-center bg-no-repeat relative"
+        style={{
+          backgroundImage: 'url(/country-page-background.jpg)'
+        }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Breadcrumb Navigation */}
           <nav className="mb-6">
             <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
