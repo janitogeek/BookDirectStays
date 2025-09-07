@@ -522,6 +522,18 @@ export default function Submit() {
           return cityDisplayName;
         }).join(", "),
         "Countries": extractedCountries.join(", "),
+        "Geonames Record": values["Cities / Regions"].map(city => {
+          // Generate full Geonames record format: "City, Region, Country"
+          const cityName = city.name;
+          const regionName = city.adminName1 || '';
+          const countryName = city.countryName;
+          
+          if (regionName) {
+            return `${cityName}, ${regionName}, ${countryName}`;
+          } else {
+            return `${cityName}, ${countryName}`;
+          }
+        }).join("; "),
         "One-line Description": values["One-line Description"],
               "Why Book With You": values["Why Book With You?"],
       "Why Rent With You": values["Why Rent With You?"],
