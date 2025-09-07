@@ -258,9 +258,9 @@ export const faqs = [
   {
     id: "h-geo-coverage",
     category: "host",
-    question: "How should I present my GEO coverage for better discovery?",
+    question: "How can I make sure my company listing gets the best visibility?",
     answer:
-      "Just fill in as many fields on the 'Add Your Direct Booking Site' form, give the most info possible and that will boost your visibility. The more geographic information you provide (countries, regions, cities, specific areas), the better travelers can discover your properties when searching for specific destinations. This comprehensive GEO data helps our search algorithms match your listings with relevant traveler searches.",
+      "The best way is simple: fill out the 'Add Your Direct Booking Site' form with as much detail as possible. The more complete your profile is (coverage areas, property types, perks, services, images, social links), the easier it is for both travelers and search engines—including AI search tools—to understand who you are and what you offer. Generative AI and large language models rely on detailed, structured information to recommend companies. A rich, accurate listing increases your chances of showing up when an owner searches for a manager in your area.",
   },
   {
     id: "h-quality-bar",

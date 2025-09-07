@@ -21,7 +21,8 @@ const parseTextWithLinks = (text: string) => {
     { text: 'testimonials', href: '/testimonials#traveler-testimonials' },
     { text: 'home page (Real Listings, Real Savings section)', href: '/#real-listings' },
     { text: 'testimonials from travelers who\'ve saved money', href: '/testimonials#traveler-testimonials' },
-    { text: 'FindRentalManagers.com', href: 'https://findrentalmanager.com' }
+    { text: 'FindRentalManagers.com', href: 'https://findrentalmanager.com' },
+    { text: 'Our Featured Host', href: '/#our-featured-hosts' }
   ];
 
   let result = text;
