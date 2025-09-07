@@ -118,7 +118,23 @@ export default function FAQ() {
                                             return (
                                               <span key={fourthIndex}>
                                                 <Link href="/partnerships" className="text-blue-600 hover:underline font-medium">Partnerships</Link>
-                                                {fourthPart}
+                                                {fourthPart.split('home page').map((fifthPart, fifthIndex) => {
+                                                  if (fifthIndex === 0) return fifthPart;
+                                                  return (
+                                                    <span key={fifthIndex}>
+                                                      <Link href="/" className="text-blue-600 hover:underline font-medium">home page</Link>
+                                                      {fifthPart.split('testimonials').map((sixthPart, sixthIndex) => {
+                                                        if (sixthIndex === 0) return sixthPart;
+                                                        return (
+                                                          <span key={sixthIndex}>
+                                                            <Link href="/testimonials" className="text-blue-600 hover:underline font-medium">testimonials</Link>
+                                                            {sixthPart}
+                                                          </span>
+                                                        );
+                                                      })}
+                                                    </span>
+                                                  );
+                                                })}
                                               </span>
                                             );
                                           })}

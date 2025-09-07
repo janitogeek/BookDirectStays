@@ -246,7 +246,7 @@ export const faqs = [
     category: "host",
     question: "Can I track traffic and bookings from BookDirectStays.com?",
     answer:
-      "Yes—add UTM parameters to your direct booking URLs and monitor performance in your analytics. If needed, we can include your UTM format in the listing. For advanced traffic analytics, this might be possible for a fee - contact bookdirectstays@gmail.com for more information.",
+      "Yes we can track traffic for you for a small fee - contact bookdirectstays@gmail.com for more information.",
   },
   {
     id: "h-reviews",
@@ -260,7 +260,7 @@ export const faqs = [
     category: "host",
     question: "How should I present my GEO coverage for better discovery?",
     answer:
-      "Just fill in the fields on 'Add Your Direct Booking Site' form. List countries → regions → cities clearly (e.g., Spain: Barcelona, Madrid, Valencia; France: Paris, Lyon, Nice). Include niche areas travelers search for (Algarve, Amalfi Coast, Lake District) and align your site's pages with those areas.",
+      "Just fill in as many fields on the 'Add Your Direct Booking Site' form, give the most info possible and that will boost your visibility. The more geographic information you provide (countries, regions, cities, specific areas), the better travelers can discover your properties when searching for specific destinations. This comprehensive GEO data helps our search algorithms match your listings with relevant traveler searches.",
   },
   {
     id: "h-quality-bar",
