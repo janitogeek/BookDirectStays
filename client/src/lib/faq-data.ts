@@ -192,13 +192,13 @@ export const faqs = [
     answer:
       "You need: 1) a functioning direct booking site with live inventory, 2) clear contact details, 3) up-to-date policies, 4) genuine photos and descriptions, and 5) basic brand assets (logo, hero images). High-quality, trustworthy sites are prioritized.",
   },
-  {
-    id: "h-pricing",
-    category: "host",
-    question: "How much does it cost to be listed?",
-    answer:
-      "Basic: €99.99/year to cover maintenance costs of the website. Featured: €499.99/year for instant listing, premium placement & badges for increased visibility + social media posts (TikTok & Instagram) to promote your business. We're offering these 50% discounted prices for the first 2000 listings, then we'll have standard prices as we grow and have more work and costs. Pricing is per company (not per property).",
-  },
+    {
+      id: "h-pricing",
+      category: "host",
+      question: "How much does it cost to be listed?",
+      answer:
+        "Basic: €99.99/year to cover maintenance costs of the website. Featured: €499.99/year for instant listing, premium placement & badges for increased visibility + social media posts (TikTok & Instagram) to promote your business. We're offering these 50% discounted prices for the first 2000 listings, then we'll have standard prices as we grow and have more work and costs. Pricing is per company (not per property). If you want you can also be listed in FindRentalManagers.com (without any extra fee) to help you attract more property owners.",
+    },
   {
     id: "h-approval-time",
     category: "host",
@@ -232,7 +232,7 @@ export const faqs = [
     category: "host",
     question: "What extra visibility does a Featured listing include?",
     answer:
-      "Featured includes top-of-category placement, a 'Our Featured Hosts' showcase slot, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
+      "Featured includes top-of-category placement, a 'Featured Host' badge, a 'Our Featured Hosts' showcase slot, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
   },
   {
     id: "h-updates",
