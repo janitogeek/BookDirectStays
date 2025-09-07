@@ -25,16 +25,21 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     const loadCurrencies = async () => {
       try {
         setIsLoading(true);
+        console.log('🔄 Loading currencies from Airtable...');
         const currencies = await getAllCurrencies();
+        console.log('✅ Loaded currencies:', currencies.length, currencies);
         setCurrencyOptions(currencies);
         
         // Load saved currency from localStorage
         const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
         if (savedCurrency && currencies.some(option => option.code === savedCurrency)) {
           setSelectedCurrency(savedCurrency);
+        } else if (currencies.length > 0) {
+          // Set first currency as default if no saved currency
+          setSelectedCurrency(currencies[0].code);
         }
       } catch (error) {
-        console.error('Failed to load currencies from Airtable:', error);
+        console.error('❌ Failed to load currencies from Airtable:', error);
         // Fallback to basic currencies
         const fallbackCurrencies = [
           { code: 'USD', symbol: '$', name: 'US Dollar' },
@@ -42,9 +47,15 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
           { code: 'GBP', symbol: '£', name: 'British Pound' },
           { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
           { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-          { code: 'JPY', symbol: '¥', name: 'Japanese Yen' }
+          { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+          { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+          { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+          { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
+          { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' }
         ];
+        console.log('🔄 Using fallback currencies:', fallbackCurrencies.length);
         setCurrencyOptions(fallbackCurrencies);
+        setSelectedCurrency('EUR'); // Set default currency
       } finally {
         setIsLoading(false);
       }

@@ -193,9 +193,15 @@ export default function Country() {
   useEffect(() => {
     if (countryName && currencyOptions.length > 0) {
       const countryCurrency = getCurrencyForCountry(countryName);
+      console.log(`🌍 Country: ${countryName}, Suggested currency: ${countryCurrency}`);
+      console.log('Available currencies:', currencyOptions.map(c => c.code));
+      
       // Only set if the currency exists in our options
       if (currencyOptions.some(option => option.code === countryCurrency)) {
+        console.log(`✅ Setting currency to ${countryCurrency} for ${countryName}`);
         setSelectedCurrency(countryCurrency);
+      } else {
+        console.log(`⚠️ Currency ${countryCurrency} not available, keeping current: ${selectedCurrency}`);
       }
     }
   }, [countryName, currencyOptions, setSelectedCurrency]);
