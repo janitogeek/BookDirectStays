@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CurrencyCode } from '@/lib/currency-utils';
+import { CurrencyCode, CURRENCY_OPTIONS } from '@/lib/currency-utils';
 import { getAllCurrencies } from '@/lib/world-currency-extractor';
 
 interface CurrencyContextType {
@@ -28,33 +28,28 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
         console.log('🔄 Loading currencies from Airtable...');
         const currencies = await getAllCurrencies();
         console.log('✅ Loaded currencies:', currencies.length, currencies);
-        setCurrencyOptions(currencies);
+        
+        // If no currencies loaded from Airtable, use CURRENCY_OPTIONS
+        if (currencies.length === 0) {
+          console.log('⚠️ No currencies from Airtable, using CURRENCY_OPTIONS');
+          setCurrencyOptions(CURRENCY_OPTIONS);
+        } else {
+          setCurrencyOptions(currencies);
+        }
         
         // Load saved currency from localStorage
         const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
-        if (savedCurrency && currencies.some(option => option.code === savedCurrency)) {
+        if (savedCurrency && (currencies.length > 0 ? currencies : CURRENCY_OPTIONS).some(option => option.code === savedCurrency)) {
           setSelectedCurrency(savedCurrency);
-        } else if (currencies.length > 0) {
+        } else if ((currencies.length > 0 ? currencies : CURRENCY_OPTIONS).length > 0) {
           // Set first currency as default if no saved currency
-          setSelectedCurrency(currencies[0].code);
+          setSelectedCurrency((currencies.length > 0 ? currencies : CURRENCY_OPTIONS)[0].code);
         }
       } catch (error) {
         console.error('❌ Failed to load currencies from Airtable:', error);
-        // Fallback to basic currencies
-        const fallbackCurrencies = [
-          { code: 'USD', symbol: '$', name: 'US Dollar' },
-          { code: 'EUR', symbol: '€', name: 'Euro' },
-          { code: 'GBP', symbol: '£', name: 'British Pound' },
-          { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-          { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-          { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-          { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
-          { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
-          { code: 'CHF', symbol: 'CHF', name: 'Swiss Franc' },
-          { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' }
-        ];
-        console.log('🔄 Using fallback currencies:', fallbackCurrencies.length);
-        setCurrencyOptions(fallbackCurrencies);
+        // Fallback to CURRENCY_OPTIONS from commit 9bab664
+        console.log('🔄 Using CURRENCY_OPTIONS fallback:', CURRENCY_OPTIONS.length);
+        setCurrencyOptions(CURRENCY_OPTIONS);
         setSelectedCurrency('EUR'); // Set default currency
       } finally {
         setIsLoading(false);

@@ -66,7 +66,7 @@ export function CurrencyPopupSelector({
           <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full min-w-[220px] max-h-80 p-1 flex flex-col" align="start">
+      <DropdownMenuContent className="w-full min-w-[220px] max-h-80 p-1 flex flex-col" align="start" side="top">
         <Input
           ref={inputRef}
           placeholder="Search currencies..."
