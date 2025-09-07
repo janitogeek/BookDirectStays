@@ -97,7 +97,41 @@ export default function FAQ() {
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <p className="text-gray-700">{faq.answer}</p>
+                      <div className="text-gray-700">
+                        {faq.answer.split('Add Your Direct Listing').map((part, index) => {
+                          if (index === 0) return part;
+                          return (
+                            <span key={index}>
+                              <Link href="/submit" className="text-blue-600 hover:underline font-medium">Add Your Direct Listing</Link>
+                              {part.split('Add Your Direct Booking Site').map((subPart, subIndex) => {
+                                if (subIndex === 0) return subPart;
+                                return (
+                                  <span key={subIndex}>
+                                    <Link href="/submit" className="text-blue-600 hover:underline font-medium">Add Your Direct Booking Site</Link>
+                                    {subPart.split('Our Featured Hosts').map((thirdPart, thirdIndex) => {
+                                      if (thirdIndex === 0) return thirdPart;
+                                      return (
+                                        <span key={thirdIndex}>
+                                          <Link href="/featured-hosts" className="text-blue-600 hover:underline font-medium">Our Featured Hosts</Link>
+                                          {thirdPart.split('Partnerships').map((fourthPart, fourthIndex) => {
+                                            if (fourthIndex === 0) return fourthPart;
+                                            return (
+                                              <span key={fourthIndex}>
+                                                <Link href="/partnerships" className="text-blue-600 hover:underline font-medium">Partnerships</Link>
+                                                {fourthPart}
+                                              </span>
+                                            );
+                                          })}
+                                        </span>
+                                      );
+                                    })}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          );
+                        })}
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 ))}

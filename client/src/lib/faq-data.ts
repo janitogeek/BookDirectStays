@@ -183,7 +183,7 @@ export const faqs = [
     category: "host",
     question: "How do I list my direct booking site on BookDirectStays.com?",
     answer:
-      "Go to 'Submit' and complete the form with your company details, direct booking URL, portfolio coverage (countries/cities), brand assets, and social links. We review for quality and publish approved listings.",
+      "Go to 'Add Your Direct Listing' and complete the form with your company details, direct booking URL, portfolio coverage (countries/cities), brand assets, and social links. The process takes max 5 minutes to complete. We review for quality and publish approved listings.",
   },
   {
     id: "h-requirements",
@@ -197,21 +197,21 @@ export const faqs = [
     category: "host",
     question: "How much does it cost to be listed?",
     answer:
-      "Basic: €100/year per company. Featured: €500/year with premium placement, badges, and editorial exposure. Pricing is per company (not per property).",
+      "Basic: €99.99/year to cover maintenance costs of the website. Featured: €499.99/year for instant listing, premium placement & badges for increased visibility + social media posts (TikTok & Instagram) to promote your business. We're offering these 50% discounted prices for the first 2000 listings, then we'll have standard prices as we grow and have more work and costs. Pricing is per company (not per property).",
   },
   {
     id: "h-approval-time",
     category: "host",
     question: "How long does approval take?",
     answer:
-      "Most listings are reviewed within a few business days. If we need more details (coverage areas, screenshots, policies), we'll email you. Approved listings go live immediately after payment (for paid tiers).",
+      "All submissions are auto-approved if they fill all required fields as they're compliant. Featured listings are auto-published and reviewed after posting to ensure it's a safe listing - we may reach out to you after submission if we need to change a few things. Basic listings don't post instantly; we do a check-up review after submission and once validated we approve and publish (usually takes 2-4 weeks max).",
   },
   {
     id: "h-multiple-properties",
     category: "host",
     question: "Can I list multiple properties under one company account?",
     answer:
-      "Yes. Your company profile links to your booking engine or catalog. We emphasize your coverage (countries, regions, cities) and brand positioning so travelers can discover your full portfolio.",
+      "Yes. People are not listing individual properties but companies, so all their properties will be listed as they mention how many they manage and the listing count will be displayed. They will specify which cities and countries they cover. Your company profile links to your booking engine or catalog, emphasizing your coverage and brand positioning so travelers can discover your full portfolio.",
   },
   {
     id: "h-benefits",
@@ -232,7 +232,7 @@ export const faqs = [
     category: "host",
     question: "What extra visibility does a Featured listing include?",
     answer:
-      "Featured includes top-of-category placement, a 'Best Property Managers' showcase slot, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
+      "Featured includes top-of-category placement, a 'Our Featured Hosts' showcase slot, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
   },
   {
     id: "h-updates",
@@ -246,7 +246,7 @@ export const faqs = [
     category: "host",
     question: "Can I track traffic and bookings from BookDirectStays.com?",
     answer:
-      "Yes—add UTM parameters to your direct booking URLs and monitor performance in your analytics. If needed, we can include your UTM format in the listing.",
+      "Yes—add UTM parameters to your direct booking URLs and monitor performance in your analytics. If needed, we can include your UTM format in the listing. For advanced traffic analytics, this might be possible for a fee - contact bookdirectstays@gmail.com for more information.",
   },
   {
     id: "h-reviews",
@@ -260,7 +260,7 @@ export const faqs = [
     category: "host",
     question: "How should I present my GEO coverage for better discovery?",
     answer:
-      "List countries → regions → cities clearly (e.g., Spain: Barcelona, Madrid, Valencia; France: Paris, Lyon, Nice). Include niche areas travelers search for (Algarve, Amalfi Coast, Lake District) and align your site's pages with those areas.",
+      "Just fill in the fields on 'Add Your Direct Booking Site' form. List countries → regions → cities clearly (e.g., Spain: Barcelona, Madrid, Valencia; France: Paris, Lyon, Nice). Include niche areas travelers search for (Algarve, Amalfi Coast, Lake District) and align your site's pages with those areas.",
   },
   {
     id: "h-quality-bar",
@@ -288,14 +288,14 @@ export const faqs = [
     category: "host",
     question: "Why is pricing per company and not per property?",
     answer:
-      "We're a discovery engine for direct booking brands. Charging per company lets you showcase your full portfolio and grow with us at a predictable cost—especially attractive versus high OTA commission models.",
+      "The goal of our directory is not to make money but to empower property managers with increased visibility to generate more traffic to their direct booking sites and reduce dependence from OTAs. We only charge per company a small fee to cover the costs of maintaining the site running, so it's a fixed fee. This lets you showcase your full portfolio and grow with us at a predictable cost—especially attractive versus high OTA commission models.",
   },
   {
     id: "h-support",
     category: "host",
     question: "Who do I contact for partnership or support questions?",
     answer:
-      "Email bookdirectstays@gmail.com with your company name, website, and question. For partnerships or editorial collaborations, add 'Partnership' in the subject line.",
+      "Email bookdirectstays@gmail.com with your company name, website, and question. For partnerships or editorial collaborations, add 'Partnership' in the subject line. If interested about partnerships, go to the 'Partnerships' page for more info.",
   },
   {
     id: "h-guest-trust",
