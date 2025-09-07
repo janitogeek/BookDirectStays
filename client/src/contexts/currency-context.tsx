@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CurrencyCode, CURRENCY_OPTIONS } from '@/lib/currency-utils';
 import { getAllCurrencies } from '@/lib/world-currency-extractor';
+import { COMPREHENSIVE_CURRENCY_LIST } from '@/lib/comprehensive-currency-list';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
@@ -20,24 +21,15 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [currencyOptions, setCurrencyOptions] = useState<Array<{ code: string; symbol: string; name: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load currencies from Airtable
+  // Load currencies from comprehensive list
   useEffect(() => {
     const loadCurrencies = async () => {
       try {
         setIsLoading(true);
-        console.log('🔄 Loading currencies from Airtable...');
-        const airtableCurrencies = await getAllCurrencies();
-        console.log('✅ Loaded currencies from Airtable:', airtableCurrencies.length, airtableCurrencies);
+        console.log('🔄 Loading comprehensive currency list...');
         
-        // Combine Airtable currencies with CURRENCY_OPTIONS to ensure we have all options
-        const allCurrencies = [...airtableCurrencies];
-        
-        // Add CURRENCY_OPTIONS if they're not already present
-        CURRENCY_OPTIONS.forEach(option => {
-          if (!allCurrencies.some(currency => currency.code === option.code)) {
-            allCurrencies.push(option);
-          }
-        });
+        // Use the comprehensive currency list from user's Airtable options
+        const allCurrencies = [...COMPREHENSIVE_CURRENCY_LIST];
         
         // Sort by currency code
         allCurrencies.sort((a, b) => a.code.localeCompare(b.code));
@@ -54,7 +46,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
           setSelectedCurrency(allCurrencies[0].code);
         }
       } catch (error) {
-        console.error('❌ Failed to load currencies from Airtable:', error);
+        console.error('❌ Failed to load currencies:', error);
         // Fallback to CURRENCY_OPTIONS from commit 9bab664
         console.log('🔄 Using CURRENCY_OPTIONS fallback:', CURRENCY_OPTIONS.length);
         setCurrencyOptions(CURRENCY_OPTIONS);
