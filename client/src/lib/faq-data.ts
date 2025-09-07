@@ -34,13 +34,13 @@ export const faqs = [
     answer:
       "Yes. We only list companies with a public website and verifiable presence. You always book on the host's own site. Before paying, we recommend checking the company's contact details, registered business info, and review history (Google, OTA profiles, social). If anything feels off, contact the host or us at bookdirectstays@gmail.com.",
   },
-  {
-    id: "t-how-to-book",
-    category: "traveler",
-    question: "How do I book a property I found on BookDirectStays.com?",
-    answer:
-      "Click the listing to open the property manager's website. Then search dates, select the accommodation, and complete booking and payment directly with the host. All payments, contracts, and policies are managed by the host's site.",
-  },
+    {
+      id: "t-how-to-book",
+      category: "traveler",
+      question: "How do I book a property I found on BookDirectStays.com?",
+      answer:
+        "Click on the 'Book Direct' button on a company listing to open the property manager's website. Then search dates, select the accommodation, and complete booking and payment directly with the host. All payments, contracts, and policies are managed by the host's site.",
+    },
   {
     id: "t-cancel-refund",
     category: "traveler",

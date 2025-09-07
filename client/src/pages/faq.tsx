@@ -15,12 +15,12 @@ const parseTextWithLinks = (text: string) => {
   const linkMappings = [
     { text: 'Add Your Direct Listing', href: '/submit' },
     { text: 'Add Your Direct Booking Site', href: '/submit' },
-    { text: 'Our Featured Hosts', href: '/featured-hosts' },
+    { text: 'Our Featured Hosts', href: '/#our-featured-hosts' },
     { text: 'Partnerships', href: '/partnerships' },
-    { text: 'home page', href: '/' },
-    { text: 'testimonials', href: '/testimonials' },
-    { text: 'home page (Real Listings, Real Savings section)', href: '/' },
-    { text: 'testimonials from travelers who\'ve saved money', href: '/testimonials' }
+    { text: 'home page', href: '/#real-listings' },
+    { text: 'testimonials', href: '/testimonials#traveler-testimonials' },
+    { text: 'home page (Real Listings, Real Savings section)', href: '/#real-listings' },
+    { text: 'testimonials from travelers who\'ve saved money', href: '/testimonials#traveler-testimonials' }
   ];
 
   let result = text;

@@ -177,6 +177,7 @@ export default function Testimonials() {
           </TabsContent>
           
           <TabsContent value="guests">
+            <div id="traveler-testimonials">
             {/* Featured Testimonial - Full Width */}
             <div className="mb-8">
               <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">✨ Featured Savings Story</h3>
@@ -209,6 +210,7 @@ export default function Testimonials() {
                   <TestimonialCard key={testimonial.id} testimonial={testimonial} />
                 ))
               )}
+            </div>
             </div>
           </TabsContent>
           
