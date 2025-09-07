@@ -11,7 +11,7 @@ import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-utils";
+import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -36,7 +36,7 @@ export default function City() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Currency context
-  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
 
   // Sort function: Featured first, then alphabetical by brand name
   const sortSubmissions = (submissionsToSort: any[]) => {
@@ -132,11 +132,14 @@ export default function City() {
 
   // Auto-set currency based on country
   useEffect(() => {
-    if (countryName) {
+    if (countryName && currencyOptions.length > 0) {
       const countryCurrency = getCurrencyForCountry(countryName);
-      setSelectedCurrency(countryCurrency);
+      // Only set if the currency exists in our options
+      if (currencyOptions.some(option => option.code === countryCurrency)) {
+        setSelectedCurrency(countryCurrency);
+      }
     }
-  }, [countryName, setSelectedCurrency]);
+  }, [countryName, currencyOptions, setSelectedCurrency]);
 
   // Fetch submissions for this country (instant if cached)
   const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({

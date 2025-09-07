@@ -15,7 +15,7 @@ import { Search, X, ArrowDown } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-utils";
+import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
@@ -40,7 +40,7 @@ export default function Country() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Currency context
-  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
   
   // const queryClient = useQueryClient();
 
@@ -191,11 +191,14 @@ export default function Country() {
 
   // Auto-set currency based on country
   useEffect(() => {
-    if (countryName) {
+    if (countryName && currencyOptions.length > 0) {
       const countryCurrency = getCurrencyForCountry(countryName);
-      setSelectedCurrency(countryCurrency);
+      // Only set if the currency exists in our options
+      if (currencyOptions.some(option => option.code === countryCurrency)) {
+        setSelectedCurrency(countryCurrency);
+      }
     }
-  }, [countryName, setSelectedCurrency]);
+  }, [countryName, currencyOptions, setSelectedCurrency]);
   
   // Don't fetch cities until we have the country name
   const shouldFetchCities = Boolean(countryName) && !isCountryNameLoading;

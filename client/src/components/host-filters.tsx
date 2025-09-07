@@ -7,8 +7,9 @@ import BudgetRangeSlider from "@/components/budget-range-slider";
 import { Separator } from "@/components/ui/separator";
 import { SearchableMultiSelect } from "@/components/searchable-multi-select";
 import { Filter, X, Info, Search } from "lucide-react";
-import CurrencySelector from "@/components/currency-selector";
+import { CurrencyPopupSelector } from "@/components/currency-popup-selector";
 import { CurrencyCode } from "@/lib/currency-utils";
+import { useCurrency } from "@/contexts/currency-context";
 
 // Filter options based on submission form data
 const PROPERTY_TYPES = [
@@ -73,6 +74,7 @@ export interface FilterState {
 }
 
 export default function HostFilters({ onFiltersChange, selectedCurrency, onCurrencyChange }: HostFiltersProps) {
+  const { currencyOptions, isLoading: currencyLoading } = useCurrency();
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     propertyTypes: [],
@@ -189,9 +191,15 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
             {selectedCurrency && onCurrencyChange && (
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">Show prices in:</span>
-                <CurrencySelector 
+                <CurrencyPopupSelector
                   selectedCurrency={selectedCurrency}
                   onCurrencyChange={onCurrencyChange}
+                  currencies={currencyOptions.map(option => ({
+                    code: option.code,
+                    symbol: option.symbol,
+                    name: option.name
+                  }))}
+                  isLoading={currencyLoading}
                 />
               </div>
             )}
