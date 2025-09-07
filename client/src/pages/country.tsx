@@ -544,7 +544,7 @@ export default function Country() {
       <section 
         className="py-12 bg-cover bg-center bg-no-repeat relative"
         style={{
-          backgroundImage: 'url(/country-page-background.jpg)'
+          backgroundImage: 'url(/country-page-background.png)'
         }}
       >
         {/* Overlay for better text readability */}
