@@ -10,6 +10,28 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 
+// Function to parse text and create clickable links
+const parseTextWithLinks = (text: string) => {
+  const linkMappings = [
+    { text: 'Add Your Direct Listing', href: '/submit' },
+    { text: 'Add Your Direct Booking Site', href: '/submit' },
+    { text: 'Our Featured Hosts', href: '/featured-hosts' },
+    { text: 'Partnerships', href: '/partnerships' },
+    { text: 'home page', href: '/' },
+    { text: 'testimonials', href: '/testimonials' },
+    { text: 'home page (Real Listings, Real Savings section)', href: '/' },
+    { text: 'testimonials from travelers who\'ve saved money', href: '/testimonials' }
+  ];
+
+  let result = text;
+  linkMappings.forEach(({ text: linkText, href }) => {
+    const regex = new RegExp(`\\b${linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+    result = result.replace(regex, `<a href="${href}" class="text-blue-600 hover:underline font-medium">${linkText}</a>`);
+  });
+  
+  return result;
+};
+
 export default function FAQ() {
   // For now, just use static FAQs directly to ensure they show up
   const faqData = staticFaqs;
@@ -54,25 +76,10 @@ export default function FAQ() {
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="text-gray-700">
-                        {faq.answer.split('home page (Real Listings, Real Savings section)').map((part, index) => {
-                          if (index === 0) return part;
-                          return (
-                            <span key={index}>
-                              <Link href="/" className="text-blue-600 hover:underline font-medium">home page (Real Listings, Real Savings section)</Link>
-                              {part.split('testimonials from travelers who\'ve saved money').map((subPart, subIndex) => {
-                                if (subIndex === 0) return subPart;
-                                return (
-                                  <span key={subIndex}>
-                                    <Link href="/testimonials" className="text-blue-600 hover:underline font-medium">testimonials from travelers who've saved money</Link>
-                                    {subPart}
-                                  </span>
-                                );
-                              })}
-                            </span>
-                          );
-                        })}
-                      </div>
+                      <div 
+                        className="text-gray-700"
+                        dangerouslySetInnerHTML={{ __html: parseTextWithLinks(faq.answer) }}
+                      />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -97,57 +104,10 @@ export default function FAQ() {
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="text-gray-700">
-                        {faq.answer.split('Add Your Direct Listing').map((part, index) => {
-                          if (index === 0) return part;
-                          return (
-                            <span key={index}>
-                              <Link href="/submit" className="text-blue-600 hover:underline font-medium">Add Your Direct Listing</Link>
-                              {part.split('Add Your Direct Booking Site').map((subPart, subIndex) => {
-                                if (subIndex === 0) return subPart;
-                                return (
-                                  <span key={subIndex}>
-                                    <Link href="/submit" className="text-blue-600 hover:underline font-medium">Add Your Direct Booking Site</Link>
-                                    {subPart.split('Our Featured Hosts').map((thirdPart, thirdIndex) => {
-                                      if (thirdIndex === 0) return thirdPart;
-                                      return (
-                                        <span key={thirdIndex}>
-                                          <Link href="/featured-hosts" className="text-blue-600 hover:underline font-medium">Our Featured Hosts</Link>
-                                          {thirdPart.split('Partnerships').map((fourthPart, fourthIndex) => {
-                                            if (fourthIndex === 0) return fourthPart;
-                                            return (
-                                              <span key={fourthIndex}>
-                                                <Link href="/partnerships" className="text-blue-600 hover:underline font-medium">Partnerships</Link>
-                                                {fourthPart.split('home page').map((fifthPart, fifthIndex) => {
-                                                  if (fifthIndex === 0) return fifthPart;
-                                                  return (
-                                                    <span key={fifthIndex}>
-                                                      <Link href="/" className="text-blue-600 hover:underline font-medium">home page</Link>
-                                                      {fifthPart.split('testimonials').map((sixthPart, sixthIndex) => {
-                                                        if (sixthIndex === 0) return sixthPart;
-                                                        return (
-                                                          <span key={sixthIndex}>
-                                                            <Link href="/testimonials" className="text-blue-600 hover:underline font-medium">testimonials</Link>
-                                                            {sixthPart}
-                                                          </span>
-                                                        );
-                                                      })}
-                                                    </span>
-                                                  );
-                                                })}
-                                              </span>
-                                            );
-                                          })}
-                                        </span>
-                                      );
-                                    })}
-                                  </span>
-                                );
-                              })}
-                            </span>
-                          );
-                        })}
-                      </div>
+                      <div 
+                        className="text-gray-700"
+                        dangerouslySetInnerHTML={{ __html: parseTextWithLinks(faq.answer) }}
+                      />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
