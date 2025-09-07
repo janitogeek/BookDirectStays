@@ -8,6 +8,7 @@
 import { Submission } from './airtable';
 import { getAllSubmissionsWithSlugs } from './slug-email-mapping';
 import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
+import { extractAllCurrencies, getCurrencyForCountry, CurrencyOption } from './currency-list-extractor';
 
 // Cache keys
 const CACHE_KEYS = {
@@ -38,6 +39,7 @@ interface CachedCountryData {
 interface CachedData {
   submissions: Array<Submission & { uniqueSlug: string }>;
   countries: CachedCountryData[];
+  currencies: CurrencyOption[];
   lastUpdated: number;
   version: string;
 }
@@ -232,17 +234,22 @@ class DataPreloader {
 
     try {
       // Step 1: Process submissions with unique slugs
-      console.log('📊 Step 1/3: Processing submissions with unique slugs...');
+      console.log('📊 Step 1/4: Processing submissions with unique slugs...');
       const submissions = await this.processRawSubmissions(rawSubmissions);
       console.log(`✅ Processed ${submissions.length} submissions with unique slugs`);
 
-      // Step 2: Extract countries from Geonames records
-      console.log('🌍 Step 2/3: Extracting countries from Geonames records...');
+      // Step 2: Extract all currencies from currency column
+      console.log('💰 Step 2/4: Extracting all currencies from currency column...');
+      const currencies = extractAllCurrencies(submissions);
+      console.log(`✅ Found ${currencies.length} unique currencies from all submissions`);
+
+      // Step 3: Extract countries from Geonames records
+      console.log('🌍 Step 3/4: Extracting countries from Geonames records...');
       const countryNames = this.getCountriesFromGeonamesRecords(submissions);
       console.log(`✅ Found ${countryNames.length} countries from Geonames records`);
 
-      // Step 3: Process each country and its cities from Geonames records
-      console.log('🏙️ Step 3/3: Processing cities for each country from Geonames records...');
+      // Step 4: Process each country and its cities from Geonames records
+      console.log('🏙️ Step 4/4: Processing cities for each country from Geonames records...');
       const countriesData: CachedCountryData[] = [];
 
       for (const countryName of countryNames) {
@@ -279,6 +286,7 @@ class DataPreloader {
       const data: CachedData = {
         submissions,
         countries: countriesData,
+        currencies,
         lastUpdated: Date.now(),
         version: CACHE_VERSION
       };
@@ -287,6 +295,7 @@ class DataPreloader {
       console.log(`🎉 Instant cache processing completed in ${processingTime}ms`, {
         submissions: submissions.length,
         countries: countriesData.length,
+        currencies: currencies.length,
         totalCities: countriesData.reduce((sum, country) => sum + country.cities.length, 0)
       });
 
@@ -320,17 +329,22 @@ class DataPreloader {
 
     try {
       // Step 1: Get all submissions with unique slugs
-      console.log('📊 Step 1/3: Loading submissions with unique slugs...');
+      console.log('📊 Step 1/4: Loading submissions with unique slugs...');
       const submissions = await getAllSubmissionsWithSlugs();
       console.log(`✅ Loaded ${submissions.length} submissions with unique slugs`);
 
-      // Step 2: Extract countries from Geonames records
-      console.log('🌍 Step 2/3: Extracting countries from Geonames records...');
+      // Step 2: Extract all currencies from currency column
+      console.log('💰 Step 2/4: Extracting all currencies from currency column...');
+      const currencies = extractAllCurrencies(submissions);
+      console.log(`✅ Found ${currencies.length} unique currencies from all submissions`);
+
+      // Step 3: Extract countries from Geonames records
+      console.log('🌍 Step 3/4: Extracting countries from Geonames records...');
       const countryNames = this.getCountriesFromGeonamesRecords(submissions);
       console.log(`✅ Found ${countryNames.length} countries from Geonames records`);
 
-      // Step 3: Process each country and its cities from Geonames records
-      console.log('🏙️ Step 3/3: Processing cities for each country from Geonames records...');
+      // Step 4: Process each country and its cities from Geonames records
+      console.log('🏙️ Step 4/4: Processing cities for each country from Geonames records...');
       const countriesData: CachedCountryData[] = [];
 
       for (const countryName of countryNames) {
@@ -367,6 +381,7 @@ class DataPreloader {
       const data: CachedData = {
         submissions,
         countries: countriesData,
+        currencies,
         lastUpdated: Date.now(),
         version: CACHE_VERSION
       };
@@ -375,6 +390,7 @@ class DataPreloader {
       console.log(`🎉 Background processing completed in ${processingTime}ms`, {
         submissions: submissions.length,
         countries: countriesData.length,
+        currencies: currencies.length,
         totalCities: countriesData.reduce((sum, country) => sum + country.cities.length, 0)
       });
 
@@ -490,6 +506,25 @@ class DataPreloader {
     // If no data and not loading, trigger preload
     await this.preloadData();
     return this.cachedData?.countries || [];
+  }
+
+  /**
+   * Get cached currencies data (instant)
+   */
+  async getCurrencies(): Promise<CurrencyOption[]> {
+    if (this.cachedData) {
+      return this.cachedData.currencies;
+    }
+
+    // If not cached yet, wait for preload to complete
+    if (this.loadingPromise) {
+      await this.loadingPromise;
+      return this.cachedData?.currencies || [];
+    }
+
+    // If no data and not loading, trigger preload
+    await this.preloadData();
+    return this.cachedData?.currencies || [];
   }
 
   /**

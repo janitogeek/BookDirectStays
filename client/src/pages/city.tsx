@@ -11,7 +11,8 @@ import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-utils";
+import { getCurrencyForCountry } from "@/lib/currency-list-extractor";
+import { CompactCurrencySelector } from "@/components/compact-currency-selector";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -36,7 +37,7 @@ export default function City() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Currency context
-  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
 
   // Sort function: Featured first, then alphabetical by brand name
   const sortSubmissions = (submissionsToSort: any[]) => {
@@ -132,11 +133,14 @@ export default function City() {
 
   // Auto-set currency based on country
   useEffect(() => {
-    if (countryName) {
+    if (countryName && currencyOptions.length > 0) {
       const countryCurrency = getCurrencyForCountry(countryName);
-      setSelectedCurrency(countryCurrency);
+      // Only set if the currency exists in our options
+      if (currencyOptions.some(option => option.code === countryCurrency)) {
+        setSelectedCurrency(countryCurrency);
+      }
     }
-  }, [countryName, setSelectedCurrency]);
+  }, [countryName, currencyOptions, setSelectedCurrency]);
 
   // Fetch submissions for this country (instant if cached)
   const { data: allSubmissions = [], isLoading: isSubmissionsLoading } = useQuery({
@@ -425,13 +429,28 @@ export default function City() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             
-            {/* Host Filters with Currency Selector */}
+            {/* Currency Selector */}
             {citySubmissions.length > 0 && (
-              <HostFilters 
-                onFiltersChange={setFilters}
-                selectedCurrency={selectedCurrency}
-                onCurrencyChange={setSelectedCurrency}
-              />
+              <div className="mb-6">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-medium text-gray-700">
+                    Show prices in:
+                  </label>
+                  <div className="w-64">
+                    <CompactCurrencySelector
+                      selectedCurrency={selectedCurrency}
+                      onCurrencyChange={setSelectedCurrency}
+                      currencies={currencyOptions.map(option => ({
+                        code: option.code,
+                        symbol: option.symbol,
+                        name: option.name,
+                        countries: [] // We don't need countries for the selector
+                      }))}
+                      isLoading={currencyLoading}
+                    />
+                  </div>
+                </div>
+              </div>
             )}
 
             {/* Featured Only Toggle */}

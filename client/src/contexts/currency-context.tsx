@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CurrencyCode, CURRENCY_OPTIONS } from '@/lib/currency-utils';
+import { CurrencyCode } from '@/lib/currency-utils';
+import { dataPreloader } from '@/lib/data-preloader';
+import { CurrencyOption } from '@/lib/currency-list-extractor';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
   setSelectedCurrency: (currency: CurrencyCode) => void;
   currencyOptions: Array<{ code: string; symbol: string; name: string }>;
+  isLoading: boolean;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
@@ -15,13 +18,40 @@ interface CurrencyProviderProps {
 
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('EUR');
+  const [currencyOptions, setCurrencyOptions] = useState<Array<{ code: string; symbol: string; name: string }>>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load currency from localStorage on mount
+  // Load currencies from data preloader
   useEffect(() => {
-    const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
-    if (savedCurrency && CURRENCY_OPTIONS.some(option => option.code === savedCurrency)) {
-      setSelectedCurrency(savedCurrency);
-    }
+    const loadCurrencies = async () => {
+      try {
+        setIsLoading(true);
+        const currencies = await dataPreloader.getCurrencies();
+        
+        // Convert CurrencyOption to the format expected by the context
+        const options = currencies.map(currency => ({
+          code: currency.code,
+          symbol: currency.symbol,
+          name: currency.name
+        }));
+        
+        setCurrencyOptions(options);
+        
+        // Load saved currency from localStorage
+        const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
+        if (savedCurrency && options.some(option => option.code === savedCurrency)) {
+          setSelectedCurrency(savedCurrency);
+        }
+      } catch (error) {
+        console.error('Failed to load currencies:', error);
+        // Fallback to empty array
+        setCurrencyOptions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCurrencies();
   }, []);
 
   // Save currency to localStorage when it changes
@@ -33,7 +63,8 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     <CurrencyContext.Provider value={{ 
       selectedCurrency, 
       setSelectedCurrency, 
-      currencyOptions: CURRENCY_OPTIONS
+      currencyOptions,
+      isLoading
     }}>
       {children}
     </CurrencyContext.Provider>
