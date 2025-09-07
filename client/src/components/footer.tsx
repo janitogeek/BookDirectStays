@@ -82,8 +82,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/find-host" className="text-gray-300 hover:text-white">
+                  Find a Host
+                </Link>
+              </li>
+              <li>
                 <Link href="/submit" className="text-gray-300 hover:text-white">
                   Add Your Direct Booking Site
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-300 hover:text-white">
+                  About
                 </Link>
               </li>
               <li>
