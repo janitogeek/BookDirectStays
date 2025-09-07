@@ -18,7 +18,7 @@ export const faqs = [
     category: "traveler",
     question: "How much can I save by booking direct instead of Airbnb or Booking.com?",
     answer:
-      "Travelers typically save 10–20% versus big OTAs because many direct sites remove guest service fees and offer lower nightly rates or perks (flexible check-in, welcome gifts, free upgrades). Always compare the host's official price with OTA pricing before you confirm.",
+      "Travelers typically save 10–30% versus big OTAs because many direct sites remove guest service fees and offer lower nightly rates or perks (flexible check-in, welcome gifts, free upgrades). You can see real examples of savings on our home page (Real Listings, Real Savings section) and read testimonials from travelers who've saved money. Always compare the host's official price with OTA pricing before you confirm.",
   },
   {
     id: "t-why-direct",

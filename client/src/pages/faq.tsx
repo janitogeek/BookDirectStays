@@ -54,7 +54,25 @@ export default function FAQ() {
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent>
-                      <p className="text-gray-700">{faq.answer}</p>
+                      <div className="text-gray-700">
+                        {faq.answer.split('home page (Real Listings, Real Savings section)').map((part, index) => {
+                          if (index === 0) return part;
+                          return (
+                            <span key={index}>
+                              <Link href="/" className="text-blue-600 hover:underline font-medium">home page (Real Listings, Real Savings section)</Link>
+                              {part.split('testimonials from travelers who\'ve saved money').map((subPart, subIndex) => {
+                                if (subIndex === 0) return subPart;
+                                return (
+                                  <span key={subIndex}>
+                                    <Link href="/testimonials" className="text-blue-600 hover:underline font-medium">testimonials from travelers who've saved money</Link>
+                                    {subPart}
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          );
+                        })}
+                      </div>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
