@@ -8,7 +8,7 @@
 import { Submission } from './airtable';
 import { getAllSubmissionsWithSlugs } from './slug-email-mapping';
 import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
-import { extractCurrenciesFromSubmissions, getCurrencyForCountry, CurrencyInfo } from './currency-extractor';
+import { extractAllCurrencies, getCurrencyForCountry, CurrencyOption } from './currency-list-extractor';
 
 // Cache keys
 const CACHE_KEYS = {
@@ -39,7 +39,7 @@ interface CachedCountryData {
 interface CachedData {
   submissions: Array<Submission & { uniqueSlug: string }>;
   countries: CachedCountryData[];
-  currencies: CurrencyInfo[];
+  currencies: CurrencyOption[];
   lastUpdated: number;
   version: string;
 }
@@ -238,10 +238,10 @@ class DataPreloader {
       const submissions = await this.processRawSubmissions(rawSubmissions);
       console.log(`✅ Processed ${submissions.length} submissions with unique slugs`);
 
-      // Step 2: Extract currencies from published submissions
-      console.log('💰 Step 2/4: Extracting currencies from published submissions...');
-      const currencies = extractCurrenciesFromSubmissions(submissions);
-      console.log(`✅ Found ${currencies.length} unique currencies from published submissions`);
+      // Step 2: Extract all currencies from currency column
+      console.log('💰 Step 2/4: Extracting all currencies from currency column...');
+      const currencies = extractAllCurrencies(submissions);
+      console.log(`✅ Found ${currencies.length} unique currencies from all submissions`);
 
       // Step 3: Extract countries from Geonames records
       console.log('🌍 Step 3/4: Extracting countries from Geonames records...');
@@ -333,10 +333,10 @@ class DataPreloader {
       const submissions = await getAllSubmissionsWithSlugs();
       console.log(`✅ Loaded ${submissions.length} submissions with unique slugs`);
 
-      // Step 2: Extract currencies from published submissions
-      console.log('💰 Step 2/4: Extracting currencies from published submissions...');
-      const currencies = extractCurrenciesFromSubmissions(submissions);
-      console.log(`✅ Found ${currencies.length} unique currencies from published submissions`);
+      // Step 2: Extract all currencies from currency column
+      console.log('💰 Step 2/4: Extracting all currencies from currency column...');
+      const currencies = extractAllCurrencies(submissions);
+      console.log(`✅ Found ${currencies.length} unique currencies from all submissions`);
 
       // Step 3: Extract countries from Geonames records
       console.log('🌍 Step 3/4: Extracting countries from Geonames records...');
@@ -511,7 +511,7 @@ class DataPreloader {
   /**
    * Get cached currencies data (instant)
    */
-  async getCurrencies(): Promise<CurrencyInfo[]> {
+  async getCurrencies(): Promise<CurrencyOption[]> {
     if (this.cachedData) {
       return this.cachedData.currencies;
     }

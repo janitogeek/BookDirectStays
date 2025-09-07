@@ -15,7 +15,8 @@ import { Search, X, ArrowDown } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-extractor";
+import { getCurrencyForCountry } from "@/lib/currency-list-extractor";
+import { CompactCurrencySelector } from "@/components/compact-currency-selector";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
@@ -40,7 +41,7 @@ export default function Country() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Currency context
-  const { selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
   
   // const queryClient = useQueryClient();
 
@@ -191,11 +192,14 @@ export default function Country() {
 
   // Auto-set currency based on country
   useEffect(() => {
-    if (countryName) {
+    if (countryName && currencyOptions.length > 0) {
       const countryCurrency = getCurrencyForCountry(countryName);
-      setSelectedCurrency(countryCurrency);
+      // Only set if the currency exists in our options
+      if (currencyOptions.some(option => option.code === countryCurrency)) {
+        setSelectedCurrency(countryCurrency);
+      }
     }
-  }, [countryName, setSelectedCurrency]);
+  }, [countryName, currencyOptions, setSelectedCurrency]);
   
   // Don't fetch cities until we have the country name
   const shouldFetchCities = Boolean(countryName) && !isCountryNameLoading;
@@ -582,12 +586,27 @@ export default function Country() {
               </Button>
           </div>
           
-          {/* Host Filters with Currency Selector */}
-          <HostFilters 
-            onFiltersChange={setFilters}
-            selectedCurrency={selectedCurrency}
-            onCurrencyChange={setSelectedCurrency}
-          />
+          {/* Currency Selector */}
+          <div className="mb-6">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">
+                Show prices in:
+              </label>
+              <div className="w-64">
+                <CompactCurrencySelector
+                  selectedCurrency={selectedCurrency}
+                  onCurrencyChange={setSelectedCurrency}
+                  currencies={currencyOptions.map(option => ({
+                    code: option.code,
+                    symbol: option.symbol,
+                    name: option.name,
+                    countries: [] // We don't need countries for the selector
+                  }))}
+                  isLoading={currencyLoading}
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Featured Only Toggle */}
           <div className="mb-6">

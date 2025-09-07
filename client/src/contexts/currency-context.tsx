@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CurrencyCode } from '@/lib/currency-utils';
 import { dataPreloader } from '@/lib/data-preloader';
-import { CurrencyInfo } from '@/lib/currency-extractor';
+import { CurrencyOption } from '@/lib/currency-list-extractor';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
@@ -28,7 +28,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
         setIsLoading(true);
         const currencies = await dataPreloader.getCurrencies();
         
-        // Convert CurrencyInfo to the format expected by the context
+        // Convert CurrencyOption to the format expected by the context
         const options = currencies.map(currency => ({
           code: currency.code,
           symbol: currency.symbol,
