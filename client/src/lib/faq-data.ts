@@ -232,7 +232,7 @@ export const faqs = [
     category: "host",
     question: "What extra visibility does a Featured listing include?",
     answer:
-      "Featured includes top-of-category placement, a 'Featured Host' badge, a 'Our Featured Hosts' showcase slot, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
+      "Featured includes top-of-category placement, a 'Featured Host' badge, a 'Our Featured Hosts' showcase slot in the home page, social mentions, optional case studies, and eligibility for editorial guides (e.g., 'Top Direct Booking Sites in Spain').",
   },
   {
     id: "h-updates",

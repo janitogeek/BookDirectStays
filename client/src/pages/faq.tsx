@@ -17,7 +17,7 @@ const parseTextWithLinks = (text: string) => {
     { text: 'Add Your Direct Booking Site', href: '/submit' },
     { text: 'Our Featured Hosts', href: '/#our-featured-hosts' },
     { text: 'Partnerships', href: '/partnerships' },
-    { text: 'home page', href: '/#real-listings' },
+    { text: 'home page', href: '/' },
     { text: 'testimonials', href: '/testimonials#traveler-testimonials' },
     { text: 'home page (Real Listings, Real Savings section)', href: '/#real-listings' },
     { text: 'testimonials from travelers who\'ve saved money', href: '/testimonials#traveler-testimonials' },
@@ -26,10 +26,22 @@ const parseTextWithLinks = (text: string) => {
   ];
 
   let result = text;
-  linkMappings.forEach(({ text: linkText, href }) => {
-    const regex = new RegExp(`\\b${linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
-    result = result.replace(regex, `<a href="${href}" class="text-blue-600 hover:underline font-medium">${linkText}</a>`);
-  });
+  
+  // Special handling for featured visibility answer - don't link "Our Featured Hosts" there
+  if (text.includes("Featured includes top-of-category placement")) {
+    // Remove "Our Featured Hosts" from link mappings for this specific answer
+    const filteredMappings = linkMappings.filter(mapping => mapping.text !== 'Our Featured Hosts');
+    filteredMappings.forEach(({ text: linkText, href }) => {
+      const regex = new RegExp(`\\b${linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+      result = result.replace(regex, `<a href="${href}" class="text-blue-600 hover:underline font-medium">${linkText}</a>`);
+    });
+  } else {
+    // Normal processing for all other answers
+    linkMappings.forEach(({ text: linkText, href }) => {
+      const regex = new RegExp(`\\b${linkText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+      result = result.replace(regex, `<a href="${href}" class="text-blue-600 hover:underline font-medium">${linkText}</a>`);
+    });
+  }
   
   return result;
 };
