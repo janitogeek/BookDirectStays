@@ -11,8 +11,7 @@ import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-list-extractor";
-import { CompactCurrencySelector } from "@/components/compact-currency-selector";
+import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -429,28 +428,13 @@ export default function City() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             
-            {/* Currency Selector */}
+            {/* Host Filters with Currency Selector */}
             {citySubmissions.length > 0 && (
-              <div className="mb-6">
-                <div className="flex items-center gap-4">
-                  <label className="text-sm font-medium text-gray-700">
-                    Show prices in:
-                  </label>
-                  <div className="w-64">
-                    <CompactCurrencySelector
-                      selectedCurrency={selectedCurrency}
-                      onCurrencyChange={setSelectedCurrency}
-                      currencies={currencyOptions.map(option => ({
-                        code: option.code,
-                        symbol: option.symbol,
-                        name: option.name,
-                        countries: [] // We don't need countries for the selector
-                      }))}
-                      isLoading={currencyLoading}
-                    />
-                  </div>
-                </div>
-              </div>
+              <HostFilters 
+                onFiltersChange={setFilters}
+                selectedCurrency={selectedCurrency}
+                onCurrencyChange={setSelectedCurrency}
+              />
             )}
 
             {/* Featured Only Toggle */}

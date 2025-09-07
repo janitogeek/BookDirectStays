@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CurrencyCode } from '@/lib/currency-utils';
-import { extractAllCurrenciesFromAirtable } from '@/lib/airtable-currency-extractor';
+import { getAllCurrencies } from '@/lib/world-currency-extractor';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
@@ -25,7 +25,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     const loadCurrencies = async () => {
       try {
         setIsLoading(true);
-        const currencies = await extractAllCurrenciesFromAirtable();
+        const currencies = await getAllCurrencies();
         setCurrencyOptions(currencies);
         
         // Load saved currency from localStorage

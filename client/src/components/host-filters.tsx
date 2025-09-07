@@ -7,7 +7,7 @@ import BudgetRangeSlider from "@/components/budget-range-slider";
 import { Separator } from "@/components/ui/separator";
 import { SearchableMultiSelect } from "@/components/searchable-multi-select";
 import { Filter, X, Info, Search } from "lucide-react";
-import { CompactCurrencySelector } from "@/components/compact-currency-selector";
+import { CurrencyPopupSelector } from "@/components/currency-popup-selector";
 import { CurrencyCode } from "@/lib/currency-utils";
 import { useCurrency } from "@/contexts/currency-context";
 
@@ -191,18 +191,16 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
             {selectedCurrency && onCurrencyChange && (
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">Show prices in:</span>
-                <div className="w-64">
-                  <CompactCurrencySelector
-                    selectedCurrency={selectedCurrency}
-                    onCurrencyChange={onCurrencyChange}
-                    currencies={currencyOptions.map(option => ({
-                      code: option.code,
-                      symbol: option.symbol,
-                      name: option.name
-                    }))}
-                    isLoading={currencyLoading}
-                  />
-                </div>
+                <CurrencyPopupSelector
+                  selectedCurrency={selectedCurrency}
+                  onCurrencyChange={onCurrencyChange}
+                  currencies={currencyOptions.map(option => ({
+                    code: option.code,
+                    symbol: option.symbol,
+                    name: option.name
+                  }))}
+                  isLoading={currencyLoading}
+                />
               </div>
             )}
             {totalActiveFilters > 0 && (
