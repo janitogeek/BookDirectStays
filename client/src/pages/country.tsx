@@ -15,7 +15,7 @@ import { Search, X, ArrowDown } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
-import { getCurrencyForCountry } from "@/lib/currency-utils";
+import { getCurrencyForCountry } from "@/lib/currency-extractor";
 
 export default function Country() {
   const [, params] = useRoute('/country/:country');
