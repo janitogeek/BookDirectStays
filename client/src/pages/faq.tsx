@@ -62,10 +62,12 @@ export default function FAQ() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Frequently Asked Questions</h1>
-        <p className="text-gray-600 mb-8">
-          Find answers to common questions about BookDirectStays.com
-        </p>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">Frequently Asked Questions</h1>
+          <p className="text-gray-600">
+            Find answers to common questions about BookDirectStays.com
+          </p>
+        </div>
 
         <Tabs defaultValue="traveler" className="mb-12">
           <TabsList className="w-full mb-6 grid grid-cols-2">
