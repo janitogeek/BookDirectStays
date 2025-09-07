@@ -30,6 +30,12 @@ export function CurrencyPopupSelector({
 
   // Filter currencies based on search term
   useEffect(() => {
+    console.log('🔍 CurrencyPopupSelector - Filtering currencies:', { 
+      searchTerm, 
+      currenciesCount: currencies.length, 
+      currencies: currencies.slice(0, 3) // Show first 3 for debugging
+    });
+    
     if (!searchTerm.trim()) {
       setFilteredCurrencies(currencies);
     } else {
@@ -104,46 +110,46 @@ export function CurrencyPopupSelector({
       {isOpen && (
         <div 
           ref={popupRef}
-          className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden"
+          className="absolute bottom-full left-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 w-96 max-h-80 overflow-hidden"
         >
             {/* Search Input */}
-            <div className="p-3 border-b border-gray-100">
+            <div className="p-4 border-b border-gray-100">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Show prices in"
+                  placeholder="Search currencies..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-3 py-2 h-9 text-sm border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="pl-10 pr-3 py-3 h-11 text-sm border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Currency List */}
-            <div className="max-h-60 overflow-y-auto">
+            <div className="max-h-64 overflow-y-auto">
               {filteredCurrencies.length === 0 ? (
-                <div className="px-3 py-4 text-center text-gray-500 text-sm">
-                  No currencies found
+                <div className="px-4 py-8 text-center text-gray-500 text-sm">
+                  {isLoading ? 'Loading currencies...' : `No currencies found (${currencies.length} total)`}
                 </div>
               ) : (
-                <div className="py-1">
+                <div className="py-2">
                   {filteredCurrencies.map((currency) => (
                     <button
                       key={currency.code}
                       onClick={() => handleCurrencySelect(currency)}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none flex items-center justify-between group"
+                      className="w-full px-4 py-3 text-left hover:bg-blue-50 focus:bg-blue-50 focus:outline-none flex items-center justify-between group transition-colors"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="font-medium text-gray-900">{currency.symbol}</span>
+                      <div className="flex items-center gap-4">
+                        <span className="text-xl font-bold text-gray-900">{currency.symbol}</span>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium text-gray-900">{currency.code}</span>
-                          <span className="text-xs text-gray-500">{currency.name}</span>
+                          <span className="text-base font-semibold text-gray-900">{currency.code}</span>
+                          <span className="text-sm text-gray-600">{currency.name}</span>
                         </div>
                       </div>
                       {selectedCurrency === currency.code && (
-                        <Check className="h-4 w-4 text-blue-600" />
+                        <Check className="h-5 w-5 text-blue-600" />
                       )}
                     </button>
                   ))}
@@ -152,10 +158,10 @@ export function CurrencyPopupSelector({
             </div>
 
             {/* Footer */}
-            <div className="p-3 border-t border-gray-100 bg-gray-50">
+            <div className="p-4 border-t border-gray-100 bg-gray-50">
               <Button
                 onClick={() => setIsOpen(false)}
-                className="w-full h-9 text-sm font-medium"
+                className="w-full h-10 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Done
               </Button>
