@@ -72,8 +72,16 @@ export default function FindHost() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section 
+        className="text-white py-16 bg-cover bg-center bg-no-repeat relative"
+        style={{
+          backgroundImage: 'url(/country-page-background.png)'
+        }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl font-bold mb-6">
               Find a Host by Country
