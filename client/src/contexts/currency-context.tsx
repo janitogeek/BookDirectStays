@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CurrencyCode } from '@/lib/currency-utils';
-import { dataPreloader } from '@/lib/data-preloader';
-import { CurrencyOption } from '@/lib/currency-list-extractor';
+import { extractAllCurrenciesFromAirtable } from '@/lib/airtable-currency-extractor';
 
 interface CurrencyContextType {
   selectedCurrency: CurrencyCode;
@@ -21,31 +20,31 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [currencyOptions, setCurrencyOptions] = useState<Array<{ code: string; symbol: string; name: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load currencies from data preloader
+  // Load currencies from Airtable
   useEffect(() => {
     const loadCurrencies = async () => {
       try {
         setIsLoading(true);
-        const currencies = await dataPreloader.getCurrencies();
-        
-        // Convert CurrencyOption to the format expected by the context
-        const options = currencies.map(currency => ({
-          code: currency.code,
-          symbol: currency.symbol,
-          name: currency.name
-        }));
-        
-        setCurrencyOptions(options);
+        const currencies = await extractAllCurrenciesFromAirtable();
+        setCurrencyOptions(currencies);
         
         // Load saved currency from localStorage
         const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
-        if (savedCurrency && options.some(option => option.code === savedCurrency)) {
+        if (savedCurrency && currencies.some(option => option.code === savedCurrency)) {
           setSelectedCurrency(savedCurrency);
         }
       } catch (error) {
-        console.error('Failed to load currencies:', error);
-        // Fallback to empty array
-        setCurrencyOptions([]);
+        console.error('Failed to load currencies from Airtable:', error);
+        // Fallback to basic currencies
+        const fallbackCurrencies = [
+          { code: 'USD', symbol: '$', name: 'US Dollar' },
+          { code: 'EUR', symbol: '€', name: 'Euro' },
+          { code: 'GBP', symbol: '£', name: 'British Pound' },
+          { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+          { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+          { code: 'JPY', symbol: '¥', name: 'Japanese Yen' }
+        ];
+        setCurrencyOptions(fallbackCurrencies);
       } finally {
         setIsLoading(false);
       }

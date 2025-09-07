@@ -7,7 +7,6 @@ interface CurrencyOption {
   code: string;
   symbol: string;
   name: string;
-  countries: string[];
 }
 
 interface CompactCurrencySelectorProps {
