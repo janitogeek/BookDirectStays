@@ -26,24 +26,32 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
       try {
         setIsLoading(true);
         console.log('🔄 Loading currencies from Airtable...');
-        const currencies = await getAllCurrencies();
-        console.log('✅ Loaded currencies:', currencies.length, currencies);
+        const airtableCurrencies = await getAllCurrencies();
+        console.log('✅ Loaded currencies from Airtable:', airtableCurrencies.length, airtableCurrencies);
         
-        // If no currencies loaded from Airtable, use CURRENCY_OPTIONS
-        if (currencies.length === 0) {
-          console.log('⚠️ No currencies from Airtable, using CURRENCY_OPTIONS');
-          setCurrencyOptions(CURRENCY_OPTIONS);
-        } else {
-          setCurrencyOptions(currencies);
-        }
+        // Combine Airtable currencies with CURRENCY_OPTIONS to ensure we have all options
+        const allCurrencies = [...airtableCurrencies];
+        
+        // Add CURRENCY_OPTIONS if they're not already present
+        CURRENCY_OPTIONS.forEach(option => {
+          if (!allCurrencies.some(currency => currency.code === option.code)) {
+            allCurrencies.push(option);
+          }
+        });
+        
+        // Sort by currency code
+        allCurrencies.sort((a, b) => a.code.localeCompare(b.code));
+        
+        console.log('✅ Total currencies available:', allCurrencies.length, allCurrencies);
+        setCurrencyOptions(allCurrencies);
         
         // Load saved currency from localStorage
         const savedCurrency = localStorage.getItem('selectedCurrency') as CurrencyCode;
-        if (savedCurrency && (currencies.length > 0 ? currencies : CURRENCY_OPTIONS).some(option => option.code === savedCurrency)) {
+        if (savedCurrency && allCurrencies.some(option => option.code === savedCurrency)) {
           setSelectedCurrency(savedCurrency);
-        } else if ((currencies.length > 0 ? currencies : CURRENCY_OPTIONS).length > 0) {
+        } else if (allCurrencies.length > 0) {
           // Set first currency as default if no saved currency
-          setSelectedCurrency((currencies.length > 0 ? currencies : CURRENCY_OPTIONS)[0].code);
+          setSelectedCurrency(allCurrencies[0].code);
         }
       } catch (error) {
         console.error('❌ Failed to load currencies from Airtable:', error);

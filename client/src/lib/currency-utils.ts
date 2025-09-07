@@ -226,7 +226,7 @@ export const CURRENCY_OPTIONS = [
   { code: 'GBP', symbol: '£', name: 'British Pound' }, // United Kingdom
 ] as const;
 
-export type CurrencyCode = 'USD' | 'EUR' | 'CAD' | 'AUD' | 'BZD' | 'HRK' | 'MXN' | 'THB' | 'IDR' | 'GBP' | 'CNY';
+export type CurrencyCode = string; // Allow any currency code from Airtable
 
 /**
  * Get the currency code for a specific country
