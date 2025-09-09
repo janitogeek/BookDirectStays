@@ -25,8 +25,14 @@ export default function BudgetRangeSlider({
   const BASE_MIN_RANGE = dynamicMin !== null ? dynamicMin : 20;
   const BASE_MAX_RANGE = dynamicMax !== null ? dynamicMax : 300;
   
-  // Convert base range to selected currency
-  const convertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
+  console.log(`🎚️ Budget Slider received: dynamicMin=${dynamicMin}, dynamicMax=${dynamicMax}, currency=${selectedCurrency}`);
+  
+  // Convert base range to selected currency, but preserve exact values if dynamic
+  const convertedRange = (dynamicMin !== null && dynamicMax !== null) 
+    ? { min: BASE_MIN_RANGE, max: BASE_MAX_RANGE } // Use exact dynamic values without rounding
+    : convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency); // Apply rounding for static ranges
+    
+  console.log(`🎚️ Budget Slider final range: min=${convertedRange.min}, max=${convertedRange.max}`);
   
   const [minPrice, setMinPrice] = useState(minValue || convertedRange.min);
   const [maxPrice, setMaxPrice] = useState(maxValue || convertedRange.max);
@@ -61,7 +67,16 @@ export default function BudgetRangeSlider({
   useEffect(() => {
     const currentMinRange = dynamicMin !== null ? dynamicMin : 20;
     const currentMaxRange = dynamicMax !== null ? dynamicMax : 300;
-    const newConvertedRange = convertBudgetRange(currentMinRange, currentMaxRange, selectedCurrency);
+    
+    console.log(`🎚️ Budget Slider useEffect: dynamicMin=${dynamicMin}, dynamicMax=${dynamicMax}, currentMinRange=${currentMinRange}, currentMaxRange=${currentMaxRange}`);
+    
+    // Use exact values if dynamic, otherwise apply currency conversion and rounding
+    const newConvertedRange = (dynamicMin !== null && dynamicMax !== null)
+      ? { min: currentMinRange, max: currentMaxRange } // Use exact dynamic values
+      : convertBudgetRange(currentMinRange, currentMaxRange, selectedCurrency); // Apply conversion for static ranges
+      
+    console.log(`🎚️ Budget Slider useEffect final: min=${newConvertedRange.min}, max=${newConvertedRange.max}`);
+    
     setMinPrice(newConvertedRange.min);
     setMaxPrice(newConvertedRange.max);
   }, [selectedCurrency, dynamicMin, dynamicMax]);

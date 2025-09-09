@@ -415,15 +415,24 @@ export function formatPriceWithConversion(
 export function extractPriceRangeFromSubmissions(submissions: any[], selectedCurrency: CurrencyCode): { min: number | null; max: number } {
   const minPricesInSelectedCurrency: number[] = [];
   
-  submissions.forEach(submission => {
+  console.log(`💰 Extracting price range for ${submissions.length} submissions in ${selectedCurrency}`);
+  
+  submissions.forEach((submission, index) => {
     if (submission.minPrice && submission.currency) {
+      const originalMinPrice = submission.minPrice;
+      const originalCurrency = submission.currency;
       // Only use minimum prices from actual companies, convert to selected currency
-      const convertedMinPrice = convertCurrency(submission.minPrice, submission.currency, selectedCurrency);
+      const convertedMinPrice = convertCurrency(originalMinPrice, originalCurrency, selectedCurrency);
       minPricesInSelectedCurrency.push(convertedMinPrice);
+      
+      if (index < 3) { // Log first 3 for debugging
+        console.log(`💰 Submission ${index + 1}: ${originalMinPrice} ${originalCurrency} → ${convertedMinPrice} ${selectedCurrency} (${submission.brandName})`);
+      }
     }
   });
   
   if (minPricesInSelectedCurrency.length === 0) {
+    console.log('💰 No price data available, using fallback values');
     // No price data available, return null for min and default max
     return { 
       min: null, 
@@ -434,6 +443,9 @@ export function extractPriceRangeFromSubmissions(submissions: any[], selectedCur
   // Find the absolute minimum of all minimum prices
   const actualMinPrice = Math.min(...minPricesInSelectedCurrency);
   const maxPrice = convertCurrency(2000, 'USD', selectedCurrency); // Always $2000 USD equivalent
+  
+  console.log(`💰 Final price range: min=${actualMinPrice} (${Math.floor(actualMinPrice)} floored), max=${maxPrice} (${Math.ceil(maxPrice)} ceiled) in ${selectedCurrency}`);
+  console.log(`💰 All min prices: [${minPricesInSelectedCurrency.slice(0, 10).join(', ')}${minPricesInSelectedCurrency.length > 10 ? '...' : ''}]`);
   
   return {
     min: Math.floor(actualMinPrice), // Exact minimum from actual companies
