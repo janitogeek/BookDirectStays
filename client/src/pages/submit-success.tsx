@@ -110,6 +110,18 @@ export default function SubmitSuccess() {
           return cityDisplayName;
         }).join(", "),
         "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
+        "Geonames Record": formData["Cities / Regions"].map((city: any) => {
+          // Generate full Geonames record format: "City, Region, Country"
+          const cityName = city.name;
+          const regionName = city.adminName1 || '';
+          const countryName = city.countryName;
+          
+          if (regionName) {
+            return `${cityName}, ${regionName}, ${countryName}`;
+          } else {
+            return `${cityName}, ${countryName}`;
+          }
+        }).join("; "),
         "One-line Description": formData["One-line Description"],
               "Why Book With You": formData["Why Book With You?"],
       "Why Rent With You": formData["Why Rent With You?"],
