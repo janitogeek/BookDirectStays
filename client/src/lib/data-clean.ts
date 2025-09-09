@@ -331,3 +331,5 @@ export function getTestimonialsByRole(role?: "host" | "guest"): Testimonial[] {
   if (!role) return testimonials;
   return testimonials.filter(testimonial => testimonial.role === role);
 }
+
+

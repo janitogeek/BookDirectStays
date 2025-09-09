@@ -7,19 +7,23 @@ interface BudgetRangeSliderProps {
   maxValue?: number | null;
   onRangeChange: (min: number | null, max: number | null) => void;
   className?: string;
+  dynamicMin?: number | null;
+  dynamicMax?: number | null;
 }
 
 export default function BudgetRangeSlider({ 
   minValue = null, 
   maxValue = null, 
   onRangeChange,
-  className = ""
+  className = "",
+  dynamicMin = null,
+  dynamicMax = null
 }: BudgetRangeSliderProps) {
   const { selectedCurrency, currencyOptions } = useCurrency();
   
-  // Base range in EUR (original values)
-  const BASE_MIN_RANGE = 20;
-  const BASE_MAX_RANGE = 300;
+  // Use dynamic range if provided, otherwise fallback to base range
+  const BASE_MIN_RANGE = dynamicMin !== null ? dynamicMin : 20;
+  const BASE_MAX_RANGE = dynamicMax !== null ? dynamicMax : 300;
   
   // Convert base range to selected currency
   const convertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
@@ -53,12 +57,14 @@ export default function BudgetRangeSlider({
   
   const histogramData = generateHistogramData();
 
-  // Update range when currency changes
+  // Update range when currency or dynamic ranges change
   useEffect(() => {
-    const newConvertedRange = convertBudgetRange(BASE_MIN_RANGE, BASE_MAX_RANGE, selectedCurrency);
+    const currentMinRange = dynamicMin !== null ? dynamicMin : 20;
+    const currentMaxRange = dynamicMax !== null ? dynamicMax : 300;
+    const newConvertedRange = convertBudgetRange(currentMinRange, currentMaxRange, selectedCurrency);
     setMinPrice(newConvertedRange.min);
     setMaxPrice(newConvertedRange.max);
-  }, [selectedCurrency]);
+  }, [selectedCurrency, dynamicMin, dynamicMax]);
 
   // Convert mouse position to value
   const getValueFromPosition = useCallback((clientX: number): number => {

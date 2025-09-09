@@ -305,3 +305,5 @@ export function getCurrencyForCountry(countryName: string): string {
 export function getAllCurrencies(submissions: any[]): CurrencyOption[] {
   return extractAllCurrencies(submissions);
 }
+
+

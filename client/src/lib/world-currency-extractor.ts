@@ -283,3 +283,5 @@ export function getCurrencyForCountry(countryName: string): string {
 export function getAllCurrencies(): Promise<CurrencyOption[]> {
   return extractAllCurrenciesFromAirtable();
 }
+
+

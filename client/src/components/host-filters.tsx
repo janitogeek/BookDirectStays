@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { SearchableMultiSelect } from "@/components/searchable-multi-select";
 import { Filter, X, Info, Search } from "lucide-react";
 import { CurrencyPopupSelector } from "@/components/currency-popup-selector";
-import { CurrencyCode } from "@/lib/currency-utils";
+import { CurrencyCode, extractPriceRangeFromSubmissions } from "@/lib/currency-utils";
 import { useCurrency } from "@/contexts/currency-context";
 
 // Filter options based on submission form data
@@ -57,6 +57,7 @@ interface HostFiltersProps {
   onFiltersChange: (filters: FilterState) => void;
   selectedCurrency?: CurrencyCode;
   onCurrencyChange?: (currency: CurrencyCode) => void;
+  submissions?: any[];
 }
 
 export interface FilterState {
@@ -73,7 +74,7 @@ export interface FilterState {
   maxPrice: number | null;
 }
 
-export default function HostFilters({ onFiltersChange, selectedCurrency, onCurrencyChange }: HostFiltersProps) {
+export default function HostFilters({ onFiltersChange, selectedCurrency, onCurrencyChange, submissions = [] }: HostFiltersProps) {
   const { currencyOptions, isLoading: currencyLoading } = useCurrency();
   const [filters, setFilters] = useState<FilterState>({
     search: "",
@@ -244,6 +245,8 @@ export default function HostFilters({ onFiltersChange, selectedCurrency, onCurre
           maxValue={filters.maxPrice}
           onRangeChange={updatePriceRange}
           className="px-2"
+          dynamicMin={selectedCurrency ? extractPriceRangeFromSubmissions(submissions, selectedCurrency).min : null}
+          dynamicMax={selectedCurrency ? extractPriceRangeFromSubmissions(submissions, selectedCurrency).max : null}
         />
 
         {/* Filter Dropdowns with Search */}

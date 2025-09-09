@@ -506,6 +506,7 @@ export default function City() {
                 onFiltersChange={setFilters}
                 selectedCurrency={selectedCurrency}
                 onCurrencyChange={setSelectedCurrency}
+                submissions={citySubmissions}
               />
             )}
 

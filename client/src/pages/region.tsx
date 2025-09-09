@@ -14,6 +14,7 @@ import { airtableService } from "@/lib/airtable";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
+import AlphabeticalDirectory from "@/components/alphabetical-directory";
 
 export default function Region() {
   const [, params] = useRoute('/country/:country/region/:region');
@@ -331,9 +332,7 @@ export default function Region() {
               onFiltersChange={setFilters}
               selectedCurrency={selectedCurrency}
               onCurrencyChange={setSelectedCurrency}
-              currencyOptions={currencyOptions}
-              featuredOnly={featuredOnly}
-              onFeaturedChange={setFeaturedOnly}
+              submissions={submissions}
             />
           </div>
         </div>
@@ -396,94 +395,19 @@ export default function Region() {
       <section id="city-navigation" className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
-                <span>Find Hosts by City in</span> 
-                <span className="inline-flex items-center gap-2">
-                  <span className="text-lg">🏛️</span>
-                  {regionName}
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 mb-6">
-                Browse hosts in specific cities within {regionName}
-              </p>
-            </div>
-            
-            {/* City Search */}
-            <div className="mb-8">
-              <div className="relative max-w-md mx-auto">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search cities..."
-                  className="pl-10 pr-10"
-                  value={citySearchQuery}
-                  onChange={(e) => setCitySearchQuery(e.target.value)}
-                />
-                {citySearchQuery && (
-                  <button
-                    onClick={clearCitySearch}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <Search className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Cities Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-              {filteredCities.length === 0 && citySearchQuery ? (
-                <div className="col-span-full text-center py-8">
-                  <div className="text-gray-500">
-                    <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <h3 className="text-xl font-semibold mb-2">No cities found</h3>
-                    <p>Try searching for a different city name.</p>
-                    <Button 
-                      variant="outline" 
-                      onClick={clearCitySearch}
-                      className="mt-4"
-                    >
-                      Clear search
-                    </Button>
-                  </div>
-                </div>
-              ) : filteredCities.length === 0 ? (
-                <div className="col-span-full text-center py-8">
-                  <div className="text-gray-500">
-                    <h3 className="text-xl font-semibold mb-2">No cities found</h3>
-                    <p>This region doesn't have city data yet.</p>
-                  </div>
-                </div>
-              ) : (
-                filteredCities.map((city, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
-                    <CardContent className="p-4">
-                      <Link 
-                        href={`/country/${countrySlug}/${city.name.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="block text-center"
-                      >
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                          <span className="text-lg">📍</span>
-                          <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-                            {city.name}
-                          </h3>
-                        </div>
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                          {city.count} {city.count === 1 ? 'host' : 'hosts'}
-                        </Badge>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-            
-            <div className="text-center mt-12">
-              <p className="text-gray-600 mb-4">
-                Don't see your city? <Link href="/submit" className="text-blue-600 hover:underline">Add your host site</Link> and we'll include it!
-              </p>
-            </div>
+            <AlphabeticalDirectory
+              title={`Find Hosts by City in 🏛️ ${regionName}`}
+              description={`Browse hosts in specific cities within ${regionName}`}
+              items={citiesData.map(city => ({
+                name: city.name,
+                slug: city.name.toLowerCase().replace(/\s+/g, '-'),
+                count: city.count,
+                href: `/country/${countrySlug}/${city.name.toLowerCase().replace(/\s+/g, '-')}`
+              }))}
+              searchPlaceholder="Search cities..."
+              emptyStateTitle="No cities found"
+              emptyStateDescription="This region doesn't have city data yet."
+            />
           </div>
         </div>
       </section>

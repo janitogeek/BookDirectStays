@@ -146,3 +146,5 @@ export async function extractAllCurrenciesFromAirtable(): Promise<CurrencyOption
     ];
   }
 }
+
+

@@ -407,6 +407,51 @@ export function formatPriceWithConversion(
 }
 
 /**
+ * Extract price ranges from submissions for dynamic budget slider
+ * @param submissions - Array of submissions with price data
+ * @param selectedCurrency - The user's selected currency
+ * @returns Object with min and max prices in selected currency
+ */
+export function extractPriceRangeFromSubmissions(submissions: any[], selectedCurrency: CurrencyCode): { min: number | null; max: number } {
+  const pricesInSelectedCurrency: number[] = [];
+  
+  submissions.forEach(submission => {
+    if (submission.minPrice && submission.maxPrice && submission.currency) {
+      // Convert prices to selected currency
+      const convertedMinPrice = convertCurrency(submission.minPrice, submission.currency, selectedCurrency);
+      const convertedMaxPrice = convertCurrency(submission.maxPrice, submission.currency, selectedCurrency);
+      
+      pricesInSelectedCurrency.push(convertedMinPrice, convertedMaxPrice);
+    }
+  });
+  
+  if (pricesInSelectedCurrency.length === 0) {
+    // No price data available, return null for min and default max
+    return { 
+      min: null, 
+      max: convertCurrency(2000, 'USD', selectedCurrency) // $2000 USD converted to selected currency
+    };
+  }
+  
+  const minPrice = Math.min(...pricesInSelectedCurrency);
+  const maxPrice = convertCurrency(2000, 'USD', selectedCurrency); // Always $2000 USD equivalent
+  
+  return {
+    min: Math.floor(minPrice), // Round down for min
+    max: Math.ceil(maxPrice)   // Round up for max
+  };
+}
+
+/**
+ * Convert $2000 USD to any currency
+ * @param toCurrency - Target currency code
+ * @returns $2000 USD equivalent in target currency
+ */
+export function get2000USDInCurrency(toCurrency: CurrencyCode): number {
+  return Math.ceil(convertCurrency(2000, 'USD', toCurrency));
+}
+
+/**
  * Get the appropriate currency for a country based on user's requirements
  * @param countryName - The name of the country
  * @returns Currency code based on user's rules
