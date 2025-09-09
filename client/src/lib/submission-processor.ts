@@ -4,6 +4,7 @@
 import { matchCitiesToCountriesOptimized } from './geonames';
 import { airtableService, type Submission } from './airtable';
 import { extractCityName } from './utils';
+import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
 
 /**
  * Process an approved submission and create/link cities
@@ -11,15 +12,17 @@ import { extractCityName } from './utils';
 export async function processApprovedSubmission(submission: Submission): Promise<void> {
   console.log(`🔄 Processing approved submission: ${submission.brandName}`);
   
-  if (!submission.citiesRegions || submission.citiesRegions.length === 0) {
-    console.log(`⚠️ No cities/regions found for ${submission.brandName}`);
+  if (!submission.geonamesRecord) {
+    console.log(`⚠️ No Geonames Record found for ${submission.brandName}`);
     return;
   }
 
   try {
-    // SIMPLE: Just log the cities for this submission
-    console.log(`📊 Cities for ${submission.brandName}:`, submission.citiesRegions);
-    console.log(`📊 Countries for ${submission.brandName}:`, submission.countries);
+    // Parse the full geonames record
+    const parsedGeonames = parseGeonamesRecord(submission.geonamesRecord);
+    console.log(`📊 Geonames Record for ${submission.brandName}:`, submission.geonamesRecord);
+    console.log(`📊 Parsed countries:`, parsedGeonames.countries);
+    console.log(`📊 Cities by country:`, parsedGeonames.citiesByCountry);
     
     console.log(`✅ Successfully processed submission ${submission.brandName}`);
     
@@ -90,23 +93,17 @@ export async function getActiveCountries(): Promise<string[]> {
     const uniqueCountries = new Set<string>();
     
     approvedSubmissions.forEach(submission => {
-      // First, try the new city-based approach with full city data
-      if (submission.citiesRegions && submission.citiesRegions.length > 0) {
-        submission.citiesRegions.forEach((cityRegion: any) => {
-          if (typeof cityRegion === 'string') {
-            // Try to parse "City, Region, Country" format
-            const parts = cityRegion.split(', ');
-            if (parts.length >= 3) {
-              const countryName = parts[2]; // Last part is the country
-              const capitalizedCountry = capitalizeCountryName(countryName);
-              uniqueCountries.add(capitalizedCountry);
-            }
-          }
+      // Use Geonames Record field for accurate country extraction
+      if (submission.geonamesRecord) {
+        const countries = getCountriesFromGeonamesRecord(submission.geonamesRecord);
+        countries.forEach(country => {
+          const capitalizedCountry = capitalizeCountryName(country);
+          uniqueCountries.add(capitalizedCountry);
         });
       }
       
-      // Fallback to legacy countries field for existing submissions
-      if (submission.countries && submission.countries.length > 0) {
+      // Fallback to legacy countries field for existing submissions without geonamesRecord
+      else if (submission.countries && submission.countries.length > 0) {
         submission.countries.forEach(country => {
           const capitalizedCountry = capitalizeCountryName(country);
           uniqueCountries.add(capitalizedCountry);
@@ -141,14 +138,27 @@ export async function getSubmissionsForCountry(countryName: string): Promise<Sub
     
     // Filter submissions that belong to the requested country
     const countrySubmissions = submissionsWithSlugs.filter(submission => {
-      // Check if submission has the country in its countries field
-      if (submission.countries && submission.countries.length > 0) {
+      // Use Geonames Record for accurate country matching
+      if (submission.geonamesRecord) {
+        const countries = getCountriesFromGeonamesRecord(submission.geonamesRecord);
+        const belongsToCountry = countries.some(country => 
+          country.toLowerCase() === countryName.toLowerCase()
+        );
+        
+        if (belongsToCountry) {
+          console.log(`✅ Submission "${submission.brandName}" belongs to ${countryName} (from Geonames Record)`);
+          return true;
+        }
+      }
+      
+      // Fallback: Check if submission has the country in its countries field
+      else if (submission.countries && submission.countries.length > 0) {
         const belongsToCountry = submission.countries.some(country => 
           country.toLowerCase() === countryName.toLowerCase()
         );
         
         if (belongsToCountry) {
-          console.log(`✅ Submission "${submission.brandName}" belongs to ${countryName}`);
+          console.log(`⚠️ FALLBACK: Submission "${submission.brandName}" belongs to ${countryName}`);
           return true;
         }
       }
@@ -229,14 +239,37 @@ export async function getSubmissionsForCity(
   countryName: string
 ): Promise<Submission[]> {
   try {
-    const countrySubmissions = await getSubmissionsForCountry(countryName);
+    console.log(`🔍 Getting submissions for city: ${cityName} in ${countryName}`);
     
-    return countrySubmissions.filter(submission =>
-      submission.citiesRegions?.some((city: any) => {
-        const cityName_lower = (typeof city === 'string' ? city : (city?.name || city)).toLowerCase();
-        return cityName_lower === cityName.toLowerCase();
-      })
-    );
+    const allSubmissions = await airtableService.getApprovedSubmissions();
+    
+    return allSubmissions.filter(submission => {
+      // Use Geonames Record for accurate city matching
+      if (submission.geonamesRecord) {
+        const citiesForCountry = getCitiesForCountryFromGeonamesRecord(submission.geonamesRecord, countryName);
+        const hasCity = citiesForCountry.some(city => 
+          city.toLowerCase() === cityName.toLowerCase()
+        );
+        if (hasCity) {
+          console.log(`✅ Submission "${submission.brandName}" has city ${cityName} in ${countryName}`);
+        }
+        return hasCity;
+      }
+      
+      // Fallback for submissions without geonamesRecord
+      else if (submission.citiesRegions) {
+        const hasCity = submission.citiesRegions.some((city: any) => {
+          const cityName_lower = (typeof city === 'string' ? city : (city?.name || city)).toLowerCase();
+          return cityName_lower === cityName.toLowerCase();
+        });
+        if (hasCity) {
+          console.log(`⚠️ FALLBACK: Submission "${submission.brandName}" has city ${cityName}`);
+        }
+        return hasCity;
+      }
+      
+      return false;
+    });
     
   } catch (error) {
     console.error(`❌ Error getting submissions for city ${cityName} in ${countryName}:`, error);
@@ -259,7 +292,25 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     const cityCounts: Record<string, number> = {};
     
     for (const submission of allSubmissions) {
-      if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
+      // Use Geonames Record for accurate city-country matching
+      if (submission.geonamesRecord) {
+        const citiesForCountry = getCitiesForCountryFromGeonamesRecord(submission.geonamesRecord, countryName);
+        
+        if (citiesForCountry.length > 0) {
+          console.log(`🏦️ Geonames Record for ${submission.brandName}:`, submission.geonamesRecord);
+          console.log(`✅ Cities for ${countryName}:`, citiesForCountry);
+          
+          citiesForCountry.forEach(cityName => {
+            if (cityName && cityName.length > 2 && cityName.length < 50) {
+              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+              console.log(`    ✅ City "${cityName}" for ${countryName} added (count: ${cityCounts[cityName]})`);
+            }
+          });
+        }
+      }
+      
+      // Fallback for submissions without geonamesRecord
+      else if (submission.citiesRegions && submission.citiesRegions.length > 0 && 
           submission.countries && submission.countries.length > 0) {
         
         // Extract city names from citiesRegions
@@ -276,27 +327,13 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
           return cityRegion;
         }).filter(Boolean);
         
-        // Use GeoNames API to validate cities and get their countries
-        try {
-          const cityMatches = await matchCitiesToCountriesOptimized(cityNames, submission.countries);
-          
-          // Count cities that belong to the requested country
-          cityMatches.forEach(match => {
-            if (match.countryName.toLowerCase() === countryName.toLowerCase()) {
-              cityCounts[match.cityName] = (cityCounts[match.cityName] || 0) + 1;
-              console.log(`✅ GEONAMES MATCHED: ${match.cityName} belongs to ${countryName} (count: ${cityCounts[match.cityName]})`);
-            }
-          });
-        } catch (geonamesError) {
-          console.warn(`⚠️ GeoNames API error for submission ${submission.brandName}:`, geonamesError);
-          // Fallback: count cities directly if GeoNames fails
-          cityNames.forEach(cityName => {
-            if (cityName && cityName.length > 2 && cityName.length < 50) {
-              cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
-              console.log(`⚠️ FALLBACK: ${cityName} in ${countryName} (count: ${cityCounts[cityName]})`);
-            }
-          });
-        }
+        // Count cities directly for fallback
+        cityNames.forEach(cityName => {
+          if (cityName && cityName.length > 2 && cityName.length < 50) {
+            cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+            console.log(`⚠️ FALLBACK: ${cityName} in ${countryName} (count: ${cityCounts[cityName]})`);
+          }
+        });
       }
     }
     
