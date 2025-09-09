@@ -522,6 +522,11 @@ export default function Submit() {
           return cityDisplayName;
         }).join(", "),
         "Countries": extractedCountries.join(", "),
+        "Regions / States": values["Cities / Regions"].map(city => {
+          // Extract region/state from Geonames data
+          const regionName = city.adminName1 || '';
+          return regionName;
+        }).filter(Boolean).join(", "),
         "Geonames Record": values["Cities / Regions"].map(city => {
           // Generate full Geonames record format: "City, Region, Country"
           const cityName = city.name;

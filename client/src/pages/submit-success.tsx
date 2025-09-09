@@ -110,6 +110,7 @@ export default function SubmitSuccess() {
           return cityDisplayName;
         }).join(", "),
         "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
+        "Regions / States": [...new Set(formData["Cities / Regions"].map((city: any) => city.adminName1).filter(Boolean))].join(", "),
         "Geonames Record": formData["Cities / Regions"].map((city: any) => {
           // Generate full Geonames record format: "City, Region, Country"
           const cityName = city.name;

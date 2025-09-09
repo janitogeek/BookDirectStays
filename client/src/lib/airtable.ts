@@ -33,6 +33,7 @@ export interface AirtableSubmission {
     'Top Stats': string;
     'Countries': string | string[];
     'Cities / Regions': string | string[];
+    'Regions / States'?: string | string[];
     'Geonames Record'?: string;
     'Types of Stays': string | string[];
     'Ideal For': string | string[];
@@ -81,6 +82,7 @@ export interface Submission {
   topStats: string;
   countries: string[];
   citiesRegions: string[];
+  regionsStates?: string[];
   geonamesRecord?: string;
   typesOfStays: string[];
   idealFor: string[];
@@ -591,6 +593,7 @@ export const airtableService = {
       topStats: fields['Top Stats'] || '',
       countries: parseArray(fields['Countries']),
       citiesRegions: parseArray(fields['Cities / Regions']),
+      regionsStates: parseArray(fields['Regions / States']),
       geonamesRecord: fields['Geonames Record'] || undefined,
       typesOfStays: parseArray(fields['Types of Stays']),
       idealFor: parseArray(fields['Ideal For']),
