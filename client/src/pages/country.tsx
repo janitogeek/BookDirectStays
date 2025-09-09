@@ -23,6 +23,7 @@ export default function Country() {
   const countrySlug = params?.country;
   // const [visibleCount, setVisibleCount] = useState(6);
   const [citySearchQuery, setCitySearchQuery] = useState("");
+  const [regionSearchQuery, setRegionSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     propertyTypes: [],
@@ -286,6 +287,21 @@ export default function Country() {
 
   const clearCitySearch = () => {
     setCitySearchQuery("");
+  };
+
+  // Filter regions based on search query
+  const filteredRegions = useMemo(() => {
+    if (!regionSearchQuery.trim()) {
+      return regions;
+    }
+    
+    return regions.filter(region =>
+      region.toLowerCase().includes(regionSearchQuery.toLowerCase())
+    );
+  }, [regions, regionSearchQuery]);
+
+  const clearRegionSearch = () => {
+    setRegionSearchQuery("");
   };
 
   // Fetch all countries for the tags
@@ -746,9 +762,17 @@ export default function Country() {
                     type="text"
                     placeholder="Search regions/states..."
                     className="pl-10 pr-10"
-                    value=""
-                    onChange={() => {}}
+                    value={regionSearchQuery}
+                    onChange={(e) => setRegionSearchQuery(e.target.value)}
                   />
+                  {regionSearchQuery && (
+                    <button
+                      onClick={clearRegionSearch}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -759,7 +783,22 @@ export default function Country() {
                   Array.from({ length: 8 }, (_, i) => (
                     <div key={i} className="h-20 bg-gray-300 rounded animate-pulse"></div>
                   ))
-                ) : regions.length === 0 ? (
+                ) : filteredRegions.length === 0 && regionSearchQuery ? (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-500">
+                      <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <h3 className="text-xl font-semibold mb-2">No regions found</h3>
+                      <p>Try searching for a different region name.</p>
+                      <Button 
+                        variant="outline" 
+                        onClick={clearRegionSearch}
+                        className="mt-4"
+                      >
+                        Clear search
+                      </Button>
+                    </div>
+                  </div>
+                ) : filteredRegions.length === 0 ? (
                   <div className="col-span-full text-center py-8">
                     <div className="text-gray-500">
                       <h3 className="text-xl font-semibold mb-2">No regions found</h3>
@@ -767,7 +806,7 @@ export default function Country() {
                     </div>
                   </div>
                 ) : (
-                  regions.map((region, index) => (
+                  filteredRegions.map((region, index) => (
                     <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
                       <CardContent className="p-4">
                         <Link 
