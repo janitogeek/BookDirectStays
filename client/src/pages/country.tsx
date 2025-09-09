@@ -821,7 +821,7 @@ export default function Country() {
                 emptyStateTitle="No cities found"
                 emptyStateDescription={`We currently don't have any host data for ${country?.name || countryName}.`}
               />
-            }
+            )}
             </div>
           </div>
         </section>
