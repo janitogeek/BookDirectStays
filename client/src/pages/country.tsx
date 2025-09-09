@@ -567,71 +567,90 @@ export default function Country() {
         />
       )}
 
-      {/* Hero Section */}
-      <section className="py-12">
+      {/* Header Section */}
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation */}
-          <nav className="mb-6">
-            <div className="bg-blue-600 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 text-sm">
-              <Link href="/find-host" className="hover:underline">
-                Find a Host
-              </Link>
-              <span>›</span>
-              <span className="flex items-center gap-1">
-                <span className="text-lg">{getFlagByCountryName(country?.name || countryName)}</span>
-                {country?.name || countryName}
-              </span>
-            </div>
-          </nav>
-
-          {/* Centered Title */}
-          <div className="text-center mb-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Breadcrumb */}
+            <nav className="mb-8">
+              <ol className="flex items-center space-x-2 text-blue-200">
+                <li>
+                  <Link href="/find-host" className="hover:text-white transition-colors">
+                    Find a Host
+                  </Link>
+                </li>
+                <li className="text-blue-300">›</li>
+                <li className="text-white font-semibold flex items-center gap-1">
+                  <span className="text-lg">{getFlagByCountryName(country?.name || countryName)}</span>
+                  {country?.name || countryName}
+                </li>
+              </ol>
+            </nav>
+            
             {isCountryLoading ? (
-              <div className="h-8 bg-gray-300 w-64 mx-auto rounded animate-pulse"></div>
+              <div className="h-12 bg-white/20 w-96 mx-auto rounded animate-pulse mb-6"></div>
             ) : (
-              <h1 className="text-3xl font-bold flex items-center gap-3 justify-center">
-                <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
-                <span>
-                  {country?.name || countryName} Direct Booking Sites
-                  <span className="text-gray-500 text-lg ml-2">({totalHosts} {totalHosts === 1 ? 'host' : 'hosts'})</span>
-                </span>
+              <h1 className="text-4xl sm:text-5xl font-bold mb-6 flex items-center gap-4 justify-center">
+                <span className="text-5xl">{getFlagByCountryName(country?.name || countryName)}</span>
+                <span>{country?.name || countryName} Vacation Rental Hosts</span>
               </h1>
             )}
-          </div>
+            <p className="text-xl text-blue-100 mb-8 text-center">
+              Direct booking vacation rental hosts in <span className="inline-flex items-center gap-1">{getFlagByCountryName(country?.name || countryName)} {country?.name || countryName}</span>
+            </p>
             
-          {/* Navigation Buttons - Two buttons under title */}
-          <div className="flex justify-center gap-4 mb-8">
-              <Button 
-                onClick={() => {
-                  const element = document.getElementById('region-navigation');
-                  if (element) {
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'start'
-                    });
-                  }
-                }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
-              >
-                Find Hosts by Region/State
-                <ArrowDown className="w-5 h-5" />
-              </Button>
-              <Button 
-                onClick={() => {
-                  const element = document.getElementById('city-navigation');
-                  if (element) {
-                    element.scrollIntoView({ 
-                      behavior: 'smooth',
-                      block: 'start'
-                    });
-                  }
-                }}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
-              >
-                Find Hosts by City
-                <ArrowDown className="w-5 h-5" />
-              </Button>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block mx-auto block text-center mb-8">
+              <div className="flex items-center space-x-4 justify-center">
+                <Badge className="bg-blue-500 text-white">
+                  {totalHosts} {totalHosts === 1 ? 'host' : 'hosts'}
+                </Badge>
+                <span className="text-blue-100">•</span>
+                <span className="text-blue-100">Skip OTA fees</span>
+                <span className="text-blue-100">•</span>
+                <span className="text-blue-100">Book direct</span>
+              </div>
+            </div>
+            
+            {/* Navigation Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Button 
+                  onClick={() => {
+                    const element = document.getElementById('region-navigation');
+                    if (element) {
+                      element.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      });
+                    }
+                  }}
+                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
+                >
+                  Find Hosts by Region/State
+                  <ArrowDown className="w-5 h-5" />
+                </Button>
+                <Button 
+                  onClick={() => {
+                    const element = document.getElementById('city-navigation');
+                    if (element) {
+                      element.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      });
+                    }
+                  }}
+                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
+                >
+                  Find Hosts by City
+                  <ArrowDown className="w-5 h-5" />
+                </Button>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Host Filters with Currency Selector */}
           <HostFilters 

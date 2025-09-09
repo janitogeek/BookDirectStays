@@ -256,32 +256,56 @@ export default function Region() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-white py-16">
+      {/* Header Section */}
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Breadcrumb */}
+            <nav className="mb-8">
+              <ol className="flex items-center space-x-2 text-blue-200">
+                <li>
+                  <Link href="/find-host" className="hover:text-white transition-colors">
+                    Find a Host
+                  </Link>
+                </li>
+                <li className="text-blue-300">›</li>
+                <li>
+                  <Link href={`/country/${countrySlug}`} className="hover:text-white transition-colors inline-flex items-center gap-1">
+                    {getFlagByCountryName(countryName)} {countryName}
+                  </Link>
+                </li>
+                <li className="text-blue-300">›</li>
+                <li className="text-white font-semibold">{regionName}</li>
+              </ol>
+            </nav>
+            
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6 flex items-center gap-4">
+              <span className="text-5xl">🏛️</span>
+              <span>{regionName} Vacation Rental Hosts</span>
+            </h1>
+            <p className="text-xl text-blue-100 mb-8">
+              Direct booking vacation rental hosts in {regionName}, <span className="inline-flex items-center gap-1">{getFlagByCountryName(countryName)} {countryName}</span>
+            </p>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block">
+              <div className="flex items-center space-x-4">
+                <Badge className="bg-blue-500 text-white">
+                  {totalHosts} {totalHosts === 1 ? 'host' : 'hosts'}
+                </Badge>
+                <span className="text-blue-100">•</span>
+                <span className="text-blue-100">Skip OTA fees</span>
+                <span className="text-blue-100">•</span>
+                <span className="text-blue-100">Book direct</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            
-            {/* Breadcrumbs */}
-            <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-              <Link href="/" className="hover:text-blue-600">Home</Link>
-              <span>/</span>
-              <Link href={`/country/${countrySlug}`} className="hover:text-blue-600">
-                {getFlagByCountryName(countryName)} {countryName}
-              </Link>
-              <span>/</span>
-              <span className="text-gray-900 font-medium">{regionName}</span>
-            </div>
-
-            {/* Title */}
-            <div className="text-center mb-6">
-              <h1 className="text-3xl font-bold flex items-center gap-3 justify-center">
-                <span className="text-4xl">🏛️</span>
-                <span>
-                  {regionName}, {countryName} Direct Booking Sites
-                  <span className="text-gray-500 text-lg ml-2">({totalHosts} {totalHosts === 1 ? 'host' : 'hosts'})</span>
-                </span>
-              </h1>
-            </div>
               
             {/* City Navigation Button */}
             <div className="flex justify-center mb-8">

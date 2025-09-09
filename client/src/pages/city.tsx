@@ -158,14 +158,53 @@ export default function City() {
       .replace(/[\u0300-\u036f]/g, ''); // Remove diacritics/accents
   };
 
-  const citySubmissions = allSubmissions.filter(submission => 
-    submission.citiesRegions.some(city => {
-      const normalizedCity = normalizeForComparison(city);
-      const normalizedCityName = normalizeForComparison(cityName || '');
-      return normalizedCity.includes(normalizedCityName) ||
-             normalizedCityName.includes(normalizedCity);
-    })
-  );
+  const citySubmissions = allSubmissions.filter(submission => {
+    // Use Geonames Record for accurate city matching
+    if (submission.geonamesRecord) {
+      const records = submission.geonamesRecord.split(';').map(record => record.trim());
+      
+      return records.some(record => {
+        const parts = record.split(',').map(part => part.trim());
+        if (parts.length >= 2) {
+          const [city, regionOrCountry, country] = parts;
+          const recordCountry = parts.length === 3 ? country : regionOrCountry;
+          
+          const normalizedRecordCity = normalizeForComparison(city);
+          const normalizedCityName = normalizeForComparison(cityName || '');
+          const normalizedRecordCountry = normalizeForComparison(recordCountry);
+          const normalizedCountryName = normalizeForComparison(countryName || '');
+          
+          // Match both city and country
+          return (normalizedRecordCity.includes(normalizedCityName) || 
+                  normalizedCityName.includes(normalizedRecordCity)) &&
+                 (normalizedRecordCountry.includes(normalizedCountryName) || 
+                  normalizedCountryName.includes(normalizedRecordCountry));
+        }
+        return false;
+      });
+    }
+    
+    // Fallback to old citiesRegions field for submissions without geonamesRecord
+    else if (submission.citiesRegions && submission.countries) {
+      const cityMatch = submission.citiesRegions.some(city => {
+        const normalizedCity = normalizeForComparison(city);
+        const normalizedCityName = normalizeForComparison(cityName || '');
+        return normalizedCity.includes(normalizedCityName) ||
+               normalizedCityName.includes(normalizedCity);
+      });
+      
+      const countryMatch = submission.countries.some(country => {
+        const normalizedCountry = normalizeForComparison(country);
+        const normalizedCountryName = normalizeForComparison(countryName || '');
+        return normalizedCountry.includes(normalizedCountryName) ||
+               normalizedCountryName.includes(normalizedCountry);
+      });
+      
+      return cityMatch && countryMatch;
+    }
+    
+    return false;
+  });
 
   // Extract region/state name from geonames data for breadcrumbs
   const regionName = useMemo(() => {
@@ -405,8 +444,8 @@ export default function City() {
             <nav className="mb-8">
               <ol className="flex items-center space-x-2 text-blue-200">
                 <li>
-                  <Link href="/" className="hover:text-white transition-colors">
-                    Home
+                  <Link href="/find-host" className="hover:text-white transition-colors">
+                    Find a Host
                   </Link>
                 </li>
                 <li className="text-blue-300">›</li>
