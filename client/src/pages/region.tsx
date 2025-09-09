@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, ArrowDown } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getCitiesForCountryFromGeonamesRecord } from "@/lib/geonames-record-parser";
@@ -41,7 +42,7 @@ export default function Region() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
   // Price sorting state
-  const [priceSorting, setPriceSorting] = useState<'none' | 'cheapest' | 'expensive'>('none');
+  const [priceSorting, setPriceSorting] = useState<'none' | 'least-expensive' | 'most-expensive'>('none');
   
   // Currency context
   const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
@@ -147,14 +148,15 @@ export default function Region() {
       if (!aIsPremium && bIsPremium) return 1;
       
       // Then sort by price if price sorting is enabled
-      if (priceSorting !== 'none' && a.minPrice && b.minPrice && a.currency && b.currency) {
-        const aMinPrice = convertCurrency(a.minPrice, a.currency, selectedCurrency);
-        const bMinPrice = convertCurrency(b.minPrice, b.currency, selectedCurrency);
-        
-        if (priceSorting === 'cheapest') {
-          return aMinPrice - bMinPrice; // Cheapest first
-        } else if (priceSorting === 'expensive') {
-          return bMinPrice - aMinPrice; // Most expensive first
+      if (priceSorting !== 'none') {
+        if (priceSorting === 'least-expensive' && a.minPrice && b.minPrice && a.currency && b.currency) {
+          const aMinPrice = convertCurrency(a.minPrice, a.currency, selectedCurrency);
+          const bMinPrice = convertCurrency(b.minPrice, b.currency, selectedCurrency);
+          return aMinPrice - bMinPrice; // Least expensive first
+        } else if (priceSorting === 'most-expensive' && a.maxPrice && b.maxPrice && a.currency && b.currency) {
+          const aMaxPrice = convertCurrency(a.maxPrice, a.currency, selectedCurrency);
+          const bMaxPrice = convertCurrency(b.maxPrice, b.currency, selectedCurrency);
+          return bMaxPrice - aMaxPrice; // Most expensive first (using max prices)
         }
       }
       
@@ -352,7 +354,7 @@ export default function Region() {
             />
 
             {/* Featured Only Toggle and Price Sorting */}
-            <div className="mt-6 mb-6 flex flex-wrap gap-4">
+            <div className="mt-6 mb-6 flex flex-wrap items-center gap-4">
               <Button
                 variant={featuredOnly ? "default" : "outline"}
                 onClick={() => setFeaturedOnly(!featuredOnly)}
@@ -365,30 +367,18 @@ export default function Region() {
                 {featuredOnly ? "✓ Featured Only" : "Featured Only"}
               </Button>
               
-              <div className="flex gap-2">
-                <Button
-                  variant={priceSorting === 'cheapest' ? "default" : "outline"}
-                  onClick={() => setPriceSorting(priceSorting === 'cheapest' ? 'none' : 'cheapest')}
-                  className={`${
-                    priceSorting === 'cheapest'
-                      ? "bg-green-500 hover:bg-green-600 text-white border-green-500" 
-                      : "border-green-500 text-green-600 hover:bg-green-50"
-                  }`}
-                >
-                  {priceSorting === 'cheapest' ? "✓ Cheapest" : "Cheapest"}
-                </Button>
-                
-                <Button
-                  variant={priceSorting === 'expensive' ? "default" : "outline"}
-                  onClick={() => setPriceSorting(priceSorting === 'expensive' ? 'none' : 'expensive')}
-                  className={`${
-                    priceSorting === 'expensive'
-                      ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
-                      : "border-red-500 text-red-600 hover:bg-red-50"
-                  }`}
-                >
-                  {priceSorting === 'expensive' ? "✓ Most Expensive" : "Most Expensive"}
-                </Button>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">Sort by:</span>
+                <Select value={priceSorting} onValueChange={(value) => setPriceSorting(value as typeof priceSorting)}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Default" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Default</SelectItem>
+                    <SelectItem value="least-expensive">Least Expensive</SelectItem>
+                    <SelectItem value="most-expensive">Most Expensive</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>

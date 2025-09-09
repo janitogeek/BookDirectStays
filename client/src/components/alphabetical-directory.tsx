@@ -30,7 +30,27 @@ export default function AlphabeticalDirectory({
   emptyStateDescription,
 }: AlphabeticalDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLetter, setSelectedLetter] = useState<string>("A");
+  
+  // Get available letters (only letters that have content)
+  const availableLetters = useMemo(() => {
+    const letters = new Set<string>();
+    items.forEach(item => {
+      const firstLetter = item.name.charAt(0).toUpperCase();
+      letters.add(firstLetter);
+    });
+    return Array.from(letters).sort();
+  }, [items]);
+  
+  // Start with first available letter, fallback to 'A'
+  const [selectedLetter, setSelectedLetter] = useState<string>(() => {
+    const letters = new Set<string>();
+    items.forEach(item => {
+      const firstLetter = item.name.charAt(0).toUpperCase();
+      letters.add(firstLetter);
+    });
+    const sortedLetters = Array.from(letters).sort();
+    return sortedLetters.length > 0 ? sortedLetters[0] : "A";
+  });
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
@@ -40,15 +60,6 @@ export default function AlphabeticalDirectory({
     );
   }, [items, searchQuery]);
 
-  // Get available letters (only letters that have content)
-  const availableLetters = useMemo(() => {
-    const letters = new Set<string>();
-    filteredItems.forEach(item => {
-      const firstLetter = item.name.charAt(0).toUpperCase();
-      letters.add(firstLetter);
-    });
-    return Array.from(letters).sort();
-  }, [filteredItems]);
 
   // Filter items by selected letter
   const itemsByLetter = useMemo(() => {
@@ -73,7 +84,7 @@ export default function AlphabeticalDirectory({
 
   const clearSearch = () => {
     setSearchQuery("");
-    setSelectedLetter("A");
+    setSelectedLetter(availableLetters.length > 0 ? availableLetters[0] : "A");
   };
 
   return (
@@ -149,10 +160,10 @@ export default function AlphabeticalDirectory({
               <p>Try selecting a different letter or clearing your search.</p>
               <Button 
                 variant="outline" 
-                onClick={() => setSelectedLetter("A")}
+                onClick={() => setSelectedLetter(availableLetters.length > 0 ? availableLetters[0] : "A")}
                 className="mt-4"
               >
-                Back to A
+                Back to {availableLetters.length > 0 ? availableLetters[0] : "A"}
               </Button>
             </div>
           </div>
