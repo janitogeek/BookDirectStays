@@ -599,7 +599,7 @@ export default function Country() {
               Direct booking vacation rental hosts in <span className="inline-flex items-center gap-1">{getFlagByCountryName(country?.name || countryName)} {country?.name || countryName}</span>
             </p>
             
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block mx-auto block text-center mb-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 inline-block mx-auto block text-center">
               <div className="flex items-center space-x-4 justify-center">
                 <Badge className="bg-blue-500 text-white">
                   {totalHosts} {totalHosts === 1 ? 'host' : 'hosts'}
@@ -610,9 +610,17 @@ export default function Country() {
                 <span className="text-blue-100">Book direct</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
             
             {/* Navigation Buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <Button 
                   onClick={() => {
                     const element = document.getElementById('region-navigation');
@@ -623,7 +631,7 @@ export default function Country() {
                       });
                     }
                   }}
-                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
                 >
                   Find Hosts by Region/State
                   <ArrowDown className="w-5 h-5" />
@@ -638,19 +646,13 @@ export default function Country() {
                       });
                     }
                   }}
-                className="bg-white/20 hover:bg-white/30 text-white border border-white/30 px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
+                className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2 justify-center"
                 >
                   Find Hosts by City
                   <ArrowDown className="w-5 h-5" />
                 </Button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Host Filters with Currency Selector */}
           <HostFilters 
