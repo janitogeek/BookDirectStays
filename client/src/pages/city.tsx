@@ -13,6 +13,7 @@ import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
 import { parseGeonamesRecord } from "@/lib/geonames-record-parser";
+import { convertCurrency } from "@/lib/currency-utils";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -36,10 +37,13 @@ export default function City() {
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
+  // Price sorting state
+  const [priceSorting, setPriceSorting] = useState<'none' | 'cheapest' | 'expensive'>('none');
+  
   // Currency context
   const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
 
-  // Sort function: Featured first, then alphabetical by brand name
+  // Sort function: Featured first, then price or alphabetical
   const sortSubmissions = (submissionsToSort: any[]) => {
     return submissionsToSort.sort((a, b) => {
       // Check if either is featured/premium
@@ -50,7 +54,19 @@ export default function City() {
       if (aIsPremium && !bIsPremium) return -1;
       if (!aIsPremium && bIsPremium) return 1;
       
-      // Then alphabetical by brand name
+      // Then sort by price if price sorting is enabled
+      if (priceSorting !== 'none' && a.minPrice && b.minPrice && a.currency && b.currency) {
+        const aMinPrice = convertCurrency(a.minPrice, a.currency, selectedCurrency);
+        const bMinPrice = convertCurrency(b.minPrice, b.currency, selectedCurrency);
+        
+        if (priceSorting === 'cheapest') {
+          return aMinPrice - bMinPrice; // Cheapest first
+        } else if (priceSorting === 'expensive') {
+          return bMinPrice - aMinPrice; // Most expensive first
+        }
+      }
+      
+      // Finally alphabetical by brand name
       return a.brandName.localeCompare(b.brandName);
     });
   };
@@ -510,9 +526,9 @@ export default function City() {
               />
             )}
 
-            {/* Featured Only Toggle */}
+            {/* Featured Only Toggle and Price Sorting */}
             {citySubmissions.length > 0 && (
-              <div className="mb-6">
+              <div className="mb-6 flex flex-wrap gap-4">
                 <Button
                   variant={featuredOnly ? "default" : "outline"}
                   onClick={() => setFeaturedOnly(!featuredOnly)}
@@ -524,6 +540,32 @@ export default function City() {
                 >
                   {featuredOnly ? "✓ Featured Only" : "Featured Only"}
                 </Button>
+                
+                <div className="flex gap-2">
+                  <Button
+                    variant={priceSorting === 'cheapest' ? "default" : "outline"}
+                    onClick={() => setPriceSorting(priceSorting === 'cheapest' ? 'none' : 'cheapest')}
+                    className={`${
+                      priceSorting === 'cheapest'
+                        ? "bg-green-500 hover:bg-green-600 text-white border-green-500" 
+                        : "border-green-500 text-green-600 hover:bg-green-50"
+                    }`}
+                  >
+                    {priceSorting === 'cheapest' ? "✓ Cheapest" : "Cheapest"}
+                  </Button>
+                  
+                  <Button
+                    variant={priceSorting === 'expensive' ? "default" : "outline"}
+                    onClick={() => setPriceSorting(priceSorting === 'expensive' ? 'none' : 'expensive')}
+                    className={`${
+                      priceSorting === 'expensive'
+                        ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
+                        : "border-red-500 text-red-600 hover:bg-red-50"
+                    }`}
+                  >
+                    {priceSorting === 'expensive' ? "✓ Most Expensive" : "Most Expensive"}
+                  </Button>
+                </div>
               </div>
             )}
             

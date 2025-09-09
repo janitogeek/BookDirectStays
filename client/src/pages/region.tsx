@@ -14,6 +14,7 @@ import { airtableService } from "@/lib/airtable";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
+import { convertCurrency } from "@/lib/currency-utils";
 import AlphabeticalDirectory from "@/components/alphabetical-directory";
 
 export default function Region() {
@@ -38,6 +39,9 @@ export default function Region() {
   
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
+  
+  // Price sorting state
+  const [priceSorting, setPriceSorting] = useState<'none' | 'cheapest' | 'expensive'>('none');
   
   // Currency context
   const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
@@ -131,7 +135,7 @@ export default function Region() {
   // Clear city search
   const clearCitySearch = () => setCitySearchQuery("");
 
-  // Sort function: Featured first, then alphabetical by brand name
+  // Sort function: Featured first, then price or alphabetical
   const sortSubmissions = (submissionsToSort: any[]) => {
     return submissionsToSort.sort((a, b) => {
       // Check if either is featured/premium
@@ -142,7 +146,19 @@ export default function Region() {
       if (aIsPremium && !bIsPremium) return -1;
       if (!aIsPremium && bIsPremium) return 1;
       
-      // Then alphabetical by brand name
+      // Then sort by price if price sorting is enabled
+      if (priceSorting !== 'none' && a.minPrice && b.minPrice && a.currency && b.currency) {
+        const aMinPrice = convertCurrency(a.minPrice, a.currency, selectedCurrency);
+        const bMinPrice = convertCurrency(b.minPrice, b.currency, selectedCurrency);
+        
+        if (priceSorting === 'cheapest') {
+          return aMinPrice - bMinPrice; // Cheapest first
+        } else if (priceSorting === 'expensive') {
+          return bMinPrice - aMinPrice; // Most expensive first
+        }
+      }
+      
+      // Finally alphabetical by brand name
       return a.brandName.localeCompare(b.brandName);
     });
   };
@@ -334,6 +350,47 @@ export default function Region() {
               onCurrencyChange={setSelectedCurrency}
               submissions={submissions}
             />
+
+            {/* Featured Only Toggle and Price Sorting */}
+            <div className="mt-6 mb-6 flex flex-wrap gap-4">
+              <Button
+                variant={featuredOnly ? "default" : "outline"}
+                onClick={() => setFeaturedOnly(!featuredOnly)}
+                className={`${
+                  featuredOnly 
+                    ? "bg-yellow-500 hover:bg-yellow-600 text-yellow-900 border-yellow-500" 
+                    : "border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+                }`}
+              >
+                {featuredOnly ? "✓ Featured Only" : "Featured Only"}
+              </Button>
+              
+              <div className="flex gap-2">
+                <Button
+                  variant={priceSorting === 'cheapest' ? "default" : "outline"}
+                  onClick={() => setPriceSorting(priceSorting === 'cheapest' ? 'none' : 'cheapest')}
+                  className={`${
+                    priceSorting === 'cheapest'
+                      ? "bg-green-500 hover:bg-green-600 text-white border-green-500" 
+                      : "border-green-500 text-green-600 hover:bg-green-50"
+                  }`}
+                >
+                  {priceSorting === 'cheapest' ? "✓ Cheapest" : "Cheapest"}
+                </Button>
+                
+                <Button
+                  variant={priceSorting === 'expensive' ? "default" : "outline"}
+                  onClick={() => setPriceSorting(priceSorting === 'expensive' ? 'none' : 'expensive')}
+                  className={`${
+                    priceSorting === 'expensive'
+                      ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
+                      : "border-red-500 text-red-600 hover:bg-red-50"
+                  }`}
+                >
+                  {priceSorting === 'expensive' ? "✓ Most Expensive" : "Most Expensive"}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -398,7 +455,7 @@ export default function Region() {
             <AlphabeticalDirectory
               title={`Find Hosts by City in 🏛️ ${regionName}`}
               description={`Browse hosts in specific cities within ${regionName}`}
-              items={citiesData.map(city => ({
+              items={citiesInRegion.map(city => ({
                 name: city.name,
                 slug: city.name.toLowerCase().replace(/\s+/g, '-'),
                 count: city.count,

@@ -36,7 +36,7 @@ export default function BudgetRangeSlider({
   
   const MIN_RANGE = convertedRange.min;
   const MAX_RANGE = convertedRange.max;
-  const GAP = Math.max(10, Math.round((MAX_RANGE - MIN_RANGE) * 0.05)); // 5% of range or 10, whichever is larger
+  const GAP = 100; // Fixed minimum difference of 100
 
   // Generate histogram data based on converted range
   const generateHistogramData = () => {

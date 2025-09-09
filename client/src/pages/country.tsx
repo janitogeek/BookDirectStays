@@ -17,6 +17,7 @@ import { getRegionSubmissionCounts } from "@/lib/submission-processor";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
+import { convertCurrency } from "@/lib/currency-utils";
 import AlphabeticalDirectory from "@/components/alphabetical-directory";
 
 export default function Country() {
@@ -42,12 +43,15 @@ export default function Country() {
   // Featured filter state
   const [featuredOnly, setFeaturedOnly] = useState(false);
   
+  // Price sorting state
+  const [priceSorting, setPriceSorting] = useState<'none' | 'cheapest' | 'expensive'>('none');
+  
   // Currency context
   const { selectedCurrency, setSelectedCurrency, currencyOptions, isLoading: currencyLoading } = useCurrency();
   
   // const queryClient = useQueryClient();
 
-  // Sort function: Featured first, then alphabetical by brand name
+  // Sort function: Featured first, then price or alphabetical
   const sortSubmissions = (submissionsToSort: any[]) => {
     return submissionsToSort.sort((a, b) => {
       // Check if either is featured/premium
@@ -58,7 +62,19 @@ export default function Country() {
       if (aIsPremium && !bIsPremium) return -1;
       if (!aIsPremium && bIsPremium) return 1;
       
-      // Then alphabetical by brand name
+      // Then sort by price if price sorting is enabled
+      if (priceSorting !== 'none' && a.minPrice && b.minPrice && a.currency && b.currency) {
+        const aMinPrice = convertCurrency(a.minPrice, a.currency, selectedCurrency);
+        const bMinPrice = convertCurrency(b.minPrice, b.currency, selectedCurrency);
+        
+        if (priceSorting === 'cheapest') {
+          return aMinPrice - bMinPrice; // Cheapest first
+        } else if (priceSorting === 'expensive') {
+          return bMinPrice - aMinPrice; // Most expensive first
+        }
+      }
+      
+      // Finally alphabetical by brand name
       return a.brandName.localeCompare(b.brandName);
     });
   };
@@ -591,12 +607,12 @@ export default function Country() {
             {isCountryLoading ? (
               <div className="h-12 bg-white/20 w-96 mx-auto rounded animate-pulse mb-6"></div>
             ) : (
-              <h1 className="text-4xl sm:text-5xl font-bold mb-6 flex items-center gap-4 justify-center">
+              <h1 className="text-4xl sm:text-5xl font-bold mb-6 flex items-center gap-4">
                 <span className="text-5xl">{getFlagByCountryName(country?.name || countryName)}</span>
                 <span>{country?.name || countryName} Vacation Rental Hosts</span>
               </h1>
             )}
-            <p className="text-xl text-blue-100 mb-8 text-center">
+            <p className="text-xl text-blue-100 mb-8">
               Direct booking vacation rental hosts in <span className="inline-flex items-center gap-1">{getFlagByCountryName(country?.name || countryName)} {country?.name || countryName}</span>
             </p>
             
@@ -663,8 +679,8 @@ export default function Country() {
             submissions={submissions}
           />
 
-          {/* Featured Only Toggle */}
-          <div className="mb-6">
+          {/* Featured Only Toggle and Price Sorting */}
+          <div className="mb-6 flex flex-wrap gap-4">
             <Button
               variant={featuredOnly ? "default" : "outline"}
               onClick={() => setFeaturedOnly(!featuredOnly)}
@@ -676,6 +692,32 @@ export default function Country() {
             >
               {featuredOnly ? "✓ Featured Only" : "Featured Only"}
             </Button>
+            
+            <div className="flex gap-2">
+              <Button
+                variant={priceSorting === 'cheapest' ? "default" : "outline"}
+                onClick={() => setPriceSorting(priceSorting === 'cheapest' ? 'none' : 'cheapest')}
+                className={`${
+                  priceSorting === 'cheapest'
+                    ? "bg-green-500 hover:bg-green-600 text-white border-green-500" 
+                    : "border-green-500 text-green-600 hover:bg-green-50"
+                }`}
+              >
+                {priceSorting === 'cheapest' ? "✓ Cheapest" : "Cheapest"}
+              </Button>
+              
+              <Button
+                variant={priceSorting === 'expensive' ? "default" : "outline"}
+                onClick={() => setPriceSorting(priceSorting === 'expensive' ? 'none' : 'expensive')}
+                className={`${
+                  priceSorting === 'expensive'
+                    ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
+                    : "border-red-500 text-red-600 hover:bg-red-50"
+                }`}
+              >
+                {priceSorting === 'expensive' ? "✓ Most Expensive" : "Most Expensive"}
+              </Button>
+            </div>
           </div>
 
           {/* Property Manager Cards Grid */}

@@ -413,19 +413,17 @@ export function formatPriceWithConversion(
  * @returns Object with min and max prices in selected currency
  */
 export function extractPriceRangeFromSubmissions(submissions: any[], selectedCurrency: CurrencyCode): { min: number | null; max: number } {
-  const pricesInSelectedCurrency: number[] = [];
+  const minPricesInSelectedCurrency: number[] = [];
   
   submissions.forEach(submission => {
-    if (submission.minPrice && submission.maxPrice && submission.currency) {
-      // Convert prices to selected currency
+    if (submission.minPrice && submission.currency) {
+      // Only use minimum prices from actual companies, convert to selected currency
       const convertedMinPrice = convertCurrency(submission.minPrice, submission.currency, selectedCurrency);
-      const convertedMaxPrice = convertCurrency(submission.maxPrice, submission.currency, selectedCurrency);
-      
-      pricesInSelectedCurrency.push(convertedMinPrice, convertedMaxPrice);
+      minPricesInSelectedCurrency.push(convertedMinPrice);
     }
   });
   
-  if (pricesInSelectedCurrency.length === 0) {
+  if (minPricesInSelectedCurrency.length === 0) {
     // No price data available, return null for min and default max
     return { 
       min: null, 
@@ -433,12 +431,13 @@ export function extractPriceRangeFromSubmissions(submissions: any[], selectedCur
     };
   }
   
-  const minPrice = Math.min(...pricesInSelectedCurrency);
+  // Find the absolute minimum of all minimum prices
+  const actualMinPrice = Math.min(...minPricesInSelectedCurrency);
   const maxPrice = convertCurrency(2000, 'USD', selectedCurrency); // Always $2000 USD equivalent
   
   return {
-    min: Math.floor(minPrice), // Round down for min
-    max: Math.ceil(maxPrice)   // Round up for max
+    min: Math.floor(actualMinPrice), // Exact minimum from actual companies
+    max: Math.ceil(maxPrice)         // Always $2000 USD equivalent
   };
 }
 

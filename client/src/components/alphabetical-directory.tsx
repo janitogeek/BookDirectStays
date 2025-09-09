@@ -30,7 +30,7 @@ export default function AlphabeticalDirectory({
   emptyStateDescription,
 }: AlphabeticalDirectoryProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  const [selectedLetter, setSelectedLetter] = useState<string>("A");
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
@@ -58,8 +58,23 @@ export default function AlphabeticalDirectory({
     );
   }, [filteredItems, selectedLetter]);
 
-  const clearSearch = () => setSearchQuery("");
-  const clearLetterFilter = () => setSelectedLetter(null);
+  // Handle search input with smart letter switching
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    if (value.length > 0) {
+      const firstLetter = value.charAt(0).toUpperCase();
+      if (firstLetter >= 'A' && firstLetter <= 'Z') {
+        setSelectedLetter(firstLetter);
+      }
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSelectedLetter("A");
+  };
 
   return (
     <div className="space-y-8">
@@ -78,7 +93,7 @@ export default function AlphabeticalDirectory({
             placeholder={searchPlaceholder}
             className="pl-10 pr-10 py-3"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
           {searchQuery && (
             <button
@@ -93,16 +108,8 @@ export default function AlphabeticalDirectory({
 
       {/* Alphabetical Frieze */}
       {availableLetters.length > 0 && (
-        <div className="border-2 border-yellow-400 rounded-lg p-4 bg-yellow-50">
+        <div className="border-2 border-blue-300 rounded-lg p-4 bg-blue-50">
           <div className="flex flex-wrap justify-center gap-2">
-            <Button
-              onClick={clearLetterFilter}
-              variant={selectedLetter === null ? "default" : "outline"}
-              size="sm"
-              className="min-w-[40px] h-10 font-semibold"
-            >
-              All
-            </Button>
             {availableLetters.map((letter) => (
               <Button
                 key={letter}
@@ -139,13 +146,13 @@ export default function AlphabeticalDirectory({
           <div className="text-center py-12">
             <div className="text-gray-500">
               <h3 className="text-xl font-semibold mb-2">No {selectedLetter} entries found</h3>
-              <p>Try selecting a different letter.</p>
+              <p>Try selecting a different letter or clearing your search.</p>
               <Button 
                 variant="outline" 
-                onClick={clearLetterFilter}
+                onClick={() => setSelectedLetter("A")}
                 className="mt-4"
               >
-                Show all
+                Back to A
               </Button>
             </div>
           </div>
