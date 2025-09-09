@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, ArrowDown } from "lucide-react";
 import { dataPreloader } from "@/lib/data-preloader";
 import { getCitiesForCountryFromGeonamesRecord } from "@/lib/geonames-record-parser";
-import { airtableService } from "@/lib/airtable";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
@@ -71,29 +70,50 @@ export default function Region() {
     }
   }, [countryName, currencyOptions, setSelectedCurrency]);
   
-  // Query submissions for this country to extract cities in this region
+  // Query submissions for this region
   const { data: submissions = [], isLoading: isSubmissionsLoading } = useQuery({
     queryKey: ["/api/region-submissions", countryName, regionName],
     queryFn: async () => {
-      const allSubmissions = await airtableService.getApprovedSubmissions();
+      // Use dataPreloader for better caching and reliability
+      const allSubmissions = await dataPreloader.getSubmissionsForCountry(countryName);
+      
+      console.log(`🏛️ Region ${regionName} - Total submissions for ${countryName}:`, allSubmissions.length);
       
       // Filter submissions that have cities in this region
-      return allSubmissions.filter(submission => {
-        if (!submission.geonamesRecord) return false;
+      const regionSubmissions = allSubmissions.filter(submission => {
+        // Check geonamesRecord first (preferred)
+        if (submission.geonamesRecord) {
+          const records = submission.geonamesRecord.split(';').map(record => record.trim());
+          
+          const hasRegionMatch = records.some(record => {
+            const parts = record.split(',').map(part => part.trim());
+            if (parts.length === 3) {
+              const [city, region, country] = parts;
+              return country.toLowerCase() === countryName.toLowerCase() && 
+                     region.toLowerCase() === regionName.toLowerCase();
+            }
+            return false;
+          });
+          
+          if (hasRegionMatch) return true;
+        }
         
-        // Parse geonames record to find cities in this region and country
-        const records = submission.geonamesRecord.split(';').map(record => record.trim());
+        // Fallback to legacy fields for older submissions
+        if (submission.regionsStates && submission.countries) {
+          const matchesCountry = submission.countries.some(country => 
+            country.toLowerCase() === countryName.toLowerCase()
+          );
+          const matchesRegion = submission.regionsStates.some(region => 
+            region.toLowerCase() === regionName.toLowerCase()
+          );
+          return matchesCountry && matchesRegion;
+        }
         
-        return records.some(record => {
-          const parts = record.split(',').map(part => part.trim());
-          if (parts.length === 3) {
-            const [city, region, country] = parts;
-            return country.toLowerCase() === countryName.toLowerCase() && 
-                   region.toLowerCase() === regionName.toLowerCase();
-          }
-          return false;
-        });
+        return false;
       });
+      
+      console.log(`🏛️ Region ${regionName} - Filtered submissions:`, regionSubmissions.length);
+      return regionSubmissions;
     },
     enabled: Boolean(countryName && regionName),
     staleTime: 30 * 60 * 1000, // 30 minutes

@@ -176,53 +176,50 @@ export default function City() {
       .replace(/[\u0300-\u036f]/g, ''); // Remove diacritics/accents
   };
 
-  const citySubmissions = allSubmissions.filter(submission => {
-    // Use Geonames Record for accurate city matching
-    if (submission.geonamesRecord) {
-      const records = submission.geonamesRecord.split(';').map(record => record.trim());
-      
-      return records.some(record => {
-        const parts = record.split(',').map(part => part.trim());
-        if (parts.length >= 2) {
-          const [city, regionOrCountry, country] = parts;
-          const recordCountry = parts.length === 3 ? country : regionOrCountry;
-          
-          const normalizedRecordCity = normalizeForComparison(city);
-          const normalizedCityName = normalizeForComparison(cityName || '');
-          const normalizedRecordCountry = normalizeForComparison(recordCountry);
-          const normalizedCountryName = normalizeForComparison(countryName || '');
-          
-          // Match both city and country
-          return (normalizedRecordCity.includes(normalizedCityName) || 
-                  normalizedCityName.includes(normalizedRecordCity)) &&
-                 (normalizedRecordCountry.includes(normalizedCountryName) || 
-                  normalizedCountryName.includes(normalizedRecordCountry));
-        }
-        return false;
-      });
-    }
+  const citySubmissions = useMemo(() => {
+    console.log(`🏙️ City ${cityName} - Total submissions for ${countryName}:`, allSubmissions.length);
     
-    // Fallback to old citiesRegions field for submissions without geonamesRecord
-    else if (submission.citiesRegions && submission.countries) {
-      const cityMatch = submission.citiesRegions.some(city => {
-      const normalizedCity = normalizeForComparison(city);
-      const normalizedCityName = normalizeForComparison(cityName || '');
-      return normalizedCity.includes(normalizedCityName) ||
-             normalizedCityName.includes(normalizedCity);
-      });
+    const filtered = allSubmissions.filter(submission => {
+      // Use Geonames Record for accurate city matching
+      if (submission.geonamesRecord) {
+        const records = submission.geonamesRecord.split(';').map(record => record.trim());
+        
+        const hasMatch = records.some(record => {
+          const parts = record.split(',').map(part => part.trim());
+          if (parts.length >= 2) {
+            const [city, regionOrCountry, country] = parts;
+            const recordCountry = parts.length === 3 ? country : regionOrCountry;
+            
+            // Exact match approach for better accuracy
+            const cityMatches = normalizeForComparison(city) === normalizeForComparison(cityName || '');
+            const countryMatches = normalizeForComparison(recordCountry) === normalizeForComparison(countryName || '');
+            
+            return cityMatches && countryMatches;
+          }
+          return false;
+        });
+        
+        if (hasMatch) return true;
+      }
       
-      const countryMatch = submission.countries.some(country => {
-        const normalizedCountry = normalizeForComparison(country);
-        const normalizedCountryName = normalizeForComparison(countryName || '');
-        return normalizedCountry.includes(normalizedCountryName) ||
-               normalizedCountryName.includes(normalizedCountry);
-      });
+      // Fallback to legacy citiesRegions field for older submissions
+      if (submission.citiesRegions && submission.countries) {
+        const cityMatches = submission.citiesRegions.some(city => 
+          normalizeForComparison(city) === normalizeForComparison(cityName || '')
+        );
+        const countryMatches = submission.countries.some(country => 
+          normalizeForComparison(country) === normalizeForComparison(countryName || '')
+        );
+        return cityMatches && countryMatches;
+      }
       
-      return cityMatch && countryMatch;
-    }
+      return false;
+    });
     
-    return false;
-  });
+    console.log(`🏙️ City ${cityName} - Filtered submissions:`, filtered.length);
+    console.log(`🏙️ City ${cityName} - Sample submission geonames:`, filtered.slice(0, 3).map(s => s.geonamesRecord));
+    return filtered;
+  }, [allSubmissions, cityName, countryName]);
 
   // Extract region/state name from geonames data for breadcrumbs
   const regionName = useMemo(() => {
