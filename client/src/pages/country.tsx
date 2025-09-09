@@ -13,6 +13,7 @@ import { Search, X, ArrowDown } from "lucide-react";
 // import { apiRequest } from "@/lib/queryClient";
 // import { airtableService } from "@/lib/airtable";
 import { dataPreloader } from "@/lib/data-preloader";
+import { getRegionSubmissionCounts } from "@/lib/submission-processor";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
@@ -225,6 +226,16 @@ export default function Country() {
     return acc;
   }, {} as Record<string, number>);
 
+  // Fetch regions for this country  
+  const { data: regionCounts = {}, isLoading: isRegionsLoading } = useQuery({
+    queryKey: ["/api/region-counts", countryName],
+    queryFn: () => getRegionSubmissionCounts(countryName),
+    enabled: shouldFetchCities,
+    staleTime: 30 * 60 * 1000, // 30 minutes
+  });
+
+  // Transform regions data  
+  const regions = Object.keys(regionCounts).filter(region => regionCounts[region] > 0);
   
   // Get country data from preloaded cache (instant)
   const { data: allCountries = [], isLoading: isCountryLoading } = useQuery({
@@ -572,8 +583,23 @@ export default function Country() {
             )}
           </div>
             
-          {/* City Navigation Button - Centered under title */}
-          <div className="flex justify-center mb-8">
+          {/* Navigation Buttons - Two buttons under title */}
+          <div className="flex justify-center gap-4 mb-8">
+              <Button 
+                onClick={() => {
+                  const element = document.getElementById('region-navigation');
+                  if (element) {
+                    element.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }
+                }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
+              >
+                Find Hosts by Region/State
+                <ArrowDown className="w-5 h-5" />
+              </Button>
               <Button 
                 onClick={() => {
                   const element = document.getElementById('city-navigation');
@@ -584,7 +610,7 @@ export default function Country() {
                     });
                   }
                 }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 text-lg font-semibold flex items-center gap-2"
               >
                 Find Hosts by City
                 <ArrowDown className="w-5 h-5" />
@@ -695,8 +721,80 @@ export default function Country() {
         </div>
       </section>
 
+      {/* Region Navigation Section */}
+        <section id="region-navigation" className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                  <span>Find Hosts by Region/State in</span> 
+                  <span className="inline-flex items-center gap-2">
+                    <span className="text-4xl">{getFlagByCountryName(country?.name || countryName)}</span>
+                    {country?.name || countryName}
+                  </span>
+                </h2>
+                <p className="text-xl text-gray-600 mb-6">
+                  Browse hosts by region or state to discover your perfect accommodation
+                </p>
+              </div>
+              
+              {/* Region Search */}
+              <div className="mb-8">
+                <div className="relative max-w-md mx-auto">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="text"
+                    placeholder="Search regions/states..."
+                    className="pl-10 pr-10"
+                    value=""
+                    onChange={() => {}}
+                  />
+                </div>
+              </div>
+
+              {/* Regions Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+                {isRegionsLoading ? (
+                  // Loading skeletons
+                  Array.from({ length: 8 }, (_, i) => (
+                    <div key={i} className="h-20 bg-gray-300 rounded animate-pulse"></div>
+                  ))
+                ) : regions.length === 0 ? (
+                  <div className="col-span-full text-center py-8">
+                    <div className="text-gray-500">
+                      <h3 className="text-xl font-semibold mb-2">No regions found</h3>
+                      <p>This country doesn't have region data yet.</p>
+                    </div>
+                  </div>
+                ) : (
+                  regions.map((region, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                      <CardContent className="p-4">
+                        <Link 
+                          href={`/country/${countrySlug}/region/${region.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="block text-center"
+                        >
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <span className="text-lg">🏛️</span>
+                            <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                              {region}
+                            </h3>
+                          </div>
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                            {regionCounts[region]} {regionCounts[region] === 1 ? 'host' : 'hosts'}
+                          </Badge>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
       {/* City Navigation Section */}
-        <section id="city-navigation" className="py-16 bg-gray-50">
+        <section id="city-navigation" className="py-16 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-8">

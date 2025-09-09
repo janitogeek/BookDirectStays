@@ -4,7 +4,7 @@
 import { matchCitiesToCountriesOptimized } from './geonames';
 import { airtableService, type Submission } from './airtable';
 import { extractCityName } from './utils';
-import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
+import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord, getRegionsForCountryFromGeonamesRecord } from './geonames-record-parser';
 
 /**
  * Process an approved submission and create/link cities
@@ -342,6 +342,60 @@ export async function getCitySubmissionCounts(countryName: string): Promise<Reco
     
   } catch (error) {
     console.error(`❌ Error getting city submission counts for country ${countryName}:`, error);
+    return {};
+  }
+}
+
+/**
+ * Get region/state submission counts for a specific country
+ * Uses Geonames Record for accurate region-country matching
+ */
+export async function getRegionSubmissionCounts(countryName: string): Promise<Record<string, number>> {
+  try {
+    console.log(`🔍 GEONAMES API: Getting region submission counts for country: ${countryName}`);
+    
+    // Get all approved submissions
+    const allSubmissions = await airtableService.getApprovedSubmissions();
+    console.log(`📊 Found ${allSubmissions.length} total submissions in Airtable`);
+    
+    const regionCounts: Record<string, number> = {};
+    
+    for (const submission of allSubmissions) {
+      // Use Geonames Record for accurate region-country matching
+      if (submission.geonamesRecord) {
+        const regionsForCountry = getRegionsForCountryFromGeonamesRecord(submission.geonamesRecord, countryName);
+        
+        if (regionsForCountry.length > 0) {
+          console.log(`🏛️ Geonames Record for ${submission.brandName}:`, submission.geonamesRecord);
+          console.log(`✅ Regions for ${countryName}:`, regionsForCountry);
+          
+          regionsForCountry.forEach(regionName => {
+            if (regionName && regionName.length > 2 && regionName.length < 50) {
+              regionCounts[regionName] = (regionCounts[regionName] || 0) + 1;
+              console.log(`    ✅ Region "${regionName}" for ${countryName} added (count: ${regionCounts[regionName]})`);
+            }
+          });
+        }
+      }
+      
+      // Fallback for submissions without geonamesRecord (use regionsStates field)
+      else if (submission.regionsStates && submission.regionsStates.length > 0 && 
+          submission.countries && submission.countries.some(country => country.toLowerCase() === countryName.toLowerCase())) {
+        
+        submission.regionsStates.forEach(regionName => {
+          if (regionName && regionName.length > 2 && regionName.length < 50) {
+            regionCounts[regionName] = (regionCounts[regionName] || 0) + 1;
+            console.log(`⚠️ FALLBACK: ${regionName} in ${countryName} (count: ${regionCounts[regionName]})`);
+          }
+        });
+      }
+    }
+    
+    console.log(`🏛️ FINAL region counts for ${countryName}:`, regionCounts);
+    return regionCounts;
+    
+  } catch (error) {
+    console.error(`❌ Error getting region submission counts for country ${countryName}:`, error);
     return {};
   }
 }

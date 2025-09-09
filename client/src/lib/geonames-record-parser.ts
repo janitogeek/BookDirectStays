@@ -92,6 +92,19 @@ export function getCountriesFromGeonamesRecord(geonamesRecord: string): string[]
 }
 
 /**
+ * Gets all unique regions/states from a Geonames record for a specific country
+ */
+export function getRegionsForCountryFromGeonamesRecord(geonamesRecord: string, countryName: string): string[] {
+  const parsed = parseGeonamesRecord(geonamesRecord);
+  const regions = parsed.records
+    .filter(record => record.country?.toLowerCase() === countryName.toLowerCase())
+    .map(record => record.region)
+    .filter(Boolean) as string[];
+    
+  return [...new Set(regions)];
+}
+
+/**
  * Gets all cities for a specific country from a Geonames record
  */
 export function getCitiesForCountryFromGeonamesRecord(geonamesRecord: string, targetCountry: string): string[] {

@@ -12,6 +12,7 @@ import { dataPreloader } from "@/lib/data-preloader";
 import { getFlagByCountryName } from "@/lib/utils";
 import { useCurrency } from "@/contexts/currency-context";
 import { getCurrencyForCountry } from "@/lib/world-currency-extractor";
+import { parseGeonamesRecord } from "@/lib/geonames-record-parser";
 
 export default function City() {
   const [, params] = useRoute('/country/:country/:city');
@@ -165,6 +166,25 @@ export default function City() {
              normalizedCityName.includes(normalizedCity);
     })
   );
+
+  // Extract region/state name from geonames data for breadcrumbs
+  const regionName = useMemo(() => {
+    for (const submission of citySubmissions) {
+      if (submission.geonamesRecord) {
+        const parsed = parseGeonamesRecord(submission.geonamesRecord);
+        const cityRecord = parsed.records.find(record => 
+          record.city && record.country && 
+          normalizeForComparison(record.city).includes(normalizeForComparison(cityName || '')) &&
+          normalizeForComparison(record.country).includes(normalizeForComparison(countryName || ''))
+        );
+        
+        if (cityRecord && cityRecord.region) {
+          return cityRecord.region;
+        }
+      }
+    }
+    return null;
+  }, [citySubmissions, cityName, countryName]);
 
   // Filter and sort submissions by all active filters
   const filteredSubmissions = useMemo(() => {
@@ -385,8 +405,8 @@ export default function City() {
             <nav className="mb-8">
               <ol className="flex items-center space-x-2 text-blue-200">
                 <li>
-                  <Link href="/find-host" className="hover:text-white transition-colors">
-                    Find a Host
+                  <Link href="/" className="hover:text-white transition-colors">
+                    Home
                   </Link>
                 </li>
                 <li className="text-blue-300">›</li>
@@ -395,6 +415,19 @@ export default function City() {
                     {getFlagByCountryName(countryName)} {countryName}
                   </Link>
                 </li>
+                {regionName && (
+                  <>
+                    <li className="text-blue-300">›</li>
+                    <li>
+                      <Link 
+                        href={`/country/${countrySlug}/region/${regionName.toLowerCase().replace(/\s+/g, '-')}`} 
+                        className="hover:text-white transition-colors inline-flex items-center gap-1"
+                      >
+                        🏛️ {regionName}
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li className="text-blue-300">›</li>
                 <li className="text-white font-semibold">{cityName}</li>
               </ol>
