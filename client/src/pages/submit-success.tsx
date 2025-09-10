@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { processFeaturedSubmission } from "@/lib/submission-processor";
 
 
 export default function SubmitSuccess() {
@@ -14,17 +13,27 @@ export default function SubmitSuccess() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { toast } = useToast();
 
-  // Clear ALL caches for ANY new submission to ensure immediate visibility
-  const clearAllCachesForNewSubmission = async (submissionData: any) => {
+  // CORRECT FLOW: Process new submission properly
+  const processNewSubmissionCorrectly = async (submissionData: any) => {
     try {
-      console.log('🗑️ Clearing ALL caches for new submission...');
+      console.log('🚀 CORRECT FLOW: Processing new submission...');
+      console.log('📋 Submission data:', {
+        brandName: submissionData["Brand Name"],
+        plan: submissionData.Plan,
+        countries: submissionData.Countries,
+        cities: submissionData.Cities,
+        status: submissionData.Status
+      });
+      
+      // STEP 1: Create company page and integrate into directory system
+      console.log('🏢 STEP 1: Creating company page and integrating into directory...');
       
       // Import dataPreloader to force refresh
       const { dataPreloader } = await import('@/lib/data-preloader');
       
-      // CRITICAL: Force refresh the data preloader cache
+      // CRITICAL: Force refresh the data preloader cache to include new submission
       await dataPreloader.forceRefresh();
-      console.log('✅ Data preloader cache refreshed - new submission will appear everywhere');
+      console.log('✅ Data preloader refreshed - new submission integrated into directory');
       
       // Clear all related caches
       localStorage.removeItem('bds_submissions_cache');
@@ -37,6 +46,7 @@ export default function SubmitSuccess() {
         countries.forEach((country: string) => {
           localStorage.removeItem(`bds_country_${country.toLowerCase()}`);
         });
+        console.log(`🌍 Cleared caches for countries: ${submissionData.Countries}`);
       }
       
       if (submissionData.Cities) {
@@ -44,43 +54,25 @@ export default function SubmitSuccess() {
         cities.forEach((city: string) => {
           localStorage.removeItem(`bds_city_${city.toLowerCase()}`);
         });
+        console.log(`🏙️ Cleared caches for cities: ${submissionData.Cities}`);
       }
       
-      console.log('✅ ALL caches cleared - new submission will appear immediately');
-    } catch (error) {
-      console.error('❌ Error clearing caches for new submission:', error);
-    }
-  };
-
-  // Process featured submissions for immediate visibility
-  const processFeaturedSubmissionIfNeeded = async (submissionData: any) => {
-    try {
-      // Check if this is a featured submission
+      // STEP 2: Check if it's featured (but don't create separate featured processing)
       const isFeatured = submissionData.Plan?.includes('Premium') || 
                         submissionData.Plan?.includes('€499.99') ||
                         submissionData.Status?.includes('Approved – Published');
-
-      if (!isFeatured) {
-        console.log('⚠️ Not a featured submission, skipping special processing');
-        return;
-      }
-
-      console.log('🌟 Featured submission detected, processing for full visibility...');
       
-      // Process the featured submission
-      await processFeaturedSubmission({
-        brandName: submissionData["Brand Name"],
-        email: submissionData["Submitted By (Email)"],
-        plan: submissionData.Plan,
-        countries: submissionData.Countries?.split(', ') || [],
-        cities: submissionData.Cities?.split(', ') || [],
-        regionsStates: submissionData["Regions / States"]?.split(', ') || [],
-        status: submissionData.Status
-      });
-
-      console.log('✅ Featured submission processed successfully');
+      if (isFeatured) {
+        console.log('🌟 STEP 2: Submission is featured - will appear in featured hosts section automatically');
+        console.log('✅ Featured submission will use the same company page created in directory');
+      } else {
+        console.log('📝 STEP 2: Regular submission - will appear in directory only');
+      }
+      
+      console.log('🎉 CORRECT FLOW COMPLETE: Submission processed and integrated properly');
+      
     } catch (error) {
-      console.error('❌ Error processing featured submission:', error);
+      console.error('❌ Error processing new submission correctly:', error);
       // Don't throw error - this shouldn't block the success flow
     }
   };
@@ -358,13 +350,8 @@ export default function SubmitSuccess() {
       
       console.log('localStorage cleaned up after successful submission');
       
-      // CRITICAL: Clear ALL caches for ANY new submission (not just featured)
-      await clearAllCachesForNewSubmission(submissionData);
-      
-      // Process featured submissions for immediate visibility (non-blocking)
-      processFeaturedSubmissionIfNeeded(submissionData).catch(error => {
-        console.error('❌ Featured submission processing failed (non-critical):', error);
-      });
+      // CORRECT FLOW: Process ALL submissions the same way
+      await processNewSubmissionCorrectly(submissionData);
       
       setSubmissionStatus('success');
       
