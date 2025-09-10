@@ -114,9 +114,44 @@ history.replaceState = function(...args) {
 console.log('🚀 Starting background data preload...');
 dataPreloader.preloadData().then(() => {
   console.log('✅ Background data preload completed!');
+  
+  // CRITICAL FIX: Auto-process existing submissions to create company pages
+  autoFixExistingSubmissions();
 }).catch((error) => {
   console.error('❌ Background data preload failed:', error);
 });
+
+// CRITICAL FIX: Auto-process all existing submissions
+async function autoFixExistingSubmissions() {
+  try {
+    console.log('🔧 AUTO-FIX: Checking if existing submissions need processing...');
+    
+    // Check if we need to process existing submissions
+    const submissions = await dataPreloader.getSubmissions();
+    const submissionsWithSlugs = submissions.filter(s => (s as any).uniqueSlug);
+    
+    console.log(`📊 Found ${submissions.length} total submissions, ${submissionsWithSlugs.length} with unique slugs`);
+    
+    if (submissionsWithSlugs.length < submissions.length || submissions.length === 0) {
+      console.log('🚀 AUTO-FIX: Processing existing submissions to create company pages...');
+      
+      // Force refresh to process all submissions with unique slugs
+      await dataPreloader.forceRefresh();
+      
+      console.log('✅ AUTO-FIX: All existing submissions processed with unique company pages');
+      
+      // Verify the fix worked
+      const updatedSubmissions = await dataPreloader.getSubmissions();
+      const updatedSubmissionsWithSlugs = updatedSubmissions.filter(s => (s as any).uniqueSlug);
+      console.log(`🎉 VERIFICATION: Now have ${updatedSubmissions.length} submissions, ${updatedSubmissionsWithSlugs.length} with unique slugs`);
+      
+    } else {
+      console.log('✅ AUTO-FIX: All submissions already have unique company pages');
+    }
+  } catch (error) {
+    console.error('❌ AUTO-FIX: Error processing existing submissions:', error);
+  }
+}
 
 // Report performance metrics after page load
 window.addEventListener('load', () => {
