@@ -104,7 +104,7 @@ const submitToAirtable = async (formData: any, paymentInfo: any) => {
 
     "Number of Listings": formData["Number of Listings"],
 
-    "Cities / Regions": Array.isArray(formData["Cities / Regions"]) 
+    "Cities": Array.isArray(formData["Cities / Regions"]) 
       ? formData["Cities / Regions"].map((city: any) => {
           const cityDisplayName = city.displayName || city;
           // Extract only the city name from "City, Region, Country" format

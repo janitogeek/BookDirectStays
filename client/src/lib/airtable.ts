@@ -32,7 +32,7 @@ export interface AirtableSubmission {
     'Plan': string;
     'Top Stats': string;
     'Countries': string | string[];
-    'Cities / Regions': string | string[];
+    'Cities': string | string[];
     'Regions / States'?: string | string[];
     'Geonames Record'?: string;
     'Types of Stays': string | string[];
@@ -140,7 +140,7 @@ export const airtableService = {
       'Commission on Revenue': submissionData.field12,
               'Plan': submissionData.field11,
               'Countries': submissionData.Countries,
-              'Cities / Regions': submissionData.Cities_Regions,
+              'Cities': submissionData.Cities_Regions,
               'Types of Stays': submissionData.field12,
               'Ideal For': submissionData.field13,
               'Is Pet Friendly': submissionData.field14 === 'true',
@@ -592,7 +592,7 @@ export const airtableService = {
       plan: fields['Plan'] || '',
       topStats: fields['Top Stats'] || '',
       countries: parseArray(fields['Countries']),
-      citiesRegions: parseArray(fields['Cities / Regions']),
+      citiesRegions: parseArray(fields['Cities']),
       regionsStates: parseArray(fields['Regions / States']),
       geonamesRecord: fields['Geonames Record'] || undefined,
       typesOfStays: parseArray(fields['Types of Stays']),

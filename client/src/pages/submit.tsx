@@ -34,7 +34,7 @@ const formSchema = z.object({
   "Direct Booking Engine URL": z.string().url("Please enter a valid URL"),
   "PMS/Channel Manager": z.string().min(1, "Please select your PMS/Channel Manager"),
   "Number of Listings": z.coerce.number().min(1),
-  "Cities / Regions": z.array(z.object({ 
+  "Cities": z.array(z.object({ 
     name: z.string(), 
     displayName: z.string(), 
     geonameId: z.number(),
@@ -194,7 +194,7 @@ export default function Submit() {
       "PMS/Channel Manager": "",
       "Number of Listings": 1,
 
-      "Cities / Regions": [],
+      "Cities": [],
       "Logo Upload": { url: "", name: "" },
       "Highlight Image": { url: "", name: "" },
       "Rating (X/5) & Reviews (#) Screenshot": { url: "", name: "" },
@@ -513,7 +513,7 @@ export default function Submit() {
         "Direct Booking Engine URL": values["Direct Booking Engine URL"],
         "PMS": values["PMS/Channel Manager"],
         "Number of Listings": values["Number of Listings"],
-        "Cities / Regions": values["Cities / Regions"].map(city => {
+        "Cities": values["Cities"].map(city => {
           const cityDisplayName = city.displayName;
           // Extract only the city name from "City, Region, Country" format
           if (typeof cityDisplayName === 'string' && cityDisplayName.includes(', ')) {
@@ -522,12 +522,12 @@ export default function Submit() {
           return cityDisplayName;
         }).join(", "),
         "Countries": extractedCountries.join(", "),
-        "Regions / States": values["Cities / Regions"].map(city => {
+        "Regions / States": values["Cities"].map(city => {
           // Extract region/state from Geonames data
           const regionName = city.adminName1 || '';
           return regionName;
         }).filter(Boolean).join(", "),
-        "Geonames Record": values["Cities / Regions"].map(city => {
+        "Geonames Record": values["Cities"].map(city => {
           // Generate full Geonames record format: "City, Region, Country"
           const cityName = city.name;
           const regionName = city.adminName1 || '';
@@ -738,7 +738,7 @@ export default function Submit() {
   };
 
   // Watch cities changes to auto-populate countries
-  const selectedCities = form.watch("Cities / Regions");
+  const selectedCities = form.watch("Cities");
   const extractedCountries = useMemo(() => {
     if (selectedCities && selectedCities.length > 0) {
       return extractCountriesFromCities(selectedCities);
@@ -832,7 +832,7 @@ export default function Submit() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name="Cities / Regions" render={({ field }) => (
+              <FormField control={form.control} name="Cities" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cities<RequiredAsterisk /></FormLabel>
                   <FormDescription>

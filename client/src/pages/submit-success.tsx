@@ -101,7 +101,7 @@ export default function SubmitSuccess() {
         "PMS": formData["PMS/Channel Manager"],
         "Number of Listings": formData["Number of Listings"],
 
-        "Cities / Regions": formData["Cities / Regions"].map((city: any) => {
+        "Cities": formData["Cities"].map((city: any) => {
           const cityDisplayName = city.displayName;
           // Extract only the city name from "City, Region, Country" format
           if (typeof cityDisplayName === 'string' && cityDisplayName.includes(', ')) {
@@ -109,9 +109,9 @@ export default function SubmitSuccess() {
           }
           return cityDisplayName;
         }).join(", "),
-        "Countries": [...new Set(formData["Cities / Regions"].map((city: any) => city.countryName))].join(", "),
-        "Regions / States": [...new Set(formData["Cities / Regions"].map((city: any) => city.adminName1).filter(Boolean))].join(", "),
-        "Geonames Record": formData["Cities / Regions"].map((city: any) => {
+        "Countries": [...new Set(formData["Cities"].map((city: any) => city.countryName))].join(", "),
+        "Regions / States": [...new Set(formData["Cities"].map((city: any) => city.adminName1).filter(Boolean))].join(", "),
+        "Geonames Record": formData["Cities"].map((city: any) => {
           // Generate full Geonames record format: "City, Region, Country"
           const cityName = city.name;
           const regionName = city.adminName1 || '';
