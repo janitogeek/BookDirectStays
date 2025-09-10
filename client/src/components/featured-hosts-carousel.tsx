@@ -388,6 +388,14 @@ export default function FeaturedHostsCarousel() {
     return dateB.getTime() - dateA.getTime();
   }) || [];
 
+  // DEBUG: Check if submissions have uniqueSlug
+  console.log('🔍 Featured hosts debug:', featuredHosts.map(h => ({
+    brandName: h.brandName,
+    uniqueSlug: (h as any).uniqueSlug,
+    id: h.id,
+    email: h.email
+  })));
+
   if (featuredHosts.length === 0) {
     return (
       <div className="max-w-6xl mx-auto text-center">
@@ -594,7 +602,7 @@ export default function FeaturedHostsCarousel() {
                     className="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 border-gray-300 text-gray-700 hover:text-gray-800"
                   >
                     <Link 
-                      to={`/property/${host.uniqueSlug || generateSlug(host.brandName)}?from=featured`}
+                      to={`/property/${host.uniqueSlug || host.id}?from=featured`}
                       onClick={clickTracking.trackCompany}
                     >
                       Why Book With {host.brandName}?
