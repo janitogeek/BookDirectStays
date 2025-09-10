@@ -774,7 +774,14 @@ const generateUniqueSlugForSubmission = async (submission: any): Promise<string>
 
 const clearCacheForSubmission = async (submission: any) => {
   // Clear relevant caches so the submission appears immediately
-  console.log('🗑️ Clearing caches for featured submission...');
+  console.log('🗑️ Clearing ALL caches for new submission...');
+  
+  // Import dataPreloader to force refresh
+  const { dataPreloader } = await import('./data-preloader');
+  
+  // CRITICAL: Force refresh the data preloader cache
+  await dataPreloader.forceRefresh();
+  console.log('✅ Data preloader cache refreshed');
   
   // Clear country caches
   if (submission.countries) {
@@ -796,8 +803,11 @@ const clearCacheForSubmission = async (submission: any) => {
   // Clear main submissions cache
   localStorage.removeItem('bds_submissions_cache');
   
+  // Clear instant preload flag to force re-processing
+  localStorage.removeItem('bds_preload_ready');
+  
   // Clear slug mapping cache
   clearSlugMappingCache();
   
-  console.log('✅ Caches cleared for immediate visibility');
+  console.log('✅ ALL caches cleared - new submission will appear everywhere');
 }; 

@@ -14,6 +14,44 @@ export default function SubmitSuccess() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { toast } = useToast();
 
+  // Clear ALL caches for ANY new submission to ensure immediate visibility
+  const clearAllCachesForNewSubmission = async (submissionData: any) => {
+    try {
+      console.log('🗑️ Clearing ALL caches for new submission...');
+      
+      // Import dataPreloader to force refresh
+      const { dataPreloader } = await import('@/lib/data-preloader');
+      
+      // CRITICAL: Force refresh the data preloader cache
+      await dataPreloader.forceRefresh();
+      console.log('✅ Data preloader cache refreshed - new submission will appear everywhere');
+      
+      // Clear all related caches
+      localStorage.removeItem('bds_submissions_cache');
+      localStorage.removeItem('bds_preload_ready');
+      localStorage.removeItem('bds_featured_hosts');
+      
+      // Clear country/city specific caches if they exist
+      if (submissionData.Countries) {
+        const countries = submissionData.Countries.split(', ');
+        countries.forEach((country: string) => {
+          localStorage.removeItem(`bds_country_${country.toLowerCase()}`);
+        });
+      }
+      
+      if (submissionData.Cities) {
+        const cities = submissionData.Cities.split(', ');
+        cities.forEach((city: string) => {
+          localStorage.removeItem(`bds_city_${city.toLowerCase()}`);
+        });
+      }
+      
+      console.log('✅ ALL caches cleared - new submission will appear immediately');
+    } catch (error) {
+      console.error('❌ Error clearing caches for new submission:', error);
+    }
+  };
+
   // Process featured submissions for immediate visibility
   const processFeaturedSubmissionIfNeeded = async (submissionData: any) => {
     try {
@@ -319,6 +357,9 @@ export default function SubmitSuccess() {
       keysToRemove.forEach(key => localStorage.removeItem(key));
       
       console.log('localStorage cleaned up after successful submission');
+      
+      // CRITICAL: Clear ALL caches for ANY new submission (not just featured)
+      await clearAllCachesForNewSubmission(submissionData);
       
       // Process featured submissions for immediate visibility (non-blocking)
       processFeaturedSubmissionIfNeeded(submissionData).catch(error => {
