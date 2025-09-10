@@ -18,19 +18,11 @@ export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>
   try {
     console.log('🔗 Building unique slug mappings...');
     
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Slug mapping timeout after 10 seconds')), 10000);
-    });
+    // Import airtableService directly to avoid circular dependency
+    const { airtableService } = await import('./airtable');
     
-    // Import dataPreloader dynamically to avoid circular imports
-    const { dataPreloader } = await import('./data-preloader');
-    
-    // Get all submissions with timeout
-    const allSubmissions = await Promise.race([
-      dataPreloader.getSubmissions(),
-      timeoutPromise
-    ]) as any[];
+    // Get raw submissions directly from Airtable
+    const allSubmissions = await airtableService.getApprovedSubmissions();
     const slugMap = new Map<string, SlugMapping>();
     const usedSlugs = new Set<string>();
 
@@ -86,11 +78,11 @@ export const getSubmissionBySlug = async (slug: string) => {
 
     console.log(`🔍 Found mapping for slug "${slug}": ${mapping.brandName} (${mapping.email})`);
     
-    // Import dataPreloader dynamically to avoid circular imports
-    const { dataPreloader } = await import('./data-preloader');
+    // Import airtableService directly to avoid circular dependency
+    const { airtableService } = await import('./airtable');
     
     // Get submission by email (most reliable identifier)
-    const allSubmissions = await dataPreloader.getSubmissions();
+    const allSubmissions = await airtableService.getApprovedSubmissions();
     const submission = allSubmissions.find(s => s.email === mapping.email);
     
     if (submission) {
@@ -110,10 +102,10 @@ export const getSubmissionBySlug = async (slug: string) => {
 
 export const getAllSubmissionsWithSlugs = async () => {
   try {
-    // Import dataPreloader dynamically to avoid circular imports
-    const { dataPreloader } = await import('./data-preloader');
+    // Import airtableService directly to avoid circular dependency
+    const { airtableService } = await import('./airtable');
     
-    const allSubmissions = await dataPreloader.getSubmissions();
+    const allSubmissions = await airtableService.getApprovedSubmissions();
     const mappings = await getSlugEmailMappings();
     
     return allSubmissions.map(submission => {

@@ -313,15 +313,50 @@ class DataPreloader {
   /**
    * Process raw submissions data into format with unique slugs
    */
-  private async processRawSubmissions(_rawSubmissions: any[]): Promise<Array<Submission & { uniqueSlug: string }>> {
-    // Import and use the slug processing functions
-    const { buildSlugEmailMappings, getAllSubmissionsWithSlugs } = await import('./slug-email-mapping');
-    
-    // Build slug mappings first (this processes the raw data)
-    await buildSlugEmailMappings();
-    
-    // Then get all submissions with unique slugs
-    return getAllSubmissionsWithSlugs();
+  private async processRawSubmissions(rawSubmissions: any[]): Promise<Array<Submission & { uniqueSlug: string }>> {
+    try {
+      console.log('🔄 Processing submissions with unique slugs...');
+      
+      // Generate unique slugs directly without circular dependency
+      const slugMap = new Map<string, string>();
+      const usedSlugs = new Set<string>();
+      
+      const submissionsWithSlugs = rawSubmissions.map(submission => {
+        const baseSlug = this.generateSlug(submission.brandName);
+        let uniqueSlug = baseSlug;
+        let counter = 1;
+
+        // If slug already exists, add number suffix
+        while (usedSlugs.has(uniqueSlug)) {
+          counter++;
+          uniqueSlug = `${baseSlug}-${counter}`;
+        }
+
+        usedSlugs.add(uniqueSlug);
+        slugMap.set(submission.email, uniqueSlug);
+        
+        return {
+          ...submission,
+          uniqueSlug
+        };
+      });
+      
+      console.log(`✅ Generated ${slugMap.size} unique slugs for submissions`);
+      return submissionsWithSlugs;
+    } catch (error) {
+      console.error('❌ Error processing submissions with slugs:', error);
+      return rawSubmissions.map(s => ({ ...s, uniqueSlug: this.generateSlug(s.brandName) }));
+    }
+  }
+  
+  /**
+   * Generate URL-friendly slug from text
+   */
+  private generateSlug(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 
   /**
