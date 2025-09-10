@@ -18,11 +18,19 @@ export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>
   try {
     console.log('🔗 Building unique slug mappings...');
     
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Slug mapping timeout after 10 seconds')), 10000);
+    });
+    
     // Import dataPreloader dynamically to avoid circular imports
     const { dataPreloader } = await import('./data-preloader');
     
-    // Get all submissions
-    const allSubmissions = await dataPreloader.getSubmissions();
+    // Get all submissions with timeout
+    const allSubmissions = await Promise.race([
+      dataPreloader.getSubmissions(),
+      timeoutPromise
+    ]) as any[];
     const slugMap = new Map<string, SlugMapping>();
     const usedSlugs = new Set<string>();
 

@@ -320,8 +320,10 @@ export default function SubmitSuccess() {
       
       console.log('localStorage cleaned up after successful submission');
       
-      // Process featured submissions for immediate visibility
-      await processFeaturedSubmissionIfNeeded(submissionData);
+      // Process featured submissions for immediate visibility (non-blocking)
+      processFeaturedSubmissionIfNeeded(submissionData).catch(error => {
+        console.error('❌ Featured submission processing failed (non-critical):', error);
+      });
       
       setSubmissionStatus('success');
       
