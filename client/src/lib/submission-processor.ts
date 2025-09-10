@@ -3,8 +3,9 @@
 
 import { matchCitiesToCountriesOptimized } from './geonames';
 import { airtableService, type Submission } from './airtable';
-import { extractCityName } from './utils';
+import { extractCityName, generateSlug } from './utils';
 import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord, getRegionsForCountryFromGeonamesRecord } from './geonames-record-parser';
+import { getSlugEmailMappings, clearSlugMappingCache } from './slug-email-mapping';
 
 /**
  * Process an approved submission and create/link cities
@@ -706,4 +707,97 @@ export async function getSubmissionBySlug(slug: string): Promise<Submission | nu
     console.error(`❌ Error getting submission by slug ${slug}:`, error);
     return null;
   }
-} 
+}
+
+/**
+ * Automatically process featured submissions to appear everywhere
+ */
+export const processFeaturedSubmission = async (submission: any) => {
+  console.log('🌟 Processing featured submission:', submission.brandName);
+  
+  // Check if it's a featured/premium submission
+  const isFeatured = submission.plan?.includes('Premium') || 
+                     submission.plan?.includes('€499.99') ||
+                     submission.status?.includes('Featured');
+
+  if (!isFeatured) {
+    console.log('⚠️ Not a featured submission, skipping special processing');
+    return submission;
+  }
+
+  console.log('✅ Featured submission detected, ensuring full visibility...');
+
+  // Ensure submission appears in all relevant locations
+  const processedSubmission = {
+    ...submission,
+    isFeatured: true,
+    // Ensure it has all required fields for directory pages
+    countries: submission.countries || [],
+    cities: submission.cities || [],
+    regionsStates: submission.regionsStates || [],
+    // Add to featured hosts automatically
+    showInFeatured: true,
+    // Generate unique slug
+    uniqueSlug: await generateUniqueSlugForSubmission(submission)
+  };
+
+  // Clear relevant caches to ensure it appears immediately
+  await clearCacheForSubmission(processedSubmission);
+
+  return processedSubmission;
+};
+
+const generateUniqueSlugForSubmission = async (submission: any): Promise<string> => {
+  const mappings = await getSlugEmailMappings();
+  
+  // Check if slug already exists
+  for (const [slug, mapping] of mappings.entries()) {
+    if (mapping.email === submission.email) {
+      return slug;
+    }
+  }
+
+  // Generate new unique slug
+  const baseSlug = generateSlug(submission.brandName);
+  let uniqueSlug = baseSlug;
+  let counter = 1;
+
+  const usedSlugs = new Set(Array.from(mappings.keys()));
+  
+  while (usedSlugs.has(uniqueSlug)) {
+    counter++;
+    uniqueSlug = `${baseSlug}-${counter}`;
+  }
+
+  return uniqueSlug;
+};
+
+const clearCacheForSubmission = async (submission: any) => {
+  // Clear relevant caches so the submission appears immediately
+  console.log('🗑️ Clearing caches for featured submission...');
+  
+  // Clear country caches
+  if (submission.countries) {
+    submission.countries.forEach((country: string) => {
+      localStorage.removeItem(`bds_country_${country.toLowerCase()}`);
+    });
+  }
+
+  // Clear city caches  
+  if (submission.cities) {
+    submission.cities.forEach((city: string) => {
+      localStorage.removeItem(`bds_city_${city.toLowerCase()}`);
+    });
+  }
+
+  // Clear featured hosts cache
+  localStorage.removeItem('bds_featured_hosts');
+  
+  // Clear main submissions cache
+  localStorage.removeItem('bds_submissions_cache');
+  
+  // Clear slug mapping cache
+  clearSlugMappingCache();
+  
+  console.log('✅ Caches cleared for immediate visibility');
+}; 

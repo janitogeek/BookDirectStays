@@ -440,7 +440,7 @@ export default function FeaturedHostsCarousel() {
           const clickTracking = useClickTracking(host.id);
           
           return (
-          <SwiperSlide key={host.id}>
+          <SwiperSlide key={host.uniqueSlug || host.id}>
             <Card className="group hover:shadow-lg transition-shadow duration-200 border border-gray-200 bg-white relative h-full">
               {/* Featured Badge */}
               <div className="absolute top-3 right-3 z-10">

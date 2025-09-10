@@ -14,24 +14,36 @@ import { cardHoverVariants, itemVariants } from "@/lib/animations";
 import TopStats from "@/components/top-stats";
 
 interface SubmissionPropertyCardProps {
-  submission: Submission;
+  submission: Submission & { uniqueSlug?: string };
   fromCity?: string;
   fromCountry?: string;
+  fromFeatured?: boolean;
 }
 
-export default function SubmissionPropertyCard({ submission, fromCity, fromCountry }: SubmissionPropertyCardProps) {
+export default function SubmissionPropertyCard({ submission, fromCity, fromCountry, fromFeatured = false }: SubmissionPropertyCardProps) {
   const { selectedCurrency } = useCurrency();
   
-  // Use unique slug if available, otherwise generate one
-  // const slug = (submission as any).uniqueSlug || generateSlug(submission.brandName);
-  
-  // Build URL to the specific submission page using the Airtable record ID
+  // Build URL to the specific submission page using unique slug
   const buildPropertyUrl = () => {
-    let url = `/property/${submission.id}`;
-    if (fromCity && fromCountry) {
-      // Use the actual city and country names (not slugs) in URL parameters
-      url += `?city=${encodeURIComponent(fromCity)}&country=${encodeURIComponent(fromCountry)}`;
+    // Use unique slug if available, otherwise fallback to ID
+    const identifier = submission.uniqueSlug || submission.id;
+    let url = `/property/${identifier}`;
+    
+    // Add context parameters for breadcrumbs
+    const params = new URLSearchParams();
+    if (fromFeatured) {
+      params.set('from', 'featured');
+    } else if (fromCity && fromCountry) {
+      params.set('city', fromCity);
+      params.set('country', fromCountry);
+    } else if (fromCountry) {
+      params.set('country', fromCountry);
     }
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    
     return url;
   };
   

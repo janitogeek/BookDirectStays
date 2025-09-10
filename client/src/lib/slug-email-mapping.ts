@@ -1,202 +1,136 @@
-// Slug-to-Email Mapping System for Unique Brand Identification
-// This creates unique slugs tied to email identifiers for duplicate brand names
+/**
+ * Unique Slug Generation for Companies
+ * Ensures each company has a unique URL regardless of duplicate brand names
+ */
 
-import { airtableService, type Submission } from './airtable';
+import { generateSlug } from './utils';
 
-interface SlugEmailMapping {
-  slug: string;          // e.g., "kjh", "kjh-2"
-  brandName: string;     // e.g., "kjh"
-  email: string;         // e.g., "hegi@gmail.com", "jooj@gmail.com"
-  submissionId: string;  // Airtable record ID
+interface SlugMapping {
+  slug: string;
+  email: string;
+  brandName: string;
+  submissionId: string;
 }
 
-// In-memory cache for slug mappings
-let slugMappingCache: SlugEmailMapping[] | null = null;
+let slugMappingCache: Map<string, SlugMapping> | null = null;
 
-/**
- * Generate a base slug from brand name
- */
-function generateBaseSlug(brandName: string): string {
-  return brandName
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
-}
-
-/**
- * Build slug-to-email mapping table from all submissions
- * Creates unique slugs for duplicate brand names tied to email identifiers
- */
-export async function buildSlugEmailMappings(): Promise<SlugEmailMapping[]> {
+export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>> => {
   try {
-    console.log('🏗️ Building slug-to-email mapping table...');
+    console.log('🔗 Building unique slug mappings...');
     
-    // Get all approved submissions
-    const submissions = await airtableService.getApprovedSubmissions();
-    console.log(`📊 Processing ${submissions.length} submissions for slug mapping`);
+    // Import dataPreloader dynamically to avoid circular imports
+    const { dataPreloader } = await import('./data-preloader');
     
-    const mappings: SlugEmailMapping[] = [];
+    // Get all submissions
+    const allSubmissions = await dataPreloader.getSubmissions();
+    const slugMap = new Map<string, SlugMapping>();
     const usedSlugs = new Set<string>();
-    
-    // Process each submission to create unique slugs
-    submissions.forEach(submission => {
-      const baseSlug = generateBaseSlug(submission.brandName);
+
+    allSubmissions.forEach(submission => {
+      const baseSlug = generateSlug(submission.brandName);
       let uniqueSlug = baseSlug;
-      let counter = 2;
-      
+      let counter = 1;
+
       // If slug already exists, add number suffix
       while (usedSlugs.has(uniqueSlug)) {
-        uniqueSlug = `${baseSlug}-${counter}`;
         counter++;
+        uniqueSlug = `${baseSlug}-${counter}`;
       }
-      
-      // Mark this slug as used
+
       usedSlugs.add(uniqueSlug);
       
-      // Create mapping entry
-      const mapping: SlugEmailMapping = {
+      const mapping: SlugMapping = {
         slug: uniqueSlug,
-        brandName: submission.brandName,
         email: submission.email,
+        brandName: submission.brandName,
         submissionId: submission.id
       };
-      
-      mappings.push(mapping);
-      
-      console.log(`📝 Mapped: "${submission.brandName}" → slug: "${uniqueSlug}" → email: "${submission.email}"`);
-    });
-    
-    console.log(`✅ Created ${mappings.length} slug-to-email mappings`);
-    
-    // Cache the mappings
-    slugMappingCache = mappings;
-    
-    return mappings;
-    
-  } catch (error) {
-    console.error('❌ Error building slug-email mappings:', error);
-    return [];
-  }
-}
 
-/**
- * Get cached slug mappings (build if not cached)
- */
-export async function getSlugEmailMappings(): Promise<SlugEmailMapping[]> {
+      slugMap.set(uniqueSlug, mapping);
+      
+      console.log(`🏷️ Mapped: "${submission.brandName}" → "${uniqueSlug}" (${submission.email})`);
+    });
+
+    console.log(`✅ Created ${slugMap.size} unique slug mappings`);
+    return slugMap;
+  } catch (error) {
+    console.error('❌ Error building slug mappings:', error);
+    return new Map();
+  }
+};
+
+export const getSlugEmailMappings = async (): Promise<Map<string, SlugMapping>> => {
   if (!slugMappingCache) {
     slugMappingCache = await buildSlugEmailMappings();
   }
   return slugMappingCache;
-}
+};
 
-/**
- * Find submission by slug using email identifier
- */
-export async function getSubmissionBySlug(slug: string): Promise<Submission | null> {
+export const getSubmissionBySlug = async (slug: string) => {
   try {
-    console.log(`🔍 Looking up submission by slug: "${slug}"`);
-    
-    // Get slug mappings
     const mappings = await getSlugEmailMappings();
-    
-    // Find the mapping for this slug
-    const mapping = mappings.find(m => m.slug === slug);
+    const mapping = mappings.get(slug);
     
     if (!mapping) {
-      console.log(`❌ No mapping found for slug: "${slug}"`);
+      console.error(`❌ No mapping found for slug: ${slug}`);
       return null;
     }
+
+    console.log(`🔍 Found mapping for slug "${slug}": ${mapping.brandName} (${mapping.email})`);
     
-    console.log(`✅ Found mapping: slug "${slug}" → email "${mapping.email}" → brand "${mapping.brandName}"`);
+    // Import dataPreloader dynamically to avoid circular imports
+    const { dataPreloader } = await import('./data-preloader');
     
-    // Get the submission by email identifier
-    const submission = await airtableService.getSubmissionByEmail(mapping.email);
+    // Get submission by email (most reliable identifier)
+    const allSubmissions = await dataPreloader.getSubmissions();
+    const submission = allSubmissions.find(s => s.email === mapping.email);
     
-    if (!submission) {
-      console.log(`❌ No submission found for email: "${mapping.email}"`);
-      return null;
+    if (submission) {
+      // Add the unique slug to the submission
+      (submission as any).uniqueSlug = slug;
+      console.log(`✅ Found submission: ${submission.brandName}`);
+      return submission;
     }
-    
-    // Add the unique slug to the submission
-    return {
-      ...submission,
-      uniqueSlug: mapping.slug
-    };
-    
+
+    console.error(`❌ No submission found for email: ${mapping.email}`);
+    return null;
   } catch (error) {
-    console.error(`❌ Error getting submission by slug "${slug}":`, error);
+    console.error('❌ Error getting submission by slug:', error);
     return null;
   }
-}
+};
 
-/**
- * Get all submissions with their unique slugs
- */
-export async function getAllSubmissionsWithSlugs(): Promise<Array<Submission & { uniqueSlug: string }>> {
+export const getAllSubmissionsWithSlugs = async () => {
   try {
-    console.log('📋 Getting all submissions with unique slugs...');
+    // Import dataPreloader dynamically to avoid circular imports
+    const { dataPreloader } = await import('./data-preloader');
     
-    // Get slug mappings
+    const allSubmissions = await dataPreloader.getSubmissions();
     const mappings = await getSlugEmailMappings();
     
-    // Get all submissions
-    const submissions = await airtableService.getApprovedSubmissions();
-    
-    // Map submissions to their unique slugs
-    const submissionsWithSlugs = submissions.map(submission => {
-      const mapping = mappings.find(m => m.email === submission.email);
+    return allSubmissions.map(submission => {
+      // Find the slug for this submission
+      let uniqueSlug = null;
+      for (const [slug, mapping] of mappings.entries()) {
+        if (mapping.email === submission.email) {
+          uniqueSlug = slug;
+          break;
+        }
+      }
       
       return {
         ...submission,
-        uniqueSlug: mapping?.slug || generateBaseSlug(submission.brandName)
+        uniqueSlug: uniqueSlug || generateSlug(submission.brandName)
       };
     });
-    
-    console.log(`✅ Mapped ${submissionsWithSlugs.length} submissions with unique slugs`);
-    return submissionsWithSlugs;
-    
   } catch (error) {
     console.error('❌ Error getting submissions with slugs:', error);
     return [];
   }
-}
+};
 
-/**
- * Force rebuild of slug mappings (useful for updates)
- */
-export async function rebuildSlugMappings(): Promise<void> {
-  console.log('🔄 Force rebuilding slug mappings...');
+// Clear the cache when needed
+export const clearSlugMappingCache = () => {
   slugMappingCache = null;
-  await buildSlugEmailMappings();
-  console.log('✅ Slug mappings rebuilt');
-}
-
-/**
- * Debug: Show all slug mappings
- */
-export async function debugSlugMappings(): Promise<void> {
-  console.log('🐛 DEBUG: Slug-Email Mappings');
-  const mappings = await getSlugEmailMappings();
-  
-  console.table(mappings.map(m => ({
-    Slug: m.slug,
-    BrandName: m.brandName,
-    Email: m.email,
-    SubmissionId: m.submissionId
-  })));
-}
-
-
-
-
-
-
-
-
-
-
+  console.log('🗑️ Slug mapping cache cleared');
+};

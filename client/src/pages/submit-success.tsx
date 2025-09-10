@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { processFeaturedSubmission } from "@/lib/submission-processor";
 
 
 export default function SubmitSuccess() {
@@ -12,6 +13,39 @@ export default function SubmitSuccess() {
   const [submissionStatus, setSubmissionStatus] = useState<'processing' | 'success' | 'error'>('processing');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const { toast } = useToast();
+
+  // Process featured submissions for immediate visibility
+  const processFeaturedSubmissionIfNeeded = async (submissionData: any) => {
+    try {
+      // Check if this is a featured submission
+      const isFeatured = submissionData.Plan?.includes('Premium') || 
+                        submissionData.Plan?.includes('€499.99') ||
+                        submissionData.Status?.includes('Approved – Published');
+
+      if (!isFeatured) {
+        console.log('⚠️ Not a featured submission, skipping special processing');
+        return;
+      }
+
+      console.log('🌟 Featured submission detected, processing for full visibility...');
+      
+      // Process the featured submission
+      await processFeaturedSubmission({
+        brandName: submissionData["Brand Name"],
+        email: submissionData["Submitted By (Email)"],
+        plan: submissionData.Plan,
+        countries: submissionData.Countries?.split(', ') || [],
+        cities: submissionData.Cities?.split(', ') || [],
+        regionsStates: submissionData["Regions / States"]?.split(', ') || [],
+        status: submissionData.Status
+      });
+
+      console.log('✅ Featured submission processed successfully');
+    } catch (error) {
+      console.error('❌ Error processing featured submission:', error);
+      // Don't throw error - this shouldn't block the success flow
+    }
+  };
 
   // Process form submission after successful payment
   const processSubmissionAfterPayment = async () => {
@@ -285,6 +319,10 @@ export default function SubmitSuccess() {
       keysToRemove.forEach(key => localStorage.removeItem(key));
       
       console.log('localStorage cleaned up after successful submission');
+      
+      // Process featured submissions for immediate visibility
+      await processFeaturedSubmissionIfNeeded(submissionData);
+      
       setSubmissionStatus('success');
       
     } catch (error) {

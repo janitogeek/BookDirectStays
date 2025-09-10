@@ -7,14 +7,15 @@
 
 import { Submission } from './airtable';
 import { getAllSubmissionsWithSlugs } from './slug-email-mapping';
-import { parseGeonamesRecord, getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
-import { extractAllCurrencies, getCurrencyForCountry, CurrencyOption } from './currency-list-extractor';
+import { getCountriesFromGeonamesRecord, getCitiesForCountryFromGeonamesRecord } from './geonames-record-parser';
+import { extractAllCurrencies, CurrencyOption } from './currency-list-extractor';
 
 // Cache keys
 const CACHE_KEYS = {
   SUBMISSIONS_WITH_SLUGS: 'bds_submissions_with_slugs',
   COUNTRIES_DATA: 'bds_countries_data',
   CITIES_DATA: 'bds_cities_data',
+  CURRENCIES: 'bds_currencies',
   CACHE_TIMESTAMP: 'bds_cache_timestamp',
   CACHE_VERSION: 'bds_cache_version'
 };
@@ -86,9 +87,12 @@ class DataPreloader {
         return null;
       }
 
+      const currencies = localStorage.getItem(CACHE_KEYS.CURRENCIES) || '[]';
+      
       const data: CachedData = {
         submissions: JSON.parse(submissions),
         countries: JSON.parse(countries),
+        currencies: JSON.parse(currencies),
         lastUpdated: parseInt(localStorage.getItem(CACHE_KEYS.CACHE_TIMESTAMP) || '0'),
         version: CACHE_VERSION
       };
@@ -309,7 +313,7 @@ class DataPreloader {
   /**
    * Process raw submissions data into format with unique slugs
    */
-  private async processRawSubmissions(rawSubmissions: any[]): Promise<Array<Submission & { uniqueSlug: string }>> {
+  private async processRawSubmissions(_rawSubmissions: any[]): Promise<Array<Submission & { uniqueSlug: string }>> {
     // Import and use the slug processing functions
     const { buildSlugEmailMappings, getAllSubmissionsWithSlugs } = await import('./slug-email-mapping');
     
@@ -471,22 +475,61 @@ class DataPreloader {
   }
 
   /**
-   * Get cached submissions (instant)
+   * Get cached submissions (instant) - Featured submissions first
    */
   async getSubmissions(): Promise<Array<Submission & { uniqueSlug: string }>> {
     if (this.cachedData) {
-      return this.cachedData.submissions;
+      // Sort submissions: Featured first, then alphabetical
+      const sortedSubmissions = this.cachedData.submissions.sort((a, b) => {
+        const aIsFeatured = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+        const bIsFeatured = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+        
+        // Featured submissions first
+        if (aIsFeatured && !bIsFeatured) return -1;
+        if (!aIsFeatured && bIsFeatured) return 1;
+        
+        // Then alphabetical by brand name
+        return a.brandName.localeCompare(b.brandName);
+      });
+      
+      return sortedSubmissions;
     }
 
     // If not cached yet, wait for preload to complete
     if (this.loadingPromise) {
       await this.loadingPromise;
-      return this.cachedData?.submissions || [];
+      const submissions = (this.cachedData as CachedData | null)?.submissions || [];
+      
+      // Sort submissions: Featured first, then alphabetical
+      return submissions.sort((a: any, b: any) => {
+        const aIsFeatured = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+        const bIsFeatured = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+        
+        // Featured submissions first
+        if (aIsFeatured && !bIsFeatured) return -1;
+        if (!aIsFeatured && bIsFeatured) return 1;
+        
+        // Then alphabetical by brand name
+        return a.brandName.localeCompare(b.brandName);
+      });
     }
 
     // If no data and not loading, trigger preload
     await this.preloadData();
-    return this.cachedData?.submissions || [];
+    const submissions = (this.cachedData as CachedData | null)?.submissions || [];
+    
+    // Sort submissions: Featured first, then alphabetical
+    return submissions.sort((a: any, b: any) => {
+      const aIsFeatured = a.plan?.includes('Premium') || a.plan?.includes('€499.99');
+      const bIsFeatured = b.plan?.includes('Premium') || b.plan?.includes('€499.99');
+      
+      // Featured submissions first
+      if (aIsFeatured && !bIsFeatured) return -1;
+      if (!aIsFeatured && bIsFeatured) return 1;
+      
+      // Then alphabetical by brand name
+      return a.brandName.localeCompare(b.brandName);
+    });
   }
 
   /**
@@ -500,12 +543,12 @@ class DataPreloader {
     // If not cached yet, wait for preload to complete
     if (this.loadingPromise) {
       await this.loadingPromise;
-      return this.cachedData?.countries || [];
+      return (this.cachedData as CachedData | null)?.countries || [];
     }
 
     // If no data and not loading, trigger preload
     await this.preloadData();
-    return this.cachedData?.countries || [];
+    return (this.cachedData as CachedData | null)?.countries || [];
   }
 
   /**
@@ -519,12 +562,12 @@ class DataPreloader {
     // If not cached yet, wait for preload to complete
     if (this.loadingPromise) {
       await this.loadingPromise;
-      return this.cachedData?.currencies || [];
+      return (this.cachedData as CachedData | null)?.currencies || [];
     }
 
     // If no data and not loading, trigger preload
     await this.preloadData();
-    return this.cachedData?.currencies || [];
+    return (this.cachedData as CachedData | null)?.currencies || [];
   }
 
   /**
