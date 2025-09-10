@@ -20,6 +20,7 @@ import Testimonials from "@/pages/testimonials";
 import Property from "@/pages/property";
 import SubmissionProperty from "@/pages/submission-property";
 import CMSAdmin from "@/pages/admin/cms";
+import MigrationAdmin from "@/pages/admin/migration";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { useStatusPolling } from "@/hooks/useStatusPolling";
@@ -68,6 +69,7 @@ function Router() {
           <Route path="/property/:id" component={SubmissionProperty} />
           <Route path="/listing/:id" component={Property} />
           <Route path="/admin/cms" component={CMSAdmin} />
+          <Route path="/admin/migration" component={MigrationAdmin} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />
         </Switch>
