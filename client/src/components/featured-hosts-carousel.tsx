@@ -52,8 +52,8 @@ export default function FeaturedHostsCarousel() {
   const { data: submissions, isLoading, error } = useQuery({
     queryKey: ["/api/featured-submissions"],
     queryFn: async () => {
-      const { getAllSubmissionsWithSlugs } = await import('@/lib/slug-email-mapping');
-      return getAllSubmissionsWithSlugs();
+      const { dataPreloader } = await import('@/lib/data-preloader');
+      return dataPreloader.getSubmissions();
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

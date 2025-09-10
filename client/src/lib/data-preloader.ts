@@ -616,12 +616,17 @@ class DataPreloader {
     
     // Filter for published submissions that belong to the country using Geonames records
     const countrySubmissions = submissions.filter(submission => {
-      // Must be published (handle different status formats)
+      // Must be published (handle different status formats and variations)
       const isPublished = submission.status === 'published' || 
                          submission.status === 'Approved – Published' ||
-                         submission.status === 'Approved - Published';
+                         submission.status === 'Approved - Published' ||
+                         submission.status === 'Approved – Published' ||  // en-dash
+                         submission.status === 'Approved-Published' ||
+                         submission.status?.includes('Approved') ||
+                         submission.status?.includes('Published');
       
       if (!isPublished) {
+        console.log(`❌ Submission ${submission.brandName} not published. Status: "${submission.status}"`);
         return false;
       }
       
@@ -639,7 +644,19 @@ class DataPreloader {
         return belongsToCountry;
       }
       
-      console.log(`❌ Submission ${submission.brandName} has no Geonames Record field`);
+      // Fallback: Check the Countries field directly
+      if (submission.countries && Array.isArray(submission.countries)) {
+        const belongsToCountry = submission.countries.some(country => 
+          country && country.toLowerCase().trim() === countryName.toLowerCase().trim()
+        );
+        
+        if (belongsToCountry) {
+          console.log(`✅ FALLBACK: Submission ${submission.brandName} belongs to ${countryName} (Countries field: ${submission.countries.join(', ')})`);
+          return true;
+        }
+      }
+      
+      console.log(`❌ Submission ${submission.brandName} has no matching country data for ${countryName}`);
       return false;
     });
     
