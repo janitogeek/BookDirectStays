@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.2'; // FORCE CACHE CLEAR - Fixed unique slug generation bug
+const CACHE_VERSION = 'v3.3'; // COMPLETE CACHE RESET - Force fresh data
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
@@ -448,9 +448,36 @@ class DataPreloader {
   }
 
   /**
+   * Force complete cache clear
+   */
+  forceCompleteCacheClear(): void {
+    console.log('🗑️ FORCING COMPLETE CACHE CLEAR FROM DATA PRELOADER...');
+    try {
+      // Clear all possible cache keys
+      localStorage.removeItem(CACHE_KEYS.CACHE_TIMESTAMP);
+      localStorage.removeItem(CACHE_KEYS.CACHE_VERSION);
+      localStorage.removeItem('bds_submissions_cache');
+      localStorage.removeItem('bds_preload_ready');
+      localStorage.removeItem('bds_processed_data');
+      localStorage.removeItem('bds_cache_data');
+      
+      // Clear in-memory cache
+      this.cachedData = null;
+      this.loadingPromise = null;
+      
+      console.log('✅ Complete cache clear finished');
+    } catch (error) {
+      console.error('❌ Error clearing cache:', error);
+    }
+  }
+
+  /**
    * Preload data (called from app initialization)
    */
   async preloadData(): Promise<void> {
+    // FORCE CACHE CLEAR ON EVERY LOAD (temporary for debugging)
+    this.forceCompleteCacheClear();
+    
     // If already loading, wait for existing process
     if (this.loadingPromise) {
       console.log('⏳ Data preloading already in progress...');

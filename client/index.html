@@ -313,17 +313,25 @@
           console.log('🚀 INSTANT PRELOAD: Starting before React...');
           
           // Check if we already have recent data
-          const CACHE_VERSION = 'v3.2';
+          const CACHE_VERSION = 'v3.3';  // FORCE COMPLETE REFRESH
           const CACHE_TIMESTAMP = 'bds_cache_timestamp';
           const CACHE_VERSION_KEY = 'bds_cache_version';
+          
+          // FORCE CACHE CLEAR - Clear all cache data immediately
+          console.log('🗑️ FORCING COMPLETE CACHE CLEAR...');
+          localStorage.removeItem(CACHE_TIMESTAMP);
+          localStorage.removeItem(CACHE_VERSION_KEY);
+          localStorage.removeItem('bds_submissions_cache');
+          localStorage.removeItem('bds_preload_ready');
+          localStorage.removeItem('bds_processed_data');
           
           const lastCached = localStorage.getItem(CACHE_TIMESTAMP);
           const cacheVersion = localStorage.getItem(CACHE_VERSION_KEY);
           const now = Date.now();
           const oneHour = 60 * 60 * 1000;
           
-          // Check if cache is valid (less than 1 hour old and correct version)
-          if (lastCached && cacheVersion === CACHE_VERSION && (now - parseInt(lastCached)) < oneHour) {
+          // Since we cleared cache, this will always be false now
+          if (false) {  // Disabled cache check to force fresh fetch
             updateStatus('Using cached data...');
             console.log('✅ INSTANT PRELOAD: Using valid cache');
             
