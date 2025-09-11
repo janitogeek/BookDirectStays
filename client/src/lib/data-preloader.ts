@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.3'; // COMPLETE CACHE RESET - Force fresh data
+const CACHE_VERSION = 'v3.4'; // FIXED SLUG MAPPING BUG - Match by ID not email
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
@@ -464,6 +464,10 @@ class DataPreloader {
       // Clear in-memory cache
       this.cachedData = null;
       this.loadingPromise = null;
+      
+      // Clear slug mapping cache too
+      const { clearSlugMappingCache } = require('./slug-email-mapping');
+      clearSlugMappingCache();
       
       console.log('✅ Complete cache clear finished');
     } catch (error) {

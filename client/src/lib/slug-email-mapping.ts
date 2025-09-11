@@ -48,7 +48,12 @@ export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>
 
       slugMap.set(uniqueSlug, mapping);
       
-      console.log(`🏷️ Mapped: "${submission.brandName}" → "${uniqueSlug}" (${submission.email})`);
+      // Debug log for problematic submissions
+      if (submission.email === 'jansahagun@gmail.com') {
+        console.log(`🏷️ MAPPING DEBUG: "${submission.brandName}" (${submission.id}) → "${uniqueSlug}"`);
+      } else {
+        console.log(`🏷️ Mapped: "${submission.brandName}" → "${uniqueSlug}" (${submission.email})`);
+      }
     });
 
     console.log(`✅ Created ${slugMap.size} unique slug mappings`);
@@ -109,13 +114,18 @@ export const getAllSubmissionsWithSlugs = async () => {
     const mappings = await getSlugEmailMappings();
     
     return allSubmissions.map(submission => {
-      // Find the slug for this submission
+      // Find the slug for this submission BY SUBMISSION ID, NOT EMAIL
       let uniqueSlug = null;
       for (const [slug, mapping] of mappings.entries()) {
-        if (mapping.email === submission.email) {
+        if (mapping.submissionId === submission.id) {  // ← FIXED: Match by ID
           uniqueSlug = slug;
           break;
         }
+      }
+      
+      // Debug log for problematic submissions
+      if (submission.email === 'jansahagun@gmail.com') {
+        console.log(`🔍 SLUG MAPPING DEBUG: "${submission.brandName}" (${submission.id}) → "${uniqueSlug}"`);
       }
       
       return {
