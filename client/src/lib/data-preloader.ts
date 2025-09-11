@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.4'; // FIXED SLUG MAPPING BUG - Match by ID not email
+const CACHE_VERSION = 'v3.8'; // FIXED COUNTRY MATCHING BUG - Case insensitive country filtering
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;

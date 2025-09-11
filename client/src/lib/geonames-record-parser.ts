@@ -97,7 +97,7 @@ export function getCountriesFromGeonamesRecord(geonamesRecord: string): string[]
 export function getRegionsForCountryFromGeonamesRecord(geonamesRecord: string, countryName: string): string[] {
   const parsed = parseGeonamesRecord(geonamesRecord);
   const regions = parsed.records
-    .filter(record => record.country?.toLowerCase() === countryName.toLowerCase())
+    .filter(record => record.country?.toLowerCase().trim() === countryName.toLowerCase().trim())
     .map(record => record.region)
     .filter(Boolean) as string[];
     
@@ -109,7 +109,16 @@ export function getRegionsForCountryFromGeonamesRecord(geonamesRecord: string, c
  */
 export function getCitiesForCountryFromGeonamesRecord(geonamesRecord: string, targetCountry: string): string[] {
   const parsed = parseGeonamesRecord(geonamesRecord);
-  return parsed.citiesByCountry[targetCountry] || [];
+  
+  // Case-insensitive country matching
+  const targetCountryLower = targetCountry.toLowerCase().trim();
+  
+  // Find the matching country key (case-insensitive)
+  const matchingCountryKey = Object.keys(parsed.citiesByCountry).find(countryKey => 
+    countryKey.toLowerCase().trim() === targetCountryLower
+  );
+  
+  return matchingCountryKey ? parsed.citiesByCountry[matchingCountryKey] : [];
 }
 
 /**
