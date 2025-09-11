@@ -27,7 +27,20 @@ export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>
     const usedSlugs = new Set<string>();
 
     allSubmissions.forEach(submission => {
-      const baseSlug = generateSlug(submission.brandName);
+      // Debug what fields the submission actually has during mapping
+      const emailField = submission.email || submission.Email;
+      const brandField = submission.brandName || submission['Brand Name'];
+      
+      if (emailField === 'jansahagun@gmail.com') {
+        console.log(`🏷️ BUILD MAPPING DEBUG:`, {
+          id: submission.id,
+          brandName: brandField,
+          email: emailField,
+          keys: Object.keys(submission)
+        });
+      }
+      
+      const baseSlug = generateSlug(brandField);
       let uniqueSlug = baseSlug;
       let counter = 1;
 
@@ -41,18 +54,18 @@ export const buildSlugEmailMappings = async (): Promise<Map<string, SlugMapping>
       
       const mapping: SlugMapping = {
         slug: uniqueSlug,
-        email: submission.email,
-        brandName: submission.brandName,
+        email: emailField,
+        brandName: brandField,
         submissionId: submission.id
       };
 
       slugMap.set(uniqueSlug, mapping);
       
       // Debug log for problematic submissions
-      if (submission.email === 'jansahagun@gmail.com') {
-        console.log(`🏷️ MAPPING DEBUG: "${submission.brandName}" (${submission.id}) → "${uniqueSlug}"`);
+      if (emailField === 'jansahagun@gmail.com') {
+        console.log(`🏷️ MAPPING DEBUG: "${brandField}" (${submission.id}) → "${uniqueSlug}"`);
       } else {
-        console.log(`🏷️ Mapped: "${submission.brandName}" → "${uniqueSlug}" (${submission.email})`);
+        console.log(`🏷️ Mapped: "${brandField}" → "${uniqueSlug}" (${emailField})`);
       }
     });
 
@@ -114,6 +127,16 @@ export const getAllSubmissionsWithSlugs = async () => {
     const mappings = await getSlugEmailMappings();
     
     return allSubmissions.map(submission => {
+      // Debug what fields the submission actually has
+      if (submission.email === 'jansahagun@gmail.com' || submission.Email === 'jansahagun@gmail.com') {
+        console.log(`🔍 SUBMISSION STRUCTURE DEBUG:`, {
+          id: submission.id,
+          brandName: submission.brandName || submission['Brand Name'],
+          email: submission.email || submission.Email,
+          keys: Object.keys(submission)
+        });
+      }
+      
       // Find the slug for this submission BY SUBMISSION ID, NOT EMAIL
       let uniqueSlug = null;
       for (const [slug, mapping] of mappings.entries()) {
@@ -124,13 +147,14 @@ export const getAllSubmissionsWithSlugs = async () => {
       }
       
       // Debug log for problematic submissions
-      if (submission.email === 'jansahagun@gmail.com') {
-        console.log(`🔍 SLUG MAPPING DEBUG: "${submission.brandName}" (${submission.id}) → "${uniqueSlug}"`);
+      const emailField = submission.email || submission.Email;
+      if (emailField === 'jansahagun@gmail.com') {
+        console.log(`🔍 SLUG MAPPING DEBUG: "${submission.brandName || submission['Brand Name']}" (${submission.id}) → "${uniqueSlug}"`);
       }
       
       return {
         ...submission,
-        uniqueSlug: uniqueSlug || generateSlug(submission.brandName)
+        uniqueSlug: uniqueSlug || generateSlug(submission.brandName || submission['Brand Name'])
       };
     });
   } catch (error) {
