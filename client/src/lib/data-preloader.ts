@@ -652,8 +652,32 @@ class DataPreloader {
     console.log(`🔍 Looking for submissions for country: ${countryName}`);
     console.log(`📊 Total submissions available: ${submissions.length}`);
     
+    // DEBUG: Show what countries are available in submissions
+    const allCountriesFound = new Set<string>();
+    submissions.forEach(submission => {
+      if (submission.geonamesRecord) {
+        const countries = getCountriesFromGeonamesRecord(submission.geonamesRecord);
+        countries.forEach(country => allCountriesFound.add(country));
+      }
+      if (submission.countries && Array.isArray(submission.countries)) {
+        submission.countries.forEach(country => allCountriesFound.add(country));
+      }
+    });
+    console.log(`🌍 All countries found in submissions:`, Array.from(allCountriesFound).sort());
+    
     // Filter for published submissions that belong to the country using Geonames records
     const countrySubmissions = submissions.filter(submission => {
+      // DEBUG: Show submission details for test emails
+      const emailField = submission.email || submission.Email;
+      if (emailField === 'jansahagun@gmail.com') {
+        console.log(`🔍 COUNTRY FILTER DEBUG for ${submission.brandName}:`, {
+          status: submission.status,
+          geonamesRecord: submission.geonamesRecord,
+          countries: submission.countries,
+          email: emailField
+        });
+      }
+      
       // Must be published (handle different status formats and variations)
       const isPublished = submission.status === 'published' || 
                          submission.status === 'Approved – Published' ||
@@ -664,7 +688,9 @@ class DataPreloader {
                          submission.status?.includes('Published');
       
       if (!isPublished) {
-        console.log(`❌ Submission ${submission.brandName} not published. Status: "${submission.status}"`);
+        if (emailField === 'jansahagun@gmail.com') {
+          console.log(`❌ FILTER DEBUG: ${submission.brandName} not published. Status: "${submission.status}"`);
+        }
         return false;
       }
       
