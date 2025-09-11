@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.1'; // Match the instant preload version - FIXED UNIQUE SLUG BUG
+const CACHE_VERSION = 'v3.2'; // FORCE CACHE CLEAR - Fixed unique slug generation bug
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
@@ -322,7 +322,8 @@ class DataPreloader {
       const usedSlugs = new Set<string>();
       
       const submissionsWithSlugs = rawSubmissions.map(submission => {
-        const baseSlug = this.generateSlug(submission.brandName || submission['Brand Name']);
+        const brandName = submission.brandName || submission['Brand Name'];
+        const baseSlug = this.generateSlug(brandName);
         let uniqueSlug = baseSlug;
         let counter = 1;
 
@@ -335,6 +336,11 @@ class DataPreloader {
         usedSlugs.add(uniqueSlug);
         // Map by submission ID, not email (multiple submissions can have same email)
         slugMap.set(submission.id, uniqueSlug);
+        
+        // Debug log for problematic submissions
+        if (submission.email === 'jansahagun@gmail.com') {
+          console.log(`🔍 SLUG DEBUG: "${brandName}" (${submission.id}) → "${uniqueSlug}"`);
+        }
         
         return {
           ...submission,
