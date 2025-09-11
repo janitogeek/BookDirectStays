@@ -336,6 +336,31 @@ export default function Country() {
   const filteredSubmissions = useMemo(() => {
     if (!submissions.length) return [];
     
+    // DEBUG: Log filter state for problematic countries
+    if (countryName === 'Russia') {
+      console.log('🔍 RUSSIA FILTER DEBUG:', {
+        totalSubmissions: submissions.length,
+        filters: filters,
+        hasMinPrice: filters.minPrice !== null,
+        hasMaxPrice: filters.maxPrice !== null,
+        featuredOnly: featuredOnly
+      });
+      
+      // Show estopa specifically
+      const estopa = submissions.find(s => s.brandName === 'estopa');
+      if (estopa) {
+        console.log('🔍 ESTOPA DEBUG:', {
+          brandName: estopa.brandName,
+          hasMinPrice: !!estopa.minPrice,
+          hasMaxPrice: !!estopa.maxPrice,
+          hasCurrency: !!estopa.currency,
+          minPrice: estopa.minPrice,
+          maxPrice: estopa.maxPrice,
+          currency: estopa.currency
+        });
+      }
+    }
+    
     let filtered = submissions;
     
     // Apply featured filter first
