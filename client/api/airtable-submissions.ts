@@ -13,9 +13,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle GET requests - fetch all approved submissions
   if (req.method === 'GET') {
     try {
-      const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
-      const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-      const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
+      const AIRTABLE_API_KEY = process.env.VITE_AIRTABLE_API_KEY;
+      const AIRTABLE_BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;
+      const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || 'Directory Submissions';
 
       if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
         return res.status(500).json({ 
@@ -74,9 +74,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // Get Airtable credentials
-    const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
-    const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
-    const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || 'Submissions';
+    const AIRTABLE_API_KEY = process.env.VITE_AIRTABLE_API_KEY;
+    const AIRTABLE_BASE_ID = process.env.VITE_AIRTABLE_BASE_ID;
+    const AIRTABLE_TABLE_NAME = process.env.AIRTABLE_TABLE_NAME || 'Directory Submissions';
 
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
       return res.status(500).json({ 
