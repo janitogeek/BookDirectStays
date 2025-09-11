@@ -696,27 +696,54 @@ class DataPreloader {
       
       // Use Geonames Record field for accurate country matching
       if (submission.geonamesRecord && typeof submission.geonamesRecord === 'string') {
-        const countries = getCountriesFromGeonamesRecord(submission.geonamesRecord);
-        const belongsToCountry = countries.some(country => 
-          country && country.toLowerCase().trim() === countryName.toLowerCase().trim()
-        );
-        
-        if (belongsToCountry) {
-          console.log(`✅ Submission ${submission.brandName} belongs to ${countryName} (Geonames countries: ${countries.join(', ')})`);
+        try {
+          const countries = getCountriesFromGeonamesRecord(submission.geonamesRecord);
+          const belongsToCountry = countries.some(country => 
+            country && country.toLowerCase().trim() === countryName.toLowerCase().trim()
+          );
+          
+          if (emailField === 'jansahagun@gmail.com') {
+            console.log(`🔍 GEONAMES MATCH DEBUG for ${submission.brandName}:`, {
+              geonamesRecord: submission.geonamesRecord,
+              extractedCountries: countries,
+              searchingFor: countryName,
+              belongsToCountry: belongsToCountry
+            });
+          }
+          
+          if (belongsToCountry) {
+            console.log(`✅ Submission ${submission.brandName} belongs to ${countryName} (Geonames countries: ${countries.join(', ')})`);
+          }
+          
+          return belongsToCountry;
+        } catch (error) {
+          console.error(`❌ Error processing geonamesRecord for ${submission.brandName}:`, error);
+          console.error(`❌ Problematic geonamesRecord:`, submission.geonamesRecord);
+          // Continue to fallback instead of crashing
         }
-        
-        return belongsToCountry;
       }
       
       // Fallback: Check the Countries field directly
       if (submission.countries && Array.isArray(submission.countries)) {
-        const belongsToCountry = submission.countries.some(country => 
-          country && country.toLowerCase().trim() === countryName.toLowerCase().trim()
-        );
-        
-        if (belongsToCountry) {
-          console.log(`✅ FALLBACK: Submission ${submission.brandName} belongs to ${countryName} (Countries field: ${submission.countries.join(', ')})`);
-          return true;
+        try {
+          const belongsToCountry = submission.countries.some(country => 
+            country && country.toLowerCase().trim() === countryName.toLowerCase().trim()
+          );
+          
+          if (emailField === 'jansahagun@gmail.com') {
+            console.log(`🔍 FALLBACK MATCH DEBUG for ${submission.brandName}:`, {
+              countriesField: submission.countries,
+              searchingFor: countryName,
+              belongsToCountry: belongsToCountry
+            });
+          }
+          
+          if (belongsToCountry) {
+            console.log(`✅ FALLBACK: Submission ${submission.brandName} belongs to ${countryName} (Countries field: ${submission.countries.join(', ')})`);
+            return true;
+          }
+        } catch (error) {
+          console.error(`❌ Error processing countries field for ${submission.brandName}:`, error);
         }
       }
       
