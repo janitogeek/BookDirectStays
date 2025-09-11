@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.8'; // FIXED COUNTRY MATCHING BUG - Case insensitive country filtering
+const CACHE_VERSION = 'v3.9'; // FIXED CACHE CLEARING BUG - Dynamic import for browser
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
@@ -465,9 +465,18 @@ class DataPreloader {
       this.cachedData = null;
       this.loadingPromise = null;
       
-      // Clear slug mapping cache too
-      const { clearSlugMappingCache } = require('./slug-email-mapping');
-      clearSlugMappingCache();
+      // Clear slug mapping cache - import it properly for browser
+      try {
+        // Dynamic import works in browser context
+        import('./slug-email-mapping').then(({ clearSlugMappingCache }) => {
+          clearSlugMappingCache();
+          console.log('✅ Slug mapping cache cleared');
+        }).catch(error => {
+          console.warn('⚠️ Could not clear slug mapping cache:', error);
+        });
+      } catch (error) {
+        console.warn('⚠️ Could not import slug mapping cache clearer:', error);
+      }
       
       console.log('✅ Complete cache clear finished');
     } catch (error) {
