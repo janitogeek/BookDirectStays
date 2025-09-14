@@ -469,9 +469,27 @@ export default function Country() {
         // Only apply price filters if submission has pricing data
         if (submission.minPrice && submission.maxPrice && submission.currency) {
           // Convert submission prices to the selected currency for comparison
-          const submissionCurrency = submission.currency.includes('USD') ? 'USD' : 
-                                   submission.currency.includes('EUR') ? 'EUR' : 
-                                   submission.currency.includes('GBP') ? 'GBP' : 'USD';
+          // Extract currency code from formats like "USD – $", "THB – ฿", "EUR – €"
+          const submissionCurrency = (() => {
+            if (!submission.currency) return 'USD';
+            
+            // Try to extract currency code from the beginning of the string
+            const currencyMatch = submission.currency.match(/^([A-Z]{3})/);
+            if (currencyMatch) {
+              return currencyMatch[1];
+            }
+            
+            // Fallback to checking for common currencies
+            if (submission.currency.includes('USD')) return 'USD';
+            if (submission.currency.includes('EUR')) return 'EUR';
+            if (submission.currency.includes('GBP')) return 'GBP';
+            if (submission.currency.includes('THB')) return 'THB';
+            if (submission.currency.includes('INR')) return 'INR';
+            if (submission.currency.includes('JPY')) return 'JPY';
+            if (submission.currency.includes('RUB')) return 'RUB';
+            
+            return 'USD'; // Final fallback
+          })();
           
           const companyMinConverted = convertCurrency(submission.minPrice, submissionCurrency, selectedCurrency);
           const companyMaxConverted = convertCurrency(submission.maxPrice, submissionCurrency, selectedCurrency);
