@@ -468,23 +468,42 @@ export default function Country() {
       if (filters.minPrice !== null || filters.maxPrice !== null) {
         // Only apply price filters if submission has pricing data
         if (submission.minPrice && submission.maxPrice && submission.currency) {
-          const companyMin = submission.minPrice;
-          const companyMax = submission.maxPrice;
+          // Convert submission prices to the selected currency for comparison
+          const submissionCurrency = submission.currency.includes('USD') ? 'USD' : 
+                                   submission.currency.includes('EUR') ? 'EUR' : 
+                                   submission.currency.includes('GBP') ? 'GBP' : 'USD';
+          
+          const companyMinConverted = convertCurrency(submission.minPrice, submissionCurrency, selectedCurrency);
+          const companyMaxConverted = convertCurrency(submission.maxPrice, submissionCurrency, selectedCurrency);
+          
+          // DEBUG: Log conversion for problematic submissions
+          if (countryName === 'Russia' && submission.brandName === 'estopa') {
+            console.log('🔍 ESTOPA PRICE CONVERSION:', {
+              originalMin: submission.minPrice,
+              originalMax: submission.maxPrice,
+              originalCurrency: submissionCurrency,
+              convertedMin: companyMinConverted,
+              convertedMax: companyMaxConverted,
+              targetCurrency: selectedCurrency,
+              filterMin: filters.minPrice,
+              filterMax: filters.maxPrice
+            });
+          }
           
           // If user sets only min price, show companies where max price >= user min
           if (filters.minPrice !== null && filters.maxPrice === null) {
-            if (companyMax < filters.minPrice) return false;
+            if (companyMaxConverted < filters.minPrice) return false;
           }
           
           // If user sets only max price, show companies where min price <= user max
           if (filters.maxPrice !== null && filters.minPrice === null) {
-            if (companyMin > filters.maxPrice) return false;
+            if (companyMinConverted > filters.maxPrice) return false;
           }
           
           // If user sets both min and max, check for range overlap
           if (filters.minPrice !== null && filters.maxPrice !== null) {
             // No overlap if company max < user min OR company min > user max
-            if (companyMax < filters.minPrice || companyMin > filters.maxPrice) {
+            if (companyMaxConverted < filters.minPrice || companyMinConverted > filters.maxPrice) {
               return false;
             }
           }

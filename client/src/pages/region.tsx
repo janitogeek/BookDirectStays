@@ -278,13 +278,18 @@ export default function Region() {
         
         if (!minPrice && !maxPrice) return false;
         
-        const submissionMinPrice = minPrice || 0;
-        const submissionMaxPrice = maxPrice || Number.MAX_VALUE;
+        // Convert submission prices to the selected currency for comparison
+        const submissionCurrency = submission.currency?.includes('USD') ? 'USD' : 
+                                 submission.currency?.includes('EUR') ? 'EUR' : 
+                                 submission.currency?.includes('GBP') ? 'GBP' : 'USD';
+        
+        const submissionMinConverted = convertCurrency(minPrice || 0, submissionCurrency, selectedCurrency);
+        const submissionMaxConverted = convertCurrency(maxPrice || Number.MAX_VALUE, submissionCurrency, selectedCurrency);
         
         const filterMinPrice = filters.minPrice || 0;
         const filterMaxPrice = filters.maxPrice || Number.MAX_VALUE;
         
-        return submissionMaxPrice >= filterMinPrice && submissionMinPrice <= filterMaxPrice;
+        return submissionMaxConverted >= filterMinPrice && submissionMinConverted <= filterMaxPrice;
       });
     }
 
