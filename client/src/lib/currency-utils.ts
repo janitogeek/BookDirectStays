@@ -396,15 +396,28 @@ export const EXCHANGE_RATES: Record<string, number> = {
 /**
  * Convert amount from one currency to another
  * @param amount - The amount to convert
- * @param fromCurrency - Source currency code
- * @param toCurrency - Target currency code
+ * @param fromCurrency - Source currency code (can be "THB – ฿" format)
+ * @param toCurrency - Target currency code (can be "THB – ฿" format)
  * @returns Converted amount
  */
 export function convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
-  if (fromCurrency === toCurrency) return amount;
+  // Extract clean currency codes from formats like "THB – ฿"
+  const cleanFromCurrency = (() => {
+    if (!fromCurrency) return 'USD';
+    const match = fromCurrency.match(/^([A-Z]{3})/);
+    return match ? match[1] : fromCurrency;
+  })();
   
-  const fromRate = EXCHANGE_RATES[fromCurrency] || 1;
-  const toRate = EXCHANGE_RATES[toCurrency] || 1;
+  const cleanToCurrency = (() => {
+    if (!toCurrency) return 'USD';
+    const match = toCurrency.match(/^([A-Z]{3})/);
+    return match ? match[1] : toCurrency;
+  })();
+  
+  if (cleanFromCurrency === cleanToCurrency) return amount;
+  
+  const fromRate = EXCHANGE_RATES[cleanFromCurrency] || 1;
+  const toRate = EXCHANGE_RATES[cleanToCurrency] || 1;
   
   // Convert to USD first, then to target currency
   const usdAmount = amount / fromRate;
@@ -432,18 +445,38 @@ export function formatPriceWithConversion(
     const countryCurrency = getCountryCurrency(countryName || '');
     if (countryCurrency) {
       const convertedAmount = convertCurrency(amount, countryCurrency.code, selectedCurrency);
-      const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+      // Extract clean currency code for symbol lookup
+      const cleanSelectedCurrency = (() => {
+        if (!selectedCurrency) return 'USD';
+        const match = selectedCurrency.match(/^([A-Z]{3})/);
+        return match ? match[1] : selectedCurrency;
+      })();
+      const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === cleanSelectedCurrency);
       return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
     }
     // Fallback to EUR
     const convertedAmount = convertCurrency(amount, 'EUR', selectedCurrency);
-    const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+    // Extract clean currency code for symbol lookup
+    const cleanSelectedCurrency = (() => {
+      if (!selectedCurrency) return 'USD';
+      const match = selectedCurrency.match(/^([A-Z]{3})/);
+      return match ? match[1] : selectedCurrency;
+    })();
+    const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === cleanSelectedCurrency);
     return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
   }
 
   // Convert from original currency to selected currency
   const convertedAmount = convertCurrency(amount, originalCurrency, selectedCurrency);
-  const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === selectedCurrency);
+  
+  // Extract clean currency code for symbol lookup
+  const cleanSelectedCurrency = (() => {
+    if (!selectedCurrency) return 'USD';
+    const match = selectedCurrency.match(/^([A-Z]{3})/);
+    return match ? match[1] : selectedCurrency;
+  })();
+  
+  const selectedCurrencyInfo = CURRENCY_OPTIONS.find(c => c.code === cleanSelectedCurrency);
   return `${selectedCurrencyInfo?.symbol || '$'}${convertedAmount.toLocaleString()}`;
 }
 
