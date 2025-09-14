@@ -224,6 +224,47 @@ export const CURRENCY_OPTIONS = [
   { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' }, // Australia
   { code: 'BZD', symbol: 'BZ$', name: 'Belize Dollar' }, // Belize
   { code: 'GBP', symbol: '£', name: 'British Pound' }, // United Kingdom
+  
+  // Additional major currencies
+  { code: 'RUB', symbol: '₽', name: 'Russian Ruble' }, // Russia
+  { code: 'INR', symbol: '₹', name: 'Indian Rupee' }, // India
+  { code: 'JPY', symbol: '¥', name: 'Japanese Yen' }, // Japan
+  { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' }, // China
+  { code: 'KRW', symbol: '₩', name: 'South Korean Won' }, // South Korea
+  { code: 'THB', symbol: '฿', name: 'Thai Baht' }, // Thailand
+  { code: 'PHP', symbol: '₱', name: 'Philippine Peso' }, // Philippines
+  { code: 'MYR', symbol: 'RM', name: 'Malaysian Ringgit' }, // Malaysia
+  { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' }, // Singapore
+  { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' }, // Indonesia
+  { code: 'VND', symbol: '₫', name: 'Vietnamese Dong' }, // Vietnam
+  { code: 'TRY', symbol: '₺', name: 'Turkish Lira' }, // Turkey
+  { code: 'AED', symbol: 'د.إ', name: 'UAE Dirham' }, // UAE
+  { code: 'SAR', symbol: '﷼', name: 'Saudi Riyal' }, // Saudi Arabia
+  { code: 'EGP', symbol: '£', name: 'Egyptian Pound' }, // Egypt
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' }, // South Africa
+  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' }, // Nigeria
+  { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling' }, // Kenya
+  { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' }, // Brazil
+  { code: 'ARS', symbol: '$', name: 'Argentine Peso' }, // Argentina
+  { code: 'CLP', symbol: '$', name: 'Chilean Peso' }, // Chile
+  { code: 'COP', symbol: '$', name: 'Colombian Peso' }, // Colombia
+  { code: 'PEN', symbol: 'S/', name: 'Peruvian Sol' }, // Peru
+  { code: 'MXN', symbol: '$', name: 'Mexican Peso' }, // Mexico
+  { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc' }, // Switzerland
+  { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' }, // Sweden
+  { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' }, // Norway
+  { code: 'DKK', symbol: 'kr', name: 'Danish Krone' }, // Denmark
+  { code: 'PLN', symbol: 'zł', name: 'Polish Zloty' }, // Poland
+  { code: 'CZK', symbol: 'Kč', name: 'Czech Koruna' }, // Czech Republic
+  { code: 'HUF', symbol: 'Ft', name: 'Hungarian Forint' }, // Hungary
+  { code: 'RON', symbol: 'lei', name: 'Romanian Leu' }, // Romania
+  { code: 'BGN', symbol: 'лв', name: 'Bulgarian Lev' }, // Bulgaria
+  { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' }, // Croatia
+  { code: 'RSD', symbol: 'дин', name: 'Serbian Dinar' }, // Serbia
+  { code: 'UAH', symbol: '₴', name: 'Ukrainian Hryvnia' }, // Ukraine
+  { code: 'ILS', symbol: '₪', name: 'Israeli Shekel' }, // Israel
+  { code: 'JOD', symbol: 'د.أ', name: 'Jordanian Dinar' }, // Jordan
+  { code: 'LBP', symbol: 'ل.ل', name: 'Lebanese Pound' }, // Lebanon
 ] as const;
 
 export type CurrencyCode = string; // Allow any currency code from Airtable
