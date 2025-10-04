@@ -235,7 +235,73 @@ export const airtableService = {
     }
   },
 
+  // EMERGENCY FIX: Simple direct fetch bypassing all cache/complexity
+  async getApprovedSubmissionsSimple(): Promise<Submission[]> {
+    console.log('🚨 EMERGENCY: Using simple direct fetch to bypass all issues');
+    
+    try {
+      const url = `https://api.airtable.com/v0/app0tFfsjLbI1qXq0/tblG8dKlv033Kp7bl`;
+      console.log('🔗 Direct URL:', url);
+      
+      let allRecords: any[] = [];
+      let offset: string | undefined = undefined;
+      let page = 1;
+      
+      do {
+        const params = new URLSearchParams({ maxRecords: '100' });
+        if (offset) params.set('offset', offset);
+        
+        console.log(`📋 SIMPLE: Fetching page ${page}...`);
+        
+        const response = await fetch(`${url}?${params}`, {
+          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        allRecords = allRecords.concat(data.records);
+        offset = data.offset;
+        
+        console.log(`✅ SIMPLE: Page ${page} got ${data.records.length} records`);
+        console.log(`📊 SIMPLE: Total so far: ${allRecords.length}`);
+        console.log(`🔄 SIMPLE: Has more pages? ${!!offset}`);
+        
+        page++;
+        
+      } while (offset);
+      
+      console.log(`🎉 SIMPLE: Final total: ${allRecords.length} records`);
+      
+      // Filter for approved
+      const approved = allRecords.filter(r => {
+        const status = r.fields?.Status;
+        return status === 'Approved – Published';
+      });
+      
+      console.log(`✅ SIMPLE: Found ${approved.length} approved out of ${allRecords.length} total`);
+      
+      return approved.map(record => ({
+        id: record.id,
+        brandName: record.fields['Brand Name'] || 'Unknown',
+        status: record.fields['Status'] || 'Unknown',
+        ...record.fields
+      }));
+      
+    } catch (error) {
+      console.error('🚨 SIMPLE: Error:', error);
+      throw error;
+    }
+  },
+
   async getApprovedSubmissions(): Promise<Submission[]> {
+    // USE SIMPLE VERSION TO BYPASS ALL ISSUES
+    return this.getApprovedSubmissionsSimple();
+  },
+
+  async getApprovedSubmissionsOLD(): Promise<Submission[]> {
     console.log('🚨 ENTRY: getApprovedSubmissions function called!');
     console.log('🚨 ENTRY: API Key exists:', !!AIRTABLE_API_KEY);
     console.log('🚨 ENTRY: Base ID exists:', !!AIRTABLE_BASE_ID);
