@@ -25,6 +25,11 @@ export const useStatusPolling = (pollingInterval: number = 2 * 60 * 1000) => { /
       isPollingRef.current = true;
       console.log('🔍 Checking for status changes...');
 
+      // TEMPORARILY DISABLED - API endpoint returning HTML instead of JSON
+      console.log('⚠️ Status monitoring temporarily disabled to prevent errors');
+      return;
+
+      /*
       const response = await fetch('/api/status-monitor', {
         method: 'GET',
         headers: {
@@ -61,6 +66,7 @@ export const useStatusPolling = (pollingInterval: number = 2 * 60 * 1000) => { /
       } else {
         console.log('✅ No status changes detected');
       }
+      */
       
     } catch (error) {
       console.error('❌ Status check failed:', error);

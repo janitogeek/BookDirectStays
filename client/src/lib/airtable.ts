@@ -240,6 +240,95 @@ export const airtableService = {
       throw new Error('Airtable configuration missing');
     }
 
+    console.log('📋 FIXED: Fetching ALL records with pagination to detect all 980 records...');
+
+    // STEP 1: Fetch ALL records using pagination
+    let allRecords: AirtableSubmission[] = [];
+    let offset: string | undefined = undefined;
+    let pageCount = 0;
+
+    do {
+      pageCount++;
+      const params = new URLSearchParams({ maxRecords: '100' });
+      if (offset) {
+        params.set('offset', offset);
+      }
+
+      const url = `${AIRTABLE_API_URL}?${params}`;
+      console.log(`📋 FIXED: Fetching page ${pageCount}...`);
+
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Airtable API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const pageRecords: AirtableSubmission[] = data.records || [];
+      
+      allRecords = allRecords.concat(pageRecords);
+      offset = data.offset;
+
+      console.log(`✅ FIXED: Page ${pageCount} got ${pageRecords.length} records`);
+      console.log(`📊 FIXED: Total records so far: ${allRecords.length}`);
+      console.log(`🔄 FIXED: Has more pages? ${!!offset}`);
+
+      // Safety break to prevent infinite loops
+      if (pageCount > 20) {
+        console.warn('⚠️ FIXED: Breaking after 20 pages to prevent infinite loop');
+        break;
+      }
+
+    } while (offset);
+
+    console.log(`🎉 FIXED: Total records fetched: ${allRecords.length} (should be ~980)`);
+
+    // STEP 2: Get status breakdown of ALL records
+    const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
+    const uniqueStatuses = [...new Set(allStatuses)];
+    const statusCounts = allStatuses.reduce((acc: any, status) => {
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
+    }, {});
+    
+    console.log('📋 FIXED: All unique statuses found:', uniqueStatuses);
+    console.log('📊 FIXED: Status breakdown:', statusCounts);
+
+    // STEP 3: Filter for approved records
+    const approvedRecords = allRecords.filter(record => {
+      const status = record.fields['Status'];
+      return status === 'Approved – Published' || 
+             status === 'Approved - Published' || 
+             status === 'Published';
+    });
+
+    console.log(`✅ FIXED: Found ${approvedRecords.length} approved records out of ${allRecords.length} total (should be ~313)`);
+
+    // STEP 4: Transform to expected format
+    const transformedSubmissions = approvedRecords.map((record, index) => {
+      try {
+        const transformedSubmission = this.transformSubmission(record);
+        return transformedSubmission;
+      } catch (error) {
+        console.error(`❌ FIXED: Error transforming record ${index + 1}:`, error);
+        throw error;
+      }
+    });
+    
+    console.log(`🎉 FIXED: Successfully transformed ${transformedSubmissions.length} approved submissions`);
+    return transformedSubmissions;
+  },
+
+  // Keep old version for reference
+  async getApprovedSubmissionsOLD(): Promise<Submission[]> {
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
     console.log('📋 Fetching approved-published submissions...');
 
     // Run status variation test first (disabled - found the issue!)
