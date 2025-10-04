@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v4.0'; // FIXED: Proper pagination to fetch all 980 records instead of 100
+const CACHE_VERSION = 'v4.1'; // UNLIMITED: Original logic from fd79209 + unlimited pagination (up to 10k records)
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;

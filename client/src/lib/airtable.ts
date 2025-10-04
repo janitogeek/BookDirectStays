@@ -297,8 +297,173 @@ export const airtableService = {
   },
 
   async getApprovedSubmissions(): Promise<Submission[]> {
-    // USE SIMPLE VERSION TO BYPASS ALL ISSUES
-    return this.getApprovedSubmissionsSimple();
+    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      throw new Error('Airtable configuration missing');
+    }
+
+    console.log('📋 Fetching approved-published submissions (UNLIMITED)...');
+
+    // Run status variation test first (disabled - found the issue!)
+    // await this.testStatusVariations();
+
+    // First, let's get ALL records to see what statuses actually exist (WITH UNLIMITED PAGINATION)
+    const allRecordsUrl = `${AIRTABLE_API_URL}`;
+    console.log('🔍 First, fetching ALL records to debug statuses (UNLIMITED)...');
+    
+    // UNLIMITED PAGINATION: Get ALL records to analyze statuses
+    let allRecords: AirtableSubmission[] = [];
+    let allRecordsOffset: string | undefined = undefined;
+    let pageCount = 0;
+
+    do {
+      pageCount++;
+      const params = new URLSearchParams({ maxRecords: '100' });
+      if (allRecordsOffset) {
+        params.set('offset', allRecordsOffset);
+      }
+
+      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount}...`);
+
+      const allResponse = await fetch(`${allRecordsUrl}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
+
+      if (allResponse.ok) {
+        const allData = await allResponse.json();
+        const pageRecords: AirtableSubmission[] = allData.records || [];
+        allRecords = allRecords.concat(pageRecords);
+        allRecordsOffset = allData.offset;
+
+        console.log(`✅ UNLIMITED: Page ${pageCount} got ${pageRecords.length} records`);
+        console.log(`📊 UNLIMITED: Total records so far: ${allRecords.length}`);
+        console.log(`🔄 UNLIMITED: Has more pages? ${!!allRecordsOffset}`);
+
+        // Safety limit: 100 pages = 10,000 records max
+        if (pageCount >= 100) {
+          console.warn('⚠️ UNLIMITED: Reached 100 pages (10k records), stopping to prevent timeout');
+          break;
+        }
+      } else {
+        console.error('❌ UNLIMITED: Error fetching page:', allResponse.status);
+        break;
+      }
+
+    } while (allRecordsOffset);
+
+    console.log(`🎉 UNLIMITED: Total records fetched: ${allRecords.length}`);
+    
+    if (allRecords.length > 0) {
+      console.log('📝 First record for debugging:', allRecords[0]);
+      console.log('📝 First record fields:', allRecords[0].fields);
+      console.log('📝 First record status:', JSON.stringify(allRecords[0].fields['Status']));
+      
+      // Get all unique statuses
+      const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
+      const uniqueStatuses = [...new Set(allStatuses)];
+      console.log('📋 All unique statuses found:', uniqueStatuses);
+      console.log('📋 All statuses (with quotes):', uniqueStatuses.map(s => `"${s}"`));
+      
+      // Count each status
+      const statusCounts = allStatuses.reduce((acc: any, status) => {
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {});
+      console.log('📊 Status breakdown:', statusCounts);
+      
+      // Check if any match our target
+      const targetStatus = "Approved – Published"; // em dash
+      const matchingRecords = allRecords.filter(r => r.fields['Status'] === targetStatus);
+      console.log(`🎯 Records with exact status "${targetStatus}":`, matchingRecords.length);
+      
+      // Check for similar statuses
+      const similarStatuses = uniqueStatuses.filter(status => 
+        status && status.toLowerCase().includes('approved') && status.toLowerCase().includes('published')
+      );
+      console.log('🔍 Similar statuses containing "approved" and "published":', similarStatuses);
+    }
+
+    // Now try the filtered query WITH UNLIMITED PAGINATION
+    const filterFormula = `{Status} = "Approved – Published"`;
+    console.log('📝 Filter formula:', filterFormula);
+    console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
+
+    // UNLIMITED PAGINATION: Get ALL matching records
+    let approvedRecords: AirtableSubmission[] = [];
+    let approvedOffset: string | undefined = undefined;
+    let approvedPageCount = 0;
+
+    do {
+      approvedPageCount++;
+      const params = new URLSearchParams({ 
+        maxRecords: '100',
+        filterByFormula: filterFormula
+      });
+      if (approvedOffset) {
+        params.set('offset', approvedOffset);
+      }
+
+      const url = `${AIRTABLE_API_URL}?${params}`;
+      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount}...`);
+      console.log('🔗 API URL:', url);
+
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error('❌ Airtable API error:', response.status, response.statusText);
+        throw new Error(`Airtable API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const pageRecords: AirtableSubmission[] = data.records || [];
+      approvedRecords = approvedRecords.concat(pageRecords);
+      approvedOffset = data.offset;
+
+      console.log(`✅ APPROVED: Page ${approvedPageCount} got ${pageRecords.length} approved records`);
+      console.log(`📊 APPROVED: Total approved records so far: ${approvedRecords.length}`);
+      console.log(`🔄 APPROVED: Has more pages? ${!!approvedOffset}`);
+
+      // Safety limit: 100 pages = 10,000 records max
+      if (approvedPageCount >= 100) {
+        console.warn('⚠️ APPROVED: Reached 100 pages (10k records), stopping to prevent timeout');
+        break;
+      }
+
+    } while (approvedOffset);
+
+    console.log(`🎉 APPROVED: Total approved records fetched: ${approvedRecords.length}`);
+    
+    if (approvedRecords.length > 0) {
+      console.log('🏠 First approved-published record:', approvedRecords[0]);
+      console.log('📝 First record status:', approvedRecords[0].fields['Status']);
+      console.log('✅ SUCCESS! Found approved records with em dash status!');
+    } else {
+      console.log('❌ No records found with status "Approved – Published"');
+      console.log('🔍 This suggests a status string mismatch');
+    }
+
+    const transformedSubmissions = approvedRecords.map((record, index) => {
+      try {
+        console.log(`🔄 Transforming approved-published record ${index + 1}/${approvedRecords.length}:`, record.id);
+        console.log(`📝 Record status: ${record.fields['Status']}`);
+        
+        const transformedSubmission = this.transformSubmission(record);
+        console.log('✅ Successfully transformed submission:', transformedSubmission.brandName);
+        return transformedSubmission;
+      } catch (error) {
+        console.error(`❌ Error transforming approved-published record ${index + 1}:`, error);
+        console.error('📋 Problematic record:', record);
+        throw error;
+      }
+    });
+    
+    console.log('✨ All transformed approved-published submissions:', transformedSubmissions.length);
+    return transformedSubmissions;
   },
 
   async getApprovedSubmissionsOLD(): Promise<Submission[]> {
