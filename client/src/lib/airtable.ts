@@ -241,9 +241,11 @@ export const airtableService = {
     }
 
     console.log('📋 Fetching approved-published submissions...');
+    console.log('🔧 DEBUG: API Key exists:', !!AIRTABLE_API_KEY);
+    console.log('🔧 DEBUG: Base ID:', AIRTABLE_BASE_ID);
+    console.log('🔧 DEBUG: Table ID:', AIRTABLE_TABLE_NAME);
 
-    // Run status variation test first (disabled - found the issue!)
-    // await this.testStatusVariations();
+    try {
 
     // First, let's get ALL records to see what statuses actually exist AND total count
     const allRecordsUrl = `${AIRTABLE_API_URL}`;
@@ -376,6 +378,7 @@ export const airtableService = {
     } while (offset);
     
     console.log(`🎉 Pagination complete! Total approved records fetched: ${allRecords.length}`);
+    console.log('🚨 CRITICAL CHECK: If this number is still 100, there is a bigger issue!');
     
     const records = allRecords;
     
@@ -408,7 +411,12 @@ export const airtableService = {
     
     console.log('✨ All transformed approved-published submissions:', transformedSubmissions.length);
     return transformedSubmissions;
-  },
+  } catch (error) {
+    console.error('🚨 CRITICAL ERROR in getApprovedSubmissions:', error);
+    console.error('🚨 This might explain why only 100 records are loading!');
+    throw error;
+  }
+},
 
   async getSubmissionsByCountry(countryName: string): Promise<Submission[]> {
     // Use the submission processor function that includes unique slug generation
