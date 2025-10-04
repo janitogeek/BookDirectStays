@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bookdirectstays-v2';
+const CACHE_NAME = 'bookdirectstays-v4.1-unlimited';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,36 +6,10 @@ const urlsToCache = [
   '/src/index.css'
 ];
 
-// Pre-load all data as soon as service worker is installed
+// DISABLED: Pre-loading interfered with unlimited pagination
 async function preloadAllData() {
-  try {
-    console.log('🚀 Service Worker: Starting background data pre-load...');
-    
-    // Get the API base URL from the current origin
-    const baseUrl = self.location.origin;
-    
-    // Fetch and cache all submissions data
-    const submissionsResponse = await fetch(`${baseUrl}/api/airtable-submissions`);
-    if (submissionsResponse.ok) {
-      const submissionsData = await submissionsResponse.json();
-      
-      // Store in localStorage equivalent for service worker (use IndexedDB)
-      // For now, we'll trigger the main app's data preloader by setting a flag
-      await caches.open('bds-preload-cache').then(cache => {
-        return cache.put('/api/preload-trigger', new Response(JSON.stringify({
-          preloaded: true,
-          timestamp: Date.now(),
-          submissionsCount: submissionsData.length
-        })));
-      });
-      
-      console.log(`✅ Service Worker: Pre-loaded ${submissionsData.length} submissions`);
-    }
-    
-    console.log('🎯 Service Worker: Data pre-loading completed!');
-  } catch (error) {
-    console.error('❌ Service Worker: Pre-loading failed:', error);
-  }
+  console.log('🚀 Service Worker: Data pre-loading disabled - using unlimited pagination in main app');
+  // No longer pre-loading data to avoid conflicts with unlimited pagination
 }
 
 // Install event - cache resources AND pre-load data
