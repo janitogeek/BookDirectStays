@@ -301,6 +301,7 @@ export const airtableService = {
     console.log('🔄 Starting paginated fetch for approved submissions...');
     console.log('📝 Filter formula:', filterFormula);
     console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
+    console.log('🚨 DEBUG: This should fetch ALL pages, not just 100 records!');
     
     do {
       const params = new URLSearchParams({

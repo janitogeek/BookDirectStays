@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v3.9'; // FIXED CACHE CLEARING BUG - Dynamic import for browser
+const CACHE_VERSION = 'v3.10'; // PAGINATION FIX - Force cache refresh
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
