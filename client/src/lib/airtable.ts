@@ -245,9 +245,32 @@ export const airtableService = {
     // Run status variation test first (disabled - found the issue!)
     // await this.testStatusVariations();
 
-    // First, let's get ALL records to see what statuses actually exist
+    // First, let's get ALL records to see what statuses actually exist AND total count
     const allRecordsUrl = `${AIRTABLE_API_URL}`;
-    console.log('🔍 First, fetching ALL records to debug statuses...');
+    console.log('🔍 First, fetching ALL records to debug statuses and count...');
+    
+    let totalRecordsCount = 0;
+    let allTestOffset: string | null = null;
+    
+    // Count ALL records (no filter) to see the true total
+    do {
+      const testParams = new URLSearchParams({ maxRecords: '100' });
+      if (allTestOffset) testParams.set('offset', allTestOffset);
+      
+      const testResponse = await fetch(`${allRecordsUrl}?${testParams}`, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+      });
+      
+      if (testResponse.ok) {
+        const testData = await testResponse.json();
+        totalRecordsCount += testData.records.length;
+        allTestOffset = testData.offset;
+      } else {
+        break;
+      }
+    } while (allTestOffset);
+    
+    console.log('📊 TRUE TOTAL records in Airtable (no filter):', totalRecordsCount);
     
     const allResponse = await fetch(allRecordsUrl, {
       headers: {
@@ -338,6 +361,12 @@ export const airtableService = {
       
       console.log(`✅ Fetched ${batchRecords.length} approved records in batch ${requestCount}`);
       console.log(`📊 Total approved records so far: ${allRecords.length}`);
+      console.log(`🔍 DEBUG: Airtable response has offset?`, !!offset);
+      console.log(`🔍 DEBUG: Offset value:`, offset);
+      if (!offset && batchRecords.length === 100) {
+        console.error(`🚨 PROBLEM: Got exactly 100 records but no offset! This suggests Airtable filter is wrong.`);
+        console.error(`🚨 Expected 305 total records, but Airtable thinks there are only 100.`);
+      }
       
       // Add a small delay to respect Airtable's rate limits (5 requests/second)
       if (offset) {
