@@ -3,9 +3,9 @@
 // Airtable configuration
 const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY || '';
 const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID || '';
-const AIRTABLE_TABLE_NAME = 'Directory Submissions'; // Your actual table name
+const AIRTABLE_TABLE_NAME = 'tblG8dKlv033Kp7bl'; // TESTING: Use Table ID instead of name
 
-// Airtable API endpoint
+// Airtable API endpoint - NO VIEW SPECIFIED to get all records
 const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
 
 // Debug: Log configuration (remove in production)
@@ -235,158 +235,98 @@ export const airtableService = {
     }
   },
 
-  async getApprovedSubmissions(): Promise<Submission[]> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
-
-    console.log('📋 FIXED: Fetching ALL records with pagination to detect all 980 records...');
-
-    // STEP 1: Fetch ALL records using pagination
-    let allRecords: AirtableSubmission[] = [];
-    let offset: string | undefined = undefined;
-    let pageCount = 0;
-
-    do {
-      pageCount++;
-      const params = new URLSearchParams({ maxRecords: '100' });
-      if (offset) {
-        params.set('offset', offset);
-      }
-
-      const url = `${AIRTABLE_API_URL}?${params}`;
-      console.log(`📋 FIXED: Fetching page ${pageCount}...`);
-
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Airtable API error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      const pageRecords: AirtableSubmission[] = data.records || [];
+  // EMERGENCY FIX: Simple direct fetch bypassing all cache/complexity
+  async getApprovedSubmissionsSimple(): Promise<Submission[]> {
+    console.log('🚨 EMERGENCY: Using simple direct fetch to bypass all issues');
+    
+    try {
+      const url = `https://api.airtable.com/v0/app0tFfsjLbI1qXq0/tblG8dKlv033Kp7bl`;
+      console.log('🔗 Direct URL:', url);
       
-      allRecords = allRecords.concat(pageRecords);
-      offset = data.offset;
-
-      console.log(`✅ FIXED: Page ${pageCount} got ${pageRecords.length} records`);
-      console.log(`📊 FIXED: Total records so far: ${allRecords.length}`);
-      console.log(`🔄 FIXED: Has more pages? ${!!offset}`);
-
-      // Safety break to prevent infinite loops
-      if (pageCount > 20) {
-        console.warn('⚠️ FIXED: Breaking after 20 pages to prevent infinite loop');
-        break;
-      }
-
-    } while (offset);
-
-    console.log(`🎉 FIXED: Total records fetched: ${allRecords.length} (should be ~980)`);
-
-    // STEP 2: Get status breakdown of ALL records
-    const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
-    const uniqueStatuses = [...new Set(allStatuses)];
-    const statusCounts = allStatuses.reduce((acc: any, status) => {
-      acc[status] = (acc[status] || 0) + 1;
-      return acc;
-    }, {});
-    
-    console.log('📋 FIXED: All unique statuses found:', uniqueStatuses);
-    console.log('📊 FIXED: Status breakdown:', statusCounts);
-
-    // STEP 3: Filter for approved records
-    const approvedRecords = allRecords.filter(record => {
-      const status = record.fields['Status'];
-      return status === 'Approved – Published' || 
-             status === 'Approved - Published' || 
-             status === 'Published';
-    });
-
-    console.log(`✅ FIXED: Found ${approvedRecords.length} approved records out of ${allRecords.length} total (should be ~313)`);
-
-    // STEP 4: Transform to expected format
-    const transformedSubmissions = approvedRecords.map((record, index) => {
-      try {
-        const transformedSubmission = this.transformSubmission(record);
-        return transformedSubmission;
-      } catch (error) {
-        console.error(`❌ FIXED: Error transforming record ${index + 1}:`, error);
-        throw error;
-      }
-    });
-    
-    console.log(`🎉 FIXED: Successfully transformed ${transformedSubmissions.length} approved submissions`);
-    return transformedSubmissions;
+      let allRecords: any[] = [];
+      let offset: string | undefined = undefined;
+      let page = 1;
+      
+      do {
+        const params = new URLSearchParams({ maxRecords: '100' });
+        if (offset) params.set('offset', offset);
+        
+        console.log(`📋 SIMPLE: Fetching page ${page}...`);
+        
+        const response = await fetch(`${url}?${params}`, {
+          headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        allRecords = allRecords.concat(data.records);
+        offset = data.offset;
+        
+        console.log(`✅ SIMPLE: Page ${page} got ${data.records.length} records`);
+        console.log(`📊 SIMPLE: Total so far: ${allRecords.length}`);
+        console.log(`🔄 SIMPLE: Has more pages? ${!!offset}`);
+        
+        page++;
+        
+      } while (offset);
+      
+      console.log(`🎉 SIMPLE: Final total: ${allRecords.length} records`);
+      
+      // Filter for approved
+      const approved = allRecords.filter(r => {
+        const status = r.fields?.Status;
+        return status === 'Approved – Published';
+      });
+      
+      console.log(`✅ SIMPLE: Found ${approved.length} approved out of ${allRecords.length} total`);
+      
+      return approved.map(record => ({
+        id: record.id,
+        brandName: record.fields['Brand Name'] || 'Unknown',
+        status: record.fields['Status'] || 'Unknown',
+        ...record.fields
+      }));
+      
+    } catch (error) {
+      console.error('🚨 SIMPLE: Error:', error);
+      throw error;
+    }
   },
 
-  // Keep old version for reference
+  async getApprovedSubmissions(): Promise<Submission[]> {
+    // USE SIMPLE VERSION TO BYPASS ALL ISSUES
+    return this.getApprovedSubmissionsSimple();
+  },
+
   async getApprovedSubmissionsOLD(): Promise<Submission[]> {
+    console.log('🚨 ENTRY: getApprovedSubmissions function called!');
+    console.log('🚨 ENTRY: API Key exists:', !!AIRTABLE_API_KEY);
+    console.log('🚨 ENTRY: Base ID exists:', !!AIRTABLE_BASE_ID);
+    
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
+    console.log('🚨 EARLY EXIT: Missing Airtable configuration');
+    throw new Error('Airtable configuration missing');
+  }
+
+  console.log('📋 FIXED: Fetching ALL records with pagination to detect all 980 records...');
+
+  // STEP 1: Fetch ALL records using pagination
+  let allRecords: AirtableSubmission[] = [];
+  let offset: string | undefined = undefined;
+  let pageCount = 0;
+
+  do {
+    pageCount++;
+    const params = new URLSearchParams({ maxRecords: '100' });
+    if (offset) {
+      params.set('offset', offset);
     }
 
-    console.log('📋 Fetching approved-published submissions...');
-
-    // Run status variation test first (disabled - found the issue!)
-    // await this.testStatusVariations();
-
-    // First, let's get ALL records to see what statuses actually exist
-    const allRecordsUrl = `${AIRTABLE_API_URL}`;
-    console.log('🔍 First, fetching ALL records to debug statuses...');
-    
-    const allResponse = await fetch(allRecordsUrl, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      },
-    });
-
-    if (allResponse.ok) {
-      const allData = await allResponse.json();
-      const allRecords: AirtableSubmission[] = allData.records || [];
-      console.log('📊 Total records in Airtable:', allRecords.length);
-      
-      if (allRecords.length > 0) {
-        console.log('📝 First record for debugging:', allRecords[0]);
-        console.log('📝 First record fields:', allRecords[0].fields);
-        console.log('📝 First record status:', JSON.stringify(allRecords[0].fields['Status']));
-        
-        // Get all unique statuses
-        const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
-        const uniqueStatuses = [...new Set(allStatuses)];
-        console.log('📋 All unique statuses found:', uniqueStatuses);
-        console.log('📋 All statuses (with quotes):', uniqueStatuses.map(s => `"${s}"`));
-        
-        // Count each status
-        const statusCounts = allStatuses.reduce((acc: any, status) => {
-          acc[status] = (acc[status] || 0) + 1;
-          return acc;
-        }, {});
-        console.log('📊 Status breakdown:', statusCounts);
-        
-        // Check if any match our target
-        const targetStatus = "Approved – Published"; // em dash
-        const matchingRecords = allRecords.filter(r => r.fields['Status'] === targetStatus);
-        console.log(`🎯 Records with exact status "${targetStatus}":`, matchingRecords.length);
-        
-        // Check for similar statuses
-        const similarStatuses = uniqueStatuses.filter(status => 
-          status && status.toLowerCase().includes('approved') && status.toLowerCase().includes('published')
-        );
-        console.log('🔍 Similar statuses containing "approved" and "published":', similarStatuses);
-      }
-    }
-
-    // Now try the filtered query
-    const filterFormula = `{Status} = "Approved – Published"`;
-    const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
-    
-    console.log('🔗 API URL:', url);
-    console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
+    const url = `${AIRTABLE_API_URL}?${params}`;
+    console.log(`📋 FIXED: Fetching page ${pageCount}...`);
 
     const response = await fetch(url, {
       headers: {
@@ -395,173 +335,63 @@ export const airtableService = {
     });
 
     if (!response.ok) {
-      console.error('❌ Airtable API error:', response.status, response.statusText);
       throw new Error(`Airtable API error: ${response.statusText}`);
     }
 
     const data = await response.json();
-    const records: AirtableSubmission[] = data.records || [];
+    const pageRecords: AirtableSubmission[] = data.records || [];
     
-    console.log('📦 Raw Airtable response for approved-published submissions:', data);
-    console.log('📊 Number of approved-published records found:', records.length);
+    allRecords = allRecords.concat(pageRecords);
+    offset = data.offset;
 
-    if (records.length > 0) {
-      console.log('🏠 First approved-published record:', records[0]);
-      console.log('📝 First record status:', records[0].fields['Status']);
-      console.log('✅ SUCCESS! Found records with em dash status!');
-    } else {
-      console.log('❌ No records found with status "Approved – Published"');
-      console.log('🔍 This suggests a status string mismatch');
+    console.log(`✅ FIXED: Page ${pageCount} got ${pageRecords.length} records`);
+    console.log(`📊 FIXED: Total records so far: ${allRecords.length}`);
+    console.log(`🔄 FIXED: Has more pages? ${!!offset}`);
+
+    // Safety break to prevent infinite loops
+    if (pageCount > 20) {
+      console.warn('⚠️ FIXED: Breaking after 20 pages to prevent infinite loop');
+      break;
     }
 
-    const transformedSubmissions = records.map((record, index) => {
-      try {
-        console.log(`🔄 Transforming approved-published record ${index + 1}/${records.length}:`, record.id);
-        console.log(`📝 Record status: ${record.fields['Status']}`);
-        
-        const transformedSubmission = this.transformSubmission(record);
-        console.log('✅ Successfully transformed submission:', transformedSubmission.brandName);
-        return transformedSubmission;
-      } catch (error) {
-        console.error(`❌ Error transforming approved-published record ${index + 1}:`, error);
-        console.error('📋 Problematic record:', record);
-        throw error;
-      }
-    });
-    
-    console.log('✨ All transformed approved-published submissions:', transformedSubmissions.length);
-    return transformedSubmissions;
-  },
+  } while (offset);
 
-  async getSubmissionsByCountry(countryName: string): Promise<Submission[]> {
-    // Use the submission processor function that includes unique slug generation
-    const { getSubmissionsForCountry } = await import('./submission-processor');
-    return getSubmissionsForCountry(countryName);
-  },
+  console.log(`🎉 FIXED: Total records fetched: ${allRecords.length} (should be ~980)`);
 
-  async getSubmissionById(id: string): Promise<Submission | null> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
+  // STEP 2: Get status breakdown of ALL records
+  const allStatuses = allRecords.map(r => r.fields['Status']).filter(Boolean);
+  const uniqueStatuses = [...new Set(allStatuses)];
+  const statusCounts = allStatuses.reduce((acc: any, status) => {
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {});
+  
+  console.log('📋 FIXED: All unique statuses found:', uniqueStatuses);
+  console.log('📊 FIXED: Status breakdown:', statusCounts);
 
+  // STEP 3: Filter for approved records
+  const approvedRecords = allRecords.filter(record => {
+    const status = record.fields['Status'];
+    return status === 'Approved – Published' || 
+           status === 'Approved - Published' || 
+           status === 'Published';
+  });
+
+  console.log(`✅ FIXED: Found ${approvedRecords.length} approved records out of ${allRecords.length} total (should be ~313)`);
+
+  // STEP 4: Transform to expected format
+  const transformedSubmissions = approvedRecords.map((record, index) => {
     try {
-      const url = `${AIRTABLE_API_URL}/${id}`;
-      
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        throw new Error(`Airtable API error: ${response.statusText}`);
-      }
-
-      const record: AirtableSubmission = await response.json();
-      
-      const status = record.fields['Status'];
-      console.log('📝 Single record status:', status);
-      console.log('📊 Single record data:', record.fields);
-      
-      // Only return records that are approved-published (note: em dash)
-      if (status !== 'Approved – Published') {
-        console.log('❌ Record not approved-published, status:', status);
-        console.log('🔍 Expected: "Approved – Published" (em dash), Got:', JSON.stringify(status));
-        return null;
-      }
-
-      return this.transformSubmission(record);
+      const transformedSubmission = this.transformSubmission(record);
+      return transformedSubmission;
     } catch (error) {
-      console.error('Error fetching submission by ID:', error);
-      return null;
+      console.error(`❌ FIXED: Error transforming record ${index + 1}:`, error);
+      throw error;
     }
-  },
-
-  async getSubmissionBySlug(slug: string): Promise<Submission | null> {
-    // Use the new slug-email mapping system
-    const { getSubmissionBySlug } = await import('./slug-email-mapping');
-    return getSubmissionBySlug(slug);
-  },
-
-  async getSubmissionByEmail(email: string): Promise<Submission | null> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
-
-    try {
-      console.log(`🔍 Looking up submission by email: "${email}"`);
-      
-      // Filter by email field
-      const filterFormula = `AND({Status} = "Approved – Published", {Email} = "${email}")`;
-      const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
-
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        },
-      });
-
-      if (!response.ok) {
-        console.error('❌ Airtable API error:', response.status, response.statusText);
-        return null;
-      }
-
-      const data = await response.json();
-      const records: AirtableSubmission[] = data.records || [];
-      
-      if (records.length === 0) {
-        console.log(`❌ No submission found for email: "${email}"`);
-        return null;
-      }
-
-      if (records.length > 1) {
-        console.warn(`⚠️ Multiple submissions found for email "${email}", using first one`);
-      }
-
-      const submission = this.transformSubmission(records[0]);
-      console.log(`✅ Found submission for email "${email}": "${submission.brandName}"`);
-      
-      return submission;
-      
-    } catch (error) {
-      console.error(`❌ Error fetching submission by email "${email}":`, error);
-      return null;
-    }
-  },
-
-  /**
-   * Update submission status in Airtable
-   * Status workflow: 
-   * 1. "Pending" → "Approved – Not Yet Published" (admin approval)
-   * 2. "Approved – Not Yet Published" → "Published" (when live on site)
-   * 3. "Published" submissions appear in featured carousel and public listings
-   */
-  async updateSubmissionStatus(id: string, status: string): Promise<void> {
-    if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
-      throw new Error('Airtable configuration missing');
-    }
-
-    const response = await fetch(`${AIRTABLE_API_URL}/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fields: {
-          'Status': status
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Airtable API error: ${response.statusText}`);
-    }
-
-    console.log(`✅ Updated submission ${id} status to: ${status}`);
+  });
+  
+  console.log(`🎉 FIXED: Successfully transformed ${transformedSubmissions.length} approved submissions`);
+  return transformedSubmissions;
   },
 
   /**
