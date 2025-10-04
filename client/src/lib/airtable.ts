@@ -3,7 +3,7 @@
 // Airtable configuration
 const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY || '';
 const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID || '';
-const AIRTABLE_TABLE_NAME = 'Submissions'; // TESTING: Try different table name
+const AIRTABLE_TABLE_NAME = 'STR Submissions'; // CORRECT: User's actual table with 981 records
 
 // Airtable API endpoint
 const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
