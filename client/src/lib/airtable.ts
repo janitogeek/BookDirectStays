@@ -291,29 +291,65 @@ export const airtableService = {
       }
     }
 
-    // Now try the filtered query
+    // Now fetch ALL approved records with pagination
     const filterFormula = `{Status} = "Approved – Published"`;
-    const url = `${AIRTABLE_API_URL}?filterByFormula=${encodeURIComponent(filterFormula)}`;
     
-    console.log('🔗 API URL:', url);
+    let allRecords: AirtableSubmission[] = [];
+    let offset: string | null = null;
+    let requestCount = 0;
+    
+    console.log('🔄 Starting paginated fetch for approved submissions...');
     console.log('📝 Filter formula:', filterFormula);
     console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
-
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      },
-    });
-
-    if (!response.ok) {
-      console.error('❌ Airtable API error:', response.status, response.statusText);
-      throw new Error(`Airtable API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const records: AirtableSubmission[] = data.records || [];
     
-    console.log('📦 Raw Airtable response for approved-published submissions:', data);
+    do {
+      const params = new URLSearchParams({
+        filterByFormula: filterFormula,
+        maxRecords: '100'  // Process 100 at a time (Airtable's max per request)
+      });
+      
+      if (offset) {
+        params.set('offset', offset);
+      }
+      
+      const url = `${AIRTABLE_API_URL}?${params}`;
+      requestCount++;
+      
+      console.log(`📋 Fetching approved submissions batch ${requestCount}...`);
+      console.log('🔗 API URL:', url);
+
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`❌ Airtable API error on batch ${requestCount}:`, response.status, response.statusText);
+        throw new Error(`Airtable API error: ${response.statusText}`);
+      }
+
+      const batchData = await response.json();
+      const batchRecords: AirtableSubmission[] = batchData.records || [];
+      
+      allRecords = allRecords.concat(batchRecords);
+      offset = batchData.offset;
+      
+      console.log(`✅ Fetched ${batchRecords.length} approved records in batch ${requestCount}`);
+      console.log(`📊 Total approved records so far: ${allRecords.length}`);
+      
+      // Add a small delay to respect Airtable's rate limits (5 requests/second)
+      if (offset) {
+        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay
+      }
+      
+    } while (offset);
+    
+    console.log(`🎉 Pagination complete! Total approved records fetched: ${allRecords.length}`);
+    
+    const records = allRecords;
+    
+    console.log('📦 Final result: All approved submissions fetched via pagination');
     console.log('📊 Number of approved-published records found:', records.length);
 
     if (records.length > 0) {
