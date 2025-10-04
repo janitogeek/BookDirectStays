@@ -236,9 +236,16 @@ export const airtableService = {
   },
 
   async getApprovedSubmissions(): Promise<Submission[]> {
+    console.log('🚨 ENTRY: getApprovedSubmissions function called!');
+    console.log('🚨 ENTRY: API Key exists:', !!AIRTABLE_API_KEY);
+    console.log('🚨 ENTRY: Base ID exists:', !!AIRTABLE_BASE_ID);
+    
     if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+      console.log('🚨 EARLY EXIT: Missing Airtable configuration');
       throw new Error('Airtable configuration missing');
     }
+
+    console.log('🚨 CONTINUING: Configuration exists, proceeding...');
 
     console.log('📋 Fetching approved-published submissions...');
     console.log('🔧 DEBUG: API Key exists:', !!AIRTABLE_API_KEY);
