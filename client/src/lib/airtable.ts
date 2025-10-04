@@ -316,23 +316,27 @@ export const airtableService = {
       }
     }
 
-    // Now fetch ALL approved records with pagination
-    const filterFormula = `{Status} = "Approved – Published"`;
+    // Now fetch ALL records with NO FILTER - should get all 981 records
+    const filterFormula = ``; // NO FILTER - get everything!
     
     let allRecords: AirtableSubmission[] = [];
     let offset: string | null = null;
     let requestCount = 0;
     
-    console.log('🔄 Starting paginated fetch for approved submissions...');
-    console.log('📝 Filter formula:', filterFormula);
-    console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
+    console.log('🔄 Starting paginated fetch for ALL RECORDS (no filter)...');
+    console.log('📝 Filter formula:', filterFormula || 'NONE - Getting ALL records');
+    console.log('🎯 Should get all 981 records from Airtable!');
     console.log('🚨 DEBUG: This should fetch ALL pages, not just 100 records!');
     
     do {
       const params = new URLSearchParams({
-        filterByFormula: filterFormula,
         maxRecords: '100'  // Process 100 at a time (Airtable's max per request)
       });
+      
+      // Only add filter if it exists
+      if (filterFormula) {
+        params.set('filterByFormula', filterFormula);
+      }
       
       if (offset) {
         params.set('offset', offset);
@@ -377,10 +381,21 @@ export const airtableService = {
       
     } while (offset);
     
-    console.log(`🎉 Pagination complete! Total approved records fetched: ${allRecords.length}`);
-    console.log('🚨 CRITICAL CHECK: If this number is still 100, there is a bigger issue!');
+    console.log(`🎉 Pagination complete! Total records fetched: ${allRecords.length}`);
+    console.log('🚨 CRITICAL CHECK: This should be 981 if pagination works!');
     
-    const records = allRecords;
+    // Now filter for approved records CLIENT-SIDE
+    const approvedRecords = allRecords.filter(record => {
+      const status = record.fields['Status'];
+      return status === 'Approved – Published' || 
+             status === 'Approved - Published' || 
+             status === 'Published';
+    });
+    
+    console.log(`✅ CLIENT-SIDE FILTERING: Found ${approvedRecords.length} approved records out of ${allRecords.length} total`);
+    console.log('📊 This should show ~305 approved records if your data is correct!');
+    
+    const records = approvedRecords; // Use filtered records
     
     console.log('📦 Final result: All approved submissions fetched via pagination');
     console.log('📊 Number of approved-published records found:', records.length);
