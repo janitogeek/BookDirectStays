@@ -336,8 +336,10 @@ export const airtableService = {
     console.log('🚨 DEBUG: This should fetch ALL pages, not just 100 records!');
     
     do {
+      // Add explicit parameters to force raw table access
       const params = new URLSearchParams({
-        maxRecords: '100'  // Process 100 at a time (Airtable's max per request)
+        maxRecords: '100',
+        view: 'Grid view'  // Force specific view
       });
       
       // Only add filter if it exists
