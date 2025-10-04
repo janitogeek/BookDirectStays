@@ -5,7 +5,7 @@ const AIRTABLE_API_KEY = (import.meta as any).env?.VITE_AIRTABLE_API_KEY || '';
 const AIRTABLE_BASE_ID = (import.meta as any).env?.VITE_AIRTABLE_BASE_ID || '';
 const AIRTABLE_TABLE_NAME = 'tblG8dKlv033Kp7bl'; // TESTING: Use Table ID instead of name
 
-// Airtable API endpoint
+// Airtable API endpoint - NO VIEW SPECIFIED to get all records
 const AIRTABLE_API_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE_NAME)}`;
 
 // Debug: Log configuration (remove in production)
@@ -352,8 +352,9 @@ export const airtableService = {
       const url = `${AIRTABLE_API_URL}?${params}`;
       requestCount++;
       
-      console.log(`📋 Fetching approved submissions batch ${requestCount}...`);
+      console.log(`📋 Fetching ALL records batch ${requestCount}...`);
       console.log('🔗 API URL:', url);
+      console.log('🔍 FORCE DEBUG: Requesting ALL records, no view restrictions');
 
       const response = await fetch(url, {
         headers: {
