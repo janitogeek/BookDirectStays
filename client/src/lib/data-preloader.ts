@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v4.5-view-fix'; // FIX: Added view parameter viwbLcYkUpsQoomUn to access correct view with 980 records
+const CACHE_VERSION = 'v4.6-debug-views'; // DEBUG: Added systematic tests to debug why view parameter isn't working
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;

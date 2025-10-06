@@ -309,9 +309,47 @@ export const airtableService = {
     console.log('🔍 DEBUG: Table Name/ID:', AIRTABLE_TABLE_NAME);
     console.log('🔍 DEBUG: Full API URL:', AIRTABLE_API_URL);
 
-    // 🎯 SOLUTION: API hits default table view (100 records) but user sees view viwbLcYkUpsQoomUn (980 records)
-    console.log('🎯 FIXING: Adding view parameter to access the correct view with 980 records');
+    // 🚨 SYSTEMATIC DEBUGGING: Still getting 100 records even with view parameter!
+    console.log('🚨 DEBUGGING: Testing multiple scenarios to find why we only get 100 records');
     const AIRTABLE_VIEW_ID = 'viwbLcYkUpsQoomUn'; // The view with 980 records from user's URL
+    
+    // 🧪 TEST 1: Try WITHOUT view parameter (baseline)
+    console.log('🧪 TEST 1: Fetching WITHOUT view parameter (baseline test)');
+    const testNoView = await fetch(`${AIRTABLE_API_URL}?maxRecords=5`, {
+      headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+    });
+    
+    if (testNoView.ok) {
+      const noViewData = await testNoView.json();
+      console.log('🧪 TEST 1 RESULT: No view =', noViewData.records?.length, 'records, has more?', !!noViewData.offset);
+    }
+    
+    // 🧪 TEST 2: Try WITH view parameter
+    console.log('🧪 TEST 2: Fetching WITH view parameter');
+    const testWithView = await fetch(`${AIRTABLE_API_URL}?maxRecords=5&view=${AIRTABLE_VIEW_ID}`, {
+      headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+    });
+    
+    if (testWithView.ok) {
+      const withViewData = await testWithView.json();
+      console.log('🧪 TEST 2 RESULT: With view =', withViewData.records?.length, 'records, has more?', !!withViewData.offset);
+      console.log('🧪 TEST 2 URL:', `${AIRTABLE_API_URL}?maxRecords=5&view=${AIRTABLE_VIEW_ID}`);
+    } else {
+      console.log('🧪 TEST 2 FAILED:', testWithView.status, testWithView.statusText);
+    }
+    
+    // 🧪 TEST 3: Try with view name instead of ID
+    console.log('🧪 TEST 3: Fetching with view name "Grid view"');
+    const testViewName = await fetch(`${AIRTABLE_API_URL}?maxRecords=5&view=Grid%20view`, {
+      headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+    });
+    
+    if (testViewName.ok) {
+      const viewNameData = await testViewName.json();
+      console.log('🧪 TEST 3 RESULT: View name =', viewNameData.records?.length, 'records, has more?', !!viewNameData.offset);
+    } else {
+      console.log('🧪 TEST 3 FAILED:', testViewName.status, testViewName.statusText);
+    }
 
     // Run status variation test first (disabled - found the issue!)
     // await this.testStatusVariations();
