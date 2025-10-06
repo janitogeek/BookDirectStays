@@ -309,9 +309,10 @@ export const airtableService = {
     console.log('🔍 DEBUG: Table Name/ID:', AIRTABLE_TABLE_NAME);
     console.log('🔍 DEBUG: Full API URL:', AIRTABLE_API_URL);
 
-    // 🚨 SYSTEMATIC DEBUGGING: Still getting 100 records even with view parameter!
-    console.log('🚨 DEBUGGING: Testing multiple scenarios to find why we only get 100 records');
-    const AIRTABLE_VIEW_ID = 'viwbLcYkUpsQoomUn'; // The view with 980 records from user's URL
+    // 🚨 CRITICAL BUG: View viwbLcYkUpsQoomUn shows 980 in UI but API only gets 100!
+    // TESTING: Remove view parameter entirely to access ALL table records directly
+    console.log('🚨 BYPASSING VIEW: Testing without view parameter to access ALL table records');
+    const BYPASS_VIEW_ENTIRELY = true; // Skip view parameter completely
     
     // 🧪 TEST 1: Try WITHOUT view parameter (baseline)
     console.log('🧪 TEST 1: Fetching WITHOUT view parameter (baseline test)');
@@ -366,14 +367,14 @@ export const airtableService = {
     do {
       pageCount++;
       const params = new URLSearchParams({ 
-        maxRecords: '100',
-        view: AIRTABLE_VIEW_ID  // 🎯 FIX: Use the specific view with 980 records
+        maxRecords: '100'
+        // 🚨 REMOVED: view parameter to access ALL table records (not just view subset)
       });
       if (allRecordsOffset) {
         params.set('offset', allRecordsOffset);
       }
 
-      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} (WITH VIEW ${AIRTABLE_VIEW_ID})...`);
+      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} (NO VIEW - DIRECT TABLE ACCESS)...`);
 
       const allResponse = await fetch(`${allRecordsUrl}?${params}`, {
         headers: {
@@ -449,15 +450,15 @@ export const airtableService = {
       approvedPageCount++;
       const params = new URLSearchParams({ 
         maxRecords: '100',
-        filterByFormula: filterFormula,
-        view: AIRTABLE_VIEW_ID  // 🎯 FIX: Use the specific view with 980 records
+        filterByFormula: filterFormula
+        // 🚨 REMOVED: view parameter to access ALL table records (not just view subset)
       });
       if (approvedOffset) {
         params.set('offset', approvedOffset);
       }
 
       const url = `${AIRTABLE_API_URL}?${params}`;
-      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} (WITH VIEW ${AIRTABLE_VIEW_ID})...`);
+      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} (NO VIEW - DIRECT TABLE ACCESS)...`);
       console.log('🔗 API URL:', url);
 
       const response = await fetch(url, {
