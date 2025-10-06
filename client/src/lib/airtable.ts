@@ -324,14 +324,14 @@ export const airtableService = {
     do {
       pageCount++;
       const params = new URLSearchParams({ 
-        maxRecords: '100',
-        view: 'viwbLcYkUpsQoomUn'  // Use the specific view with 980 records
+        maxRecords: '100'
+        // REMOVED view parameter to access ALL records in table
       });
       if (allRecordsOffset) {
         params.set('offset', allRecordsOffset);
       }
 
-      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} from VIEW viwbLcYkUpsQoomUn...`);
+      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} (NO VIEW FILTER)...`);
 
       const allResponse = await fetch(`${allRecordsUrl}?${params}`, {
         headers: {
@@ -407,15 +407,15 @@ export const airtableService = {
       approvedPageCount++;
       const params = new URLSearchParams({ 
         maxRecords: '100',
-        filterByFormula: filterFormula,
-        view: 'viwbLcYkUpsQoomUn'  // Use the specific view with 980 records
+        filterByFormula: filterFormula
+        // REMOVED view parameter to access ALL records in table
       });
       if (approvedOffset) {
         params.set('offset', approvedOffset);
       }
 
       const url = `${AIRTABLE_API_URL}?${params}`;
-      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} from VIEW viwbLcYkUpsQoomUn...`);
+      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} (NO VIEW FILTER)...`);
       console.log('🔗 API URL:', url);
 
       const response = await fetch(url, {
