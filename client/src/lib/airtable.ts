@@ -309,89 +309,16 @@ export const airtableService = {
     console.log('🔍 DEBUG: Table Name/ID:', AIRTABLE_TABLE_NAME);
     console.log('🔍 DEBUG: Full API URL:', AIRTABLE_API_URL);
 
-    // 🚨 EMERGENCY DEBUG: Test different table IDs to find the 313 records
-    console.log('🚨 TESTING DIFFERENT DATA SOURCES TO FIND 313 RECORDS...');
-    
-    // Test 1: Current table without any filters (should show total records in this table)
-    const testUrl1 = `${AIRTABLE_API_URL}?maxRecords=5`;
-    console.log('🧪 TEST 1: Current table total records (first 5):', testUrl1);
-    
-    try {
-      const testResponse1 = await fetch(testUrl1, {
-        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
-      });
-      
-      if (testResponse1.ok) {
-        const testData1 = await testResponse1.json();
-        console.log('🧪 TEST 1 RESULT: Current table has records:', testData1.records?.length || 0);
-        console.log('🧪 TEST 1 RESULT: Has more?', !!testData1.offset);
-        if (testData1.records?.[0]) {
-          const statuses = testData1.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
-          console.log('🧪 TEST 1 RESULT: Sample statuses:', [...new Set(statuses)]);
-        }
-      } else {
-        console.log('🧪 TEST 1 FAILED:', testResponse1.status);
-      }
-    } catch (error) {
-      console.log('🧪 TEST 1 ERROR:', error);
-    }
-    
-    // Test 2: Try the original table name instead of ID
-    const testUrl2 = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Directory%20Submissions?maxRecords=5`;
-    console.log('🧪 TEST 2: Original table name:', testUrl2);
-    
-    try {
-      const testResponse2 = await fetch(testUrl2, {
-        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
-      });
-      
-      if (testResponse2.ok) {
-        const testData2 = await testResponse2.json();
-        console.log('🧪 TEST 2 RESULT: "Directory Submissions" table has records:', testData2.records?.length || 0);
-        console.log('🧪 TEST 2 RESULT: Has more?', !!testData2.offset);
-        if (testData2.records?.[0]) {
-          const statuses = testData2.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
-          console.log('🧪 TEST 2 RESULT: Sample statuses:', [...new Set(statuses)]);
-        }
-      } else {
-        console.log('🧪 TEST 2 FAILED:', testResponse2.status);
-      }
-    } catch (error) {
-      console.log('🧪 TEST 2 ERROR:', error);
-    }
-    
-    // Test 3: Try "Submissions" table name
-    const testUrl3 = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Submissions?maxRecords=5`;
-    console.log('🧪 TEST 3: "Submissions" table name:', testUrl3);
-    
-    try {
-      const testResponse3 = await fetch(testUrl3, {
-        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
-      });
-      
-      if (testResponse3.ok) {
-        const testData3 = await testResponse3.json();
-        console.log('🧪 TEST 3 RESULT: "Submissions" table has records:', testData3.records?.length || 0);
-        console.log('🧪 TEST 3 RESULT: Has more?', !!testData3.offset);
-        if (testData3.records?.[0]) {
-          const statuses = testData3.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
-          console.log('🧪 TEST 3 RESULT: Sample statuses:', [...new Set(statuses)]);
-        }
-      } else {
-        console.log('🧪 TEST 3 FAILED:', testResponse3.status);
-      }
-    } catch (error) {
-      console.log('🧪 TEST 3 ERROR:', error);
-    }
-    
-    console.log('🧪 TESTS COMPLETE - Check results above to find which table has your 313 records!');
+    // 🎯 SOLUTION: API hits default table view (100 records) but user sees view viwbLcYkUpsQoomUn (980 records)
+    console.log('🎯 FIXING: Adding view parameter to access the correct view with 980 records');
+    const AIRTABLE_VIEW_ID = 'viwbLcYkUpsQoomUn'; // The view with 980 records from user's URL
 
     // Run status variation test first (disabled - found the issue!)
     // await this.testStatusVariations();
 
-    // First, let's get ALL records to see what statuses actually exist (WITH UNLIMITED PAGINATION)
+        // First, let's get ALL records to see what statuses actually exist (WITH UNLIMITED PAGINATION)
     const allRecordsUrl = `${AIRTABLE_API_URL}`;
-    console.log('🔍 First, fetching ALL records to debug statuses (UNLIMITED)...');
+    console.log('🔍 First, fetching ALL records to debug statuses (UNLIMITED WITH VIEW)...');
     
     // UNLIMITED PAGINATION: Get ALL records to analyze statuses
     let allRecords: AirtableSubmission[] = [];
@@ -401,14 +328,14 @@ export const airtableService = {
     do {
       pageCount++;
       const params = new URLSearchParams({ 
-        maxRecords: '100'
-        // REMOVED view parameter to access ALL records in table
+        maxRecords: '100',
+        view: AIRTABLE_VIEW_ID  // 🎯 FIX: Use the specific view with 980 records
       });
       if (allRecordsOffset) {
         params.set('offset', allRecordsOffset);
       }
 
-      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} (NO VIEW FILTER)...`);
+      console.log(`📋 UNLIMITED: Fetching ALL records page ${pageCount} (WITH VIEW ${AIRTABLE_VIEW_ID})...`);
 
       const allResponse = await fetch(`${allRecordsUrl}?${params}`, {
         headers: {
@@ -475,7 +402,7 @@ export const airtableService = {
     console.log('📝 Filter formula:', filterFormula);
     console.log('🎯 Looking for exact status: "Approved – Published" (with em dash)');
 
-    // UNLIMITED PAGINATION: Get ALL matching records
+        // UNLIMITED PAGINATION: Get ALL matching records
     let approvedRecords: AirtableSubmission[] = [];
     let approvedOffset: string | undefined = undefined;
     let approvedPageCount = 0;
@@ -484,15 +411,15 @@ export const airtableService = {
       approvedPageCount++;
       const params = new URLSearchParams({ 
         maxRecords: '100',
-        filterByFormula: filterFormula
-        // REMOVED view parameter to access ALL records in table
+        filterByFormula: filterFormula,
+        view: AIRTABLE_VIEW_ID  // 🎯 FIX: Use the specific view with 980 records
       });
       if (approvedOffset) {
         params.set('offset', approvedOffset);
       }
 
       const url = `${AIRTABLE_API_URL}?${params}`;
-      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} (NO VIEW FILTER)...`);
+      console.log(`📋 APPROVED: Fetching approved records page ${approvedPageCount} (WITH VIEW ${AIRTABLE_VIEW_ID})...`);
       console.log('🔗 API URL:', url);
 
       const response = await fetch(url, {

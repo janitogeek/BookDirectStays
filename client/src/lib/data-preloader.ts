@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v4.4-debug-tables'; // DEBUG: Testing different table sources to find the 313 approved records
+const CACHE_VERSION = 'v4.5-view-fix'; // FIX: Added view parameter viwbLcYkUpsQoomUn to access correct view with 980 records
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
