@@ -309,6 +309,83 @@ export const airtableService = {
     console.log('🔍 DEBUG: Table Name/ID:', AIRTABLE_TABLE_NAME);
     console.log('🔍 DEBUG: Full API URL:', AIRTABLE_API_URL);
 
+    // 🚨 EMERGENCY DEBUG: Test different table IDs to find the 313 records
+    console.log('🚨 TESTING DIFFERENT DATA SOURCES TO FIND 313 RECORDS...');
+    
+    // Test 1: Current table without any filters (should show total records in this table)
+    const testUrl1 = `${AIRTABLE_API_URL}?maxRecords=5`;
+    console.log('🧪 TEST 1: Current table total records (first 5):', testUrl1);
+    
+    try {
+      const testResponse1 = await fetch(testUrl1, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+      });
+      
+      if (testResponse1.ok) {
+        const testData1 = await testResponse1.json();
+        console.log('🧪 TEST 1 RESULT: Current table has records:', testData1.records?.length || 0);
+        console.log('🧪 TEST 1 RESULT: Has more?', !!testData1.offset);
+        if (testData1.records?.[0]) {
+          const statuses = testData1.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
+          console.log('🧪 TEST 1 RESULT: Sample statuses:', [...new Set(statuses)]);
+        }
+      } else {
+        console.log('🧪 TEST 1 FAILED:', testResponse1.status);
+      }
+    } catch (error) {
+      console.log('🧪 TEST 1 ERROR:', error);
+    }
+    
+    // Test 2: Try the original table name instead of ID
+    const testUrl2 = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Directory%20Submissions?maxRecords=5`;
+    console.log('🧪 TEST 2: Original table name:', testUrl2);
+    
+    try {
+      const testResponse2 = await fetch(testUrl2, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+      });
+      
+      if (testResponse2.ok) {
+        const testData2 = await testResponse2.json();
+        console.log('🧪 TEST 2 RESULT: "Directory Submissions" table has records:', testData2.records?.length || 0);
+        console.log('🧪 TEST 2 RESULT: Has more?', !!testData2.offset);
+        if (testData2.records?.[0]) {
+          const statuses = testData2.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
+          console.log('🧪 TEST 2 RESULT: Sample statuses:', [...new Set(statuses)]);
+        }
+      } else {
+        console.log('🧪 TEST 2 FAILED:', testResponse2.status);
+      }
+    } catch (error) {
+      console.log('🧪 TEST 2 ERROR:', error);
+    }
+    
+    // Test 3: Try "Submissions" table name
+    const testUrl3 = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Submissions?maxRecords=5`;
+    console.log('🧪 TEST 3: "Submissions" table name:', testUrl3);
+    
+    try {
+      const testResponse3 = await fetch(testUrl3, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+      });
+      
+      if (testResponse3.ok) {
+        const testData3 = await testResponse3.json();
+        console.log('🧪 TEST 3 RESULT: "Submissions" table has records:', testData3.records?.length || 0);
+        console.log('🧪 TEST 3 RESULT: Has more?', !!testData3.offset);
+        if (testData3.records?.[0]) {
+          const statuses = testData3.records.slice(0, 5).map((r: any) => r.fields['Status']).filter(Boolean);
+          console.log('🧪 TEST 3 RESULT: Sample statuses:', [...new Set(statuses)]);
+        }
+      } else {
+        console.log('🧪 TEST 3 FAILED:', testResponse3.status);
+      }
+    } catch (error) {
+      console.log('🧪 TEST 3 ERROR:', error);
+    }
+    
+    console.log('🧪 TESTS COMPLETE - Check results above to find which table has your 313 records!');
+
     // Run status variation test first (disabled - found the issue!)
     // await this.testStatusVariations();
 
