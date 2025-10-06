@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v4.1'; // UNLIMITED: Original logic from fd79209 + unlimited pagination (up to 10k records)
+const CACHE_VERSION = 'v4.2'; // VIEW FIX: Added specific view ID to access all 980 records instead of default view
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;
