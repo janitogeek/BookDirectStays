@@ -302,6 +302,12 @@ export const airtableService = {
     }
 
     console.log('📋 Fetching approved-published submissions (UNLIMITED)...');
+    
+    // DEBUG: List all tables in the base
+    console.log('🔍 DEBUG: Checking base info...');
+    console.log('🔍 DEBUG: Base ID:', AIRTABLE_BASE_ID);
+    console.log('🔍 DEBUG: Table Name/ID:', AIRTABLE_TABLE_NAME);
+    console.log('🔍 DEBUG: Full API URL:', AIRTABLE_API_URL);
 
     // Run status variation test first (disabled - found the issue!)
     // await this.testStatusVariations();
