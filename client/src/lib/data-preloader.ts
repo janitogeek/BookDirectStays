@@ -21,7 +21,7 @@ const CACHE_KEYS = {
 };
 
 // Cache version - increment this when data structure changes
-const CACHE_VERSION = 'v4.7-bypass-view'; // BYPASS: Remove view parameter entirely to access ALL table records directly
+const CACHE_VERSION = 'v4.8-hotfix-bypass'; // HOTFIX: Fixed ReferenceError from missing AIRTABLE_VIEW_ID variable
 
 // Cache duration - 1 hour
 const CACHE_DURATION = 60 * 60 * 1000;

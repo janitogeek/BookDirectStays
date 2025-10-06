@@ -312,6 +312,7 @@ export const airtableService = {
     // 🚨 CRITICAL BUG: View viwbLcYkUpsQoomUn shows 980 in UI but API only gets 100!
     // TESTING: Remove view parameter entirely to access ALL table records directly
     console.log('🚨 BYPASSING VIEW: Testing without view parameter to access ALL table records');
+    const AIRTABLE_VIEW_ID = 'viwbLcYkUpsQoomUn'; // Keep for test comparison but don't use in main calls
     const BYPASS_VIEW_ENTIRELY = true; // Skip view parameter completely
     
     // 🧪 TEST 1: Try WITHOUT view parameter (baseline)
